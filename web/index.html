@@ -1,0 +1,1195 @@
+<meta charset="utf-8">
+<title>Mosca QA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #E9ECEA;
+  --surface: #F6F7F5;
+  --ink: #1C2127;
+  --muted: #5F6A74;
+  --line: #C9CFCC;
+  --spike: #D0245E;
+  --ok: #1F7A5A;
+  --bug: #9A6200;
+  --crit: #B3261E;
+  --em: #3C4650;
+  --track: #DCE0DE;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0F1214; --surface: #171B1E; --ink: #E4E8E6; --muted: #8C979F; --line: #2A3035;
+    --spike: #FF4F8B; --ok: #4CC38A; --bug: #E0A43A; --crit: #FF6B5E; --em: #7D8A94; --track: #242A2E;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0F1214; --surface: #171B1E; --ink: #E4E8E6; --muted: #8C979F; --line: #2A3035;
+  --spike: #FF4F8B; --ok: #4CC38A; --bug: #E0A43A; --crit: #FF6B5E; --em: #7D8A94; --track: #242A2E;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans);
+  padding-inline: 16px; padding-block: 18px 40px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 18px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* topo */
+.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px 24px; }
+.brand h1 { font: 700 clamp(30px, 4vw, 44px)/1 var(--display); letter-spacing: -.02em; }
+.brand h1 b { color: var(--spike); font-weight: 700; }
+.brand p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.stat { display: grid; gap: 1px; padding: 4px 10px; border-left: 1px solid var(--line); }
+.stat .eyebrow { font-size: 10px; }
+.stat .mono { font-size: 15px; }
+button.ctl {
+  font: 500 14px var(--sans); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; cursor: pointer;
+}
+button.ctl:hover { border-color: var(--muted); }
+button.ctl:focus-visible, .shop button:focus-visible { outline: 2px solid var(--spike); outline-offset: 2px; }
+button.ctl[disabled] { opacity: .5; cursor: default; }
+
+/* palco */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 290px; gap: 18px; align-items: start; }
+.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.panel-head h2 { font: 600 15px var(--sans); }
+.panel-head .eyebrow { text-align: right; }
+
+/* janela do site */
+.browser { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.urlbar { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+.urlbar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); display: block; }
+.urlbar span { flex: 1; font: 12px var(--mono); color: var(--muted); background: var(--bg); border-radius: 4px; padding: 3px 8px; }
+.viewport { position: relative; width: 100%; aspect-ratio: 480 / 560; overflow: hidden; }
+.scaler { position: absolute; left: 0; top: 0; width: 480px; height: 560px; transform-origin: 0 0; }
+
+/* a loja (tem identidade própria, igual nos dois temas) */
+.shop {
+  position: absolute; inset: 0; background: #FFFCF4; color: #2B2A26;
+  font: 13px/1.4 var(--sans); padding: 14px 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.shop button {
+  font: 600 12px var(--sans); border-radius: 6px; border: 0; padding: 6px 10px; cursor: pointer;
+  background: #2F6B3A; color: #FFFCF4; transition: box-shadow .2s, background .2s;
+}
+.shop button.ghost { background: transparent; color: #2F6B3A; border: 1px solid #BFD3B8; }
+.shop button.link { background: none; color: #2B2A26; padding: 4px 6px; font-weight: 500; }
+.shop button[disabled] { background: #C8C3B4; color: #5F5A4C; cursor: default; }
+.shop .mofo { background: #6B6444 !important; color: #E8E2C4 !important; box-shadow: 0 0 0 3px #B8AC6A55; }
+.shop .mofo::after { content: " · bug"; font-weight: 500; }
+.shop .pressed { box-shadow: 0 0 0 4px #F2C94C99; }
+.s-head { display: flex; align-items: center; gap: 8px; }
+.logo { font: 700 20px var(--display); color: #2F6B3A; letter-spacing: -.01em; display: flex; align-items: center; gap: 6px; }
+.logo::before { content: ""; width: 14px; height: 14px; border-radius: 0 10px 0 10px; background: #6FAE4A; display: block; }
+.s-nav { margin-left: auto; display: flex; gap: 2px; }
+.s-search { display: flex; gap: 8px; }
+.s-search input { flex: 1; font: 13px var(--sans); border: 1px solid #DCD5C2; border-radius: 6px; padding: 6px 10px; background: #fff; color: #2B2A26; }
+.s-msg { min-height: 20px; font-size: 12px; color: #5C6B3A; }
+.s-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.prod { background: #fff; border: 1px solid #EFE8D6; border-radius: 8px; padding: 10px; display: grid; gap: 4px; justify-items: start; }
+.prod .fruit { width: 30px; height: 30px; border-radius: 50%; }
+.prod .n { font-weight: 600; }
+.prod .p { font: 12px var(--mono); color: #6B6452; }
+.cart { margin-top: auto; background: #F5EFDD; border-radius: 8px; padding: 10px 12px; display: grid; gap: 8px; }
+.cart-top { display: flex; justify-content: space-between; align-items: baseline; }
+.cart-top strong { font-size: 14px; }
+.cart-items { font-size: 12px; color: #5F5A4C; min-height: 17px; }
+.cart-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.s-foot { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #7A745F; }
+.badge { font: 600 12px var(--mono); background: #2F6B3A; color: #fff; border-radius: 10px; padding: 1px 7px; }
+.p404 { margin: auto; text-align: center; display: grid; gap: 10px; justify-items: center; }
+.p404 b { font: 700 64px/1 var(--display); color: #C8C3B4; }
+
+/* camada da mosca */
+.fly-layer { position: absolute; inset: 0; pointer-events: none; }
+.fly { position: absolute; left: 0; top: 0; width: 44px; height: 52px; margin: -26px 0 0 -22px; will-change: transform; overflow: visible; }
+.fly-shadow { position: absolute; left: 0; top: 0; width: 22px; height: 30px; margin: -15px 0 0 -11px; border-radius: 50%;
+  background: radial-gradient(closest-side, #2B1D0A55, #2B1D0A00); will-change: transform, opacity; }
+#trail { position: absolute; left: 0; top: 0; width: 480px; height: 560px; }
+.ripple { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; border: 2px solid #E9B84A;
+  animation: ripple .6s ease-out forwards; }
+@keyframes ripple { to { transform: scale(4.5); opacity: 0; } }
+.shop .tasting { outline: 2px dashed #E9B84A; outline-offset: 3px; }
+.odor { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.odor.vin { background: radial-gradient(circle, #E9B84A33, transparent 70%); }
+.odor.geo { background: radial-gradient(circle, #6B644455, transparent 70%); }
+.err-toast {
+  position: absolute; background: #B3261E; color: #fff; font: 600 12px/1.35 var(--sans);
+  padding: 10px 12px; border-radius: 8px; max-width: 260px; transform: translate(-50%, -50%) scale(.25);
+  animation: loom .35s ease-out forwards, fadeout .4s ease-in 2.4s forwards; box-shadow: 0 8px 24px #0004;
+}
+.err-toast small { display: block; font: 11px var(--mono); opacity: .85; margin-top: 3px; }
+@keyframes loom { to { transform: translate(-50%, -50%) scale(1); } }
+@keyframes fadeout { to { opacity: 0; } }
+.sweet { position: absolute; font: 600 12px var(--mono); color: #2F6B3A; transform: translate(-50%, -100%); animation: rise 1s ease-out forwards; }
+@keyframes rise { to { transform: translate(-50%, -260%); opacity: 0; } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+
+/* cérebro */
+.brain-box { position: relative; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); aspect-ratio: 480 / 594; overflow: hidden; }
+#brain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
+.brain-labels { position: absolute; left: 10px; bottom: 8px; right: 10px; display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--muted); pointer-events: none; }
+.loader { position: absolute; inset: 0; display: grid; place-content: center; gap: 10px; padding: 24px; text-align: center; background: var(--surface); }
+.loader .bar { width: min(260px, 70vw); height: 4px; background: var(--track); border-radius: 2px; overflow: hidden; margin: 0 auto; }
+.loader .bar i { display: block; height: 100%; width: 0; background: var(--spike); transition: width .2s; }
+.loader p { margin: 0; color: var(--muted); font-size: 13px; max-width: 34ch; }
+.loader.err p { color: var(--crit); }
+
+/* leituras */
+.readouts { display: grid; gap: 16px; }
+.meters { display: grid; gap: 7px; }
+.meter { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; font-size: 13px; }
+.meter .val { font: 12px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.meter .trk { grid-column: 1 / -1; height: 5px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.meter .trk i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--muted); }
+.meter.in .trk i { background: var(--em); }
+.meter.out .trk i { background: var(--spike); }
+.meter small { grid-column: 1 / -1; color: var(--muted); font-size: 11px; margin-top: -2px; }
+
+/* relatório e diário */
+.lower { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+.report-sum { display: flex; align-items: baseline; gap: 10px; margin: 4px 0 10px; }
+.report-sum .big { font: 700 34px/1 var(--display); }
+.report-sum span { color: var(--muted); }
+.bugs { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.bug { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; padding: 9px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.bug .num { font: 500 13px var(--mono); color: var(--muted); }
+.bug .t { font-weight: 600; }
+.bug .d { grid-column: 2 / -1; color: var(--muted); font-size: 13px; }
+.bug .d code { font: 12px var(--mono); color: var(--ink); }
+.chip { font: 500 11px var(--mono); padding: 2px 7px; border-radius: 4px; border: 1px solid currentColor; white-space: nowrap; }
+.chip.crit { color: var(--crit); } .chip.alto { color: var(--bug); } .chip.medio { color: var(--muted); }
+.bug.hidden .t { color: var(--muted); font-weight: 400; }
+.log { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; font-size: 13px; max-height: 300px; overflow-y: auto; }
+.log li { display: grid; grid-template-columns: 58px 1fr; gap: 8px; }
+.log li .mono { color: var(--muted); font-size: 12px; }
+.log li.b { color: var(--crit); }
+.log li.s { color: var(--ok); }
+.log li.a { color: var(--bug); }
+.mem { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.mem li { display: grid; grid-template-columns: minmax(0, 1fr) 84px 48px; gap: 10px; align-items: center; font-size: 13px; }
+.mem li small { display: block; font: 11px var(--mono); color: var(--muted); }
+.mem-bar { position: relative; height: 6px; background: var(--track); border-radius: 3px; }
+.mem-bar::after { content: ""; position: absolute; left: 60%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.mem-bar i { position: absolute; top: 0; bottom: 0; background: var(--muted); border-radius: 3px; }
+.mem li.neg .mem-bar i { background: var(--crit); }
+.mem li:not(.neg) .mem-bar i { background: var(--ok); }
+.mem li .mono { text-align: right; color: var(--muted); font-size: 12px; }
+.mem li.neg .mono { color: var(--crit); }
+.mem li.empty { display: block; color: var(--muted); }
+.mem-note { margin: 12px 0 0; font-size: 12px; color: var(--muted); }
+.mem-ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 0 0 4px; }
+.mem-ctl label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.mem-ctl input { width: 16px; height: 16px; margin: 0; accent-color: var(--spike); }
+.mem-ctl input:focus-visible { outline: 2px solid var(--spike); outline-offset: 2px; }
+button.ctl.small { padding: 5px 10px; font-size: 13px; }
+.mem-status { margin: 0 0 12px; font-size: 12px; color: var(--muted); min-height: 1.4em; }
+
+/* como funciona */
+.how { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+.how h3 { font: 600 16px var(--sans); margin-bottom: 6px; }
+.how p { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+.how p strong { color: var(--ink); font-weight: 600; }
+.map { overflow-x: auto; }
+.map table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px; }
+.map th { text-align: left; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.map td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.map td.mono { font-size: 12px; color: var(--muted); }
+.credits { font-size: 13px; color: var(--muted); }
+.credits a { color: var(--ink); }
+
+@media (max-width: 1180px) {
+  .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .readouts { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+  .lower { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .lower > :last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .stage, .lower, .how { grid-template-columns: minmax(0, 1fr); }
+  .lower > :last-child { grid-column: auto; }
+  .readouts { grid-template-columns: minmax(0, 1fr); }
+  .stat { border-left: 0; padding-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .err-toast { animation: fadeout .4s ease-in 2.4s forwards; transform: translate(-50%, -50%); }
+  .sweet { animation: none; opacity: 0; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Mosca <b>QA</b></h1>
+      <p>O mapa real do sistema nervoso de uma mosca-da-fruta, 166.700 neurônios, simulado no seu navegador e testando um site sozinho.</p>
+    </div>
+    <div class="controls">
+      <div class="stat"><span class="eyebrow">tempo do cérebro</span><span class="mono" id="stTime">0,0 s</span></div>
+      <div class="stat"><span class="eyebrow">neurônios ativos</span><span class="mono" id="stActive">0</span></div>
+      <div class="stat"><span class="eyebrow">velocidade</span><span class="mono" id="stSpeed">—</span></div>
+      <button class="ctl" id="btnRun" disabled>Pausar</button>
+      <button class="ctl" id="btnReset" disabled>Reiniciar</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section>
+      <div class="panel-head"><h2>O site em teste</h2><span class="eyebrow">5 bugs escondidos</span></div>
+      <div class="browser">
+        <div class="urlbar"><i></i><i></i><i></i><span id="url">quitanda.exemplo/</span></div>
+        <div class="viewport" id="viewport">
+          <div class="scaler" id="scaler">
+            <div class="shop" id="shop"></div>
+            <div class="fly-layer" id="flyLayer">
+              <canvas id="trail" width="960" height="1120"></canvas>
+              <div class="fly-shadow" id="flyShadow"></div>
+              <svg class="fly" id="fly" viewBox="-22 -26 44 52" aria-label="mosca">
+                <g id="legs" stroke="#3A2A18" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                  <path id="leg-L1" d="M-3.5 -4 L-10 -9 L-12.5 -15 L-12 -17.5"/>
+                  <path id="leg-R1" d="M3.5 -4 L10 -9 L12.5 -15 L12 -17.5"/>
+                  <path id="leg-L2" d="M-4.5 -0.5 L-12 -1.5 L-16 2 L-17.5 3.5"/>
+                  <path id="leg-R2" d="M4.5 -0.5 L12 -1.5 L16 2 L17.5 3.5"/>
+                  <path id="leg-L3" d="M-4 3 L-10 9 L-12 16 L-11.5 18.5"/>
+                  <path id="leg-R3" d="M4 3 L10 9 L12 16 L11.5 18.5"/>
+                </g>
+                <line id="prob" x1="0" y1="-13.5" x2="0" y2="-13.5" stroke="#4A3419" stroke-width="1.7" stroke-linecap="round"/>
+                <ellipse cx="0" cy="8.5" rx="5.4" ry="8.8" fill="#B8914E"/>
+                <path d="M-5.2 6 Q0 7.2 5.2 6 M-5 9.6 Q0 10.8 5 9.6 M-4.2 13.2 Q0 14.2 4.2 13.2" stroke="#5E4219" stroke-width="1.3" fill="none"/>
+                <g id="wingL"><ellipse cx="-4.2" cy="9" rx="4.3" ry="11.8" transform="rotate(14 -4.2 9)" fill="#D4E3EA" fill-opacity=".55" stroke="#8FA7B3" stroke-width=".5"/>
+                  <path d="M-2.4 -1 Q-4.6 8 -6.4 19 M-2.8 1 Q-6.6 8 -7.6 15" stroke="#8FA7B3" stroke-width=".35" fill="none"/></g>
+                <g id="wingR"><ellipse cx="4.2" cy="9" rx="4.3" ry="11.8" transform="rotate(-14 4.2 9)" fill="#D4E3EA" fill-opacity=".55" stroke="#8FA7B3" stroke-width=".5"/>
+                  <path d="M2.4 -1 Q4.6 8 6.4 19 M2.8 1 Q6.6 8 7.6 15" stroke="#8FA7B3" stroke-width=".35" fill="none"/></g>
+                <ellipse cx="0" cy="-2" rx="5.6" ry="5.8" fill="#8E6C38"/>
+                <path d="M-2.6 -6 l-.6 -1.4 M2.6 -6 l.6 -1.4 M-3.8 -3 l-1.2 -.8 M3.8 -3 l1.2 -.8" stroke="#2E200D" stroke-width=".5"/>
+                <ellipse cx="0" cy="-10.2" rx="5" ry="3.8" fill="#7C5A2C"/>
+                <g id="antL"><path d="M-1.4 -13 L-2.6 -16.4 M-2.6 -16.4 l-1.6 -1.6 M-2.6 -16.4 l-.4 -2.2" stroke="#3A2A18" stroke-width=".6" stroke-linecap="round"/></g>
+                <g id="antR"><path d="M1.4 -13 L2.6 -16.4 M2.6 -16.4 l1.6 -1.6 M2.6 -16.4 l.4 -2.2" stroke="#3A2A18" stroke-width=".6" stroke-linecap="round"/></g>
+                <circle cx="-3.9" cy="-10.8" r="3.1" fill="#B8232A"/>
+                <circle cx="3.9" cy="-10.8" r="3.1" fill="#B8232A"/>
+                <circle cx="-4.6" cy="-11.8" r=".9" fill="#F4B3B0" fill-opacity=".8"/>
+                <circle cx="3.2" cy="-11.8" r=".9" fill="#F4B3B0" fill-opacity=".8"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#E9B84A"></i>contorno tracejado: o botão que ela está provando</span>
+        <span><i style="background:#6B6444"></i>botão escuro: bug achado (a marca é para você; ela não vê, ela lembra)</span>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel-head"><h2>O cérebro</h2><span class="eyebrow">arraste para girar</span></div>
+      <div class="brain-box">
+        <canvas id="brain" aria-label="Sistema nervoso da mosca em 3D; cada ponto é um neurônio e acende quando dispara"></canvas>
+        <div class="brain-labels"><span>cérebro</span><span>cordão nervoso ventral</span></div>
+        <div class="loader" id="loader">
+          <span class="eyebrow" id="ldStage">Baixando o conectoma</span>
+          <div class="bar"><i id="ldBar"></i></div>
+          <p id="ldText">166.700 neurônios e 6,2 milhões de conexões, cerca de 26 MB.</p>
+        </div>
+      </div>
+    </section>
+
+    <aside class="readouts">
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">O que ela sente</div>
+        <div class="meters" id="mIn"></div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">O que o cérebro manda</div>
+        <div class="meters" id="mOut"></div>
+      </div>
+    </aside>
+  </main>
+
+  <section class="lower">
+    <div class="card">
+      <div class="eyebrow">Relatório de QA</div>
+      <div class="report-sum"><span class="big mono" id="bugCount">0</span><span id="bugSum">de 5 bugs encontrados. A mosca ainda está procurando.</span></div>
+      <ul class="bugs" id="bugs"></ul>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Memória da mosca</div>
+      <div class="report-sum"><span class="big mono" id="memSum">0%</span><span>das conexões Kenyon → "aproximar" enfraquecidas pela dor.</span></div>
+      <div class="mem-ctl">
+        <label for="memKeep"><input type="checkbox" id="memKeep"> Lembrar entre visitas</label>
+        <button class="ctl small" id="memForget" disabled>Esquecer tudo</button>
+      </div>
+      <p class="mem-status" id="memStatus">Desligado: quando a página fecha, ela esquece o que aprendeu.</p>
+      <ul class="mem" id="memList"><li class="empty">Ela ainda não cheirou nenhum botão de perto.</li></ul>
+      <p class="mem-note">Quanto da força original ainda têm as sinapses Kenyon → saída que o cheiro de cada botão usa. 100% = nunca doeu. Abaixo da linha (60%), ela desvia. Cada botão tem um cheiro próprio, feito de 2 ou 3 dos 44 tipos de receptor de olfato.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Diário da mosca</div>
+      <ul class="log" id="log"><li><span class="mono">0,0 s</span><span>Esperando o cérebro carregar.</span></li></ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="how">
+      <div>
+        <h3>O mapa</h3>
+        <p>Em 2026 o HHMI Janelia e o Google publicaram o <strong>conectoma completo do sistema nervoso central de uma mosca macho</strong>: 166.700 neurônios, do cérebro ao cordão nervoso ventral. A página usa as <strong>6,2 milhões de conexões com 5 ou mais sinapses</strong>.</p>
+        <p>Cada neurônio excita ou inibe conforme o neurotransmissor previsto: acetilcolina excita; GABA, glutamato e histamina inibem.</p>
+      </div>
+      <div>
+        <h3>A simulação</h3>
+        <p>Cada neurônio é um modelo <strong>integra-e-dispara</strong> com os parâmetros de Shiu et al. (Nature, 2024), em passos de 0,25 ms. Ninguém treinou nada: <strong>as respostas saem só da fiação</strong>.</p>
+        <p>Três ajustes, porque este mapa tem mais que o dobro de sinapses do usado em 2024. Cada sinapse vale metade do peso original. Cada neurônio se <strong>cansa</strong> quando dispara sem parar, como os reais. E as conexões excitatórias entre neurônios do lobo antenal ficaram de fora: lá elas ligam dendrito com dendrito, e num modelo tão simples viram um eco que nunca desliga.</p>
+        <p>O cálculo roda no seu processador. Se ele for mais lento que o tempo real, a mosca anda mais devagar, porque o corpo segue o relógio do cérebro.</p>
+      </div>
+      <div>
+        <h3>Como ela aprende com a dor</h3>
+        <p>Cada botão tem um cheiro próprio, e cada cheiro acende um grupo pequeno de <strong>células de Kenyon</strong> no corpo cogumelar (de 20 a 130 das 4.064; botões diferentes quase não dividem células). Quando um clique dá erro, a mosca sente <strong>dor</strong>: os neurônios de dopamina de punição (PPL1) disparam.</p>
+        <p>A dopamina <strong>enfraquece as conexões</strong> entre as células de Kenyon que acabaram de disparar e os neurônios de saída que puxam a mosca para perto. Da próxima vez, aquele cheiro atrai menos e ela desvia. É o mecanismo que os laboratórios descrevem em moscas reais, e as sinapses mudam dentro da simulação, enquanto você assiste.</p>
+        <p>Nos experimentos a dor costuma ser um choque elétrico. Aqui ela entra direto nos neurônios PPL1, como nos experimentos que ligam esses neurônios com luz no lugar do choque.</p>
+        <p>Com <strong>Lembrar entre visitas</strong> ligado, as sinapses mudadas ficam guardadas no seu navegador, e na próxima visita ela já chega evitando o que doeu. Desligado (o padrão), cada visita começa com o mapa original.</p>
+        <p>Quando o erro demora a aparecer (o cupom só falha depois de 1,5 s), ela pode já estar cheirando o botão vizinho, e a dor fica associada ao cheiro errado. Moscas reais também aprendem mal com punição atrasada.</p>
+      </div>
+      <div>
+        <h3>O que é cérebro e o que é corpo</h3>
+        <p><strong>Vem do cérebro simulado:</strong> parar para provar um botão (o clique), o pulo de fuga, andar de ré, parte das curvas e o quanto cada cheiro atrai ou repele depois da dor.</p>
+        <p><strong>Vem de regras simples do corpo:</strong> o passo, a curiosidade por botões ainda não testados e o gesto de virar quando as sinapses que o cheiro atual usa perderam força. A regra só lê as sinapses da simulação; quem enfraqueceu essas sinapses foi a dopamina da dor.</p>
+        <p>As saídas do corpo cogumelar ficam perto do limiar, como as reais, que disparam sozinhas; sem isso o cheiro não passava por elas.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card map">
+    <div class="eyebrow" style="margin-bottom:6px">Como o site vira estímulo, e o cérebro vira ação</div>
+    <table>
+      <thead><tr><th>No site</th><th>Na mosca</th><th>Neurônios</th></tr></thead>
+      <tbody>
+        <tr><td>Pisar num botão ainda não testado</td><td>Gosto doce nas patas (moscas provam com as patas)</td><td class="mono">PhG9, taste pegs dorsais</td></tr>
+        <tr><td>Clique que funcionou</td><td>Mais gosto doce</td><td class="mono">PhG9, taste pegs dorsais</td></tr>
+        <tr><td>Clique que deu erro</td><td>Dor</td><td class="mono">dopamina PPL1 (PPL101 a PPL106)</td></tr>
+        <tr><td>Mensagem de erro crescendo na tela</td><td>Algo se aproximando, ameaça</td><td class="mono">LPLC2, LC4</td></tr>
+        <tr><td>Chegar perto de um botão</td><td>O cheiro daquele botão</td><td class="mono">44 tipos de ORN, divididos em 15 cheiros sem repetição</td></tr>
+        <tr><td><b>Desviar de um botão</b></td><td>O cheiro dele passou a repelir</td><td class="mono">sinapses Kenyon → 48 MBONs "aproximar"</td></tr>
+        <tr><td><b>Clique</b></td><td>Parar e estender a probóscide para provar</td><td class="mono">MN6, MN8, MN9, MN11, MN12</td></tr>
+        <tr><td><b>Pulo para longe</b></td><td>Fuga pela fibra gigante</td><td class="mono">DNp01</td></tr>
+        <tr><td><b>Andar de ré</b></td><td>Neurônio "moonwalker"</td><td class="mono">MDN</td></tr>
+        <tr><td><b>Curvas</b></td><td>Diferença entre os neurônios descendentes da esquerda e da direita</td><td class="mono">1.314 descendentes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p class="credits">Dados: <a href="https://male-cns.janelia.org/" target="_blank" rel="noopener">FlyEM Male CNS v1.0</a>, HHMI Janelia, licença CC-BY 4.0. Modelo: <a href="https://www.nature.com/articles/s41586-024-07763-9" target="_blank" rel="noopener">Shiu et al. 2024, Nature</a>. A loja "Quitanda" é fictícia e os bugs foram plantados de propósito.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const fmt1 = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtInt = n => Math.round(n).toLocaleString('pt-BR');
+const brl = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const ema = (prev, x, dt, tau) => prev + (x - prev) * (1 - Math.exp(-dt / tau));
+
+/* ───────────── A loja, com 5 bugs plantados ───────────── */
+const PRODUCTS = [
+  { id: 'banana', nome: 'Banana prata', 'preço': 6.9, kg: 'R$ 6,90/kg', cor: '#F2C94C' },   // bug: chave com cedilha
+  { id: 'manga', nome: 'Manga palmer', preco: 9.5, kg: 'R$ 9,50/kg', cor: '#F2994A' },
+  { id: 'uva', nome: 'Uva niágara', preco: 12.9, kg: 'R$ 12,90/kg', cor: '#8E5AA8' },
+  { id: 'maca', nome: 'Maçã gala', preco: 8.4, kg: 'R$ 8,40/kg', cor: '#D64545' },
+  { id: 'abacaxi', nome: 'Abacaxi pérola', preco: 7.0, kg: 'R$ 7,00/un', cor: '#D9B44A' },
+  { id: 'pera', nome: 'Pera williams', preco: 10.9, kg: 'R$ 10,90/kg', cor: '#9BBF5A' },
+];
+const BUGS = {
+  B1: { sev: 'crit', sevTxt: 'crítico', t: '"Finalizar compra" quebra com erro de JavaScript' },
+  B2: { sev: 'alto', sevTxt: 'alto', t: 'O link "Contato" leva a uma página que não existe' },
+  B3: { sev: 'alto', sevTxt: 'alto', t: 'O total da cesta vira "R$ NaN"' },
+  B4: { sev: 'medio', sevTxt: 'médio', t: '"Aplicar cupom" fica carregando para sempre' },
+  B5: { sev: 'medio', sevTxt: 'médio', t: '"Remover" tira o item, mas o contador da cesta não muda' },
+};
+let shop;
+function freshShop() {
+  return { route: 'home', items: [], badge: 0, coupon: 'idle', couponAt: 0, onlyDeals: false, msg: 'Frutas frescas, entrega no mesmo dia.' };
+}
+function criarPedido(items) {
+  if (!items.length) return {};
+  return { itens: items };           // bug: esqueceu o resumo
+}
+const ACTIONS = {
+  'nav-ofertas': () => { shop.onlyDeals = !shop.onlyDeals; shop.msg = shop.onlyDeals ? 'Mostrando só as ofertas da semana.' : 'Mostrando todas as frutas.'; },
+  'nav-entregas': () => { shop.msg = 'Entregamos em até 2 horas no seu bairro.'; },
+  'nav-contato': () => { shop.route = '404'; },
+  'buscar': () => { shop.msg = '3 frutas encontradas para "doce".'; },
+  'cupom': () => { shop.coupon = 'loading'; shop.couponAt = performance.now(); new Promise(() => {}); },
+  'remover': () => { if (shop.items.length) { shop.items.pop(); shop.msg = 'Item removido.'; } },  // bug: badge não atualiza
+  'finalizar': () => { const pedido = criarPedido(shop.items); shop.msg = 'Pedido de ' + brl(pedido.resumo.total); },
+  'newsletter': () => { shop.msg = 'Pronto, você vai receber as ofertas por e-mail.'; },
+  'voltar': () => { shop.route = 'home'; },
+};
+for (const p of PRODUCTS) ACTIONS['add-' + p.id] = () => {
+  shop.items.push({ nome: p.nome, preco: p.preco });
+  shop.badge = shop.items.length;
+  shop.msg = p.nome + ' foi para a cesta.';
+};
+const LABELS = {
+  'nav-ofertas': 'Ofertas', 'nav-entregas': 'Entregas', 'nav-contato': 'Contato', 'buscar': 'Buscar',
+  'cupom': 'Aplicar cupom', 'remover': 'Remover', 'finalizar': 'Finalizar compra', 'newsletter': 'Receber ofertas', 'voltar': 'Voltar',
+};
+for (const p of PRODUCTS) LABELS['add-' + p.id] = 'Adicionar · ' + p.nome.split(' ')[0];
+
+const elState = {};   // novidade (curiosidade do corpo) e se tem bug (marca só para quem assiste)
+function el(id) { return elState[id] || (elState[id] = { novelty: 1, bug: false }); }
+
+function renderShop() {
+  const root = $('#shop');
+  $('#url').textContent = shop.route === '404' ? 'quitanda.exemplo/contato' : 'quitanda.exemplo/';
+  const btn = (id, txt, cls = '', dis = false) => {
+    const s = el(id);
+    return `<button data-el="${id}" class="${cls}${s.bug ? ' mofo' : ''}"${dis ? ' disabled' : ''} tabindex="-1">${txt}</button>`;
+  };
+  if (shop.route === '404') {
+    root.innerHTML = `<div class="s-head"><span class="logo">Quitanda</span></div>
+      <div class="p404"><b>404</b><div>Página não encontrada.</div>${btn('voltar', 'Voltar para a loja')}</div>`;
+    return;
+  }
+  const total = shop.items.reduce((s, i) => s + i.preco, 0);
+  const prods = shop.onlyDeals ? PRODUCTS.filter((_, i) => i % 2 === 0) : PRODUCTS;
+  const loading = shop.coupon === 'loading';
+  root.innerHTML = `
+    <div class="s-head"><span class="logo">Quitanda</span>
+      <nav class="s-nav">${btn('nav-ofertas', 'Ofertas', 'link')}${btn('nav-entregas', 'Entregas', 'link')}${btn('nav-contato', 'Contato', 'link')}</nav>
+      <span class="badge" title="itens na cesta">${shop.badge}</span></div>
+    <div class="s-search"><input id="shopSearch" value="doce" aria-label="Buscar frutas" tabindex="-1">${btn('buscar', 'Buscar', 'ghost')}</div>
+    <div class="s-msg">${shop.msg}</div>
+    <div class="s-grid">${prods.map(p => `<div class="prod"><span class="fruit" style="background:${p.cor}"></span>
+      <span class="n">${p.nome}</span><span class="p">${p.kg}</span>${btn('add-' + p.id, 'Adicionar')}</div>`).join('')}</div>
+    <div class="cart">
+      <div class="cart-top"><strong>Sua cesta</strong><span class="mono">Total ${brl(total)}</span></div>
+      <div class="cart-items">${shop.items.length ? shop.items.map(i => i.nome.split(' ')[0]).join(', ') : 'Vazia por enquanto.'}</div>
+      <div class="cart-actions">${btn('cupom', loading ? 'Aplicando…' : 'Aplicar cupom', 'ghost', loading)}${btn('remover', 'Remover', 'ghost')}${btn('finalizar', 'Finalizar compra')}</div>
+    </div>
+    <div class="s-foot"><span>Quitanda · desde 1987</span>${btn('newsletter', 'Receber ofertas', 'ghost')}</div>`;
+}
+
+let rects = [];
+function measure() {
+  const base = $('#scaler').getBoundingClientRect();
+  const k = base.width / 480 || 1;
+  rects = [...document.querySelectorAll('#shop [data-el]')].map(b => {
+    const r = b.getBoundingClientRect();
+    return { id: b.dataset.el, x: (r.left - base.left) / k, y: (r.top - base.top) / k, w: r.width / k, h: r.height / k, disabled: b.disabled, node: b };
+  });
+}
+
+// oráculos: como o "QA" percebe que algo deu errado
+function checkOracles(err, clickedId) {
+  const found = [];
+  if (err) found.push(['B1', clickedId, `${err.name}: ${err.message}`]);
+  if (shop.route === '404') found.push(['B2', clickedId, 'HTTP 404 em /contato']);
+  if (/NaN|undefined/.test($('#shop').textContent)) found.push(['B3', 'add-banana', 'Texto na tela: "Total R$ NaN"']);
+  if (shop.coupon === 'loading' && performance.now() - shop.couponAt > 1500) found.push(['B4', 'cupom', 'Sem resposta depois de 1,5 s']);
+  if (shop.badge !== shop.items.length) found.push(['B5', 'remover', `Contador mostra ${shop.badge}, a cesta tem ${shop.items.length}`]);
+  for (const [id, elId, detail] of found) reportBug(id, elId, detail);
+  return found;
+}
+
+/* ───────────── Relatório e diário ───────────── */
+const foundBugs = new Map();
+const memo = {};   // por botão: saldo do corpo cogumelar quando ela sentia aquele cheiro
+function renderMemory() {
+  const rows = Object.entries(memo).filter(([, m]) => m.seen > 0.3).sort((a, b) => a[1].keep - b[1].keep);
+  $('#memSum').textContent = `${Math.round(memory * 100)}%`;
+  $('#memList').innerHTML = rows.length ? rows.map(([id, m]) => {
+    const cls = m.keep < KEEP_TH ? 'neg' : '';
+    return `<li class="${cls}"><span class="mem-n">${LABELS[id] || id}<small>${odorName(id)}</small></span>
+      <span class="mem-bar"><i style="left:0;width:${(m.keep * 100).toFixed(0)}%"></i></span>
+      <span class="mono">${Math.round(m.keep * 100)}%</span></li>`;
+  }).join('') : '<li class="empty">Ela ainda não cheirou nenhum botão de perto.</li>';
+}
+function renderBugs() {
+  const ul = $('#bugs');
+  const order = [...foundBugs.keys()];
+  const rest = Object.keys(BUGS).filter(k => !foundBugs.has(k));
+  ul.innerHTML = order.map((k, i) => {
+    const b = BUGS[k], f = foundBugs.get(k);
+    return `<li class="bug"><span class="num">#${i + 1}</span><span class="t">${b.t}</span><span class="chip ${b.sev}">${b.sevTxt}</span>
+      <span class="d">Achado aos <span class="mono">${fmt1(f.t)} s</span> de tempo cerebral, provando "${LABELS[f.elId] || f.elId}". <code>${escapeHtml(f.detail)}</code></span></li>`;
+  }).join('') + (rest.length ? `<li class="bug hidden"><span class="num">··</span><span class="t">${rest.length === 5 ? 'Nenhum bug encontrado ainda.' : `Mais ${rest.length} ${rest.length === 1 ? 'bug escondido' : 'bugs escondidos'}.`}</span><span></span></li>` : '');
+  $('#bugCount').textContent = foundBugs.size;
+  $('#bugSum').textContent = foundBugs.size === 5 ? 'de 5 bugs encontrados. Relatório completo.' : `de 5 bugs encontrados. A mosca ainda está procurando.`;
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function logEvent(text, cls = '') {
+  const li = document.createElement('li');
+  if (cls) li.className = cls;
+  li.innerHTML = `<span class="mono">${fmt1(brainT / 1000)} s</span><span>${text}</span>`;
+  const ul = $('#log');
+  ul.prepend(li);
+  while (ul.children.length > 40) ul.lastChild.remove();
+}
+
+/* ───────────── Estímulos e corpo ───────────── */
+const IN_METERS = [
+  ['cheiro', 'Cheiro', 'cada botão tem o seu, nas antenas'],
+  ['doce', 'Gosto doce', 'patas num botão novo, ou clique que funcionou'],
+  ['dor', 'Dor', 'clique que deu erro: dopamina PPL1'],
+  ['ameaca', 'Ameaça', 'erro crescendo na tela'],
+];
+const OUT_METERS = [
+  ['kc', 'Células de Kenyon', 'o código do cheiro atual'],
+  ['valencia', 'Atração do cheiro atual', 'força das sinapses Kenyon → "aproximar"'],
+  ['proboscide', 'Probóscide', 'parar e provar: é o clique'],
+  ['fibra_gigante', 'Fibra gigante', 'pulo de fuga'],
+  ['moonwalker', 'Moonwalker', 'andar de ré'],
+  ['dn', 'Descendentes E − D', 'puxa a direção'],
+];
+function buildMeters() {
+  const mk = (arr, cls) => arr.map(([k, name, hint]) =>
+    `<div class="meter ${cls}" id="m-${k}"><span>${name}</span><span class="val">0 Hz</span><span class="trk"><i></i></span><small>${hint}</small></div>`).join('');
+  $('#mIn').innerHTML = mk(IN_METERS, 'in');
+  $('#mOut').innerHTML = mk(OUT_METERS, 'out');
+}
+function setMeter(k, hz, frac, label) {
+  const m = document.getElementById('m-' + k);
+  if (!m) return;
+  m.querySelector('.val').textContent = label ?? (fmtInt(hz) + ' Hz');
+  m.querySelector('i').style.width = (clamp(frac, 0, 1) * 100).toFixed(1) + '%';
+}
+
+const W = 480, H = 560;
+const WALK = 42;   // px por segundo de tempo cerebral
+let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memory = 0, kcDrive = 0, kcBase = 0;
+const KC_MIN = 80;      // spikes/s de Kenyon: abaixo disso ela não está sentindo cheiro de verdade
+const KEEP_TH = 0.6;    // se o cheiro atual passa menos de 60% da força original, ela desvia
+function freshFly() {
+  return { x: 240, y: 330, th: -0.4, speed: 0, back: 0, jumpCd: 0, clickCd: 0, sweet: 0, threat: 0, pain: 0,
+    prob: 0, dnBias: 0, dnSum: 1, cv: [0, 0], ct: [0, 0], onEl: null, kc: 0, val: 0, aversion: 0, near: null,
+    drive: 0, base: 0, keep: 1, fleeDir: 0, lastPain: -99 };
+}
+
+// cada botão tem um cheiro: alguns glomérulos da lista que o cérebro manda (odorPool)
+let ODOR_POOL = [], GLOM_IX = {};
+// Os 44 glomérulos foram divididos em 15 grupos que não se repetem, equilibrando a força de
+// cada um (medida no próprio cérebro simulado). Botões diferentes quase não compartilham
+// células de Kenyon (no máximo 12%), então aprender sobre um não respinga nos outros.
+// Os botões com bug ficaram com os cheiros que mais movem as saídas do corpo cogumelar.
+const ODORS = {
+  'finalizar': ['DP1m', 'DC2', 'DA4l'], 'nav-contato': ['VA6', 'VM7d', 'VL1'], 'add-banana': ['DC4', 'DM3', 'DM5'],
+  'remover': ['VL2a', 'VM5v', 'DA3'], 'cupom': ['VA2', 'VM7v', 'VM4'],
+  'add-manga': ['DM4', 'DM6', 'VC3'], 'add-uva': ['DM2', 'VA7l', 'DC3'], 'add-maca': ['VC1', 'VM3', 'VC4'],
+  'add-abacaxi': ['VA4', 'VM1', 'DL3'], 'add-pera': ['VM6v', 'VL2p', 'DL4'], 'buscar': ['DC1', 'DA4m', 'VM2'],
+  'nav-ofertas': ['VA3', 'DL1', 'VA7m'], 'nav-entregas': ['DL5', 'DL2v'], 'newsletter': ['D', 'VC2', 'VM6m'],
+  'voltar': ['DP1l', 'VM5d', 'VC5'],
+};
+const odorOf = id => (ODORS[id] || []).map(n => GLOM_IX['ORN_' + n]).filter(i => i != null);
+const odorName = id => (ODORS[id] || []).join(' ');
+
+// o que uma antena sente num ponto: glomérulos (cérebro), total e curiosidade (corpo)
+function smellAt(px, py) {
+  const glom = new Float32Array(ODOR_POOL.length);
+  let cur = 0, tot = 0;
+  for (const r of rects) {
+    if (r.disabled) continue;
+    const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+    const d2 = (px - cx) ** 2 + (py - cy) ** 2;
+    const c = Math.exp(-d2 / (2 * 32 * 32));
+    tot += c;
+    cur += el(r.id).novelty * Math.exp(-d2 / (2 * 80 * 80));
+    for (const gi of odorOf(r.id)) glom[gi] += c;
+  }
+  return { glom, cur: Math.min(1, cur), tot: Math.min(1, tot) };
+}
+function nearestButton(px, py, maxD) {
+  let best = null, bd = maxD * maxD;
+  for (const r of rects) {
+    if (r.disabled) continue;
+    const d2 = (px - r.x - r.w / 2) ** 2 + (py - r.y - r.h / 2) ** 2;
+    if (d2 < bd) { bd = d2; best = r; }
+  }
+  return best;
+}
+function elementAt(px, py) {
+  for (const r of rects) if (!r.disabled && px >= r.x - 3 && px <= r.x + r.w + 3 && py >= r.y - 3 && py <= r.y + r.h + 3) return r;
+  return null;
+}
+
+function stepBody(dt, counts) {
+  const f = fly;
+  const hz = k => (counts[k] || 0) / dt;
+  for (const k of ['proboscide', 'fibra_gigante', 'moonwalker', 'dn_L', 'dn_R'])
+    outRate[k] = ema(outRate[k] || 0, hz(k), dt, 0.25);
+  for (const k of ['kc', 'mbon_aprox', 'mbon_evitar'])
+    outRate[k] = ema(outRate[k] || 0, hz(k), dt, 0.5);
+
+  // corpo cogumelar: saldo entre as saídas que puxam e as que afastam (Hz por neurônio)
+  f.kc = outRate.kc;
+  f.val = outRate.mbon_aprox / (groupSize.mbon_aprox || 1) - outRate.mbon_evitar / (groupSize.mbon_evitar || 1);
+  // quanto da força original as sinapses do cheiro atual ainda têm (1 = nunca doeu)
+  f.drive = ema(f.drive, kcDrive / dt, dt, 0.3);
+  f.base = ema(f.base, kcBase / dt, dt, 0.3);
+  const smelling = f.kc > KC_MIN && f.base > 1;
+  f.keep = smelling ? clamp(f.drive / f.base, 0, 1) : 1;
+  f.aversion = smelling && f.keep < KEEP_TH ? clamp((KEEP_TH - f.keep) / 0.3, 0, 1) : 0;
+  const hx0 = f.x + Math.sin(f.th) * 14, hy0 = f.y - Math.cos(f.th) * 14;
+  f.near = smelling ? nearestButton(hx0, hy0, 60) : null;
+  if (f.near) {
+    const m = memo[f.near.id] || (memo[f.near.id] = { keep: f.keep, seen: 0, warned: -99 });
+    m.keep = ema(m.keep, f.keep, dt, 0.4);
+    m.seen += dt;
+    if (f.aversion > 0.3 && brainT / 1000 - m.warned > 6 && brainT / 1000 - f.lastPain > 1.5) {
+      m.warned = brainT / 1000;
+      logEvent(`Sentiu o cheiro de "${LABELS[f.near.id]}" e desviou: as sinapses desse cheiro estão com ${Math.round(f.keep * 100)}% da força de antes da dor.`, 'a');
+    }
+  }
+
+  // probóscide ativa = parar para provar (cérebro); o passo em si é do corpo
+  f.prob = ema(f.prob, hz('proboscide'), dt, 0.12);
+  f.speed = WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion);
+
+  // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
+  const dnDiff = outRate.dn_L - outRate.dn_R;
+  f.dnBias = ema(f.dnBias, dnDiff, dt, 8);
+  f.dnSum = ema(f.dnSum, outRate.dn_L + outRate.dn_R, dt, 3);
+  const brainTurn = -2.5 * (dnDiff - f.dnBias) / (f.dnSum + 60);
+  const [cL, cR] = f.cv, [tL, tR] = f.ct;
+  const curiosity = -3.2 * (cL - cR) / (cL + cR + 0.03);          // regra do corpo: ir ao que não testou
+  // aversão: escolhe um lado (o de menos cheiro; se empatar, sorteia) e mantém a curva até sair
+  if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(tL - tR) > 0.03 ? Math.sign(tL - tR) : (Math.random() < 0.5 ? -1 : 1);
+  if (f.aversion < 0.05) f.fleeDir = 0;
+  const away = (f.fleeDir || 0) * 4.5;
+  const chemo = (1 - f.aversion) * curiosity + f.aversion * away;
+  let turn = brainTurn + chemo + (Math.random() - 0.5) * 2.2;
+  // paredes
+  const ax = f.x + Math.sin(f.th) * 40, ay = f.y - Math.cos(f.th) * 40;
+  if (ax < 12 || ax > W - 12 || ay < 12 || ay > H - 12) {
+    const toC = Math.atan2(W / 2 - f.x, -(H / 2 - f.y));
+    let d = toC - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
+    turn += 5 * Math.sign(d);
+  }
+  f.th += clamp(turn, -6, 6) * dt;
+
+  // andar de ré (moonwalker)
+  if (counts.moonwalker > 0 && f.back <= 0) { f.back = 0.6; logEvent('O neurônio moonwalker (MDN) disparou: andou de ré.'); }
+  const dir = f.back > 0 ? -0.7 : 1;
+  f.back -= dt;
+  if (!f.jumping) {
+    const sp = f.back > 0 ? WALK : f.speed;
+    f.x = clamp(f.x + Math.sin(f.th) * sp * dir * dt, 10, W - 10);
+    f.y = clamp(f.y - Math.cos(f.th) * sp * dir * dt, 10, H - 10);
+  }
+
+  // pulo de fuga (fibra gigante)
+  f.jumpCd -= dt;
+  if (counts.fibra_gigante > 0 && f.jumpCd <= 0 && !f.jumping) {
+    f.jumpCd = 1.5;
+    const a = f.th + Math.PI + (Math.random() - 0.5) * 2.2;
+    const dist = 120 + Math.random() * 60;
+    f.x = clamp(f.x + Math.sin(a) * dist, 20, W - 20);
+    f.y = clamp(f.y - Math.cos(a) * dist, 20, H - 20);
+    f.th = a;
+    f.jumping = true;
+    disp.jump = { x0: disp.x, y0: disp.y, x1: f.x, y1: f.y, t0: performance.now(), dur: 520 };
+    setTimeout(() => { f.jumping = false; }, 520);
+    logEvent('A fibra gigante (DNp01) disparou: pulo de fuga.');
+  }
+
+  // probóscide estendida em cima de um botão = clique
+  f.clickCd -= dt;
+  const extended = f.prob > 25;
+  f.onEl = elementAt(f.x + Math.sin(f.th) * 12, f.y - Math.cos(f.th) * 12);
+  if (extended && f.onEl && f.clickCd <= 0 && !f.jumping) { f.clickCd = 0.9; press(f.onEl); }
+
+  // o que ela vai sentir no próximo passo
+  const side = 16, ahead = 16;
+  const rx = Math.cos(f.th), ry = Math.sin(f.th);
+  const hxp = f.x + Math.sin(f.th) * ahead, hyp = f.y - Math.cos(f.th) * ahead;
+  const L = smellAt(hxp - rx * side, hyp - ry * side);
+  const R = smellAt(hxp + rx * side, hyp + ry * side);
+  f.cv = [L.cur, R.cur]; f.ct = [L.tot, R.tot];
+  f.sweet -= dt; f.threat -= dt; f.pain -= dt;
+  // as patas têm sensores de gosto: pisar num botão ainda não provado tem gosto de fruta
+  const onNew = f.onEl ? el(f.onEl.id).novelty : 0;
+  rates = {
+    doce: Math.max(160 * onNew, f.sweet > 0 ? 200 : 0),
+    ameaca: f.threat > 0 ? 200 : 0,
+    dor: f.pain > 0 ? 200 : 0,
+  };
+  for (let gi = 0; gi < ODOR_POOL.length; gi++) {
+    rates[ODOR_POOL[gi] + '_L'] = 150 * Math.min(1, L.glom[gi]);
+    rates[ODOR_POOL[gi] + '_R'] = 150 * Math.min(1, R.glom[gi]);
+  }
+  for (const k in rates) if (rates[k] < 2) delete rates[k];   // abaixo de 2 Hz não faz diferença
+  worker.postMessage({ type: 'rates', rates });
+}
+
+function press(r) {
+  const s = el(r.id);
+  r.node.classList.add('pressed');
+  ripple(disp.x + Math.sin(disp.th) * 22, disp.y - Math.cos(disp.th) * 22);
+  let err = null;
+  try { ACTIONS[r.id] && ACTIONS[r.id](); } catch (e) { err = e; }
+  s.novelty *= 0.35;
+  renderShop();
+  const found = checkOracles(err, r.id);
+  requestAnimationFrame(measure);
+  // este clique quebrou algo? (não conta problema que já estava na tela antes)
+  const last = shop.items[shop.items.length - 1];
+  const hurtBy = err ? found.find(f => f[0] === 'B1')
+    : shop.route === '404' ? found.find(f => f[0] === 'B2')
+    : r.id.startsWith('add-') && last && !Number.isFinite(last.preco) ? ['B3', r.id, 'Preço NaN na cesta']
+    : r.id === 'remover' && shop.badge !== shop.items.length ? found.find(f => f[0] === 'B5')
+    : null;
+  if (hurtBy) hurt(r.id, BUGS[hurtBy[0]].t, hurtBy[2]);
+  else {
+    fly.sweet = 0.4;
+    sweetPop(fly.x, fly.y - 18);
+    logEvent(`Provou "${LABELS[r.id]}" com a probóscide. Funcionou: gosto doce.`, 's');
+  }
+  if (shop.route === '404') setTimeout(() => { if (shop.route === '404') { shop.route = 'home'; renderShop(); requestAnimationFrame(measure); } }, 3500);
+}
+
+function reportBug(id, elId, detail) {
+  if (foundBugs.has(id)) return;
+  foundBugs.set(id, { t: brainT / 1000, elId, detail });
+  el(elId).bug = true;
+  renderShop();
+  requestAnimationFrame(measure);
+  renderBugs();
+  logEvent(`Bug novo no relatório: ${BUGS[id].t}.`, 'b');
+  if (id === 'B4') hurt('cupom', BUGS[id].t, detail);   // o cupom só dá erro depois de 1,5 s
+}
+// erro depois de um clique: a mensagem cresce na tela (ameaça) e dói (dopamina de punição)
+function hurt(elId, title, detail) {
+  loom(fly.x, fly.y, title, detail);
+  fly.threat = 0.3;
+  fly.pain = 0.5;
+  fly.lastPain = brainT / 1000;
+  logEvent(`"${LABELS[elId]}" deu erro. Sentiu dor: os neurônios de dopamina PPL1 dispararam e enfraqueceram as conexões do cheiro que ela sentia.`, 'b');
+}
+function loom(x, y, title, detail) {
+  const d = document.createElement('div');
+  d.className = 'err-toast';
+  d.style.left = clamp(x, 140, W - 140) + 'px';
+  d.style.top = clamp(y - 60, 50, H - 50) + 'px';
+  d.innerHTML = `${escapeHtml(title)}<small>${escapeHtml(detail)}</small>`;
+  $('#flyLayer').appendChild(d);
+  setTimeout(() => d.remove(), 3000);
+}
+function sweetPop(x, y) {
+  const d = document.createElement('div');
+  d.className = 'sweet'; d.textContent = 'doce';
+  d.style.left = x + 'px'; d.style.top = y + 'px';
+  $('#flyLayer').appendChild(d);
+  setTimeout(() => d.remove(), 1000);
+}
+
+function ripple(x, y) {
+  const d = document.createElement('div');
+  d.className = 'ripple';
+  d.style.left = x + 'px'; d.style.top = y + 'px';
+  $('#flyLayer').appendChild(d);
+  setTimeout(() => d.remove(), 650);
+}
+
+/* ───────────── Animação do corpo ───────────── */
+// marcha em tripé: L1, R2, L3 pisam juntos; depois R1, L2, R3
+const LEGS = [['L1', -1, -3.5, -4, 0], ['R2', 1, 4.5, -0.5, 0], ['L3', -1, -4, 3, 0],
+              ['R1', 1, 3.5, -4, 1], ['L2', -1, -4.5, -0.5, 1], ['R3', 1, 4, 3, 1]];
+const STRIDE = 7;          // px por meio ciclo
+let disp = { x: 240, y: 330, th: -0.4, phase: 0, jump: null, probLen: 0, lastStep: 0, fade: 0 };
+const legEls = {}, reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let trailCtx = null;
+
+function footWorld(side, fwd) {
+  const c = Math.cos(disp.th), s = Math.sin(disp.th);
+  const lx = side * 11, ly = fwd;
+  return [disp.x + lx * c - ly * s, disp.y + lx * s + ly * c];
+}
+function stamp(group) {
+  if (!trailCtx) return;
+  trailCtx.fillStyle = 'rgba(74, 52, 25, 0.30)';
+  const feet = group === 0 ? [[-1, -13], [1, 0], [-1, 13]] : [[1, -13], [-1, 0], [1, 13]];
+  for (const [side, fwd] of feet) {
+    const [x, y] = footWorld(side, fwd);
+    trailCtx.beginPath(); trailCtx.arc(x, y, 0.9, 0, Math.PI * 2); trailCtx.fill();
+  }
+}
+
+function animateFly(now, dtw) {
+  if (!fly) return;
+  const d = disp, f = fly;
+  let lift = 0;
+  if (d.jump) {
+    const u = (now - d.jump.t0) / d.jump.dur;
+    if (u >= 1 || reduceMotion.matches) { d.jump = null; d.x = f.x; d.y = f.y; }
+    else {
+      const e = u < 0.5 ? 2 * u * u : 1 - 2 * (1 - u) ** 2;
+      d.x = d.jump.x0 + (d.jump.x1 - d.jump.x0) * e;
+      d.y = d.jump.y0 + (d.jump.y1 - d.jump.y0) * e;
+      lift = Math.sin(Math.PI * u);
+    }
+  } else {
+    const k = 1 - Math.exp(-dtw * 14);
+    const nx = d.x + (f.x - d.x) * k, ny = d.y + (f.y - d.y) * k;
+    const moved = Math.hypot(nx - d.x, ny - d.y);
+    d.x = nx; d.y = ny;
+    d.phase += (moved / STRIDE) * Math.PI * (f.back > 0 ? -1 : 1);
+    const step = Math.floor(d.phase / Math.PI);
+    if (step !== d.lastStep) { stamp(((step % 2) + 2) % 2); d.lastStep = step; }
+  }
+  const dth = Math.atan2(Math.sin(f.th - d.th), Math.cos(f.th - d.th));
+  d.th += dth * (1 - Math.exp(-dtw * (d.jump ? 20 : 9)));
+
+  // pernas
+  const t = now / 1000;
+  const feeding = f.prob > 25 && f.speed < 16 && !d.jump;
+  for (const [id, side, ax, ay, tri] of LEGS) {
+    let ang;
+    if (d.jump) ang = side * -18 * lift;                                                   // recolhe no voo
+    else if (feeding && id[1] === '1') ang = side * -34 + side * -10 * Math.sin(t * 17);   // esfrega as patas da frente
+    else ang = side * 15 * Math.sin(d.phase + tri * Math.PI);
+    legEls[id].setAttribute('transform', `rotate(${ang.toFixed(1)} ${ax} ${ay})`);
+  }
+  // asas: dobradas andando, batendo no pulo
+  const flap = d.jump ? 12 * Math.sin(t * 90) : 0;
+  const wingL = $('#wingL'), wingR = $('#wingR');
+  wingL.setAttribute('transform', `rotate(${(-(58 + flap) * lift).toFixed(1)} -2.4 -1)`);
+  wingR.setAttribute('transform', `rotate(${((58 + flap) * lift).toFixed(1)} 2.4 -1)`);
+  wingL.style.opacity = wingR.style.opacity = (1 - 0.45 * lift).toFixed(2);
+  // antenas puxam para o lado do cheiro
+  const pull = clamp((f.cv[0] - f.cv[1]) * 40, -14, 14);
+  const twitch = 3 * Math.sin(t * 5.3);
+  $('#antL').setAttribute('transform', `rotate(${(-pull + twitch).toFixed(1)} -1.4 -13)`);
+  $('#antR').setAttribute('transform', `rotate(${(-pull - twitch).toFixed(1)} 1.4 -13)`);
+  // probóscide
+  const target = f.prob > 25 ? 8 : 0;
+  d.probLen += (target - d.probLen) * (1 - Math.exp(-dtw * 18));
+  $('#prob').setAttribute('y2', (-13.5 - d.probLen).toFixed(2));
+
+  const deg = d.th * 180 / Math.PI;
+  $('#fly').style.transform = `translate(${d.x.toFixed(1)}px, ${(d.y - 26 * lift).toFixed(1)}px) rotate(${deg.toFixed(1)}deg) scale(${(1 + 0.4 * lift).toFixed(3)})`;
+  const sh = $('#flyShadow');
+  sh.style.transform = `translate(${(d.x + 2).toFixed(1)}px, ${(d.y + 3).toFixed(1)}px) rotate(${deg.toFixed(1)}deg) scale(${(1 - 0.35 * lift).toFixed(3)})`;
+  sh.style.opacity = (1 - 0.6 * lift).toFixed(2);
+
+  // botão sendo provado
+  const tasting = f.onEl ? f.onEl.id : null;
+  for (const r of rects) r.node.classList.toggle('tasting', r.id === tasting);
+
+  // pegadas somem devagar
+  d.fade += dtw;
+  if (trailCtx && d.fade > 0.25) {
+    d.fade = 0;
+    trailCtx.save();
+    trailCtx.globalCompositeOperation = 'destination-out';
+    trailCtx.fillStyle = 'rgba(0,0,0,0.035)';
+    trailCtx.fillRect(0, 0, W, H);
+    trailCtx.restore();
+  }
+}
+function initFlyAnim() {
+  for (const [id] of LEGS) legEls[id] = document.getElementById('leg-' + id);
+  trailCtx = $('#trail').getContext('2d');
+  trailCtx.scale(2, 2);
+}
+
+/* ───────────── Cérebro em 3D ───────────── */
+let renderer, scene, camera, points, lastAttr, uniforms, N = 0;
+let rotY = 0.5, rotX = 0.12, dragging = false, autoRotate = true;
+function readColor(name) { return new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue(name).trim()); }
+function applyTheme() {
+  if (!uniforms) return;
+  uniforms.uBase.value = readColor('--em');
+  uniforms.uSpike.value = readColor('--spike');
+  renderer.setClearColor(readColor('--surface'));
+  uniforms.uDark.value = document.documentElement.dataset.theme === 'dark' ||
+    (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches) ? 1 : 0;
+}
+async function initBrain() {
+  const b64 = f => fetch('data/' + f).then(r => r.text()).then(t => Uint8Array.from(atob(t), c => c.charCodeAt(0)).buffer);
+  const [nb, rb] = await Promise.all([b64('neurons.b64.txt'), b64('region.b64.txt')]);
+  const dv = new DataView(nb);
+  N = nb.byteLength / 8;
+  const pos = new Float32Array(N * 3), region = new Float32Array(new Uint8Array(rb));
+  for (let i = 0; i < N; i++) {
+    const x = dv.getInt16(i * 8, true), y = dv.getInt16(i * 8 + 2, true), z = dv.getInt16(i * 8 + 4, true);
+    pos[i * 3] = x; pos[i * 3 + 1] = -z; pos[i * 3 + 2] = y;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  lastAttr = new THREE.BufferAttribute(new Float32Array(N).fill(-1e6), 1);
+  lastAttr.setUsage(THREE.DynamicDrawUsage);
+  geo.setAttribute('aLast', lastAttr);
+  geo.setAttribute('aRegion', new THREE.BufferAttribute(region, 1));
+  uniforms = { uNow: { value: 0 }, uBase: { value: new THREE.Color() }, uSpike: { value: new THREE.Color() }, uPR: { value: devicePixelRatio || 1 }, uDark: { value: 0 } };
+  const mat = new THREE.ShaderMaterial({
+    uniforms, transparent: true, depthWrite: false,
+    vertexShader: `
+      attribute float aLast; attribute float aRegion;
+      uniform float uNow; uniform float uPR;
+      varying float vB; varying float vR;
+      void main() {
+        float b = exp(-max(uNow - aLast, 0.0) / 0.22);
+        vB = b; vR = aRegion;
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mv;
+        gl_PointSize = (1.3 + 3.2 * b) * uPR;
+      }`,
+    fragmentShader: `
+      uniform vec3 uBase; uniform vec3 uSpike; uniform float uDark;
+      varying float vB; varying float vR;
+      void main() {
+        vec2 c = gl_PointCoord - 0.5;
+        if (dot(c, c) > 0.25) discard;
+        float shade = vR == 1.0 ? 0.85 : (vR == 2.0 ? 1.1 : (vR == 4.0 ? 1.45 : 1.0));
+        vec3 col = mix(uBase * shade, uSpike, vB);
+        float a = mix(uDark > 0.5 ? 0.16 : 0.13, 1.0, vB);
+        gl_FragColor = vec4(col, a);
+      }`,
+  });
+  points = new THREE.Points(geo, mat);
+  scene = new THREE.Scene();
+  scene.add(points);
+  const canvas = $('#brain');
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  camera = new THREE.PerspectiveCamera(32, 1, 10, 6000);
+  applyTheme();
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  let px = 0, py = 0;
+  canvas.addEventListener('pointerdown', e => { dragging = true; autoRotate = false; px = e.clientX; py = e.clientY; canvas.setPointerCapture(e.pointerId); });
+  canvas.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    rotY += (e.clientX - px) * 0.008; rotX = clamp(rotX + (e.clientY - py) * 0.006, -1.2, 1.2);
+    px = e.clientX; py = e.clientY;
+  });
+  canvas.addEventListener('pointerup', () => { dragging = false; });
+  requestAnimationFrame(frame);
+}
+let lastFrame = 0;
+function frame(now) {
+  const dtw = Math.min(0.05, (now - lastFrame) / 1000 || 0);
+  lastFrame = now;
+  if (renderer) {
+    const canvas = renderer.domElement;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    if (autoRotate && running && !matchMedia('(prefers-reduced-motion: reduce)').matches) rotY += dtw * 0.12;
+    const dist = 2300;
+    camera.position.set(Math.sin(rotY) * Math.cos(rotX) * dist, Math.sin(rotX) * dist - 60, Math.cos(rotY) * Math.cos(rotX) * dist);
+    camera.lookAt(0, -60, 0);
+    uniforms.uNow.value = brainT / 1000;
+    renderer.render(scene, camera);
+  }
+  animateFly(now, dtw);
+  requestAnimationFrame(frame);
+}
+
+/* ───────────── Memória entre visitas ───────────── */
+// Fica só neste navegador (localStorage). Guarda as sinapses que a dor mudou, não o cérebro inteiro.
+const MEM_KEY = 'mosca-qa:memoria:v1', PREF_KEY = 'mosca-qa:lembrar';
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); return true; } catch { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch { /* sem armazenamento */ } },
+};
+let keepMemory = store.get(PREF_KEY) === '1', saveTimer = null, brainReady = false;
+function toB64(u8) {
+  let str = '';
+  for (let i = 0; i < u8.length; i += 0x8000) str += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000));
+  return btoa(str);
+}
+function fromB64(str) {
+  const b = atob(str), u = new Uint8Array(b.length);
+  for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i);
+  return u;
+}
+function setMemStatus(text) { $('#memStatus').textContent = text; }
+function scheduleSave() {
+  if (!keepMemory || saveTimer) return;
+  saveTimer = setTimeout(() => { saveTimer = null; worker.postMessage({ type: 'getMemory' }); }, 800);
+}
+function saveMemory(m) {
+  const payload = {
+    v: 1, savedAt: Date.now(), n: m.n, edges: m.edges,
+    idx: toB64(new Uint8Array(m.idx.buffer)), r: toB64(m.r),
+    memo: Object.fromEntries(Object.entries(memo).map(([k, v]) => [k, { keep: v.keep, seen: v.seen }])),
+  };
+  const ok = store.set(MEM_KEY, JSON.stringify(payload));
+  const when = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  setMemStatus(ok ? `Guardada neste navegador às ${when}: ${fmtInt(m.idx.length)} sinapses mudadas pela dor.`
+    : 'O navegador bloqueou o armazenamento, então a memória não foi guardada.');
+}
+function loadSaved() {
+  const raw = store.get(MEM_KEY);
+  if (!raw) return null;
+  try {
+    const p = JSON.parse(raw);
+    return { ...p, idx: new Int32Array(fromB64(p.idx).buffer), r: fromB64(p.r) };
+  } catch { return null; }
+}
+function restoreMemory() {
+  const saved = loadSaved();
+  if (!saved) { setMemStatus('Ligado. Ainda não há memória guardada: ela começa do zero e guarda o que aprender.'); return; }
+  for (const [k, v] of Object.entries(saved.memo || {})) memo[k] = { keep: v.keep, seen: v.seen, warned: -99 };
+  worker.postMessage({ type: 'setMemory', memory: { n: saved.n, edges: saved.edges, idx: saved.idx, r: saved.r } });
+  pendingSavedAt = saved.savedAt;
+}
+let pendingSavedAt = 0;
+$('#memKeep').checked = keepMemory;
+$('#memKeep').addEventListener('change', e => {
+  keepMemory = e.target.checked;
+  store.set(PREF_KEY, keepMemory ? '1' : '0');
+  if (keepMemory) {
+    setMemStatus('Ligado: o que ela aprender fica guardado neste navegador.');
+    if (brainReady) worker.postMessage({ type: 'getMemory' });
+  } else {
+    setMemStatus('Desligado: a memória guardada fica onde está, mas nada novo é salvo. Use "Esquecer tudo" para apagar.');
+  }
+});
+$('#memForget').addEventListener('click', () => {
+  worker.postMessage({ type: 'forget' });
+  store.del(MEM_KEY);
+  for (const k in memo) delete memo[k];
+  memory = 0;
+  renderMemory();
+  setMemStatus(keepMemory ? 'Memória apagada. Ela começa do zero e volta a guardar o que aprender.' : 'Memória apagada.');
+  logEvent('Esqueceu tudo: as sinapses voltaram à força do mapa original.');
+});
+
+/* ───────────── Ligando tudo ───────────── */
+const worker = new Worker('sim-worker.js');
+let running = false, wallPrev = 0, speedRatio = 0, activeSm = 0;
+const inSm = {};
+worker.onmessage = ({ data: m }) => {
+  if (m.type === 'progress') {
+    $('#ldStage').textContent = m.stage;
+    $('#ldBar').style.width = (100 * clamp(m.loaded / m.total, 0, 1)).toFixed(0) + '%';
+  } else if (m.type === 'error') {
+    $('#loader').classList.add('err');
+    $('#ldStage').textContent = 'Não deu para carregar';
+    $('#ldText').textContent = `${m.message}. Recarregue a página para tentar de novo.`;
+  } else if (m.type === 'ready') {
+    groupSize = m.sizes || {};
+    ODOR_POOL = m.odorPool || [];
+    GLOM_IX = Object.fromEntries(ODOR_POOL.map((gName, i) => [gName, i]));
+    $('#loader').hidden = true;
+    $('#btnRun').disabled = false; $('#btnReset').disabled = false; $('#memForget').disabled = false;
+    brainReady = true;
+    logEvent(`Cérebro montado: ${fmtInt(m.neurons)} neurônios, ${fmtInt(m.edges)} conexões. A mosca começou a andar.`);
+    if (keepMemory) restoreMemory();
+    setRunning(true);
+  } else if (m.type === 'memoryDump') {
+    saveMemory(m.memory);
+  } else if (m.type === 'memoryLoaded') {
+    if (m.ok) {
+      const when = new Date(pendingSavedAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      memory = m.strength;
+      setMemStatus(`Ela lembrou da visita de ${when}.`);
+      logEvent(`Lembrou da visita anterior: ${fmtInt(m.changed)} sinapses Kenyon → "aproximar" continuam enfraquecidas pela dor de antes.`, 'a');
+    } else {
+      for (const k in memo) delete memo[k];
+      setMemStatus('A memória guardada era de outra versão do mapa e foi ignorada. Ela começa do zero.');
+    }
+    renderMemory();
+  } else if (m.type === 'tick') {
+    const dt = m.dtSim / 1000;
+    brainT = m.t;
+    memory = m.memory || 0;
+    if (m.learned) scheduleSave();
+    kcDrive = m.kcDrive || 0; kcBase = m.kcBase || 0;
+    if (lastAttr) {
+      const arr = lastAttr.array, ts = m.t / 1000;
+      for (let s = 0; s < m.spikes.length; s++) arr[m.spikes[s]] = ts;
+      if (m.spikes.length) lastAttr.needsUpdate = true;
+    }
+    stepBody(dt, m.counts);
+    if (shop.coupon === 'loading') checkOracles(null, 'cupom');
+    const now = performance.now();
+    if (wallPrev) speedRatio = ema(speedRatio, m.dtSim / Math.max(1, now - wallPrev), 0.05, 1);
+    wallPrev = now;
+    activeSm = ema(activeSm, m.nActive, dt, 0.2);
+    updateReadouts(dt);
+  }
+};
+let readoutClock = 0;
+function updateReadouts(dt) {
+  readoutClock += dt;
+  if (readoutClock < 0.08) return;
+  readoutClock = 0;
+  $('#stTime').textContent = fmt1(brainT / 1000) + ' s';
+  $('#stActive').textContent = fmtInt(activeSm);
+  $('#stSpeed').textContent = speedRatio ? fmt1(speedRatio).replace(',0', '') + '× real' : '—';
+  let odor = 0;
+  for (const gName of ODOR_POOL) odor = Math.max(odor, rates[gName + '_L'] || 0, rates[gName + '_R'] || 0);
+  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, ameaca: rates.ameaca || 0 };
+  const full = { cheiro: 150, doce: 200, dor: 200, ameaca: 200 };
+  for (const k in sums) { inSm[k] = ema(inSm[k] || 0, sums[k], 0.08, 0.15); setMeter(k, inSm[k], inSm[k] / full[k]); }
+  outMax.kc = Math.max(outMax.kc || 300, fly.kc);
+  setMeter('kc', fly.kc, fly.kc / outMax.kc, fmtInt(fly.kc) + ' spk/s');
+  setMeter('valencia', 0, fly.keep, fly.kc > KC_MIN ? Math.round(fly.keep * 100) + '%' : '—');
+  renderMemory();
+  const outs = { proboscide: outRate.proboscide || 0, fibra_gigante: outRate.fibra_gigante || 0, moonwalker: outRate.moonwalker || 0 };
+  for (const [k, v] of Object.entries(outs)) { outMax[k] = Math.max(outMax[k] || 20, v); setMeter(k, v, v / outMax[k]); }
+  const d = (outRate.dn_L || 0) - (outRate.dn_R || 0) - fly.dnBias;
+  setMeter('dn', 0, 0.5 + d / (2 * (fly.dnSum + 60)), (d >= 0 ? '+' : '−') + fmtInt(Math.abs(d)) + ' Hz');
+}
+function setRunning(on) {
+  running = on;
+  worker.postMessage({ type: 'run', on });
+  $('#btnRun').textContent = on ? 'Pausar' : 'Continuar';
+  wallPrev = 0;
+}
+$('#btnRun').addEventListener('click', () => setRunning(!running));
+$('#btnReset').addEventListener('click', () => {
+  worker.postMessage({ type: 'reset', keepMemory });
+  brainT = 0;
+  if (lastAttr) { lastAttr.array.fill(-1e6); lastAttr.needsUpdate = true; }
+  reset();
+  $('#log').innerHTML = '';
+  logEvent(keepMemory ? 'Loja nova, bugs escondidos de novo. A mosca continua lembrando do que doeu.'
+    : 'Tudo reiniciado: loja nova, bugs escondidos de novo, e a mosca esqueceu o que aprendeu.');
+});
+function reset() {
+  shop = freshShop();
+  for (const k in elState) delete elState[k];
+  foundBugs.clear();
+  if (!keepMemory) for (const k in memo) delete memo[k];
+  fly = freshFly();
+  Object.assign(disp, { x: fly.x, y: fly.y, th: fly.th, jump: null });
+  if (trailCtx) trailCtx.clearRect(0, 0, W, H);
+  outRate = {}; outMax = {};
+  renderShop(); renderBugs();
+  requestAnimationFrame(measure);
+}
+
+function fit() {
+  const vp = $('#viewport');
+  $('#scaler').style.transform = `scale(${vp.clientWidth / 480})`;
+  requestAnimationFrame(measure);
+}
+new ResizeObserver(fit).observe($('#viewport'));
+buildMeters();
+initFlyAnim();
+reset();
+fit();
+worker.postMessage({ type: 'load' });
+if (window.THREE) initBrain().catch(e => { $('#ldText').textContent = 'Não deu para desenhar o cérebro: ' + e.message; });
+else $('#ldText').textContent = 'A biblioteca 3D não carregou. Recarregue a página.';
+</script>
