@@ -1,0 +1,81 @@
+{
+  "versao": "Fase 3, passos 1 e 2: a memória do corpo cogumelar chega aos neurônios que movem a mosca?",
+  "data": "2026-09-25",
+  "script": "scripts/fase3_teste_direcao.py",
+  "passo1_mapa": {
+    "caminhos": "MBON 'aproximar' liga direto (1 passo) em DNa02, DNa03, DNb05, DNg13 e MDN; os intermediários mais fortes até DNa01/02 estão no LAL",
+    "influencia_com_sinal": "aproximar inibe DNa02, DNa03 e MDN; evitar excita DNa03 e MDN; mais forte no lado oposto; só 1–2% da entrada desses neurônios"
+  },
+  "passo2_simulacao": {
+    "condicoes": "cheiro numa antena, 150 Hz; tônus 7,3 mV nos DNa01-03 e MDN; sinapses do cheiro zeradas (caso extremo); 12 repetições pareadas",
+    "cheiro_esquerda_DP1m_DC2_DA4l": {
+      "ingenua": {
+        "direcao_E_menos_D_Hz": 7.0,
+        "erro": 0.46,
+        "MDN_Hz": 3.73
+      },
+      "com_dor": {
+        "mudanca_direcao_Hz": 0.67,
+        "erro": 0.84,
+        "MDN_Hz": 4.17
+      },
+      "com_acucar": {
+        "mudanca_direcao_Hz": 0.25,
+        "erro": 0.62,
+        "MDN_Hz": 3.42
+      }
+    },
+    "cheiro_direita_VA6_VM7d_VL1": {
+      "ingenua": {
+        "direcao_E_menos_D_Hz": 0.04,
+        "erro": 0.35,
+        "MDN_Hz": 5.17
+      },
+      "com_dor": {
+        "mudanca_direcao_Hz": 1.12,
+        "erro": 0.49,
+        "MDN_Hz": 6.33
+      },
+      "com_acucar": {
+        "mudanca_direcao_Hz": 0.04,
+        "erro": 0.54,
+        "MDN_Hz": 3.75
+      }
+    }
+  },
+  "conclusao": [
+    "Direção: a memória não vira a mosca de forma confiável. A mudança é de no máximo ~1 Hz, dentro ou perto do ruído, e na direção certa em só um dos dois testes, mesmo com as sinapses zeradas.",
+    "Andar de ré (MDN): sinal consistente nos dois testes. Dor aumenta (+0,4 e +1,2 Hz), açúcar diminui (−0,3 e −1,4 Hz).",
+    "O próprio cheiro pode virar a mosca pelo mapa (DP1m/DC2/DA4l à esquerda: +7 Hz no lado esquerdo), por vias fora do corpo cogumelar.",
+    "Interpretação: cada antena manda o cheiro aos dois lados do cérebro, então o corpo cogumelar informa 'bom ou ruim', quase nada de 'onde'."
+  ],
+  "tentativa_recuo_pelo_MDN_na_pagina": {
+    "o_que": "MDN com tônus de 8 mV (~3,7 Hz) e recuo quando ele passa 35% acima do próprio normal",
+    "ruido_natural": "andando sem memória, o MDN varia até ~26% acima do normal (p97: 20%)",
+    "mosca_parada_a_25px_Hz": [
+      {
+        "botao": "add-banana",
+        "antes": 4.02,
+        "depois_da_dor": 3.81,
+        "controle_antes": 3.74,
+        "controle_depois": 3.77
+      },
+      {
+        "botao": "finalizar",
+        "antes": 4.43,
+        "depois_da_dor": 4.33,
+        "controle_antes": 4.72,
+        "controle_depois": 4.92
+      },
+      {
+        "botao": "remover",
+        "antes": 4.61,
+        "depois_da_dor": 4.86,
+        "controle_antes": 4.08,
+        "controle_depois": 3.77
+      }
+    ],
+    "resultado": "sem efeito da dor no MDN nas condições da página (mudanças de −0,2 a +0,3 Hz, iguais aos controles); o que mais ativa o MDN é o gosto nas patas. Desfeito."
+  },
+  "decisao": "Fase 3 parada no ponto de decisão do plano: a direção e o recuo continuam sendo regras do corpo que leem as sinapses; a página explica o teste."
+}

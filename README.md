@@ -1,6 +1,6 @@
 # Mosca QA
 
-O conectoma completo do sistema nervoso central de uma mosca-da-fruta macho (166.700 neurônios, HHMI Janelia, 2026), simulado no navegador. A mosca passeia por uma loja fictícia com 5 bugs escondidos, prova os botões com a probóscide e aprende com os erros: quando um botão quebra, ela passa a evitá-lo.
+O conectoma completo do sistema nervoso central de uma mosca-da-fruta macho (166.700 neurônios, HHMI Janelia, 2026), simulado no navegador. A mosca passeia por uma loja fictícia com 5 bugs escondidos, prova os botões com a probóscide e aprende com os erros e os acertos: evita os botões que quebram e, quando está com fome, volta aos que funcionam.
 
 ## Rodar
 
@@ -52,8 +52,17 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 
 - **Dor:** um clique que dá erro ativa os neurônios de dopamina PPL1 (PPL101 a PPL106). A dopamina não tem efeito sináptico rápido; ela só muda sinapses.
 - **Regra:** a dopamina enfraquece as sinapses entre as células de Kenyon que dispararam há pouco e os 48 neurônios de saída "aproximar" dos compartimentos PPL1.
+- **Açúcar:** um clique que funciona ativa os neurônios de dopamina de recompensa (PAM dos compartimentos γ5, β'2, β2, γ4 e α1), que enfraquecem as sinapses Kenyon → 30 saídas "evitar". Aquele cheiro passa a atrair.
+- **Fome:** cada açúcar reduz a fome em 50%, e ela volta em ~80 s. Só com fome a mosca fica perto do que a recompensou; saciada, ela explora.
+- **Esquecimento e consolidação:** a sinapse mudada volta aos poucos à força original. Cada episódio de dopamina consolida a memória: um erro isolado some em 2–3 min, três erros duram muito mais.
+- **Extinção:** sentir o cheiro de novo sem dor (ou sem açúcar) acelera o esquecimento.
 - **Tônus de base:** os neurônios de saída ficam perto do limiar, como os reais.
 - **Cheiros:** cada botão tem um cheiro próprio, feito de 44 glomérulos divididos em 15 grupos sem repetição.
+- **Memória entre visitas:** opcional, guardada no navegador (sinapses mudadas e consolidação).
+
+### Laboratório
+
+A página tem um laboratório (link no rodapé, ou `#lab`) com testes fixos: aproximação depois da dor, permanência depois do açúcar, memória no tempo e sessões livres. As medições de cada fase estão em `docs/medicoes/`.
 
 ### O que é simplificação
 
@@ -61,6 +70,8 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - **Decisão de desviar:** lê a força das sinapses do cheiro atual, não o disparo dos neurônios de saída.
 
 A memória está nas sinapses da simulação; a ponte entre memória e movimento é simplificada.
+
+Tentamos tirar essa ponte (`scripts/fase3_teste_direcao.py`, resultados em `docs/medicoes/fase3-direcao.json`). Os caminhos existem no mapa: as saídas do corpo cogumelar chegam em 1 ou 2 passos a DNa02, DNa03 e MDN. Mas, mesmo zerando as sinapses de um cheiro, a direção muda menos de 1 Hz (o próprio cheiro produz 7 Hz), e o MDN não muda nas condições da página. Cada antena projeta para os dois lados, então o corpo cogumelar informa valência, quase nada de direção.
 
 ## Créditos
 
