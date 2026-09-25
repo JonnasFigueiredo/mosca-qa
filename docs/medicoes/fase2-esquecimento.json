@@ -1,0 +1,173 @@
+{
+  "versao": "Fase 2: esquecimento (TAU_F × (1 + 9c²)), consolidação por episódio de dopamina, extinção sem dopamina",
+  "data": "2026-09-25",
+  "maquina": "i7-4790K, 16 GB, vídeo integrado Intel HD 4600",
+  "tentativas_descartadas": [
+    "Consolidação proporcional à queda do peso: a primeira dor já leva a sinapse ao piso, então a 2ª e 3ª quase não consolidavam. Trocada por consolidação por episódio de dopamina."
+  ],
+  "escolhido": "TAU_F = 90 s (esquecimento lento)",
+  "esquecimento_rapido_TAU_F_45s": {
+    "memoria_no_tempo": [
+      {
+        "id": "add-banana",
+        "erros": 1,
+        "pontos": [
+          {
+            "t": 3,
+            "keep": 0.17,
+            "dist": 48
+          },
+          {
+            "t": 45,
+            "keep": 0.59,
+            "dist": 24
+          },
+          {
+            "t": 90,
+            "keep": 0.82,
+            "dist": 21
+          }
+        ]
+      },
+      {
+        "id": "finalizar",
+        "erros": 3,
+        "pontos": [
+          {
+            "t": 3,
+            "keep": 0.14,
+            "dist": 53
+          },
+          {
+            "t": 45,
+            "keep": 0.27,
+            "dist": 53
+          },
+          {
+            "t": 90,
+            "keep": 0.38,
+            "dist": 50
+          }
+        ]
+      }
+    ],
+    "sessoes_120s": [
+      {
+        "bugs": 4,
+        "primeiroBug": 22.7,
+        "cliques": 20,
+        "dores": 7,
+        "errosRepetidos": 3,
+        "desviosCertos": 1,
+        "desviosFalsos": 1,
+        "acucares": 14,
+        "botoesDistintos": 13,
+        "revisitas": 4,
+        "idasAtras": 1,
+        "velocidade": 0.42
+      },
+      {
+        "bugs": 5,
+        "primeiroBug": 11.9,
+        "cliques": 27,
+        "dores": 7,
+        "errosRepetidos": 2,
+        "desviosCertos": 2,
+        "desviosFalsos": 0,
+        "acucares": 21,
+        "botoesDistintos": 14,
+        "revisitas": 11,
+        "idasAtras": 1,
+        "velocidade": 0.4
+      },
+      {
+        "bugs": 4,
+        "primeiroBug": 10.2,
+        "cliques": 22,
+        "dores": 7,
+        "errosRepetidos": 3,
+        "desviosCertos": 1,
+        "desviosFalsos": 0,
+        "acucares": 16,
+        "botoesDistintos": 13,
+        "revisitas": 6,
+        "idasAtras": 1,
+        "velocidade": 0.46
+      }
+    ],
+    "medias_120s": {
+      "bugs": 4.3,
+      "primeiroBug": 14.9,
+      "cliques": 23.0,
+      "dores": 7.0,
+      "errosRepetidos": 2.7,
+      "desviosCertos": 1.3,
+      "desviosFalsos": 0.3,
+      "acucares": 17.0,
+      "botoesDistintos": 13.3,
+      "revisitas": 7.0,
+      "idasAtras": 1.0,
+      "velocidade": 0.43
+    }
+  },
+  "esquecimento_lento_TAU_F_90s": {
+    "sessoes_120s": [
+      {
+        "bugs": 4,
+        "primeiroBug": 14.6,
+        "cliques": 24,
+        "dores": 5,
+        "errosRepetidos": 1,
+        "desviosCertos": 1,
+        "desviosFalsos": 0,
+        "acucares": 20,
+        "botoesDistintos": 13,
+        "revisitas": 10,
+        "idasAtras": 2,
+        "velocidade": 0.45
+      },
+      {
+        "bugs": 5,
+        "primeiroBug": 15.4,
+        "cliques": 19,
+        "dores": 7,
+        "errosRepetidos": 2,
+        "desviosCertos": 1,
+        "desviosFalsos": 1,
+        "acucares": 13,
+        "botoesDistintos": 13,
+        "revisitas": 4,
+        "idasAtras": 1,
+        "velocidade": 0.46
+      },
+      {
+        "bugs": 5,
+        "primeiroBug": 13.8,
+        "cliques": 17,
+        "dores": 6,
+        "errosRepetidos": 1,
+        "desviosCertos": 2,
+        "desviosFalsos": 0,
+        "acucares": 12,
+        "botoesDistintos": 14,
+        "revisitas": 2,
+        "idasAtras": 1,
+        "velocidade": 0.48
+      }
+    ],
+    "medias_120s": {
+      "bugs": 4.7,
+      "primeiroBug": 14.6,
+      "cliques": 20.0,
+      "dores": 6.0,
+      "errosRepetidos": 1.3,
+      "desviosCertos": 1.3,
+      "desviosFalsos": 0.3,
+      "acucares": 15.0,
+      "botoesDistintos": 13.3,
+      "revisitas": 5.3,
+      "idasAtras": 1.3,
+      "velocidade": 0.46
+    }
+  }
+}

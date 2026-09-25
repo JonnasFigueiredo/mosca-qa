@@ -26,6 +26,16 @@ const MBON_BIAS = 6.8;           // mV
 const TAU_E = 400;               // ms, duração do rastro (só conta quem cheirava na hora)
 let ETA = 0.006;                 // enfraquecimento por spike de dopamina
 let W_FLOOR = 0.1;               // a conexão nunca cai abaixo desta fração do original
+// Fase 2: memória que muda com o tempo
+// - esquecimento: a sinapse mudada volta aos poucos à força original
+// - consolidação: cada nova dor (ou açúcar) na mesma sinapse deixa a memória mais estável
+// - extinção: sentir o cheiro de novo sem dor (ou sem açúcar) apaga a memória mais rápido
+let TAU_F = 90000;               // ms: constante de esquecimento; um erro isolado some em 2–3 min (45 s dava mais erros repetidos)
+// cada episódio de dopamina consolida; normalizado por neurônio, para 12 PPL1 e 222 PAM valerem igual.
+// Um erro dá ~0,35 de consolidação; três erros chegam perto de 1 (esquecimento 10× mais lento)
+const CONS_PER_SPIKE_NEURON = 0.0035;
+const EXT_RATE = 0.15;           // por segundo, para células de Kenyon bem ativas agora
+let forgetting = true;
 let bias, isKC, kcIds, kcTrace, setA, setR, memory = 0, memoryR = 0;
 
 let N, indptr, idx, w, sign;
@@ -166,7 +176,8 @@ function buildSet(targetGroup) {
     for (let k = indptr[j]; k < indptr[j + 1]; k++) if (isT[idx[k]]) { ks.push(k); ps.push(j); }
     end[j] = ks.length;
   }
-  return { K: Int32Array.from(ks), pre: Int32Array.from(ps), w0: Float32Array.from(ks, k => w[k]), start, end };
+  return { K: Int32Array.from(ks), pre: Int32Array.from(ps), w0: Float32Array.from(ks, k => w[k]),
+    c: new Float32Array(ks.length), start, end, changed: 0 };
 }
 function buildPlastic() {
   isKC = new Uint8Array(N);
@@ -177,16 +188,36 @@ function buildPlastic() {
   kcTrace = new Float32Array(N);
 }
 
-function depress(set, danSpikes) {
+function depress(set, danSpikes, nDan) {
+  const cons = CONS_PER_SPIKE_NEURON * danSpikes / nDan;
   let changed = false;
   for (let p = 0; p < set.K.length; p++) {
     const tr = kcTrace[set.pre[p]];
     if (tr < 0.2) continue;
-    const k = set.K[p];
-    w[k] = Math.max(W_FLOOR * set.w0[p], w[k] * (1 - ETA * danSpikes * tr));
+    const k = set.K[p], w0 = set.w0[p], before = w[k];
+    w[k] = Math.max(W_FLOOR * w0, before * (1 - ETA * danSpikes * tr));
+    set.c[p] = Math.min(1, set.c[p] + cons * tr);
     changed = true;
   }
+  if (changed) set.changed = 1;
   return changed;
+}
+// esquecimento e extinção: a cada passo, a sinapse mudada recupera parte da força perdida
+function relax(set, withDopamine) {
+  if (!set.changed) return;
+  const dtS = REPORT_MS / 1000;
+  let still = 0;
+  for (let p = 0; p < set.K.length; p++) {
+    const k = set.K[p], w0 = set.w0[p], gap = w0 - w[k];
+    if (gap <= 1e-4 * w0) continue;
+    const c = set.c[p];
+    let rec = forgetting ? gap * REPORT_MS / (TAU_F * (1 + 9 * c * c)) : 0;
+    // extinção: o cheiro está aqui (célula de Kenyon bem ativa) e a dopamina deste lado não veio
+    if (!withDopamine && kcTrace[set.pre[p]] >= 0.6) rec += gap * EXT_RATE * dtS * (1 - 0.7 * c);
+    w[k] += rec;
+    if (w0 - w[k] > 1e-4 * w0) still++;
+  }
+  set.changed = still ? 1 : 0;
 }
 function learn(dor, acucar) {
   const decay = Math.exp(-REPORT_MS / TAU_E);
@@ -195,11 +226,14 @@ function learn(dor, acucar) {
   // ou seja, quem sentia o cheiro forte; o cheiro fraco de um botão vizinho quase não conta
   for (let s = 0; s < spikeCount; s++) { const i = spikeBuf[s]; if (isKC[i]) kcTrace[i] = Math.min(1, kcTrace[i] + 0.34); }
   let changed = false;
-  if (dor) changed = depress(setA, dor) || changed;
-  if (acucar) changed = depress(setR, acucar) || changed;
-  if (changed) updateMemoryStat();
+  if (dor) changed = depress(setA, dor, groups.dor.length) || changed;
+  if (acucar) changed = depress(setR, acucar, groups.recompensa.length) || changed;
+  relax(setA, dor > 0);
+  relax(setR, acucar > 0);
+  if (changed || ++statClock % 50 === 0) updateMemoryStat();
   return changed;
 }
+let statClock = 0;
 
 function weakened(set) {
   let a = 0, b = 0;
@@ -221,28 +255,36 @@ function drive(set) {
 
 // Memória para guardar: só as sinapses que mudaram, como fração da força original (0–255)
 function exportSet(set) {
-  const idx = [], r = [];
+  const idx = [], r = [], c = [];
   for (let p = 0; p < set.K.length; p++) {
     const f = w[set.K[p]] / set.w0[p];
-    if (f < 0.995) { idx.push(p); r.push(Math.round(f * 255)); }
+    if (f < 0.995 || set.c[p] > 0.01) { idx.push(p); r.push(Math.round(Math.min(1, f) * 255)); c.push(Math.round(set.c[p] * 255)); }
   }
-  return { n: set.K.length, idx: Int32Array.from(idx), r: Uint8Array.from(r) };
+  return { n: set.K.length, idx: Int32Array.from(idx), r: Uint8Array.from(r), c: Uint8Array.from(c) };
 }
 function exportMemory() {
-  return { v: 2, edges: w.length, A: exportSet(setA), R: exportSet(setR) };
+  return { v: 3, edges: w.length, A: exportSet(setA), R: exportSet(setR) };
 }
 function importMemory(m) {
   // mapa ou formato diferente: ignora
-  if (!m || m.v !== 2 || m.edges !== w.length || m.A.n !== setA.K.length || m.R.n !== setR.K.length) return false;
+  if (!m || !(m.v === 2 || m.v === 3) || m.edges !== w.length || m.A.n !== setA.K.length || m.R.n !== setR.K.length) return false;
   forget();
   for (const [set, part] of [[setA, m.A], [setR, m.R]]) {
-    for (let i = 0; i < part.idx.length; i++) { const p = part.idx[i]; w[set.K[p]] = set.w0[p] * part.r[i] / 255; }
+    for (let i = 0; i < part.idx.length; i++) {
+      const p = part.idx[i];
+      w[set.K[p]] = set.w0[p] * part.r[i] / 255;
+      if (part.c) set.c[p] = part.c[i] / 255;   // formato 2 não tinha consolidação
+    }
+    set.changed = 1;
   }
   updateMemoryStat();
   return true;
 }
 function forget() {
-  for (const set of [setA, setR]) for (let p = 0; p < set.K.length; p++) w[set.K[p]] = set.w0[p];
+  for (const set of [setA, setR]) {
+    for (let p = 0; p < set.K.length; p++) w[set.K[p]] = set.w0[p];
+    set.c.fill(0); set.changed = 0;
+  }
   kcTrace.fill(0); memory = 0; memoryR = 0;
 }
 
@@ -367,6 +409,8 @@ onmessage = async ({ data }) => {
     if (data.tauA != null) TAU_A = data.tauA;
     if (data.eta != null) ETA = data.eta;
     if (data.floor != null) W_FLOOR = data.floor;
+    if (data.tauF != null) TAU_F = data.tauF;
+    if (data.forgetting != null) forgetting = !!data.forgetting;
   } else if (data.type === 'rates') {
     rates = data.rates;
   } else if (data.type === 'run') {
@@ -381,7 +425,7 @@ onmessage = async ({ data }) => {
   } else if (data.type === 'getMemory') {
     if (!setA) return;
     const m = exportMemory();
-    postMessage({ type: 'memoryDump', memory: m, strength: memory }, [m.A.idx.buffer, m.A.r.buffer, m.R.idx.buffer, m.R.r.buffer]);
+    postMessage({ type: 'memoryDump', memory: m, strength: memory }, [m.A.idx.buffer, m.A.r.buffer, m.A.c.buffer, m.R.idx.buffer, m.R.r.buffer, m.R.c.buffer]);
   } else if (data.type === 'setMemory') {
     if (!setA) return;
     const ok = importMemory(data.memory);
