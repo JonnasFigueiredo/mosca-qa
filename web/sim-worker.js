@@ -15,16 +15,18 @@ const EPS_A = 0.05;             // abaixo disso a adaptação é desprezível (0
 // Só pesa em quem dispara sem parar, e é o que desliga os circuitos que se sustentam sozinhos.
 let A_INC = 0.3, TAU_A = 1000;   // mV por spike, ms
 
-// Aprendizado no corpo cogumelar (a "dor"):
+// Aprendizado no corpo cogumelar:
 // - as saídas (MBONs) ficam perto do limiar, como as reais, que disparam espontaneamente
 // - cada célula de Kenyon deixa um rastro quando dispara (quem estava sentindo o cheiro)
-// - quando a dopamina de punição (PPL1) chega, as conexões Kenyon -> MBON "aproximar"
-//   das células com rastro enfraquecem. Da próxima vez, aquele cheiro atrai menos.
+// - dor: a dopamina de punição (PPL1) enfraquece Kenyon -> MBON "aproximar" das células com
+//   rastro. Da próxima vez, aquele cheiro atrai menos.
+// - açúcar: a dopamina de recompensa (PAM) enfraquece Kenyon -> MBON "evitar". Da próxima vez,
+//   aquele cheiro repele menos, ou seja, atrai mais.
 const MBON_BIAS = 6.8;           // mV
-const TAU_E = 400;               // ms, duração do rastro (só conta quem cheirava na hora da dor)
+const TAU_E = 400;               // ms, duração do rastro (só conta quem cheirava na hora)
 let ETA = 0.006;                 // enfraquecimento por spike de dopamina
 let W_FLOOR = 0.1;               // a conexão nunca cai abaixo desta fração do original
-let bias, isKC, kcIds, kcTrace, plastK, plastPre, w0plast, plStart, plEnd, memory = 0;
+let bias, isKC, kcIds, kcTrace, setA, setR, memory = 0, memoryR = 0;
 
 let N, indptr, idx, w, sign;
 let v, g, ad, ref, isActive, active, nActive = 0;
@@ -145,8 +147,8 @@ let rawSign, gain = GAIN;
 function setGain(k) {
   gain = k;
   for (let i = 0; i < N; i++) sign[i] = rawSign[i] * W_SYN * gain;
-  // a dopamina não é um transmissor rápido: os PPL1 agem só pelo aprendizado (em learn)
-  if (groups.dor) for (const i of groups.dor) sign[i] = 0;
+  // a dopamina não é um transmissor rápido: PPL1 e PAM agem só pelo aprendizado (em learn)
+  for (const k of ['dor', 'recompensa']) if (groups[k]) for (const i of groups[k]) sign[i] = 0;
 }
 
 function restState() {
@@ -154,68 +156,94 @@ function restState() {
   for (let i = 0; i < N; i++) if (bias[i]) v[i] = V_REST + bias[i];
 }
 
+// Um conjunto de sinapses que aprende: Kenyon -> um grupo de saídas, agrupadas por célula de Kenyon
+function buildSet(targetGroup) {
+  const isT = new Uint8Array(N);
+  for (const i of groups[targetGroup]) isT[i] = 1;
+  const ks = [], ps = [], start = new Int32Array(N), end = new Int32Array(N);
+  for (const j of kcIds) {
+    start[j] = ks.length;
+    for (let k = indptr[j]; k < indptr[j + 1]; k++) if (isT[idx[k]]) { ks.push(k); ps.push(j); }
+    end[j] = ks.length;
+  }
+  return { K: Int32Array.from(ks), pre: Int32Array.from(ps), w0: Float32Array.from(ks, k => w[k]), start, end };
+}
 function buildPlastic() {
-  const isAprox = new Uint8Array(N);
-  for (const i of groups.mbon_aprox) isAprox[i] = 1;
   isKC = new Uint8Array(N);
   kcIds = groups.kc;
   for (const i of kcIds) isKC[i] = 1;
-  const ks = [], ps = [];
-  plStart = new Int32Array(N); plEnd = new Int32Array(N);
-  for (const j of kcIds) {
-    plStart[j] = ks.length;
-    for (let k = indptr[j]; k < indptr[j + 1]; k++) if (isAprox[idx[k]]) { ks.push(k); ps.push(j); }
-    plEnd[j] = ks.length;
-  }
-  plastK = Int32Array.from(ks); plastPre = Int32Array.from(ps);
-  w0plast = Float32Array.from(ks, k => w[k]);
+  setA = buildSet('mbon_aprox');         // a dor enfraquece
+  setR = buildSet('mbon_evitar_rec');    // o açúcar enfraquece
   kcTrace = new Float32Array(N);
 }
 
-function learn(danSpikes) {
+function depress(set, danSpikes) {
+  let changed = false;
+  for (let p = 0; p < set.K.length; p++) {
+    const tr = kcTrace[set.pre[p]];
+    if (tr < 0.2) continue;
+    const k = set.K[p];
+    w[k] = Math.max(W_FLOOR * set.w0[p], w[k] * (1 - ETA * danSpikes * tr));
+    changed = true;
+  }
+  return changed;
+}
+function learn(dor, acucar) {
   const decay = Math.exp(-REPORT_MS / TAU_E);
   for (const j of kcIds) kcTrace[j] *= decay;
   // cada disparo soma 1/3 (no máximo 1): só fica bem marcada quem disparou várias vezes,
   // ou seja, quem sentia o cheiro forte; o cheiro fraco de um botão vizinho quase não conta
   for (let s = 0; s < spikeCount; s++) { const i = spikeBuf[s]; if (isKC[i]) kcTrace[i] = Math.min(1, kcTrace[i] + 0.34); }
-  if (!danSpikes) return false;
   let changed = false;
-  for (let p = 0; p < plastK.length; p++) {
-    const tr = kcTrace[plastPre[p]];
-    if (tr < 0.2) continue;
-    const k = plastK[p];
-    w[k] = Math.max(W_FLOOR * w0plast[p], w[k] * (1 - ETA * danSpikes * tr));
-    changed = true;
-  }
+  if (dor) changed = depress(setA, dor) || changed;
+  if (acucar) changed = depress(setR, acucar) || changed;
   if (changed) updateMemoryStat();
   return changed;
 }
 
-function updateMemoryStat() {
+function weakened(set) {
   let a = 0, b = 0;
-  for (let p = 0; p < plastK.length; p++) { a += w[plastK[p]]; b += w0plast[p]; }
-  memory = 1 - a / b;
+  for (let p = 0; p < set.K.length; p++) { a += w[set.K[p]]; b += set.w0[p]; }
+  return 1 - a / b;
+}
+function updateMemoryStat() { memory = weakened(setA); memoryR = weakened(setR); }
+
+// força que as células de Kenyon ativas agora passam a um conjunto, e a força original delas
+function drive(set) {
+  let d = 0, b = 0;
+  for (let s = 0; s < spikeCount; s++) {
+    const j = spikeBuf[s];
+    if (!isKC[j]) continue;
+    for (let p = set.start[j]; p < set.end[j]; p++) { d += w[set.K[p]]; b += set.w0[p]; }
+  }
+  return [d, b];
 }
 
-// Memória para guardar: só as sinapses que a dor mudou, como fração da força original (0–255)
-function exportMemory() {
+// Memória para guardar: só as sinapses que mudaram, como fração da força original (0–255)
+function exportSet(set) {
   const idx = [], r = [];
-  for (let p = 0; p < plastK.length; p++) {
-    const f = w[plastK[p]] / w0plast[p];
+  for (let p = 0; p < set.K.length; p++) {
+    const f = w[set.K[p]] / set.w0[p];
     if (f < 0.995) { idx.push(p); r.push(Math.round(f * 255)); }
   }
-  return { n: plastK.length, edges: w.length, idx: Int32Array.from(idx), r: Uint8Array.from(r) };
+  return { n: set.K.length, idx: Int32Array.from(idx), r: Uint8Array.from(r) };
+}
+function exportMemory() {
+  return { v: 2, edges: w.length, A: exportSet(setA), R: exportSet(setR) };
 }
 function importMemory(m) {
-  if (!m || m.n !== plastK.length || m.edges !== w.length) return false;   // mapa diferente: ignora
+  // mapa ou formato diferente: ignora
+  if (!m || m.v !== 2 || m.edges !== w.length || m.A.n !== setA.K.length || m.R.n !== setR.K.length) return false;
   forget();
-  for (let i = 0; i < m.idx.length; i++) { const p = m.idx[i]; w[plastK[p]] = w0plast[p] * m.r[i] / 255; }
+  for (const [set, part] of [[setA, m.A], [setR, m.R]]) {
+    for (let i = 0; i < part.idx.length; i++) { const p = part.idx[i]; w[set.K[p]] = set.w0[p] * part.r[i] / 255; }
+  }
   updateMemoryStat();
   return true;
 }
 function forget() {
-  for (let p = 0; p < plastK.length; p++) w[plastK[p]] = w0plast[p];
-  kcTrace.fill(0); memory = 0;
+  for (const set of [setA, setR]) for (let p = 0; p < set.K.length; p++) w[set.K[p]] = set.w0[p];
+  kcTrace.fill(0); memory = 0; memoryR = 0;
 }
 
 function poisson(mean) {
@@ -317,20 +345,15 @@ function loop() {
     const gs = isOut.get(spikeBuf[s]);
     if (gs) for (const k of gs) counts[k] = (counts[k] || 0) + 1;
   }
-  const learned = learn(counts.dor || 0);
-  // força que as células de Kenyon ativas agora passam às saídas "aproximar", comparada com a
-  // força original dessas mesmas sinapses: 1 = cheiro nunca punido, menos = enfraquecido pela dor
-  let kcDrive = 0, kcBase = 0;
-  for (let s = 0; s < spikeCount; s++) {
-    const j = spikeBuf[s];
-    if (!isKC[j]) continue;
-    for (let p = plStart[j]; p < plEnd[j]; p++) { kcDrive += w[plastK[p]]; kcBase += w0plast[p]; }
-  }
+  const learned = learn(counts.dor || 0, counts.recompensa || 0);
+  // quanto da força original as sinapses do cheiro atual têm, para "aproximar" e para "evitar"
+  const [kcDrive, kcBase] = drive(setA);
+  const [kcDriveR, kcBaseR] = drive(setR);
   const spikes = spikeBuf.slice(0, spikeCount);
   spikeCount = 0;
   const wallMs = performance.now() - wall0;
   simSinceWall += REPORT_MS;
-  postMessage({ type: 'tick', t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, learned, kcDrive, kcBase }, [spikes.buffer]);
+  postMessage({ type: 'tick', t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, memoryR, learned, kcDrive, kcBase, kcDriveR, kcBaseR }, [spikes.buffer]);
   setTimeout(loop, 0);
 }
 
@@ -350,21 +373,21 @@ onmessage = async ({ data }) => {
     if (!running && data.on) { running = true; lastWall = 0; simSinceWall = 0; loop(); }
     running = data.on;
   } else if (data.type === 'reset') {
-    if (!plastK) return;   // ainda carregando
+    if (!setA) return;   // ainda carregando
     restState();
     for (const s of ring) s.n = 0;
     spikeCount = 0; t = 0;
     if (data.keepMemory) kcTrace.fill(0); else forget();
   } else if (data.type === 'getMemory') {
-    if (!plastK) return;
+    if (!setA) return;
     const m = exportMemory();
-    postMessage({ type: 'memoryDump', memory: m, strength: memory }, [m.idx.buffer, m.r.buffer]);
+    postMessage({ type: 'memoryDump', memory: m, strength: memory }, [m.A.idx.buffer, m.A.r.buffer, m.R.idx.buffer, m.R.r.buffer]);
   } else if (data.type === 'setMemory') {
-    if (!plastK) return;
+    if (!setA) return;
     const ok = importMemory(data.memory);
-    postMessage({ type: 'memoryLoaded', ok, strength: memory, changed: ok ? data.memory.idx.length : 0 });
+    postMessage({ type: 'memoryLoaded', ok, strength: memory, changed: ok ? data.memory.A.idx.length + data.memory.R.idx.length : 0 });
   } else if (data.type === 'forget') {
-    if (!plastK) return;
+    if (!setA) return;
     forget();
   }
 };

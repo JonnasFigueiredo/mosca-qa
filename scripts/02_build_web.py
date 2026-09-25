@@ -116,6 +116,15 @@ def by_type(ts, s=None):
 
 cls_all = ann["class"].fillna("").to_numpy().astype(str)
 aprox, evitar = mbon_groups(typ.astype(str), cls_all, e)
+REWARD_PAM = ["PAM01", "PAM02", "PAM03", "PAM04", "PAM05", "PAM06", "PAM08", "PAM11", "PAM15"]
+# saídas "evitar" que recebem da recompensa: as sinapses Kenyon -> elas é que a recompensa enfraquece
+_is_rew = np.isin(typ.astype(str), REWARD_PAM)
+rew_targets = []
+for t in evitar:
+    mi = np.flatnonzero(typ.astype(str) == t)
+    if e["w"][np.isin(e["post"], mi) & _is_rew[e["pre"]]].sum() >= 100:
+        rew_targets.append(t)
+print("MBONs 'evitar' da recompensa:", rew_targets)
 groups = {
     # entradas
     "doce": by_type(["PhG9", "dorsal_tpGRN"]),
@@ -125,6 +134,9 @@ groups = {
     # aprendizado: células de Kenyon e saídas do corpo cogumelar
     "kc": ids(np.char.startswith(typ.astype(str), "KC")),
     "mbon_aprox": by_type(aprox), "mbon_evitar": by_type(evitar),
+    # recompensa: PAM dos compartimentos ligados a açúcar na literatura (γ5, β'2, β2, γ4, α1)
+    "recompensa": by_type(REWARD_PAM),
+    "mbon_evitar_rec": by_type(rew_targets),
     # saídas
     "proboscide": by_type(["MN9", "MN6", "MN8", "MN11D", "MN11V", "MN12D"]),
     "fibra_gigante": by_type(["DNp01"]),

@@ -1,0 +1,23 @@
+{
+  "versao": "v1 (aprendizado por dor, sem recompensa, sem esquecimento)",
+  "data": "2026-09-25",
+  "maquina": "i7-4790K, 16 GB, vídeo integrado Intel HD 4600",
+  "aproximacao": [
+    { "id": "finalizar", "antes": { "keep": 1.0, "dist": 24 }, "doeu": true, "depois": { "keep": 0.15, "dist": 55 }, "controle": { "id": "add-pera", "keep": 1.0, "dist": 26 } },
+    { "id": "nav-contato", "antes": { "keep": 1.0, "dist": 57 }, "doeu": true, "depois": { "keep": 0.14, "dist": 49 }, "controle": { "id": "nav-entregas", "keep": 0.6, "dist": 18 } },
+    { "id": "add-banana", "antes": { "keep": 1.0, "dist": 25 }, "doeu": true, "depois": { "keep": 0.28, "dist": 43 }, "controle": { "id": "add-manga", "keep": 1.0, "dist": 23 } },
+    { "id": "remover", "antes": { "keep": 1.0, "dist": 28 }, "doeu": true, "depois": { "keep": 0.17, "dist": 51 }, "controle": { "id": "add-uva", "keep": 0.91, "dist": 20 } },
+    { "id": "cupom", "antes": { "keep": 1.0, "dist": 32 }, "doeu": true, "depois": { "keep": 0.15, "dist": 51 }, "controle": { "id": "add-maca", "keep": 1.0, "dist": 23 } }
+  ],
+  "sessoes_120s": [
+    { "bugs": 4, "primeiroBug": 32.3, "cliques": 17, "dores": 5, "errosRepetidos": 1, "desviosCertos": 3, "desviosFalsos": 3, "velocidade": 0.47 },
+    { "bugs": 3, "primeiroBug": 22.3, "cliques": 19, "dores": 3, "errosRepetidos": 0, "desviosCertos": 3, "desviosFalsos": 3, "velocidade": 0.49 },
+    { "bugs": 4, "primeiroBug": 64.6, "cliques": 18, "dores": 4, "errosRepetidos": 0, "desviosCertos": 0, "desviosFalsos": 0, "velocidade": 0.49 }
+  ],
+  "medias_120s": { "bugs": 3.7, "primeiroBug": 39.7, "cliques": 18.0, "dores": 4.0, "errosRepetidos": 0.3, "desviosCertos": 2.0, "desviosFalsos": 2.0, "velocidade": 0.48 },
+  "observacoes": [
+    "No Contato ela já não chegava perto antes do erro (57 px), então o desvio dele não é conclusivo.",
+    "Entregas, vizinho do Contato no menu, perdeu 40% da força sem nunca dar erro: memória falsa por proximidade.",
+    "Desvios falsos nas sessões livres: metade dos desvios é de botões que nunca deram erro."
+  ]
+}

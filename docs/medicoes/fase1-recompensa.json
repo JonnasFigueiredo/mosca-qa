@@ -1,0 +1,42 @@
+{
+  "versao": "Fase 1: recompensa (PAM) + fome + permanência/klinocinese pelo valor aprendido",
+  "data": "2026-09-25",
+  "maquina": "i7-4790K, 16 GB, vídeo integrado Intel HD 4600",
+  "sinapses": {
+    "descricao": "açúcar na Manga, depois aproximação da Manga e da Uva (vizinha)",
+    "manga": { "antes": 0.0, "depois": 0.88 },
+    "uva": { "antes": 0.0, "depois": 0.02 }
+  },
+  "acucar_permanencia_ms": [
+    { "id": "add-manga", "antes": 1940, "depois": 2100, "vizinho": 1970 },
+    { "id": "add-uva", "antes": 1760, "depois": 3800, "vizinho": 2000 },
+    { "id": "add-maca", "antes": 1690, "depois": 3530, "vizinho": 0 },
+    { "id": "add-abacaxi", "antes": 2020, "depois": 2420, "vizinho": 1770 }
+  ],
+  "aproximacao": [
+    { "id": "finalizar", "antes": { "keep": 1.0, "dist": 23 }, "depois": { "keep": 0.13, "dist": 55 }, "controle": { "id": "add-pera", "keep": 1.0, "dist": 23 } },
+    { "id": "nav-contato", "antes": { "keep": 1.0, "dist": 58 }, "depois": { "keep": 0.11, "dist": 33 }, "controle": { "id": "nav-entregas", "keep": 0.33, "dist": 22 } },
+    { "id": "add-banana", "antes": { "keep": 1.0, "dist": 26 }, "depois": { "keep": 0.26, "dist": 43 }, "controle": { "id": "add-manga", "keep": 1.0, "dist": 54 } },
+    { "id": "remover", "antes": { "keep": 1.0, "dist": 31 }, "depois": { "keep": 0.10, "dist": 55 }, "controle": { "id": "add-uva", "keep": 0.97, "dist": 23 } },
+    { "id": "cupom", "antes": { "keep": 1.0, "dist": 32 }, "depois": { "keep": 0.10, "dist": 18 }, "controle": { "id": "add-maca", "keep": 0.97, "dist": 11 } }
+  ],
+  "sessoes_120s": [
+    { "bugs": 2, "primeiroBug": 13.2, "cliques": 17, "dores": 4, "errosRepetidos": 2, "desviosCertos": 2, "desviosFalsos": 2, "acucares": 13, "botoesDistintos": 10, "revisitas": 5, "idasAtras": 4, "velocidade": 0.40 },
+    { "bugs": 2, "primeiroBug": 23.9, "cliques": 12, "dores": 3, "errosRepetidos": 1, "desviosCertos": 9, "desviosFalsos": 0, "acucares": 9, "botoesDistintos": 9, "revisitas": 2, "idasAtras": 1, "velocidade": 0.41 },
+    { "bugs": 4, "primeiroBug": 6.1, "cliques": 17, "dores": 5, "errosRepetidos": 1, "desviosCertos": 4, "desviosFalsos": 1, "acucares": 13, "botoesDistintos": 11, "revisitas": 5, "idasAtras": 7, "velocidade": 0.38 }
+  ],
+  "medias_120s": { "bugs": 2.7, "primeiroBug": 14.4, "cliques": 15.3, "dores": 4.0, "errosRepetidos": 1.3, "desviosCertos": 5.0, "desviosFalsos": 1.0, "acucares": 11.7, "botoesDistintos": 10.0, "revisitas": 4.0, "idasAtras": 4.0, "velocidade": 0.40 },
+  "ajuste_saciedade": {
+    "mudanca": "cada açúcar tira 50% da fome (antes 35%); a fome volta em ~80 s (antes ~33 s)",
+    "sessoes_120s": [
+      { "bugs": 4, "primeiroBug": 5.9, "cliques": 26, "dores": 6, "errosRepetidos": 2, "desviosCertos": 7, "desviosFalsos": 1, "acucares": 21, "botoesDistintos": 13, "revisitas": 11, "idasAtras": 1, "velocidade": 0.45 },
+      { "bugs": 5, "primeiroBug": 13.7, "cliques": 22, "dores": 7, "errosRepetidos": 2, "desviosCertos": 2, "desviosFalsos": 1, "acucares": 16, "botoesDistintos": 13, "revisitas": 7, "idasAtras": 1, "velocidade": 0.49 },
+      { "bugs": 2, "primeiroBug": 15.2, "cliques": 16, "dores": 3, "errosRepetidos": 1, "desviosCertos": 2, "desviosFalsos": 0, "acucares": 13, "botoesDistintos": 11, "revisitas": 4, "idasAtras": 1, "velocidade": 0.59 }
+    ],
+    "medias_120s": { "bugs": 3.7, "primeiroBug": 11.6, "cliques": 21.3, "dores": 5.3, "errosRepetidos": 1.7, "desviosCertos": 3.7, "desviosFalsos": 0.7, "acucares": 16.7, "botoesDistintos": 12.3, "revisitas": 7.3, "idasAtras": 1.0, "velocidade": 0.51 }
+  },
+  "tentativas_descartadas": [
+    "Teste de escolha em T (dois botões, escolher um): o cheiro alcança pouco e ela não sente nenhum dos dois do ponto de partida; decidia pela direção inicial.",
+    "Alcance do cheiro 45 px: ajudou a busca, mas triplicou memórias falsas na dor. Voltou para 32 px."
+  ]
+}

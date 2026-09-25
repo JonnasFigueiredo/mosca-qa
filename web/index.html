@@ -185,10 +185,11 @@ button.ctl[disabled] { opacity: .5; cursor: default; }
 .mem li { display: grid; grid-template-columns: minmax(0, 1fr) 84px 48px; gap: 10px; align-items: center; font-size: 13px; }
 .mem li small { display: block; font: 11px var(--mono); color: var(--muted); }
 .mem-bar { position: relative; height: 6px; background: var(--track); border-radius: 3px; }
-.mem-bar::after { content: ""; position: absolute; left: 60%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.mem-bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
 .mem-bar i { position: absolute; top: 0; bottom: 0; background: var(--muted); border-radius: 3px; }
 .mem li.neg .mem-bar i { background: var(--crit); }
-.mem li:not(.neg) .mem-bar i { background: var(--ok); }
+.mem li.pos .mem-bar i { background: var(--ok); }
+.mem li.pos .mono { color: var(--ok); }
 .mem li .mono { text-align: right; color: var(--muted); font-size: 12px; }
 .mem li.neg .mono { color: var(--crit); }
 .mem li.empty { display: block; color: var(--muted); }
@@ -212,6 +213,16 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
 .map td.mono { font-size: 12px; color: var(--muted); }
 .credits { font-size: 13px; color: var(--muted); }
 .credits a { color: var(--ink); }
+.lab h3 { font: 600 18px var(--sans); margin: 4px 0 6px; }
+.lab-note { margin: 0 0 12px; color: var(--muted); font-size: 14px; max-width: 75ch; }
+.lab-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 10px; }
+.lab-ctl label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; }
+.lab-ctl input[type=number] { width: 64px; font: 14px var(--mono); padding: 5px 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.lab-status { font-size: 12px; color: var(--muted); margin: 0 0 12px; min-height: 1.4em; }
+.lab-out h4 { font: 600 14px var(--sans); margin: 14px 0 6px; }
+.lab-out .ok { color: var(--ok); } .lab-out .no { color: var(--crit); }
+.lab-out td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+.lab-def { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
 
 @media (max-width: 1180px) {
   .stage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
@@ -326,14 +337,14 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
     </div>
     <div class="card">
       <div class="eyebrow">Memória da mosca</div>
-      <div class="report-sum"><span class="big mono" id="memSum">0%</span><span>das conexões Kenyon → "aproximar" enfraquecidas pela dor.</span></div>
+      <div class="report-sum"><span class="big mono" id="memSum">0 · 0</span><span>botões que ela evita · botões que ela prefere</span></div>
       <div class="mem-ctl">
         <label for="memKeep"><input type="checkbox" id="memKeep"> Lembrar entre visitas</label>
         <button class="ctl small" id="memForget" disabled>Esquecer tudo</button>
       </div>
       <p class="mem-status" id="memStatus">Desligado: quando a página fecha, ela esquece o que aprendeu.</p>
       <ul class="mem" id="memList"><li class="empty">Ela ainda não cheirou nenhum botão de perto.</li></ul>
-      <p class="mem-note">Quanto da força original ainda têm as sinapses Kenyon → saída que o cheiro de cada botão usa. 100% = nunca doeu. Abaixo da linha (60%), ela desvia. Cada botão tem um cheiro próprio, feito de 2 ou 3 dos 44 tipos de receptor de olfato.</p>
+      <p class="mem-note">O saldo aprendido de cada botão, medido nas sinapses Kenyon → saída que o cheiro dele usa. Negativo: a dor enfraqueceu as de "aproximar", e ela desvia. Positivo: o açúcar enfraqueceu as de "evitar", e ela vai atrás quando está com fome. Cada botão tem um cheiro próprio, feito de 2 ou 3 dos 44 tipos de receptor de olfato.</p>
     </div>
     <div class="card">
       <div class="eyebrow">Diário da mosca</div>
@@ -359,13 +370,14 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <p>Cada botão tem um cheiro próprio, e cada cheiro acende um grupo pequeno de <strong>células de Kenyon</strong> no corpo cogumelar (de 20 a 130 das 4.064; botões diferentes quase não dividem células). Quando um clique dá erro, a mosca sente <strong>dor</strong>: os neurônios de dopamina de punição (PPL1) disparam.</p>
         <p>A dopamina <strong>enfraquece as conexões</strong> entre as células de Kenyon que acabaram de disparar e os neurônios de saída que puxam a mosca para perto. Da próxima vez, aquele cheiro atrai menos e ela desvia. É o mecanismo que os laboratórios descrevem em moscas reais, e as sinapses mudam dentro da simulação, enquanto você assiste.</p>
         <p>Nos experimentos a dor costuma ser um choque elétrico. Aqui ela entra direto nos neurônios PPL1, como nos experimentos que ligam esses neurônios com luz no lugar do choque.</p>
+        <p>O açúcar ensina do outro lado. Um clique que funciona ativa os neurônios de dopamina de <strong>recompensa (PAM)</strong>, que enfraquecem as sinapses entre as mesmas células de Kenyon e os neurônios de saída que afastam a mosca. Aquele cheiro passa a atrair. Ela só vai atrás dele quando está com <strong>fome</strong>: cada açúcar a deixa mais saciada, como nas moscas reais, e isso a deixa livre para explorar.</p>
         <p>Com <strong>Lembrar entre visitas</strong> ligado, as sinapses mudadas ficam guardadas no seu navegador, e na próxima visita ela já chega evitando o que doeu. Desligado (o padrão), cada visita começa com o mapa original.</p>
         <p>Quando o erro demora a aparecer (o cupom só falha depois de 1,5 s), ela pode já estar cheirando o botão vizinho, e a dor fica associada ao cheiro errado. Moscas reais também aprendem mal com punição atrasada.</p>
       </div>
       <div>
         <h3>O que é cérebro e o que é corpo</h3>
         <p><strong>Vem do cérebro simulado:</strong> parar para provar um botão (o clique), o pulo de fuga, andar de ré, parte das curvas e o quanto cada cheiro atrai ou repele depois da dor.</p>
-        <p><strong>Vem de regras simples do corpo:</strong> o passo, a curiosidade por botões ainda não testados e o gesto de virar quando as sinapses que o cheiro atual usa perderam força. A regra só lê as sinapses da simulação; quem enfraqueceu essas sinapses foi a dopamina da dor.</p>
+        <p><strong>Vem de regras simples do corpo:</strong> o passo, a curiosidade por botões ainda não testados e o gesto de virar para longe ou para perto conforme o saldo das sinapses que o cheiro atual usa, e a fome. A regra só lê as sinapses da simulação; quem enfraqueceu essas sinapses foi a dopamina da dor.</p>
         <p>As saídas do corpo cogumelar ficam perto do limiar, como as reais, que disparam sozinhas; sem isso o cheiro não passava por elas.</p>
       </div>
     </div>
@@ -377,11 +389,12 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
       <thead><tr><th>No site</th><th>Na mosca</th><th>Neurônios</th></tr></thead>
       <tbody>
         <tr><td>Pisar num botão ainda não testado</td><td>Gosto doce nas patas (moscas provam com as patas)</td><td class="mono">PhG9, taste pegs dorsais</td></tr>
-        <tr><td>Clique que funcionou</td><td>Mais gosto doce</td><td class="mono">PhG9, taste pegs dorsais</td></tr>
+        <tr><td>Clique que funcionou</td><td>Açúcar: gosto doce e recompensa</td><td class="mono">PhG9, taste pegs dorsais · dopamina PAM (γ5, β'2, β2, γ4, α1)</td></tr>
         <tr><td>Clique que deu erro</td><td>Dor</td><td class="mono">dopamina PPL1 (PPL101 a PPL106)</td></tr>
         <tr><td>Mensagem de erro crescendo na tela</td><td>Algo se aproximando, ameaça</td><td class="mono">LPLC2, LC4</td></tr>
         <tr><td>Chegar perto de um botão</td><td>O cheiro daquele botão</td><td class="mono">44 tipos de ORN, divididos em 15 cheiros sem repetição</td></tr>
         <tr><td><b>Desviar de um botão</b></td><td>O cheiro dele passou a repelir</td><td class="mono">sinapses Kenyon → 48 MBONs "aproximar"</td></tr>
+        <tr><td><b>Ir atrás de um botão</b></td><td>O cheiro dele passou a atrair (com fome)</td><td class="mono">sinapses Kenyon → 30 MBONs "evitar"</td></tr>
         <tr><td><b>Clique</b></td><td>Parar e estender a probóscide para provar</td><td class="mono">MN6, MN8, MN9, MN11, MN12</td></tr>
         <tr><td><b>Pulo para longe</b></td><td>Fuga pela fibra gigante</td><td class="mono">DNp01</td></tr>
         <tr><td><b>Andar de ré</b></td><td>Neurônio "moonwalker"</td><td class="mono">MDN</td></tr>
@@ -390,7 +403,23 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
     </table>
   </section>
 
-  <p class="credits">Dados: <a href="https://male-cns.janelia.org/" target="_blank" rel="noopener">FlyEM Male CNS v1.0</a>, HHMI Janelia, licença CC-BY 4.0. Modelo: <a href="https://www.nature.com/articles/s41586-024-07763-9" target="_blank" rel="noopener">Shiu et al. 2024, Nature</a>. A loja "Quitanda" é fictícia e os bugs foram plantados de propósito.</p>
+  <section class="card lab" id="lab" hidden>
+    <div class="eyebrow">Laboratório</div>
+    <h3>Régua de medição</h3>
+    <p class="lab-note">Experimentos fixos para comparar versões da mosca. Enquanto rodam, a mosca é colocada nas posições do teste e a loja volta ao início quando precisa. A memória que você guardou não é tocada.</p>
+    <div class="lab-ctl">
+      <button class="ctl" id="labApprBtn" disabled>Teste de aproximação</button>
+      <button class="ctl" id="labChoiceBtn" disabled>Teste de açúcar</button>
+      <label for="labSecs">Sessão livre de <input id="labSecs" type="number" min="30" max="600" step="30" value="120"> s</label>
+      <label for="labReps">repetida <input id="labReps" type="number" min="1" max="5" value="3"> vezes</label>
+      <button class="ctl" id="labSessBtn" disabled>Rodar sessões</button>
+      <button class="ctl" id="labCopy" disabled>Copiar resultados</button>
+    </div>
+    <p class="lab-status mono" id="labStatus">Esperando o cérebro carregar.</p>
+    <div class="lab-out map" id="labOut"></div>
+  </section>
+
+  <p class="credits">Dados: <a href="https://male-cns.janelia.org/" target="_blank" rel="noopener">FlyEM Male CNS v1.0</a>, HHMI Janelia, licença CC-BY 4.0. Modelo: <a href="https://www.nature.com/articles/s41586-024-07763-9" target="_blank" rel="noopener">Shiu et al. 2024, Nature</a>. A loja "Quitanda" é fictícia e os bugs foram plantados de propósito. <a href="#lab">Laboratório</a></p>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -509,13 +538,15 @@ function checkOracles(err, clickedId) {
 const foundBugs = new Map();
 const memo = {};   // por botão: saldo do corpo cogumelar quando ela sentia aquele cheiro
 function renderMemory() {
-  const rows = Object.entries(memo).filter(([, m]) => m.seen > 0.3).sort((a, b) => a[1].keep - b[1].keep);
-  $('#memSum').textContent = `${Math.round(memory * 100)}%`;
+  const prefOf = m => m.keep - (m.keepR ?? 1);
+  const rows = Object.entries(memo).filter(([, m]) => m.seen > 0.3).sort((a, b) => prefOf(a[1]) - prefOf(b[1]));
+  $('#memSum').textContent = `${rows.filter(([, m]) => prefOf(m) < PREF_AV).length} · ${rows.filter(([, m]) => prefOf(m) > PREF_AT).length}`;
   $('#memList').innerHTML = rows.length ? rows.map(([id, m]) => {
-    const cls = m.keep < KEEP_TH ? 'neg' : '';
+    const v = clamp(prefOf(m), -1, 1);
+    const cls = v < PREF_AV ? 'neg' : v > PREF_AT ? 'pos' : '';
     return `<li class="${cls}"><span class="mem-n">${LABELS[id] || id}<small>${odorName(id)}</small></span>
-      <span class="mem-bar"><i style="left:0;width:${(m.keep * 100).toFixed(0)}%"></i></span>
-      <span class="mono">${Math.round(m.keep * 100)}%</span></li>`;
+      <span class="mem-bar"><i style="left:${v < 0 ? 50 + v * 50 : 50}%;width:${Math.abs(v) * 50}%"></i></span>
+      <span class="mono">${v >= 0 ? '+' : '−'}${Math.round(Math.abs(v) * 100)}%</span></li>`;
   }).join('') : '<li class="empty">Ela ainda não cheirou nenhum botão de perto.</li>';
 }
 function renderBugs() {
@@ -545,11 +576,13 @@ const IN_METERS = [
   ['cheiro', 'Cheiro', 'cada botão tem o seu, nas antenas'],
   ['doce', 'Gosto doce', 'patas num botão novo, ou clique que funcionou'],
   ['dor', 'Dor', 'clique que deu erro: dopamina PPL1'],
+  ['recompensa', 'Açúcar', 'clique que funcionou: dopamina PAM'],
+  ['fome', 'Fome', 'cai quando ela come e volta com o tempo'],
   ['ameaca', 'Ameaça', 'erro crescendo na tela'],
 ];
 const OUT_METERS = [
   ['kc', 'Células de Kenyon', 'o código do cheiro atual'],
-  ['valencia', 'Atração do cheiro atual', 'força das sinapses Kenyon → "aproximar"'],
+  ['valencia', 'Saldo aprendido do cheiro atual', '− doeu · + deu açúcar · 0 nunca provou'],
   ['proboscide', 'Probóscide', 'parar e provar: é o clique'],
   ['fibra_gigante', 'Fibra gigante', 'pulo de fuga'],
   ['moonwalker', 'Moonwalker', 'andar de ré'],
@@ -570,13 +603,19 @@ function setMeter(k, hz, frac, label) {
 
 const W = 480, H = 560;
 const WALK = 42;   // px por segundo de tempo cerebral
-let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memory = 0, kcDrive = 0, kcBase = 0;
-const KC_MIN = 80;      // spikes/s de Kenyon: abaixo disso ela não está sentindo cheiro de verdade
+let brainClock = 0;
+let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memory = 0, memoryR = 0;
+let kcDrive = 0, kcBase = 0, kcDriveR = 0, kcBaseR = 0, kcLossA = 0, kcLossR = 0;
+const KC_MIN = 50;      // spikes/s de Kenyon: abaixo disso ela não está sentindo cheiro de verdade
 const KEEP_TH = 0.6;    // se o cheiro atual passa menos de 60% da força original, ela desvia
+const PREF_AV = -0.4;   // saldo aprendido abaixo disto: desvia
+const PREF_AT = 0.25;   // saldo aprendido acima disto: conta como botão preferido (no cartão de memória)
+const LV_SCALE = 5000;  // valor aprendido perto de um botão recompensado uma vez (força sináptica por segundo)
 function freshFly() {
   return { x: 240, y: 330, th: -0.4, speed: 0, back: 0, jumpCd: 0, clickCd: 0, sweet: 0, threat: 0, pain: 0,
     prob: 0, dnBias: 0, dnSum: 1, cv: [0, 0], ct: [0, 0], onEl: null, kc: 0, val: 0, aversion: 0, near: null,
-    drive: 0, base: 0, keep: 1, fleeDir: 0, lastPain: -99 };
+    drive: 0, base: 0, keep: 1, fleeDir: 0, lastPain: -99,
+    driveR: 0, baseR: 0, keepR: 1, pref: 0, attraction: 0, reward: 0, hunger: 1 };
 }
 
 // cada botão tem um cheiro: alguns glomérulos da lista que o cérebro manda (odorPool)
@@ -609,7 +648,7 @@ function smellAt(px, py) {
     cur += el(r.id).novelty * Math.exp(-d2 / (2 * 80 * 80));
     for (const gi of odorOf(r.id)) glom[gi] += c;
   }
-  return { glom, cur: Math.min(1, cur), tot: Math.min(1, tot) };
+  return { glom, cur, tot };   // sem saturar: a comparação entre as antenas precisa da diferença
 }
 function nearestButton(px, py, maxD) {
   let best = null, bd = maxD * maxD;
@@ -641,22 +680,53 @@ function stepBody(dt, counts) {
   f.base = ema(f.base, kcBase / dt, dt, 0.3);
   const smelling = f.kc > KC_MIN && f.base > 1;
   f.keep = smelling ? clamp(f.drive / f.base, 0, 1) : 1;
-  f.aversion = smelling && f.keep < KEEP_TH ? clamp((KEEP_TH - f.keep) / 0.3, 0, 1) : 0;
+  // o mesmo para "evitar": o açúcar enfraquece essas sinapses
+  f.driveR = ema(f.driveR, kcDriveR / dt, dt, 0.3);
+  f.baseR = ema(f.baseR, kcBaseR / dt, dt, 0.3);
+  f.keepR = smelling && f.baseR > 1 ? clamp(f.driveR / f.baseR, 0, 1) : 1;
+  // saldo aprendido: 0 = cheiro novo; negativo = doeu; positivo = deu açúcar
+  f.pref = f.keep - f.keepR;
+  f.aversion = smelling && f.pref < PREF_AV ? clamp((PREF_AV - f.pref) / 0.3, 0, 1) : 0;
+  // fome: cai quando ela come, volta aos poucos. Mosca saciada não corre atrás de açúcar
+  f.hunger = Math.min(1, f.hunger + dt * 0.012);   // volta em uns 80 s
+  // valor aprendido: quanta força "a favor" o cheiro atual entrega às saídas, comparada com a
+  // original. Zero para cheiro nunca provado; cresce quando ela se aproxima de onde comeu
+  f.lv = ema(f.lv || 0, (kcLossR - kcLossA) / dt / LV_SCALE, dt, 0.25);
+  f.attraction = f.lv > 0.1 ? clamp((f.lv - 0.1) / 0.5, 0, 1) * f.hunger : 0;
+  // klinocinese: com fome, se o valor aprendido sobe enquanto ela anda, segue reto;
+  // se cai, dá uma virada para testar outra direção (é assim que larvas e moscas acham cheiros)
+  const prevLv = f.lvSm ?? 0;
+  f.lvSm = ema(prevLv, f.lv, dt, 0.15);
+  f.dLv = ema(f.dLv || 0, (f.lvSm - prevLv) / dt, dt, 0.2);
+  f.tumbleT = (f.tumbleT || 0) - dt;
+  f.steady = false;
+  if (f.hunger > 0.2 && f.lvSm > 0.03) {
+    if (f.dLv < -0.3 && f.tumbleT <= 0) { f.tumbleDir = Math.random() < 0.5 ? -1 : 1; f.tumbleT = 0.45; }
+    else if (f.dLv > 0.3) f.steady = true;
+  }
   const hx0 = f.x + Math.sin(f.th) * 14, hy0 = f.y - Math.cos(f.th) * 14;
   f.near = smelling ? nearestButton(hx0, hy0, 60) : null;
   if (f.near) {
-    const m = memo[f.near.id] || (memo[f.near.id] = { keep: f.keep, seen: 0, warned: -99 });
+    const m = memo[f.near.id] || (memo[f.near.id] = { keep: f.keep, keepR: f.keepR, seen: 0, warned: -99, liked: -99 });
     m.keep = ema(m.keep, f.keep, dt, 0.4);
+    m.keepR = ema(m.keepR ?? 1, f.keepR, dt, 0.4);
+    // só cita o botão se as sinapses do cheiro dele mesmo guardam o açúcar
+    if (f.attraction > 0.3 && m.keep - (m.keepR ?? 1) > PREF_AT && brainT / 1000 - (m.liked ?? -99) > 8) {
+      m.liked = brainT / 1000;
+      labEvent('atracao', { id: f.near.id });
+      logEvent(`Sentiu o cheiro de "${LABELS[f.near.id]}" e ficou por perto: ele lembra açúcar.`, 's');
+    }
     m.seen += dt;
     if (f.aversion > 0.3 && brainT / 1000 - m.warned > 6 && brainT / 1000 - f.lastPain > 1.5) {
       m.warned = brainT / 1000;
+      labEvent('desvio', { id: f.near.id });
       logEvent(`Sentiu o cheiro de "${LABELS[f.near.id]}" e desviou: as sinapses desse cheiro estão com ${Math.round(f.keep * 100)}% da força de antes da dor.`, 'a');
     }
   }
 
   // probóscide ativa = parar para provar (cérebro); o passo em si é do corpo
   f.prob = ema(f.prob, hz('proboscide'), dt, 0.12);
-  f.speed = WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion);
+  f.speed = WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion) * (1 - 0.6 * f.attraction);
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
   const dnDiff = outRate.dn_L - outRate.dn_R;
@@ -669,10 +739,11 @@ function stepBody(dt, counts) {
   if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(tL - tR) > 0.03 ? Math.sign(tL - tR) : (Math.random() < 0.5 ? -1 : 1);
   if (f.aversion < 0.05) f.fleeDir = 0;
   const away = (f.fleeDir || 0) * 4.5;
-  const chemo = (1 - f.aversion) * curiosity + f.aversion * away;
-  let turn = brainTurn + chemo + (Math.random() - 0.5) * 2.2;
+  const chemo = (1 - f.aversion) * (1 - f.attraction) * curiosity + f.aversion * away;
+  const tumble = f.tumbleT > 0 ? f.tumbleDir * 3.5 * f.hunger : 0;
+  let turn = brainTurn + chemo + tumble + (Math.random() - 0.5) * (f.steady ? 0.6 : 2.2);
   // paredes
-  const ax = f.x + Math.sin(f.th) * 40, ay = f.y - Math.cos(f.th) * 40;
+  const ax = f.x + Math.sin(f.th) * 22, ay = f.y - Math.cos(f.th) * 22;
   if (ax < 12 || ax > W - 12 || ay < 12 || ay > H - 12) {
     const toC = Math.atan2(W / 2 - f.x, -(H / 2 - f.y));
     let d = toC - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
@@ -709,7 +780,7 @@ function stepBody(dt, counts) {
   f.clickCd -= dt;
   const extended = f.prob > 25;
   f.onEl = elementAt(f.x + Math.sin(f.th) * 12, f.y - Math.cos(f.th) * 12);
-  if (extended && f.onEl && f.clickCd <= 0 && !f.jumping) { f.clickCd = 0.9; press(f.onEl); }
+  if (extended && f.onEl && f.clickCd <= 0 && !f.jumping && !LAB.noClick) { f.clickCd = 0.9; press(f.onEl); }
 
   // o que ela vai sentir no próximo passo
   const side = 16, ahead = 16;
@@ -718,13 +789,14 @@ function stepBody(dt, counts) {
   const L = smellAt(hxp - rx * side, hyp - ry * side);
   const R = smellAt(hxp + rx * side, hyp + ry * side);
   f.cv = [L.cur, R.cur]; f.ct = [L.tot, R.tot];
-  f.sweet -= dt; f.threat -= dt; f.pain -= dt;
+  f.sweet -= dt; f.threat -= dt; f.pain -= dt; f.reward -= dt;
   // as patas têm sensores de gosto: pisar num botão ainda não provado tem gosto de fruta
   const onNew = f.onEl ? el(f.onEl.id).novelty : 0;
   rates = {
     doce: Math.max(160 * onNew, f.sweet > 0 ? 200 : 0),
     ameaca: f.threat > 0 ? 200 : 0,
     dor: f.pain > 0 ? 200 : 0,
+    recompensa: f.reward > 0 ? 200 : 0,
   };
   for (let gi = 0; gi < ODOR_POOL.length; gi++) {
     rates[ODOR_POOL[gi] + '_L'] = 150 * Math.min(1, L.glom[gi]);
@@ -751,11 +823,15 @@ function press(r) {
     : r.id.startsWith('add-') && last && !Number.isFinite(last.preco) ? ['B3', r.id, 'Preço NaN na cesta']
     : r.id === 'remover' && shop.badge !== shop.items.length ? found.find(f => f[0] === 'B5')
     : null;
+  labEvent('clique', { id: r.id, erro: !!hurtBy });
   if (hurtBy) hurt(r.id, BUGS[hurtBy[0]].t, hurtBy[2]);
   else {
     fly.sweet = 0.4;
+    fly.reward = 0.4;
+    fly.hunger = Math.max(0, fly.hunger - 0.5);
+    labEvent('acucar', { id: r.id });
     sweetPop(fly.x, fly.y - 18);
-    logEvent(`Provou "${LABELS[r.id]}" com a probóscide. Funcionou: gosto doce.`, 's');
+    logEvent(`Provou "${LABELS[r.id]}" com a probóscide. Funcionou: açúcar, e a dopamina de recompensa (PAM) reforçou o cheiro desse botão.`, 's');
   }
   if (shop.route === '404') setTimeout(() => { if (shop.route === '404') { shop.route = 'home'; renderShop(); requestAnimationFrame(measure); } }, 3500);
 }
@@ -768,10 +844,12 @@ function reportBug(id, elId, detail) {
   requestAnimationFrame(measure);
   renderBugs();
   logEvent(`Bug novo no relatório: ${BUGS[id].t}.`, 'b');
+  labEvent('bug', { bug: id, id: elId });
   if (id === 'B4') hurt('cupom', BUGS[id].t, detail);   // o cupom só dá erro depois de 1,5 s
 }
 // erro depois de um clique: a mensagem cresce na tela (ameaça) e dói (dopamina de punição)
 function hurt(elId, title, detail) {
+  labEvent('dor', { id: elId });
   loom(fly.x, fly.y, title, detail);
   fly.threat = 0.3;
   fly.pain = 0.5;
@@ -1003,7 +1081,7 @@ function frame(now) {
 
 /* ───────────── Memória entre visitas ───────────── */
 // Fica só neste navegador (localStorage). Guarda as sinapses que a dor mudou, não o cérebro inteiro.
-const MEM_KEY = 'mosca-qa:memoria:v1', PREF_KEY = 'mosca-qa:lembrar';
+const MEM_KEY = 'mosca-qa:memoria:v2', PREF_KEY = 'mosca-qa:lembrar';
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); return true; } catch { return false; } },
@@ -1022,18 +1100,18 @@ function fromB64(str) {
 }
 function setMemStatus(text) { $('#memStatus').textContent = text; }
 function scheduleSave() {
-  if (!keepMemory || saveTimer) return;
+  if (!keepMemory || saveTimer || LAB.busy) return;
   saveTimer = setTimeout(() => { saveTimer = null; worker.postMessage({ type: 'getMemory' }); }, 800);
 }
 function saveMemory(m) {
+  const part = x => ({ n: x.n, idx: toB64(new Uint8Array(x.idx.buffer)), r: toB64(x.r) });
   const payload = {
-    v: 1, savedAt: Date.now(), n: m.n, edges: m.edges,
-    idx: toB64(new Uint8Array(m.idx.buffer)), r: toB64(m.r),
-    memo: Object.fromEntries(Object.entries(memo).map(([k, v]) => [k, { keep: v.keep, seen: v.seen }])),
+    v: 2, savedAt: Date.now(), edges: m.edges, A: part(m.A), R: part(m.R),
+    memo: Object.fromEntries(Object.entries(memo).map(([k, v]) => [k, { keep: v.keep, keepR: v.keepR ?? 1, seen: v.seen }])),
   };
   const ok = store.set(MEM_KEY, JSON.stringify(payload));
   const when = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  setMemStatus(ok ? `Guardada neste navegador às ${when}: ${fmtInt(m.idx.length)} sinapses mudadas pela dor.`
+  setMemStatus(ok ? `Guardada neste navegador às ${when}: ${fmtInt(m.A.idx.length)} sinapses mudadas pela dor e ${fmtInt(m.R.idx.length)} pelo açúcar.`
     : 'O navegador bloqueou o armazenamento, então a memória não foi guardada.');
 }
 function loadSaved() {
@@ -1041,14 +1119,15 @@ function loadSaved() {
   if (!raw) return null;
   try {
     const p = JSON.parse(raw);
-    return { ...p, idx: new Int32Array(fromB64(p.idx).buffer), r: fromB64(p.r) };
+    const part = x => ({ n: x.n, idx: new Int32Array(fromB64(x.idx).buffer), r: fromB64(x.r) });
+    return { ...p, A: part(p.A), R: part(p.R) };
   } catch { return null; }
 }
 function restoreMemory() {
   const saved = loadSaved();
   if (!saved) { setMemStatus('Ligado. Ainda não há memória guardada: ela começa do zero e guarda o que aprender.'); return; }
-  for (const [k, v] of Object.entries(saved.memo || {})) memo[k] = { keep: v.keep, seen: v.seen, warned: -99 };
-  worker.postMessage({ type: 'setMemory', memory: { n: saved.n, edges: saved.edges, idx: saved.idx, r: saved.r } });
+  for (const [k, v] of Object.entries(saved.memo || {})) memo[k] = { keep: v.keep, keepR: v.keepR ?? 1, seen: v.seen, warned: -99, liked: -99 };
+  worker.postMessage({ type: 'setMemory', memory: { v: 2, edges: saved.edges, A: saved.A, R: saved.R } });
   pendingSavedAt = saved.savedAt;
 }
 let pendingSavedAt = 0;
@@ -1073,6 +1152,255 @@ $('#memForget').addEventListener('click', () => {
   logEvent('Esqueceu tudo: as sinapses voltaram à força do mapa original.');
 });
 
+/* ───────────── Laboratório (Fase 0: régua de medição) ───────────── */
+const BUG_BUTTONS = ['finalizar', 'nav-contato', 'add-banana', 'remover', 'cupom'];
+// controle de cada teste: um botão que nunca dá erro, de preferência perto do botão com bug
+const CONTROLS = { 'finalizar': 'add-pera', 'nav-contato': 'nav-entregas', 'add-banana': 'add-manga', 'remover': 'add-uva', 'cupom': 'add-maca' };
+const LAB = { busy: false, noClick: false, events: [], results: { aproximacao: null, escolha: null, sessoes: [] } };
+
+window.__lab = LAB;
+function labEvent(type, data) { if (LAB.busy) LAB.events.push({ t: +(brainClock / 1000).toFixed(2), type, ...data }); }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function waitBrain(ms) {
+  const t0 = brainClock, w0 = performance.now();
+  while (brainClock - t0 < ms) {
+    if (performance.now() - w0 > ms * 40 + 30000) throw new Error('a simulação parou de avançar');
+    await sleep(running ? 40 : 200);
+  }
+}
+function labStatus(text) { $('#labStatus').textContent = text; }
+function labShop() { shop = freshShop(); renderShop(); measure(); }
+function rectOf(id) {
+  if (shop.route !== 'home' || shop.onlyDeals) labShop();
+  measure();
+  return rects.find(r => r.id === id);
+}
+function placeFly(x, y, th) {
+  Object.assign(fly, { x, y, th, back: 0, fleeDir: 0, jumpCd: 3 });
+  Object.assign(disp, { x, y, th, jump: null });
+}
+async function labFresh() {
+  worker.postMessage({ type: 'forget' });
+  worker.postMessage({ type: 'reset', keepMemory: false });
+  for (const k in memo) delete memo[k];
+  for (const k in elState) delete elState[k];
+  foundBugs.clear(); renderBugs();
+  fly = freshFly(); Object.assign(disp, { x: fly.x, y: fly.y, th: fly.th, jump: null });
+  if (trailCtx) trailCtx.clearRect(0, 0, W, H);
+  outRate = {}; outMax = {};
+  labShop();
+  await waitBrain(300);
+}
+// coloca a mosca 60 px abaixo do botão, de frente para ele, e deixa andar sem clicar
+async function labApproach(id, ms = 1800) {
+  const r = rectOf(id);
+  const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+  placeFly(cx, Math.min(H - 14, cy + 60), 0);
+  LAB.noClick = true;
+  let minD = 1e9, minKeep = 1;
+  const t0 = brainClock;
+  try {
+    while (brainClock - t0 < ms) {
+      await waitBrain(40);
+      minD = Math.min(minD, Math.hypot(fly.x - cx, fly.y - cy));
+      if (fly.kc > KC_MIN) minKeep = Math.min(minKeep, fly.keep);
+    }
+  } finally { LAB.noClick = false; }
+  return { dist: Math.round(minD), keep: +minKeep.toFixed(2) };
+}
+// põe a mosca em cima do botão, deixa cheirar e clica de verdade
+async function labPain(id) {
+  let r = rectOf(id);
+  placeFly(r.x + r.w / 2, r.y + r.h / 2 + 8, 0);
+  LAB.noClick = true;
+  await waitBrain(500);
+  LAB.noClick = false;
+  if (id === 'remover' && !shop.items.length) { ACTIONS['add-manga'](); renderShop(); measure(); }
+  const before = LAB.events.filter(e => e.type === 'dor').length;
+  r = rectOf(id);
+  press(r);
+  await waitBrain(id === 'cupom' ? 2200 : 700);
+  return LAB.events.filter(e => e.type === 'dor').length > before;
+}
+
+// dá açúcar de verdade: põe a mosca em cima do botão, deixa cheirar e clica
+async function labReward(id) {
+  let r = rectOf(id);
+  placeFly(r.x + r.w / 2, r.y + r.h / 2 + 8, 0);
+  LAB.noClick = true;
+  await waitBrain(500);
+  LAB.noClick = false;
+  const before = LAB.events.filter(e => e.type === 'acucar').length;
+  press(rectOf(id));
+  await waitBrain(700);
+  return LAB.events.filter(e => e.type === 'acucar').length > before;
+}
+// permanência: a mosca começa 60 px abaixo do botão, de frente para ele, e conto quanto tempo
+// ela fica a menos de 35 px dele. A curiosidade do corpo fica igual em todos os casos.
+const STAY_TESTS = { 'add-manga': 'add-uva', 'add-uva': 'add-manga', 'add-maca': 'add-abacaxi', 'add-abacaxi': 'add-maca' };
+async function labStay(id, ms = 5000) {
+  const r = rectOf(id);
+  const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+  for (const k of Object.keys(STAY_TESTS)) el(k).novelty = 0.35;
+  fly.hunger = 1;
+  placeFly(cx, Math.min(H - 14, cy + 60), 0);
+  LAB.noClick = true;
+  let near = 0;
+  const t0 = brainClock;
+  try {
+    while (brainClock - t0 < ms) {
+      const c0 = brainClock;
+      await waitBrain(40);
+      if (Math.hypot(fly.x - cx, fly.y - cy) < 35) near += brainClock - c0;
+    }
+  } finally { LAB.noClick = false; }
+  return Math.round(near);
+}
+async function labScenarioReward() {
+  const rows = [];
+  let n = 0;
+  for (const [id, ctrl] of Object.entries(STAY_TESTS)) {
+    labStatus(`Açúcar ${++n}/4: ${LABELS[id]}`);
+    await labFresh();
+    const antes = await labStay(id);
+    labShop(); await waitBrain(1000);
+    const comeu = await labReward(id);
+    labShop(); await waitBrain(1500);
+    const depois = await labStay(id);
+    labShop(); await waitBrain(1000);
+    const controle = await labStay(ctrl);
+    rows.push({ id, ctrl, antes, comeu, depois, controle });
+  }
+  return rows;
+}
+
+async function labScenarioApproach() {
+  const rows = [];
+  for (const [i, id] of BUG_BUTTONS.entries()) {
+    labStatus(`Aproximação ${i + 1}/5: ${LABELS[id]}`);
+    await labFresh();
+    const antes = await labApproach(id);
+    labShop(); await waitBrain(1200);
+    const doeu = await labPain(id);
+    labShop(); await waitBrain(2500);
+    const depois = await labApproach(id);
+    labShop(); await waitBrain(1200);
+    const controle = await labApproach(CONTROLS[id]);
+    rows.push({ id, antes, doeu, depois, controle,
+      aprendeu: depois.keep < KEEP_TH, desviou: depois.dist > 30, controleOk: controle.keep >= 0.9 && controle.dist <= 30 });
+  }
+  return rows;
+}
+
+async function labSession(seconds) {
+  await labFresh();
+  LAB.events = [];
+  const t0 = brainClock / 1000, w0 = performance.now();
+  const b0 = brainClock;
+  while (brainClock - b0 < seconds * 1000) {
+    await waitBrain(1000);
+    labStatus(`Sessão livre: ${Math.round((brainClock - b0) / 1000)} de ${seconds} s de tempo cerebral`);
+  }
+  const ev = LAB.events;
+  const clicks = ev.filter(e => e.type === 'clique');
+  const pains = ev.filter(e => e.type === 'dor');
+  const bugs = ev.filter(e => e.type === 'bug');
+  const sugars = ev.filter(e => e.type === 'acucar');
+  const rewardedBefore = (c) => sugars.some(s => s.id === c.id && s.t < c.t);
+  const perId = {};
+  for (const p of pains) perId[p.id] = (perId[p.id] || 0) + 1;
+  const repeated = Object.values(perId).reduce((a, n) => a + Math.max(0, n - 1), 0);
+  let certos = 0, falsos = 0;
+  for (const d of ev.filter(e => e.type === 'desvio')) {
+    if (pains.some(p => p.id === d.id && p.t < d.t)) certos++; else falsos++;
+  }
+  return {
+    segundos: seconds, bugs: bugs.length,
+    primeiroBug: bugs.length ? +(bugs[0].t - t0).toFixed(1) : null,
+    cliques: clicks.length, dores: pains.length, errosRepetidos: repeated,
+    desviosCertos: certos, desviosFalsos: falsos,
+    acucares: sugars.length, botoesDistintos: new Set(clicks.map(c => c.id)).size,
+    revisitas: clicks.filter(rewardedBefore).length, idasAtras: ev.filter(e => e.type === 'atracao').length,
+    velocidade: +((brainClock - b0) / (performance.now() - w0)).toFixed(2),
+  };
+}
+
+const ck = b => b ? '<span class="ok">sim</span>' : '<span class="no">não</span>';
+function renderLab() {
+  const R = LAB.results;
+  let html = '';
+  if (R.aproximacao) {
+    const a = R.aproximacao, n = a.length;
+    html += `<h4>Aproximação: aprendeu em ${a.filter(r => r.aprendeu).length}/${n}, desviou em ${a.filter(r => r.desviou).length}/${n}, controle intacto em ${a.filter(r => r.controleOk).length}/${n}</h4>
+      <table><thead><tr><th>Botão com bug</th><th>Antes (força · dist.)</th><th>Doeu</th><th>Depois (força · dist.)</th><th>Aprendeu</th><th>Desviou</th><th>Controle (força · dist.)</th></tr></thead><tbody>` +
+      a.map(r => `<tr><td>${LABELS[r.id]}</td><td class="num">${Math.round(r.antes.keep * 100)}% · ${r.antes.dist} px</td><td>${ck(r.doeu)}</td>
+        <td class="num">${Math.round(r.depois.keep * 100)}% · ${r.depois.dist} px</td><td>${ck(r.aprendeu)}</td><td>${ck(r.desviou)}</td>
+        <td class="num">${LABELS[CONTROLS[r.id]]}: ${Math.round(r.controle.keep * 100)}% · ${r.controle.dist} px</td></tr>`).join('') + '</tbody></table>';
+  }
+  if (R.escolha) {
+    const t = R.escolha, n = t.length;
+    const avg = k => fmt1(t.reduce((s, x) => s + x[k], 0) / n / 1000);
+    html += `<h4>Açúcar: tempo médio perto do botão ${avg('antes')} s antes e ${avg('depois')} s depois de ganhar açúcar nele; ficou mais tempo em ${t.filter(x => x.depois > x.antes).length}/${n}. Vizinho sem açúcar: ${avg('controle')} s.</h4>
+      <table><thead><tr><th>Botão</th><th>Antes</th><th>Comeu</th><th>Depois</th><th>Ficou mais</th><th>Vizinho sem açúcar</th></tr></thead><tbody>` +
+      t.map(x => `<tr><td>${LABELS[x.id]}</td><td class="num">${fmt1(x.antes / 1000)} s</td><td>${ck(x.comeu)}</td><td class="num">${fmt1(x.depois / 1000)} s</td>
+        <td>${ck(x.depois > x.antes)}</td><td class="num">${LABELS[x.ctrl]}: ${fmt1(x.controle / 1000)} s</td></tr>`).join('') + '</tbody></table>';
+  }
+  if (R.sessoes.length) {
+    const cols = [['bugs', 'Bugs achados'], ['primeiroBug', '1º bug (s)'], ['cliques', 'Cliques'], ['botoesDistintos', 'Botões diferentes'],
+      ['dores', 'Erros sentidos'], ['errosRepetidos', 'Erros repetidos'], ['desviosCertos', 'Desvios certos'], ['desviosFalsos', 'Desvios falsos'],
+      ['acucares', 'Açúcares'], ['revisitas', 'Voltas a botões bons'], ['idasAtras', 'Foi atrás'], ['velocidade', 'Velocidade']];
+    const mean = k => { const v = R.sessoes.map(s => s[k]).filter(x => x != null); return v.length ? fmt1(v.reduce((a, b) => a + b, 0) / v.length) : '—'; };
+    html += `<h4>Sessões livres de ${R.sessoes[0].segundos} s de tempo cerebral</h4><table><thead><tr><th></th>${cols.map(c => `<th>${c[1]}</th>`).join('')}</tr></thead><tbody>` +
+      R.sessoes.map((s, i) => `<tr><td>#${i + 1}</td>${cols.map(c => `<td class="num">${s[c[0]] ?? '—'}</td>`).join('')}</tr>`).join('') +
+      `<tr><td><b>média</b></td>${cols.map(c => `<td class="num"><b>${mean(c[0])}</b></td>`).join('')}</tr></tbody></table>`;
+  }
+  html += `<p class="lab-def"><b>Força</b>: quanto das sinapses Kenyon → "aproximar" do cheiro do botão ainda resta (menor valor na aproximação). <b>Dist.</b>: o mais perto que ela chegou do botão. <b>Aprendeu</b>: força abaixo de ${Math.round(KEEP_TH * 100)}%. <b>Desviou</b>: não chegou a menos de 30 px. <b>Erros repetidos</b>: erros num botão que já tinha dado erro. <b>Desvios falsos</b>: desvios de botões que nunca deram erro.</p>`;
+  $('#labOut').innerHTML = R.aproximacao || R.escolha || R.sessoes.length ? html : '';
+}
+
+async function labRun(kind) {
+  if (LAB.busy || !brainReady) return;
+  LAB.busy = true; LAB.events = [];
+  for (const b of ['#labApprBtn', '#labChoiceBtn', '#labSessBtn', '#btnReset', '#memForget']) $(b).disabled = true;
+  if (!running) setRunning(true);
+  try {
+    if (kind === 'aproximacao') LAB.results.aproximacao = await labScenarioApproach();
+    else if (kind === 'escolha') LAB.results.escolha = await labScenarioReward();
+    else {
+      const secs = clamp(+$('#labSecs').value || 120, 30, 600), reps = clamp(+$('#labReps').value || 1, 1, 5);
+      LAB.results.sessoes = [];
+      for (let i = 0; i < reps; i++) {
+        labStatus(`Sessão ${i + 1}/${reps}…`);
+        LAB.results.sessoes.push(await labSession(secs));
+        renderLab();
+      }
+    }
+    renderLab();
+    labStatus('Pronto. Os resultados estão abaixo.');
+  } catch (e) {
+    labStatus('O experimento parou: ' + e.message + '.');
+  } finally {
+    LAB.busy = false; LAB.noClick = false;
+    await labFresh();
+    if (keepMemory) restoreMemory();
+    for (const b of ['#labApprBtn', '#labChoiceBtn', '#labSessBtn', '#btnReset', '#memForget', '#labCopy']) $(b).disabled = false;
+  }
+}
+$('#labApprBtn').addEventListener('click', () => labRun('aproximacao'));
+$('#labChoiceBtn').addEventListener('click', () => labRun('escolha'));
+$('#labSessBtn').addEventListener('click', () => labRun('sessoes'));
+$('#labCopy').addEventListener('click', () => {
+  const text = JSON.stringify(LAB.results, null, 2);
+  const done = () => labStatus('Resultados copiados.');
+  navigator.clipboard?.writeText(text).then(done, () => { $('#labOut').insertAdjacentHTML('beforeend', `<pre>${escapeHtml(text)}</pre>`); labStatus('Não deu para copiar; os resultados estão no fim da tabela.'); });
+});
+function showLab() {
+  const on = location.hash === '#lab';
+  $('#lab').hidden = !on;
+  if (on) $('#lab').scrollIntoView({ block: 'start' });
+}
+addEventListener('hashchange', showLab);
+
 /* ───────────── Ligando tudo ───────────── */
 const worker = new Worker('sim-worker.js');
 let running = false, wallPrev = 0, speedRatio = 0, activeSm = 0;
@@ -1091,6 +1419,8 @@ worker.onmessage = ({ data: m }) => {
     GLOM_IX = Object.fromEntries(ODOR_POOL.map((gName, i) => [gName, i]));
     $('#loader').hidden = true;
     $('#btnRun').disabled = false; $('#btnReset').disabled = false; $('#memForget').disabled = false;
+    $('#labApprBtn').disabled = false; $('#labChoiceBtn').disabled = false; $('#labSessBtn').disabled = false;
+    labStatus('Pronto para medir.');
     brainReady = true;
     logEvent(`Cérebro montado: ${fmtInt(m.neurons)} neurônios, ${fmtInt(m.edges)} conexões. A mosca começou a andar.`);
     if (keepMemory) restoreMemory();
@@ -1102,7 +1432,7 @@ worker.onmessage = ({ data: m }) => {
       const when = new Date(pendingSavedAt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
       memory = m.strength;
       setMemStatus(`Ela lembrou da visita de ${when}.`);
-      logEvent(`Lembrou da visita anterior: ${fmtInt(m.changed)} sinapses Kenyon → "aproximar" continuam enfraquecidas pela dor de antes.`, 'a');
+      logEvent(`Lembrou da visita anterior: ${fmtInt(m.changed)} sinapses continuam como a dor e o açúcar deixaram.`, 'a');
     } else {
       for (const k in memo) delete memo[k];
       setMemStatus('A memória guardada era de outra versão do mapa e foi ignorada. Ela começa do zero.');
@@ -1111,9 +1441,13 @@ worker.onmessage = ({ data: m }) => {
   } else if (m.type === 'tick') {
     const dt = m.dtSim / 1000;
     brainT = m.t;
+    brainClock += m.dtSim;   // relógio do laboratório: só anda, nunca zera
     memory = m.memory || 0;
     if (m.learned) scheduleSave();
     kcDrive = m.kcDrive || 0; kcBase = m.kcBase || 0;
+    kcDriveR = m.kcDriveR || 0; kcBaseR = m.kcBaseR || 0;
+    kcLossA = kcBase - kcDrive; kcLossR = kcBaseR - kcDriveR;
+    memoryR = m.memoryR || 0;
     if (lastAttr) {
       const arr = lastAttr.array, ts = m.t / 1000;
       for (let s = 0; s < m.spikes.length; s++) arr[m.spikes[s]] = ts;
@@ -1138,12 +1472,13 @@ function updateReadouts(dt) {
   $('#stSpeed').textContent = speedRatio ? fmt1(speedRatio).replace(',0', '') + '× real' : '—';
   let odor = 0;
   for (const gName of ODOR_POOL) odor = Math.max(odor, rates[gName + '_L'] || 0, rates[gName + '_R'] || 0);
-  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, ameaca: rates.ameaca || 0 };
-  const full = { cheiro: 150, doce: 200, dor: 200, ameaca: 200 };
+  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, recompensa: rates.recompensa || 0, ameaca: rates.ameaca || 0 };
+  const full = { cheiro: 150, doce: 200, dor: 200, recompensa: 200, ameaca: 200 };
   for (const k in sums) { inSm[k] = ema(inSm[k] || 0, sums[k], 0.08, 0.15); setMeter(k, inSm[k], inSm[k] / full[k]); }
   outMax.kc = Math.max(outMax.kc || 300, fly.kc);
   setMeter('kc', fly.kc, fly.kc / outMax.kc, fmtInt(fly.kc) + ' spk/s');
-  setMeter('valencia', 0, fly.keep, fly.kc > KC_MIN ? Math.round(fly.keep * 100) + '%' : '—');
+  setMeter('valencia', 0, 0.5 + fly.pref / 2, fly.kc > KC_MIN ? (fly.pref >= 0 ? '+' : '−') + Math.round(Math.abs(fly.pref) * 100) + '%' : '—');
+  setMeter('fome', 0, fly.hunger, Math.round(fly.hunger * 100) + '%');
   renderMemory();
   const outs = { proboscide: outRate.proboscide || 0, fibra_gigante: outRate.fibra_gigante || 0, moonwalker: outRate.moonwalker || 0 };
   for (const [k, v] of Object.entries(outs)) { outMax[k] = Math.max(outMax[k] || 20, v); setMeter(k, v, v / outMax[k]); }
@@ -1187,6 +1522,7 @@ function fit() {
 new ResizeObserver(fit).observe($('#viewport'));
 buildMeters();
 initFlyAnim();
+showLab();
 reset();
 fit();
 worker.postMessage({ type: 'load' });
