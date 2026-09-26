@@ -1,0 +1,15 @@
+{
+  "nota": "Rodadas feitas no painel do navegador (antes do executor headless). Resumo: [bugs, 1º bug (s), quais, fração de cliques em rede/cálculo].",
+  "versaoA_sem_aproximacao_sem_decepcao_partida_nao_pareada": {
+    "rodada1": { "ingenua": [2, 52.7, "?", 0.08], "treino": [4, 19.9, "?", 0.26], "treinada": [4, 24.3, "?", 0.22] },
+    "rodada2": { "ingenua": [1, 27.9, "?", 0.0], "treino": [4, 15.9, "?", 0.45], "treinada": [4, 28.4, "?", 0.15] },
+    "rodada3": { "ingenua": [3, 9.1, "F2F3F5", 0.23], "treinoControle": [5, 15.2, "P1P4P5P3P2", 0.55], "controle": [4, 54.0, "F4F3F1F2", 0.38], "treino": [5, 10.5, "P1P2P4P5P3", 0.46], "treinada": [2, 36.2, "F2F4", 0.22] },
+    "rodada4_ingenua_e_controle_iguais_na_versaoB": { "ingenua": [2, 30.0, "F5F4", 0.10], "controle": [3, 62.8, "F4F1F2", 0.22] }
+  },
+  "versaoB_com_aproximacao_sem_decepcao": "a treinada ficou presa no f-extrato (F2) por mais de 40 s depois de achá-lo; rodada interrompida",
+  "versaoC_com_aproximacao_e_decepcao_partida_nao_pareada": { "treinada": [2, 10.1, "F2F1", 0.23, "2 decepções"] },
+  "versaoD_com_aproximacao_decepcao_e_partida_pareada": {
+    "partida0": { "ingenua": [5, 7.6, "F4F3F5F1F2", 0.38], "treinoControle": [5, 15.7, "P2P4P5P3P1", 0.43], "controle": [2, 11.6, "F2F1", 0.32], "treino": [2, 21.4, "P5P3", 0.20], "treinada": [3, 10.5, "F2F1F4", 0.41] },
+    "partida1": { "ingenua": [4, 2.3, "F5F4F1F2", 0.23], "treinoControle": [5, 14.3, "P2P4P3P5P1", 0.48], "controle": "interrompida" }
+  }
+}

@@ -1,6 +1,6 @@
 # Mosca QA
 
-O conectoma completo do sistema nervoso central de uma mosca-da-fruta macho (166.700 neurônios, HHMI Janelia, 2026), simulado no navegador. A mosca passeia por uma loja fictícia com 5 bugs escondidos, prova os botões com a probóscide e aprende com os erros e os acertos: evita os botões que quebram e, quando está com fome, volta aos que funcionam.
+O conectoma completo do sistema nervoso central de uma mosca-da-fruta macho (166.700 neurônios, HHMI Janelia, 2026), simulado no navegador. A mosca caça bugs em sistemas fictícios: vê a tela, anda até os elementos, prova cada um com a probóscide e é recompensada quando acha um bug novo. Ela treina num painel de Pedidos e é testada num sistema Financeiro que nunca viu.
 
 ## Rodar
 
@@ -14,7 +14,10 @@ Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar.
 
 ## Estrutura
 
-- `web/index.html`: a página (loja, mosca, cérebro em 3D, relatório de QA, memória)
+- `web/index.html`: a página (a mosca, o cérebro em 3D, o relatório de bugs, a memória, o laboratório)
+- `web/sistemas.js`: os sistemas em teste (Pedidos e Financeiro) e os bugs plantados
+- `web/olhos3d.js`: a aba "Pelos olhos dela" (a tela em 3D, os campos de visão e o olho composto)
+- `web/sandbox.js`: o modo Sandbox 3D (plataformas, voo e o visual de Matrix)
 - `web/sim-worker.js`: a simulação, numa thread separada
 - `web/data/`: o conectoma empacotado para o navegador (base64, ~26 MB)
 - `scripts/`: o processamento em Python que gera `web/data/` a partir dos dados do Janelia
@@ -48,33 +51,90 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - Sem as conexões excitatórias entre PNs e LNs do lobo antenal, que num modelo de neurônio-ponto viram um eco que nunca desliga.
 - Sem autapses.
 
+### Os sistemas e o cheiro
+
+- Cada elemento clicável tem um cheiro feito de duas partes: **notas da sua função** (rede, cálculo, formulário, lista, navegação; dois glomérulos fortes cada) e um **par próprio** de glomérulos, único entre todos os elementos dos dois sistemas.
+- No cérebro simulado, elementos com a mesma função dividem de 18% a 53% das células de Kenyon, mesmo em sistemas diferentes. Funções diferentes não dividem nenhuma.
+- É uma metáfora: o cheiro representa pistas do que o elemento faz.
+- Nos dois sistemas os bugs se concentram em rede e cálculo (4 de 5 em cada um).
+
+### Visão
+
+- Uns 105 mil dos neurônios do mapa são visuais, com a posição de cada coluna do olho.
+- A página não simula a retina: a primeira etapa da visão (L1–L3, Mi1, Tm3) funciona com voltagem graduada, e um modelo de disparos não a reproduz bem.
+- Em vez disso, cada olho liga o **LC10a** daquele lado (135 à esquerda, 140 à direita), um detector de objetos pequenos, na proporção do que vê. Cada elemento conta pelo tamanho aparente; o que ela já provou conta menos (habituação). Nos machos reais o LC10a é o que segue a fêmea na corte.
+- A direção sai do cérebro: a diferença entre DNa01–03 da esquerda e da direita vira a mosca, e esses neurônios têm tônus de 7,3 mV, como numa mosca andando.
+- `scripts/visao_teste.py` testa as famílias de neurônios de projeção visual uma a uma (resultado em `docs/medicoes/visao-triagem.json`). O LC10a de um olho liga o DNa02 do mesmo lado em ~90 Hz: vira a mosca para o que ela vê.
+- `?olhos=0` na URL desliga a visão e volta à regra antiga de curiosidade, para comparar.
+
+### Sandbox 3D
+
+- No modo **Sandbox 3D** o sistema vira um mundo de plataformas, uma por grupo de elementos da mesma função, em alturas diferentes. Ela anda por cima delas e voa entre elas.
+- **Decolagem:** de fuga, quando a fibra gigante (DNp01) dispara. Um bug que estoura cresce na frente dela e liga os detectores de ameaça (LPLC2, LC4). Também decola por uma regra do corpo, na beira de uma plataforma ou diante de uma mais alta, se houver algo novo para ver.
+- **No ar:** a direção vem dos DNa01–03, como no chão. É uma simplificação: numa mosca real, o voo usa outros descendentes também. A altura e o pouso (perto de algo que ela ainda não provou) são regras do corpo.
+- O visual (grade neon, chuva de código, glitches vermelhos) é só para quem assiste. Os sentidos dela são os mesmos da página, agora com altura: cheiro, olhos e gosto nas patas.
+- A tela mostra o mundo (câmera de espectador, olhos compostos e mapa) ao lado do cérebro, com os neurônios acendendo.
+
 ### Aprendizado
 
-- **Dor:** um clique que dá erro ativa os neurônios de dopamina PPL1 (PPL101 a PPL106). A dopamina não tem efeito sináptico rápido; ela só muda sinapses.
-- **Regra:** a dopamina enfraquece as sinapses entre as células de Kenyon que dispararam há pouco e os 48 neurônios de saída "aproximar" dos compartimentos PPL1.
-- **Açúcar:** um clique que funciona ativa os neurônios de dopamina de recompensa (PAM dos compartimentos γ5, β'2, β2, γ4 e α1), que enfraquecem as sinapses Kenyon → 30 saídas "evitar". Aquele cheiro passa a atrair.
-- **Fome:** cada açúcar reduz a fome em 50%, e ela volta em ~80 s. Só com fome a mosca fica perto do que a recompensou; saciada, ela explora.
-- **Esquecimento e consolidação:** a sinapse mudada volta aos poucos à força original. Cada episódio de dopamina consolida a memória: um erro isolado some em 2–3 min, três erros duram muito mais.
-- **Extinção:** sentir o cheiro de novo sem dor (ou sem açúcar) acelera o esquecimento.
+- **Recompensa:** um bug novo ativa os neurônios de dopamina de recompensa (PAM dos compartimentos γ5, β'2, β2, γ4 e α1), que enfraquecem as sinapses Kenyon → 30 saídas "evitar". Aquele cheiro passa a atrair. Um bug que já está no relatório não dá nada.
+- **Decepção:** provar um elemento que cheirava a bug e não achar bug novo ativa a dopamina PPL1 (PPL101 a PPL106), na proporção do que ela esperava. Isso enfraquece as sinapses Kenyon → 48 saídas "aproximar" e cancela parte da atração. Em moscas reais, sentir sem açúcar um cheiro que dava açúcar forma uma memória oposta assim (Felsenberg et al., Cell 2018).
+- **Fome:** a mosca começa com fome de bug; cada bug novo a sacia em 30%, e a fome volta em ~80 s. Só com fome o cheiro aprendido atrai.
+- **Esquecimento e consolidação:** a sinapse mudada volta aos poucos à força original. Cada episódio de dopamina consolida a memória.
+- **Extinção:** sentir o cheiro de novo sem dopamina acelera o esquecimento.
 - **Tônus de base:** os neurônios de saída ficam perto do limiar, como os reais.
-- **Cheiros:** cada botão tem um cheiro próprio, feito de 44 glomérulos divididos em 15 grupos sem repetição.
 - **Memória entre visitas:** opcional, guardada no navegador (sinapses mudadas e consolidação).
-
-### Laboratório
-
-A página tem um laboratório (link no rodapé, ou `#lab`) com testes fixos: aproximação depois da dor, permanência depois do açúcar, memória no tempo e sessões livres. As medições de cada fase estão em `docs/medicoes/`.
 
 ### O que é simplificação
 
-- **Direção do passo:** vem de regras simples do corpo, a curiosidade por botões novos e a meia-volta.
-- **Decisão de desviar:** lê a força das sinapses do cheiro atual, não o disparo dos neurônios de saída.
+- **Direção do passo:** com os olhos, vem do cérebro (LC10a → DNa01–03). O cheiro ainda usa uma regra do corpo: quando o cheiro aprendido atrai, ela vira para o lado em que ele está mais forte (a diferença entre as antenas); quando repele, para o outro.
+- **Entrada dos olhos:** o quanto cada olho vê é calculado pela página (tamanho aparente e habituação), não pela retina simulada.
+- **Decisão de ir atrás:** lê o saldo das sinapses do cheiro atual, não o disparo dos neurônios de saída.
 
 A memória está nas sinapses da simulação; a ponte entre memória e movimento é simplificada.
 
-Tentamos tirar essa ponte (`scripts/fase3_teste_direcao.py`, resultados em `docs/medicoes/fase3-direcao.json`). Os caminhos existem no mapa: as saídas do corpo cogumelar chegam em 1 ou 2 passos a DNa02, DNa03 e MDN. Mas, mesmo zerando as sinapses de um cheiro, a direção muda menos de 1 Hz (o próprio cheiro produz 7 Hz), e o MDN não muda nas condições da página. Cada antena projeta para os dois lados, então o corpo cogumelar informa valência, quase nada de direção.
+Tentamos tirar a ponte do cheiro (`scripts/fase3_teste_direcao.py`, resultados em `docs/medicoes/fase3-direcao.json`). Os caminhos existem no mapa: as saídas do corpo cogumelar chegam em 1 ou 2 passos a DNa02, DNa03 e MDN. Mas, mesmo zerando as sinapses de um cheiro, a direção muda menos de 1 Hz (o próprio cheiro produz 7 Hz), e o MDN não muda nas condições da página. Cada antena projeta para os dois lados, então o corpo cogumelar informa valência, quase nada de direção. A visão, que sabe onde as coisas estão, vira a mosca pelo próprio mapa.
+
+### Laboratório
+
+A página tem um laboratório (link no rodapé, ou `#lab`), e `scripts/lab_headless.mjs` roda os mesmos testes num Chrome sem janela. Nos dois testes, as moscas comparadas começam no mesmo ponto da tela em cada rodada.
+
+- **Transferência:** três moscas caçam bugs no Financeiro.
+  - **Ingênua:** cérebro novo.
+  - **Controle:** passou 120 s no Pedidos e achou bugs, mas sem recompensa.
+  - **Treinada:** o mesmo, com recompensa.
+- **Bloqueio:** a mesma tela e o mesmo ponto de partida. Numa mosca a dopamina de recompensa (PAM) funciona; na outra está silenciada, como nos experimentos que desligam esses neurônios em moscas reais.
+
+As medições estão em `docs/medicoes/` (fase 4).
+
+### Resultados (setembro de 2026)
+
+| Teste | Com aprendizado | Sem aprendizado |
+|---|---|---|
+| Bloqueio no Pedidos, 120 s, 5 pontos de partida | 4,4 bugs; achou o P4 em 2 de 5 | 4,0 bugs; P4 em 0 de 5 |
+| Treino no Pedidos, 120 s, mesmo ponto (olhos v2) | P4 em 4 de 5 | P4 em 0 de 5 |
+| Bloqueio no Financeiro, 90 s, sem olhos | 3,2 bugs | 4,0 bugs |
+| Bloqueio no Financeiro, 90 s, olhos v1 | 3,4 bugs | 2,8 bugs |
+| Bloqueio no Financeiro, 90 s, olhos v2 e cheiro de 60 px | 3,4 bugs | 3,8 bugs |
+| Transferência para o Financeiro, 60 s, olhos v2 | treinada 1,8 bugs | ingênua 2,4 · controle 2,4 |
+
+O que isso quer dizer:
+
+- **Ela acha bugs:** de 2 a 5 dos 5, em 60 a 120 s, sobretudo explorando.
+- **Dentro do mesmo sistema, aprender ajuda quando o padrão se repete perto.** O P3 e o P4 são os dois de cálculo, lado a lado. Depois de achar um, ela vai atrás dos outros elementos de cálculo e acha o P4 (6 de 10 vezes), que a exploração sozinha não alcançou (0 de 10).
+- **Num sistema novo, não ajudou.** Nas sinapses, a transferência existe: os elementos de rede do Financeiro chegam com 50–63% do valor aprendido. Mas o que ela aprende é um cheiro, e cheiro só se sente a ~40 px. Os olhos veem de longe, mas não sabem o que ela aprendeu.
+  - A via visual do corpo cogumelar existe no mapa, mas no modelo acende só 2 a 5 das ~4 mil células de Kenyon (`scripts/visao_kc.py`).
+  - Um cheiro de alcance maior (60 px) também não ajudou.
+- **Aprender com um exemplo engana.** No Financeiro, o primeiro bug costuma ser o de lista, o único de lista. Ela passa a esperar bug nos outros elementos de lista e se decepciona 5 a 7 vezes por sessão. Treinada no Pedidos, que tem um bug de menu, ela chega ao Financeiro esperando bug nos 11 itens de menu.
+- **O controle e o ponto de partida pareado mudaram as conclusões.** Sem eles, as primeiras rodadas pareciam mostrar transferência (treinada 4 bugs, ingênua 1,5), o que era efeito de onde cada mosca começava.
+
+Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.
 
 ## Créditos
 
 - **Dados:** [FlyEM Male CNS v1.0](https://male-cns.janelia.org/), HHMI Janelia, licença CC-BY 4.0.
 - **Modelo:** Shiu et al. 2024, *A Drosophila computational brain model reveals sensorimotor processing*, Nature.
-- A loja "Quitanda" é fictícia e os bugs foram plantados de propósito.
+- **LC10a na corte:** Ribeiro et al. 2018, *Visual projection neurons mediating directed courtship in Drosophila*, Cell; Hindmarsh Sten et al. 2021, *Sexual arousal gates visual processing during Drosophila courtship*, Nature.
+- **DNa02 e a direção:** Rayshubskiy et al. 2020, *Neural control of steering in walking Drosophila*, bioRxiv.
+- **Decepção:** Felsenberg et al. 2018, *Integration of parallel opposing memories underlies memory extinction*, Cell.
+- Os sistemas Pedidos e Financeiro são fictícios e os bugs foram plantados de propósito.

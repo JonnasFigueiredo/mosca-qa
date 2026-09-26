@@ -142,6 +142,11 @@ groups = {
     "fibra_gigante": by_type(["DNp01"]),
     "moonwalker": by_type(["MDN"]),
     "dn_L": ids(supc == "descending_neuron", "L"), "dn_R": ids(supc == "descending_neuron", "R"),
+    # visão: o que cada olho vê liga o LC10a daquele olho (detector de objetos pequenos, o que o macho
+    # usa para seguir a fêmea). Na triagem (visao_teste.py) ele liga o DNa02 do mesmo lado: vira para o objeto
+    "olho_L": by_type(["LC10a"], "L"), "olho_R": by_type(["LC10a"], "R"),
+    # direção: DNa01-03 de cada lado; o mais ativo vira a mosca para o seu lado
+    "dirige_L": by_type(["DNa01", "DNa02", "DNa03"], "L"), "dirige_R": by_type(["DNa01", "DNa02", "DNa03"], "R"),
 }
 # um grupo por glomérulo e por antena: cada botão da loja ganha um cheiro com 6 deles
 ODOR_POOL = odor_pool(typ.astype(str), cls_all)

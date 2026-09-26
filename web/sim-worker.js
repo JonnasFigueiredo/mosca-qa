@@ -23,6 +23,7 @@ let A_INC = 0.3, TAU_A = 1000;   // mV por spike, ms
 // - açúcar: a dopamina de recompensa (PAM) enfraquece Kenyon -> MBON "evitar". Da próxima vez,
 //   aquele cheiro repele menos, ou seja, atrai mais.
 const MBON_BIAS = 6.8;           // mV
+const DN_BIAS = 7.3;             // mV: neurônios de direção (DNa01-03) com tônus, como numa mosca andando
 const TAU_E = 400;               // ms, duração do rastro (só conta quem cheirava na hora)
 let ETA = 0.006;                 // enfraquecimento por spike de dopamina
 let W_FLOOR = 0.1;               // a conexão nunca cai abaixo desta fração do original
@@ -147,6 +148,7 @@ async function load() {
   for (const k of Object.keys(groups)) outGroups[k] = 0;
   bias = new Float32Array(N);
   for (const k of ['mbon_aprox', 'mbon_evitar']) for (const i of groups[k]) bias[i] = MBON_BIAS;
+  for (const k of ['dirige_L', 'dirige_R']) for (const i of groups[k] || []) bias[i] = DN_BIAS;
   restState();
   buildPlastic();
   postMessage({ type: 'ready', neurons: N, edges: meta.edges, odorPool: meta.odorPool,
