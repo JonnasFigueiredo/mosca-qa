@@ -21,6 +21,7 @@ Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar.
 - `web/sim-worker.js`: a simulação, numa thread separada
 - `web/data/`: o conectoma empacotado para o navegador (base64, ~26 MB)
 - `scripts/`: o processamento em Python que gera `web/data/` a partir dos dados do Janelia
+- `corpo/`: o corpo físico opcional (servidor local com a NeuroMechFly no MuJoCo); `corpo/terceiros/` tem o controlador de passada do flygym (Apache 2.0)
 
 ## Refazer os dados
 
@@ -74,6 +75,48 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - **No ar:** a direção vem dos DNa01–03, como no chão. É uma simplificação: numa mosca real, o voo usa outros descendentes também. A altura e o pouso (perto de algo que ela ainda não provou) são regras do corpo.
 - O visual (grade neon, chuva de código, glitches vermelhos) é só para quem assiste. Os sentidos dela são os mesmos da página, agora com altura: cheiro, olhos e gosto nas patas.
 - A tela mostra o mundo (câmera de espectador, olhos compostos e mapa) ao lado do cérebro, com os neurônios acendendo.
+
+### Corpo físico (opcional)
+
+- **O corpo:** a NeuroMechFly (flygym 2.1, EPFL), que vem de um micro-CT de uma mosca real, roda no MuJoCo com 42 articulações nas patas. No sandbox, a malha real anda por cima das plataformas, na escala de 7 px por mm (~18 px de mosca).
+- **As patas:** o controlador híbrido do exemplo oficial do flygym. Ele junta um gerador de ritmo trípode, passadas **gravadas de moscas reais** (vídeo 3D com DeepFly3D) e reflexos de tropeço e de pata no vazio.
+- **Cérebro e corpo:** o cérebro manda o sinal descendente `[esquerda, direita]`, que é a virada dos DNa01–03 e a velocidade que ela quer. A física avança até o tempo do cérebro; se o corpo atrasar, o cérebro espera.
+- **Medido neste PC:**
+  - 13,5 mm/s em linha reta (moscas reais: por volta de 10–20 mm/s);
+  - ~150°/s nas curvas;
+  - ré com sinal negativo;
+  - a física a ~0,4× o tempo real (passo de 0,2 ms, controlador a 500 Hz), mais rápida que o cérebro (~0,3×). A 250 Hz as curvas caíam pela metade.
+- **Modo híbrido:** no chão, a física move as patas. Na beira de uma plataforma ela decola ou dá meia-volta (regra do corpo). No ar, voa como no modo simples, inclusive a decolagem de susto pela fibra gigante. Ao pousar, o corpo físico é recolocado ali.
+- **Limites:**
+  - ainda não há física de voo nem de salto: no ar ela usa o modelo simples;
+  - as plataformas não existem na física: a página cuida da altura e das beiradas;
+  - quem move as patas é o controlador, não o cordão nervoso do conectoma.
+
+- **Tato:** a força de contato de cada pata liga os neurônios táteis (cerdas) daquela pata, pelo nervo por onde eles entram no cordão nervoso: ProLN, MesoLN e MetaLN, de cada lado, com 115 a 428 neurônios por pata. A força inclui a adesão das almofadinhas das patas. Por enquanto, o toque aparece no cérebro, mas não muda o comportamento.
+- **Olhos reais (no sandbox):** o modelo de olho composto do flygym, com 721 omatídeos por olho, câmera de 157° com correção de olho de peixe e omatídeos "amarelos" (canal verde) e "pálidos" (canal azul). O mundo 3D é renderizado pelas câmeras presas aos olhos da malha, que balançam com o passo, e cada pixel soma no seu omatídeo (`corpo/olho_mapas.py` gera a tabela). O HUD mostra essa imagem. O LC10a de cada olho recebe os omatídeos mais claros que o resto do olho, e o que ela ainda não provou brilha mais no mundo. Essa última etapa ainda é regra nossa: não simulamos fotorreceptor → LC, e o LC10a de cada olho recebe um total, não o campo receptivo de cada célula.
+
+Para rodar:
+
+```bash
+python -m venv .venv
+.venv/Scripts/python.exe -m pip install flygym
+.venv/Scripts/python.exe corpo/servidor.py
+```
+
+Depois, no Sandbox 3D, clique em "Corpo físico". O servidor grava a malha em `web/data/corpo_malha.*` na primeira vez. Os scripts `corpo/andar_teste.py` e `scripts/corpo_teste.py` medem a passada e a velocidade da física.
+
+### Voo físico (em andamento)
+
+O FlyBody (Janelia/DeepMind), que vem no flygym 2.1, tem asas articuladas. Os testes estão em `corpo/voo_*.py` e `docs/medicoes/voo-*.json`.
+
+- **Consertos no FlyBody do flygym:**
+  - recolocamos nas asas os elipsoides de fluido do flybody original (o modelo de forças do ar do MuJoCo), que o flygym descarta;
+  - corrigimos o ar: o flygym deixa a densidade e a viscosidade do flybody em unidades de cm num modelo em mm, o que dá um ar 1000× mais denso que o real;
+  - tiramos a armadura das asas (30× a inércia da asa), que exigia torques enormes para bater a 218 Hz;
+  - deixamos só as asas articuladas: as juntas passivas levíssimas vibravam até a simulação explodir.
+- **Sustentação:** uma busca automática achou batidas de asa que sustentam 1,1× o peso, com pouco torque de empinar.
+- **Estabilidade:** um reflexo de estabilização (o papel dos halteres) segura a atitude por ~0,11 s (~25 batidas), mas ainda não mantém o voo. No flybody original, o voo usa um controle treinado por aprendizado por reforço, que não vem no pacote.
+- **Por isso,** no sandbox, o voo ainda usa o modelo simples.
 
 ### Aprendizado
 
@@ -136,5 +179,6 @@ Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cad
 - **Modelo:** Shiu et al. 2024, *A Drosophila computational brain model reveals sensorimotor processing*, Nature.
 - **LC10a na corte:** Ribeiro et al. 2018, *Visual projection neurons mediating directed courtship in Drosophila*, Cell; Hindmarsh Sten et al. 2021, *Sexual arousal gates visual processing during Drosophila courtship*, Nature.
 - **DNa02 e a direção:** Rayshubskiy et al. 2020, *Neural control of steering in walking Drosophila*, bioRxiv.
+- **Corpo:** NeuroMechFly v2 e flygym, Wang-Chen et al. 2024, *NeuroMechFly v2: simulating embodied sensorimotor control in adult Drosophila*, Nature Methods. O controlador em `corpo/terceiros/` é do repositório do flygym (Apache 2.0).
 - **Decepção:** Felsenberg et al. 2018, *Integration of parallel opposing memories underlies memory extinction*, Cell.
 - Os sistemas Pedidos e Financeiro são fictícios e os bugs foram plantados de propósito.

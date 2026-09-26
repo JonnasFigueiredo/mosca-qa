@@ -182,6 +182,12 @@ body.sandbox .brain-labels { color: #3fae6e; }
 .sb-modes { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; pointer-events: auto; }
 .sb-modes button { background: #03140a; color: #7dffb0; border-color: #0f5a2e; }
 .sb-modes button.on { color: #d8ffe9; border-color: #3dff8f; }
+.sb-modes .pred-btn { color: #ff8a8a; border-color: #5a1a1a; }
+.sb-modes .corpo-btn { color: #9fd6ff; border-color: #1a3f5a; }
+.sb-modes .corpo-btn.on { color: #fff; background: #0f3350; border-color: #5cc8ff; }
+.sb-modes .corpo-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.sb-modes .pred-btn.on { color: #fff; background: #5a0f16; border-color: #ff3b4a; }
+.sb-help { position: absolute; left: 10px; right: 10px; bottom: 44px; text-align: center; font-size: 11px; color: #ff9a9a; text-shadow: 0 0 6px #5a0f16; }
 .ev-ui { position: absolute; inset: 0; pointer-events: none; }
 .ev-cap { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
 .ev-cap b { font-weight: 600; }
@@ -311,7 +317,8 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <canvas id="world" aria-label="Sandbox 3D: o sistema em teste espalhado em plataformas, a mosca andando e voando, com os olhos dela e o mapa"></canvas>
         <div class="sb-ui">
           <div class="sb-cap mono" id="sbCap"></div>
-          <div class="app-tabs sb-modes" id="sbModes"><button data-mode="spec" class="on">Espectador</button><button data-mode="olhos">Olhos dela</button><button data-mode="cima">De cima</button></div>
+          <div class="app-tabs sb-modes" id="sbModes"><button data-mode="spec" class="on">Espectador</button><button data-mode="olhos">Olhos dela</button><button data-mode="cima">De cima</button><button data-mode="pred">Câmera da Sentinela</button><button id="predBtn" class="pred-btn">Você: Sentinela</button><button id="corpoBtn" class="corpo-btn" disabled title="Precisa do servidor do corpo: .venv/Scripts/python.exe corpo/servidor.py">Corpo físico</button></div>
+          <div class="sb-help mono" id="predHelp" hidden>WASD ou setas: mover · Q/E: subir e descer · espaço: bote</div>
         </div>
       </div>
       <div class="browser">
@@ -437,6 +444,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <h3>Como ela enxerga</h3>
         <p>Mais da metade dos neurônios do mapa são visuais: uns 105 mil, com a posição de cada coluna do olho. A página não simula a retina. A primeira etapa da visão funciona com voltagem graduada, sem disparos, e um modelo de disparos não a reproduz bem.</p>
         <p>Em vez disso, ela liga direto o <strong>LC10a</strong> de cada olho, um detector de objetos pequenos, na proporção do que aquele olho vê. Nos machos reais é o neurônio que segue a fêmea durante a corte. O que ela já provou chama menos a atenção (habituação).</p>
+        <p><strong>No sandbox, com olhos reais:</strong> o mundo 3D é visto pelo modelo de olho composto do flygym, com 721 omatídeos por olho. O LC10a recebe os omatídeos mais claros que o resto do olho. O HUD mostra exatamente essa imagem, e o vermelho aparece escuro, porque moscas quase não o enxergam.</p>
         <p>Testamos as famílias de neurônios de projeção visual uma a uma. O LC10a de um olho liga o DNa02 do mesmo lado em uns 90 Hz, e o DNa02 vira a mosca para o seu lado. <strong>Para onde ela anda é decidido pelo cérebro.</strong></p>
       </div>
       <div>
@@ -444,6 +452,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <p>No modo <strong>Sandbox 3D</strong>, o sistema vira um mundo: cada grupo de elementos da mesma função fica numa plataforma, em alturas diferentes, e ela anda por cima delas e <strong>voa</strong> entre elas.</p>
         <p>Ela decola sozinha quando chega na beira de uma plataforma, ou dá de cara com uma mais alta, e há algo novo para ver. E decola de susto quando a <strong>fibra gigante</strong> dispara: quando um bug estoura, o glitch cresce na frente dela e liga os detectores de ameaça (LPLC2 e LC4). No ar, a direção continua vindo dos DNa01-03.</p>
         <p>O visual de Matrix é para quem assiste. Ela sente esse mundo pelos mesmos canais da página: o cheiro de cada elemento, os olhos (LC10a) e o gosto nas patas.</p>
+        <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. A força de cada pata no chão liga os neurônios de tato daquela pata no cordão nervoso. Por enquanto a física é só do andar: no ar ela usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
       </div>
       <div class="wide">
         <h3>O que é cérebro e o que é corpo</h3>
@@ -598,6 +607,9 @@ const IN_METERS = [
   ['doce', 'Gosto doce', 'patas num elemento novo, ou bug achado'],
   ['recompensa', 'Recompensa', 'bug novo: dopamina PAM'],
   ['fome', 'Fome de bug', 'cai quando ela acha um e volta com o tempo'],
+  ['ameaca', 'Ameaça', 'algo crescendo na frente: LPLC2 e LC4'],
+  ['tato', 'Tato (patas)', 'corpo físico: o peso em cada pata'],
+  ['dor', 'Punição', 'dopamina PPL1: decepção, ou pega pela Sentinela'],
 ];
 const OUT_METERS = [
   ['kc', 'Células de Kenyon', 'o código do cheiro atual'],
@@ -622,7 +634,7 @@ function setMeter(k, hz, frac, label) {
 
 const W = 560, H = 640;
 // sandbox 3D (sandbox.js): um mundo maior, com plataformas; z é a altura dos pés dela
-const SB = { on: false, W: 1400, H: 1400, app: null, start: [700, 760] };
+const SB = { on: false, fisico: false, W: 1400, H: 1400, app: null, start: [700, 760] };
 const bw = () => (SB.on ? SB.W : W), bh = () => (SB.on ? SB.H : H);
 const WALK = 42;   // px por segundo de tempo cerebral
 let brainClock = 0;
@@ -701,7 +713,10 @@ function see(f) {
     L += sl; R += sr;
     if (sl || sr) seen.push([r, sl, sr]);
   }
+  if (SB.on && typeof predView === 'function') { const [pl, pr] = predView(f); L += pl; R += pr; }
   f.seen = seen;
+  // olhos reais (sandbox.js): o que o LC10a de cada olho recebe vem dos 721 omatídeos de cada olho
+  if (SB.on && f.olhoReal && performance.now() - f.olhoReal.t < 600) return [f.olhoReal.L, f.olhoReal.R];
   // os dois olhos se inibem (normalização): numa tela cheia, o que conta é quanto um vê a mais que o outro
   return [L / (L + R + EYE_GAIN), R / (L + R + EYE_GAIN)];
 }
@@ -813,7 +828,10 @@ function stepBody(dt, counts) {
     let d = toC - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
     turn += 5 * Math.sign(d);
   }
-  f.th += clamp(turn, -6, 6) * dt;
+  // com o corpo físico no chão, quem gira a mosca são as patas: o cérebro só manda o comando de virada.
+  // No ar (ou sem o corpo físico), a virada vai direto para o rumo
+  if (SB.on && SB.fisico && !f.flying) f.turnCmd = clamp(turn, -6, 6);
+  else f.th += clamp(turn, -6, 6) * dt;
 
   // andar de ré (moonwalker)
   if (counts.moonwalker > 0 && f.back <= 0) { f.back = 0.6; logEvent('O neurônio moonwalker (MDN) disparou: andou de ré.'); }
@@ -864,9 +882,12 @@ function stepBody(dt, counts) {
   const onNew = f.onEl ? el(f.onEl.id).novelty : 0;
   rates = {
     doce: Math.max(160 * onNew, f.sweet > 0 ? 200 : 0),
-    ameaca: f.threat > 0 ? 200 : 0,
+    ameaca: Math.max(f.threat > 0 ? 200 : 0, f.loom || 0),
     dor: f.pain > 0 ? 200 : 0,
     recompensa: f.reward > 0 ? 200 : 0,
+    // tato: com o corpo físico no chão, a força de cada pata liga as cerdas daquela pata (nervos ProLN, MesoLN, MetaLN)
+    // (a força inclui a adesão das almofadinhas das patas: chega a ~5x o peso numa pata de apoio)
+    ...(f.toque && !f.flying ? Object.fromEntries(Object.entries(f.toque).map(([perna, v]) => ['tato_' + perna, Math.min(150, 30 * v)])) : {}),
     ...(HAS_EYES ? (() => { const [eL, eR] = see(f); f.eyes = [eL, eR]; return { olho_L: VIS_RATE * eL, olho_R: VIS_RATE * eR }; })() : {}),
   };
   for (let gi = 0; gi < ODOR_POOL.length; gi++) {
@@ -1502,8 +1523,10 @@ function updateReadouts(dt) {
   $('#stSpeed').textContent = speedRatio ? fmt1(speedRatio).replace(',0', '') + '× real' : '—';
   let odor = 0;
   for (const gName of ODOR_POOL) odor = Math.max(odor, rates[gName + '_L'] || 0, rates[gName + '_R'] || 0);
-  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, recompensa: rates.recompensa || 0, ameaca: rates.ameaca || 0 };
-  const full = { cheiro: 150, doce: 200, dor: 200, recompensa: 200, ameaca: 200 };
+  const tatos = Object.keys(rates).filter(k => k.startsWith('tato_'));
+  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, recompensa: rates.recompensa || 0, ameaca: rates.ameaca || 0,
+    tato: tatos.length ? tatos.reduce((s, k) => s + rates[k], 0) / 6 : 0 };
+  const full = { cheiro: 150, doce: 200, dor: 200, recompensa: 200, ameaca: 200, tato: 60 };
   for (const k in sums) { inSm[k] = ema(inSm[k] || 0, sums[k], 0.08, 0.15); setMeter(k, inSm[k], inSm[k] / full[k]); }
   outMax.kc = Math.max(outMax.kc || 300, fly.kc);
   setMeter('kc', fly.kc, fly.kc / outMax.kc, fmtInt(fly.kc) + ' spk/s');

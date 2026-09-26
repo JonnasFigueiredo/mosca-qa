@@ -148,6 +148,13 @@ groups = {
     # direção: DNa01-03 de cada lado; o mais ativo vira a mosca para o seu lado
     "dirige_L": by_type(["DNa01", "DNa02", "DNa03"], "L"), "dirige_R": by_type(["DNa01", "DNa02", "DNa03"], "R"),
 }
+# tato: neurônios mecanossensoriais táteis (cerdas) de cada pata, pelo nervo por onde entram no cordão nervoso
+# (ProLN, MesoLN, MetaLN = patas da frente, do meio e de trás) e pelo lado de entrada (rootSide)
+_root = ann.rootSide.fillna("").to_numpy().astype(str)
+_nerv = ann.entryNerve.fillna("").to_numpy().astype(str)
+for _perna, _n in (("f", "ProLN"), ("m", "MesoLN"), ("h", "MetaLN")):
+    for _lado in "LR":
+        groups[f"tato_{_lado.lower()}{_perna}"] = np.flatnonzero((cls_all == "mechanosensory_tactile") & (_nerv == _n) & (_root == _lado)).tolist()
 # um grupo por glomérulo e por antena: cada botão da loja ganha um cheiro com 6 deles
 ODOR_POOL = odor_pool(typ.astype(str), cls_all)
 for g in ODOR_POOL:

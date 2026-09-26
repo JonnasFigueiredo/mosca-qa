@@ -10,3 +10,12 @@ __pycache__/
 # arquivos de trabalho temporários (logs de testes, capturas de conferência, resultados parciais)
 /_*
 /docs/medicoes/_*
+
+# ambiente Python do corpo físico (flygym)
+/.venv/
+
+# malha do corpo físico: gerada por corpo/servidor.py a partir do flygym
+/web/data/corpo_malha.*
+
+# log de avisos do MuJoCo
+MUJOCO_LOG.TXT
