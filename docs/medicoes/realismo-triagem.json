@@ -1,0 +1,85 @@
+{
+  "metodo": "Worker real da pagina em VM Node, sem mudar parametros; fases consecutivas, taxas de entrada em Hz por neuronio. Uma realizacao Poisson, triagem funcional, nao validacao biologica. Taxas de saida somadas por grupo.",
+  "fases": [
+    {
+      "nome": "repouso",
+      "duracao_ms": 1000,
+      "entrada_hz": {},
+      "primeiro_proboscide_ms": null,
+      "pico_fibra_por_10ms": 0,
+      "disparos": {
+        "proboscide": 0,
+        "fibra_gigante": 0,
+        "dirige_L": 0,
+        "dirige_R": 0
+      },
+      "hz_grupo": {
+        "proboscide": 0,
+        "fibra_gigante": 0,
+        "dirige_L": 0,
+        "dirige_R": 0
+      }
+    },
+    {
+      "nome": "acucar",
+      "duracao_ms": 1500,
+      "entrada_hz": {
+        "doce": 160
+      },
+      "primeiro_proboscide_ms": 30,
+      "pico_fibra_por_10ms": 0,
+      "disparos": {
+        "proboscide": 435,
+        "fibra_gigante": 0,
+        "dirige_L": 9,
+        "dirige_R": 8
+      },
+      "hz_grupo": {
+        "proboscide": 290,
+        "fibra_gigante": 0,
+        "dirige_L": 6,
+        "dirige_R": 5.333333333333333
+      }
+    },
+    {
+      "nome": "retirada",
+      "duracao_ms": 1500,
+      "entrada_hz": {},
+      "primeiro_proboscide_ms": null,
+      "pico_fibra_por_10ms": 0,
+      "disparos": {
+        "proboscide": 0,
+        "fibra_gigante": 0,
+        "dirige_L": 0,
+        "dirige_R": 0
+      },
+      "hz_grupo": {
+        "proboscide": 0,
+        "fibra_gigante": 0,
+        "dirige_L": 0,
+        "dirige_R": 0
+      }
+    },
+    {
+      "nome": "ameaca",
+      "duracao_ms": 500,
+      "entrada_hz": {
+        "ameaca": 200
+      },
+      "primeiro_proboscide_ms": null,
+      "pico_fibra_por_10ms": 8,
+      "disparos": {
+        "proboscide": 0,
+        "fibra_gigante": 395,
+        "dirige_L": 3,
+        "dirige_R": 3
+      },
+      "hz_grupo": {
+        "proboscide": 0,
+        "fibra_gigante": 790,
+        "dirige_L": 6,
+        "dirige_R": 6
+      }
+    }
+  ]
+}

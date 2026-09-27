@@ -1,0 +1,33 @@
+{
+  "metodo": "NeuroMechFly em chão plano: 0,4 s parada, 0,8 s andando, 0,8 s parada, 0,8 s retomando; sinais fixos, sem cérebro. Uma execução; deslocamento horizontal e orientação das costas no fim de cada fase.",
+  "fases": [
+    {
+      "fase": "parada_inicial",
+      "duracao_s": 0.4,
+      "deslocamento_mm": 0.0984,
+      "altura_torax_mm": 1.6597,
+      "costas_vertical": 1.0
+    },
+    {
+      "fase": "andar",
+      "duracao_s": 0.8,
+      "deslocamento_mm": 9.8418,
+      "altura_torax_mm": 1.5414,
+      "costas_vertical": 0.992
+    },
+    {
+      "fase": "pausa",
+      "duracao_s": 0.8,
+      "deslocamento_mm": 0.1816,
+      "altura_torax_mm": 1.5804,
+      "costas_vertical": 0.982
+    },
+    {
+      "fase": "retomada",
+      "duracao_s": 0.8,
+      "deslocamento_mm": 11.4809,
+      "altura_torax_mm": 1.3113,
+      "costas_vertical": 0.98
+    }
+  ]
+}

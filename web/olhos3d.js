@@ -1,7 +1,8 @@
 // Pelos olhos dela: o sistema em teste como um chão de botões em 3D, com a mosca andando por cima.
 // Mostra o que entra nos olhos no modelo: a direção e o tamanho aparente de cada elemento clicável,
 // com o que ela já provou pesando menos (see() na página). A retina não é simulada; a imagem em
-// facetas do modo "Olhos dela" é ilustração, com ~800 facetas por olho, como numa mosca real.
+// facetas do modo "Olhos dela" é ilustração, com ~800 facetas por olho, como numa mosca real, nas cores que
+// os receptores dela captam (corMosca).
 // Usa globais da página: THREE, W, H, fly, disp, rects, el, label, elementAt, EYE_FRONT, EYE_BACK.
 'use strict';
 
@@ -12,6 +13,16 @@ const EV_EYE_YAW = 0.95;             // rad: para onde cada olho aponta (≈55°
 const EV_EYE_HFOV = 110;             // graus de largura mostrados por olho
 const EYE_COLS = 26, EYE_ROWS = 31;  // ~800 facetas por olho
 const EV_COL_L = new THREE.Color('#3D7BD9'), EV_COL_R = new THREE.Color('#E07B39');
+// Cores como a mosca vê (aproximação). Ela não tem receptor de vermelho: os R8 "amarelos" (rodopsina Rh6, pico em
+// ~508 nm, cauda até ~600 nm) dão o verde dela e os R8 "pálidos" (Rh5, ~437 nm), o azul. Ela também vê ultravioleta
+// (R7), mas a cena desenhada só tem vermelho, verde e azul, então o ultravioleta fica de fora. Os dois canais viram
+// um mundo azul e amarelo na tela, como nas simulações de daltonismo: o branco continua branco, o vermelho escurece.
+// Os pesos de cada cor da tela em cada receptor são aproximados, não medidos
+const MOSCA_VERDE = [0.2, 0.65, 0.15], MOSCA_AZUL = [0, 0.15, 0.85];
+function corMosca(r, g, b) {
+  const v = MOSCA_VERDE[0] * r + MOSCA_VERDE[1] * g + MOSCA_VERDE[2] * b;
+  return [v, v, MOSCA_AZUL[0] * r + MOSCA_AZUL[1] * g + MOSCA_AZUL[2] * b];
+}
 
 const evTo3 = (x, y) => [x - W / 2, y - H / 2];                         // página -> chão (x, z)
 const evDir = a => [Math.sin(a), -Math.cos(a)];                         // direção na página
@@ -92,6 +103,9 @@ function evHexMaterial() {
           }
         }
         vec3 col = texture2D(tex, clamp(bc / vec2(cols, rows), 0.0, 1.0)).rgb;
+        // as cores que ela vê (corMosca): sem vermelho, o verde dela vira amarelo na tela
+        float vd = dot(col, vec3(${MOSCA_VERDE.map(v => v.toFixed(3)).join(', ')}));
+        col = vec3(vd, vd, dot(col, vec3(${MOSCA_AZUL.map(v => v.toFixed(3)).join(', ')})));
         float edge = smoothstep(0.30, 0.45, sqrt(best));
         gl_FragColor = vec4(mix(col, col * 0.3, edge), 1.0);
       }`,

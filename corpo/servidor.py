@@ -140,10 +140,15 @@ class Corpo:
             if self.t + dt <= self.alvo:
                 t0 = time.perf_counter()
                 with self.lock:
-                    obs = HybridControllerObservation.from_sim(self.sim, self.fly.name)
-                    acao = self.ctrl.step(self.sinal.copy(), obs)
-                    self.tropecos |= self.ctrl.last_info["stumbling_mask"]
-                    apply_locomotion_action(self.sim, self.fly.name, acao)
+                    if np.max(np.abs(self.sinal)) < 1e-6:
+                        # Parar é sustentar a postura atual: congela a fase do controlador e mantém
+                        # as almofadinhas aderentes. Regra motora, não circuito do conectoma.
+                        self.sim.set_leg_adhesion_states(self.fly.name, np.ones(6, dtype=bool))
+                    else:
+                        obs = HybridControllerObservation.from_sim(self.sim, self.fly.name)
+                        acao = self.ctrl.step(self.sinal.copy(), obs)
+                        self.tropecos |= self.ctrl.last_info["stumbling_mask"]
+                        apply_locomotion_action(self.sim, self.fly.name, acao)
                     for _ in range(DEC):
                         self.sim.step()
                     self.t += dt

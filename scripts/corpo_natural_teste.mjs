@@ -1,0 +1,34 @@
+// Verifica as regras geométricas e as transições do corpo sem carregar outro cérebro.
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const ctx=vm.createContext({});
+vm.runInContext(readFileSync(new URL('../web/corpo-natural.js',import.meta.url),'utf8')+';globalThis.C=CorpoNatural;',ctx);
+const C=ctx.C, f={x:700,y:700,z:0,th:0,prob:100};
+const a=C.antenas.map(p=>C.ponto(f,p));
+assert.ok(a[0].x<f.x && a[1].x>f.x,'lado das antenas');
+assert.ok(a.every(p=>p.y<f.y),'antenas à frente');
+assert.ok(Math.abs(Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)/7-0.28418)<1e-6);
+const r={x:0,y:0,w:100,h:100,z:14};
+assert.equal(C.contato({x:50,y:50,z:14},[r]),r);
+assert.equal(C.contato({x:50,y:50,z:0},[r]),null,'sem comer por baixo');
+assert.equal(C.contato({x:101,y:50,z:14},[r]),null,'sem contato além da borda');
+for(let i=0;i<60;i++) C.boca(f,.01,true);
+assert.ok(f.boca>.99);
+assert.ok(C.bocaPontos(f).alcanca);
+assert.ok(C.bocaPontos(f).ponta.z<.05);
+f.flying=true; C.boca(f,.01,true); assert.equal(f.boca,0,'fuga recolhe imediatamente');
+const h={x:700,y:700,z:0,th:0,prob:30};
+C.boca(h,.01,true); assert.equal(h.bocaQuer,true,'estende acima de 25 Hz');
+h.prob=15; C.boca(h,.01,true); assert.equal(h.bocaQuer,true,'mantém entre 12 e 25 Hz');
+h.prob=10; C.boca(h,.01,true); assert.equal(h.bocaQuer,false,'recolhe abaixo de 12 Hz');
+h.prob=20; C.boca(h,.01,true); assert.equal(h.bocaQuer,false,'recolhida, não estende abaixo de 25 Hz');
+f.flying=false; f.prob=0;
+let estados=new Set();
+for(let i=0;i<2000;i++){C.marcha(f,.01,false,()=>.7);estados.add(f.marcha);}
+assert.ok(estados.has('andar') && estados.has('pausa'));
+f.marcha='pausa'; f.marchaT=10; f.threat=1;
+assert.equal(C.marcha(f,.01,false).andar,1,'ameaça interrompe pausa');
+f.threat=0; f.naParede={}; assert.equal(C.marcha(f,.01,true).andar,1,'não parar na parede');
+f.naParede=null; assert.equal(C.marcha(f,.01,true).andar,0,'parar para provar');
+console.log('Antenas, contato, extensão, inércia da boca, pausa, fuga e escalada: verificações passaram.');

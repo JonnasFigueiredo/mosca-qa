@@ -68,6 +68,47 @@ function sbSurface(x, y) {
   return z;
 }
 
+/* ───────────── sentidos e contato na escala do corpo ───────────── */
+function sbPoseNatural(f) { return SB.fisico && !f.flying && !f.presa ? CORPO.pose : null; }
+function sbAntenas(f) {
+  const pose = sbPoseNatural(f);
+  return CorpoNatural.antenas.map((p, lado) => {
+    const i = ANIM.antenas?.[lado];
+    if (pose && i >= 0) {
+      const k = i * 12, g = pose.geoms;
+      return { x:g[k]*CORPO.S, y:-g[k+1]*CORPO.S, z:g[k+2]*CORPO.S };
+    }
+    return CorpoNatural.ponto(f, p, pose);
+  });
+}
+function sbContatoNatural(f, dt) {
+  const pose = sbPoseNatural(f), antes = f.bocaEl?.id;
+  f.patasEl = null; f.bocaEl = null;
+  if (!CorpoNatural.impedida(f) && (!SB.fisico || pose) && !CORPO.teleportando) {
+    const tarsos = ANIM.tarsos || ['lf','lm','lh','rf','rm','rh'].map(p => ({perna:p,
+      ponto:[p[1] === 'f' ? 0.84 : p[1] === 'm' ? 0 : -0.8, p[0] === 'l' ? 1 : -1, -CorpoNatural.altura]}));
+    for (const t of tarsos) {
+      let pt;
+      if (pose && t.i !== undefined) {
+        if (!(pose.toque?.[t.perna] > 0.05)) continue;
+        const k=t.i*12, g=pose.geoms, v=t.local;
+        pt={x:(g[k]+g[k+3]*v[0]+g[k+4]*v[1]+g[k+5]*v[2])*CORPO.S,
+            y:-(g[k+1]+g[k+6]*v[0]+g[k+7]*v[1]+g[k+8]*v[2])*CORPO.S,
+            z:(g[k+2]+g[k+9]*v[0]+g[k+10]*v[1]+g[k+11]*v[2])*CORPO.S};
+      } else pt=CorpoNatural.ponto(f,t.ponto);
+      // A física usa margem de adesão de 0,3 mm; a malha visível não coincide exatamente com o contato.
+      const r=CorpoNatural.contato(pt,rects,pose ? 0.5 : 0.25);
+      if (r) { f.patasEl=r; break; }
+    }
+  }
+  CorpoNatural.boca(f,dt,!!f.patasEl);
+  const alvo=CorpoNatural.ponto(f,[0.75,0,-CorpoNatural.altura],pose);
+  f.pisoBoca=sbSurface(alvo.x,alvo.y);
+  const b=CorpoNatural.bocaPontos(f,pose);
+  if (f.patasEl && f.boca > 0.9 && b.alcanca && !CorpoNatural.impedida(f)) f.bocaEl=CorpoNatural.contato(b.ponta,rects,0.08);
+  f.contatoBocaT=f.bocaEl ? (antes === f.bocaEl.id ? (f.contatoBocaT || 0)+dt : dt) : 0;
+}
+
 /* ───────────── o corpo real animado (sem o servidor de física) ───────────── */
 // A malha da NeuroMechFly posta pela própria página, com as poses de corpo/poses.py (de pé e com as patas recolhidas
 // para o voo). Em voo, cada asa bate com a amplitude que os motores daquele lado mandam (um leque translúcido mostra o
@@ -76,9 +117,14 @@ function sbSurface(x, y) {
 const ANIM = { poses: null, recolhe: 0, fase: 0, faseAsa: 0, leques: [], cabeca: 0, pecas: null };
 async function animCarregar() {
   if (ANIM.poses) return;
+  if (ANIM.carregando) return ANIM.carregando;
+  ANIM.carregando = animMontar();
+  try { await ANIM.carregando; } finally { ANIM.carregando = null; }
+}
+async function animMontar() {
   try {
     await corpoCarregarMalha();
-    const P = await fetch('data/corpo_poses.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('sem poses'); return r.json(); });
+    const P = await buscar('data/corpo_poses.json');
     const q = arr => arr.map(v => { const m = new THREE.Matrix4().set(v[3], v[4], v[5], 0, v[6], v[7], v[8], 0, v[9], v[10], v[11], 0, 0, 0, 0, 1); return new THREE.Quaternion().setFromRotationMatrix(m); });
     const p = arr => arr.map(v => new THREE.Vector3(v[0], v[1], v[2]));
     ANIM.qPe = q(P.pe); ANIM.qVoo = q(P.voo); ANIM.pPe = p(P.pe); ANIM.pVoo = p(P.voo);
@@ -86,8 +132,23 @@ async function animCarregar() {
     ANIM.perna = {}; for (const [perna, info] of Object.entries(P.pernas)) for (const i of info.pecas) ANIM.perna[i] = perna;
     ANIM.cabecaPecas = new Set();
     // cabeça: tudo que não é tórax, abdômen, asa, haltere ou pata
-    const info = await fetch('data/corpo_malha.json', { cache: 'no-cache' }).then(r => r.json());
+    const info = await buscar('data/corpo_malha.json');
     info.pecas.forEach((pc, i) => { if (/c_head|_eye|pedicel|funiculus|arista|rostrum|haustellum/.test(pc.nome)) ANIM.cabecaPecas.add(i); });
+    ANIM.antenas = ['l','r'].map(l => info.pecas.findIndex(pc => pc.nome === 'nmf/'+l+'_funiculus'));
+    ANIM.bocaPecas = ['rostrum','haustellum'].map(n => info.pecas.findIndex(pc => pc.nome === 'nmf/c_'+n));
+    ANIM.tarsos = [];
+    info.pecas.forEach((pc,i) => {
+      const m=pc.nome.match(/nmf\/([lr][fmh])_tarsus5$/);
+      if (!m) return;
+      const vs=CORPO.malha.meshes[i].geometry.attributes.position, pose=P.pe[i];
+      let baixo=Infinity, local, ponto;
+      for (let j=0;j<vs.count;j++) {
+        const v=[vs.getX(j),vs.getY(j),vs.getZ(j)];
+        const q=[0,1,2].map(k => pose[k]+pose[3+k*3]*v[0]+pose[4+k*3]*v[1]+pose[5+k*3]*v[2]);
+        if (q[2]<baixo) { baixo=q[2]; local=v; ponto=q; }
+      }
+      ANIM.tarsos.push({i,perna:m[1],local,ponto});
+    });
     ANIM.pescoco = new THREE.Vector3(0.55, 0, 0.25);   // mm à frente e acima do centro do tórax
     for (const lado of ['l', 'r']) {
       const a = P.asas[lado];
@@ -98,8 +159,8 @@ async function animCarregar() {
       const leque = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: '#cfe6ff', transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }));
       leque.matrixAutoUpdate = false; leque.visible = false; SBR.scene.add(leque); ANIM.leques.push(leque);
     }
-    ANIM.poses = P;
-  } catch (e) { ANIM.poses = null; }
+    ANIM.poses = P; ANIM.erro = null;
+  } catch (e) { ANIM.poses = null; ANIM.erro = e.message; }
 }
 // matriz de cena a partir de uma matriz na física (mm; x frente, y esquerda, z cima), como em corpoPose
 const _cena = new THREE.Matrix4();
@@ -120,8 +181,9 @@ function animPose(f, dtw) {
   const P = ANIM.poses, S = CORPO.S, voando = f.flying || f.jumping;
   ANIM.recolhe += ((voando ? 1 : 0) - ANIM.recolhe) * Math.min(1, dtw / 0.12);
   const rc = ANIM.recolhe;
-  const andando = !voando && !f.presa && (f.speed || 0) > 5;
-  ANIM.fase += dtw * 2 * Math.PI * 9 * (andando ? Math.min(1.5, (f.speed || 0) / WALK) : 0);
+  const andando = !voando && !f.presa && ((f.speed || 0) > 5 || Math.abs(f.giroCorpo || 0) > 0.1);
+  if (APP.mundo) ANIM.fase = f.fasePatas || 0;
+  else ANIM.fase += dtw * 2 * Math.PI * 9 * (andando ? Math.min(1.5, (f.speed || 0) / WALK) : 0);
   ANIM.faseAsa += dtw * 2 * Math.PI * 16 * rc;
   ANIM.cabeca += (clamp((f.cabeca || 0) * 0.004, -0.35, 0.35) * rc - ANIM.cabeca) * Math.min(1, dtw / 0.15);
   // o corpo: posição, rumo, empinar em voo (~20°) e inclinar nas curvas
@@ -146,6 +208,12 @@ function animPose(f, dtw) {
       emTorno(_M, base, _R.makeRotationAxis(_z, 0.3 * Math.sin(th)));
       emTorno(_M, base, _R.makeRotationAxis(_x, (perna[0] === 'l' ? -1 : 1) * 0.25 * Math.max(0, Math.cos(th))));
     }
+    if (perna && perna[1] === 'f' && !voando && !f.presa && f.patasEl && (f.boca || 0) < 0.9) {
+      // Tateamento apenas visual, no relógio cerebral; não inventa disparos de tato.
+      const base = new THREE.Vector3(...P.pernas[perna].base);
+      const fase = brainT / 1000 * 16 + (perna[0] === 'l' ? 0 : Math.PI);
+      emTorno(_M, base, _R.makeRotationAxis(_z, 0.1 * Math.sin(fase)));
+    }
     for (const lado of ['l', 'r']) {
       const a = P.asas[lado], h = P.halteres[lado], sg = lado === 'l' ? 1 : -1;
       if (i === a.peca && rc > 0.01) {
@@ -169,6 +237,44 @@ function animPose(f, dtw) {
     leque.geometry = new THREE.CircleGeometry(a.comp * 1.05, 20, meio - A[lado] / 2, A[lado]);
     animParaCena(new THREE.Matrix4().makeTranslation(a.base.x, a.base.y, a.base.z).premultiply(Mc), leque);
   });
+}
+
+// Extensão geométrica: orienta e alonga as duas peças entre raiz, dobra e ponta.
+// O comprimento variável é uma aproximação visual; não representa músculos/juntas da probóscide.
+function animBoca(f) {
+  if (!ANIM.bocaPecas || !(f.boca > 0.001) || CorpoNatural.impedida(f)) return;
+  const pose=sbPoseNatural(f), b=CorpoNatural.bocaPontos(f,pose);
+  const cena=p => new THREE.Vector3(p.x-SB.W/2,p.z,p.y-SB.H/2);
+  const antigos=[CorpoNatural.raizBoca,CorpoNatural.dobraBoca,CorpoNatural.pontaBoca].map(p => cena(CorpoNatural.ponto(f,p,pose)));
+  const novos=[b.raiz,b.meio,b.ponta].map(cena);
+  ANIM.bocaPecas.forEach((id,i) => {
+    if (id < 0) return;
+    const u=antigos[i+1].clone().sub(antigos[i]), v=novos[i+1].clone().sub(novos[i]);
+    const razao=v.length()/u.length(); u.normalize(); v.normalize();
+    const q=new THREE.Quaternion().setFromUnitVectors(u,v), k=razao-1;
+    const esc=new THREE.Matrix4().set(1+k*u.x*u.x,k*u.x*u.y,k*u.x*u.z,0,
+      k*u.y*u.x,1+k*u.y*u.y,k*u.y*u.z,0,k*u.z*u.x,k*u.z*u.y,1+k*u.z*u.z,0,0,0,0,1);
+    const tr=new THREE.Matrix4().makeTranslation(novos[i].x,novos[i].y,novos[i].z)
+      .multiply(new THREE.Matrix4().makeRotationFromQuaternion(q)).multiply(esc)
+      .multiply(new THREE.Matrix4().makeTranslation(-antigos[i].x,-antigos[i].y,-antigos[i].z));
+    const mesh=CORPO.malha.meshes[id]; mesh.matrix.premultiply(tr); mesh.matrixWorldNeedsUpdate=true;
+  });
+}
+
+// Sem os arquivos locais da malha, o modelo simples também mostra a extensão.
+function animBocaSimples(f, mostrar) {
+  if (!ANIM.bocaSimples && mostrar) {
+    ANIM.bocaSimples=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.5,1,8),new THREE.MeshStandardMaterial({color:'#6a4030'}));
+    SBR.scene.add(ANIM.bocaSimples);
+  }
+  const mesh=ANIM.bocaSimples;
+  if (!mesh) return;
+  mesh.visible=!!(mostrar && f.boca > 0.01 && !CorpoNatural.impedida(f));
+  if (!mesh.visible) return;
+  const b=CorpoNatural.bocaPontos(f), a=new THREE.Vector3(b.raiz.x-SB.W/2,b.raiz.z,b.raiz.y-SB.H/2);
+  const c=new THREE.Vector3(b.ponta.x-SB.W/2,b.ponta.z,b.ponta.y-SB.H/2), dir=c.clone().sub(a);
+  mesh.position.copy(a).add(c).multiplyScalar(0.5);
+  mesh.quaternion.setFromUnitVectors(_y,dir.clone().normalize()); mesh.scale.y=dir.length();
 }
 
 /* ───────────── andar e voar ───────────── */
@@ -476,7 +582,7 @@ function predSet(on) {
   logEvent(on ? 'Um louva-a-deus entrou no mundo. É você.' : 'O louva-a-deus saiu.');
 }
 addEventListener('keydown', e => {
-  if (!SB.on || !PRED.on || e.target.closest?.('input, textarea')) return;
+  if (!SB.on || !PRED.on || SBR.mode === 'fantasma' || e.target.closest?.('input, textarea')) return;
   const k = e.key.toLowerCase();
   if (k === ' ') {
     e.preventDefault();
@@ -704,11 +810,27 @@ function corpoPose() {
     mesh.matrixWorldNeedsUpdate = true;
   });
 }
+// baixa um arquivo de dados; se a conexão cair no meio (no pedido ou no download do conteúdo), tenta de novo.
+// Um 404 não se repete
+async function buscar(url, como = 'json', tentativas = 4) {
+  for (let i = 1; ; i++) {
+    let r;
+    try {
+      r = await fetch(url, { cache: 'no-cache' });
+      if (!r.ok) break;
+      return await r[como]();
+    } catch (e) {
+      if (i >= tentativas) throw new Error(url + ': ' + e.message);
+      console.warn('buscar: tentando de novo', url, e.message);
+      await new Promise(ok => setTimeout(ok, 300 * i));
+    }
+  }
+  throw new Error(url + ': ' + r.status);
+}
 async function corpoCarregarMalha() {
   if (CORPO.malha) return;
   // a malha é gravada pelo servidor do corpo em web/data/ e vem do mesmo servidor dos dados do cérebro
-  const [info, bin] = await Promise.all([fetch('data/corpo_malha.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('sem malha'); return r.json(); }),
-    fetch('data/corpo_malha.bin', { cache: 'no-cache' }).then(r => r.arrayBuffer())]);
+  const [info, bin] = await Promise.all([buscar('data/corpo_malha.json'), buscar('data/corpo_malha.bin', 'arrayBuffer')]);
   CORPO.malha = corpoMeshes(info, bin);
   CORPO.malha.group.visible = false;
   SBR.scene.add(CORPO.malha.group);
@@ -740,6 +862,7 @@ async function corpoSet(on) {
     logEvent('Corpo físico ligado: NeuroMechFly no MuJoCo, com passadas gravadas de moscas reais. O cérebro manda virar e andar; as patas fazem o resto. No ar, ela usa o modelo simples.');
   } else {
     clearInterval(CORPO.iv);
+    CORPO.gen = (CORPO.gen || 0) + 1;   // descarta respostas físicas ainda em trânsito
     SB.fisico = false;
     fly.toque = null;
     SBR.fly.scale.setScalar(1.7);
@@ -754,7 +877,8 @@ async function corpoSet(on) {
 // Cada olho é uma câmera perspectiva de 157° posta no olho da malha; a imagem passa pela correção de olho de
 // peixe e cada pixel soma no seu omatídeo (canal verde nos "amarelos", azul nos "pálidos"), como em
 // flygym/vision/retina.py. A tabela vem de corpo/olho_mapas.py (grade 4x menor que a do flygym).
-// Moscas quase não veem vermelho: nesses canais, o vermelho aparece escuro.
+// Moscas quase não veem vermelho: nesses canais, o vermelho aparece escuro. A imagem na tela mostra a cor média de
+// cada omatídeo como os receptores dela captam (corMosca, em olhos3d.js); o que entra no cérebro continua sendo o brilho.
 const OLHO = { mapa: null, rt: null, cams: null, buf: null, val: null, tex: null, quad: null, conta: 0 };
 async function olhoCarregar() {
   if (OLHO.mapa || !SBR.r) return;
@@ -764,6 +888,7 @@ async function olhoCarregar() {
   OLHO.cams = [0, 1].map(() => { const c = new THREE.PerspectiveCamera(M.fovy, M.colunas / M.linhas, 0.2, 4000); c.matrixAutoUpdate = false; return c; });
   OLHO.buf = new Uint8Array(M.colunas * M.linhas * 4);
   OLHO.val = [new Float32Array(M.omatidios), new Float32Array(M.omatidios)];
+  OLHO.cor = [new Float32Array(M.omatidios * 3), new Float32Array(M.omatidios * 3)];
   OLHO.tex = [0, 1].map(() => {
     const t = new THREE.DataTexture(new Uint8Array(M.colunas * M.linhas * 4), M.colunas, M.linhas, THREE.RGBAFormat);
     t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter;
@@ -809,7 +934,7 @@ function olhoAmostrar(f) {
   const M = OLHO.mapa, R = SBR.r;
   olhoPoses(f);
   // o próprio corpo não aparece para os olhos (o flygym esconde cabeça, olhos, antenas e tórax)
-  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance, ...ANIM.leques].filter(Boolean);
+  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance, ANIM.bocaSimples, ...ANIM.leques].filter(Boolean);
   const vis = esconde.map(o => o.visible);
   esconde.forEach(o => { o.visible = false; });
   const feats = [];
@@ -818,13 +943,15 @@ function olhoAmostrar(f) {
     R.setClearColor(SBR.bg, 1); R.clear();
     R.render(SBR.scene, OLHO.cams[i]);
     R.readRenderTargetPixels(OLHO.rt, 0, 0, M.colunas, M.linhas, OLHO.buf);
-    const v = OLHO.val[i];
-    v.fill(0);
+    const v = OLHO.val[i], cor = OLHO.cor[i];
+    v.fill(0); cor.fill(0);
     for (let k = 0; k < M.fonte_px.length; k++) {
       const o = M.omatidio_px[k];
       if (o < 0) continue;
-      const s = M.fonte_px[k], sr = (s / M.colunas) | 0, sc = s % M.colunas;
-      v[o] += OLHO.buf[((M.linhas - 1 - sr) * M.colunas + sc) * 4 + (M.palido[o] ? 2 : 1)] / 255 / M.pixels_por_omatidio[o];
+      const s = M.fonte_px[k], sr = (s / M.colunas) | 0, sc = s % M.colunas, j = ((M.linhas - 1 - sr) * M.colunas + sc) * 4;
+      const n = 255 * M.pixels_por_omatidio[o], b = OLHO.buf;
+      v[o] += b[j + (M.palido[o] ? 2 : 1)] / n;
+      cor[3 * o] += b[j] / n; cor[3 * o + 1] += b[j + 1] / n; cor[3 * o + 2] += b[j + 2] / n;
     }
     // o que chama o LC10a: omatídeos mais claros que o resto do olho (o que ela não provou brilha mais)
     let mu = 0;
@@ -839,15 +966,15 @@ function olhoAmostrar(f) {
   esconde.forEach((o, k) => { o.visible = vis[k]; });
   const [L, Rr] = feats, g = 4;
   f.olhoReal = { L: L / (L + Rr + g), R: Rr / (L + Rr + g), bruto: feats, t: performance.now(), celulas: lcTaxas() };
-  // imagem de cada olho para o HUD: cada pixel pinta o valor do seu omatídeo; em vermelho, onde os LC10a estão vendo algo
+  // imagem de cada olho para o HUD: cada pixel pinta a cor do seu omatídeo como ela vê (sem vermelho: o verde dela
+  // aparece amarelo, o azul, azul); em vermelho, onde os LC10a estão vendo algo (vermelho ela não vê, então não confunde)
   for (let i = 0; i < 2; i++) {
-    const v = OLHO.val[i], lm = OLHO.lcMapa[i], px = OLHO.tex[i].image.data;
+    const cor = OLHO.cor[i], lm = OLHO.lcMapa[i], px = OLHO.tex[i].image.data;
     for (let k = 0; k < M.fonte_px.length; k++) {
       const o = M.omatidio_px[k], r = (k / M.colunas) | 0, c = k % M.colunas, j = ((M.linhas - 1 - r) * M.colunas + c) * 4;
       if (o < 0) { px[j + 3] = 0; continue; }
-      const b = Math.min(255, v[o] * 255 * 1.6), lc = Math.min(1, lm[o]);
-      px[j] = Math.min(255, (M.palido[o] ? b * 0.45 : b * 0.25) + 255 * lc);
-      px[j + 1] = (M.palido[o] ? b * 0.7 : b) * (1 - 0.6 * lc); px[j + 2] = (M.palido[o] ? b : b * 0.45) * (1 - 0.6 * lc); px[j + 3] = 255;
+      const [vd, , az] = corMosca(cor[3 * o], cor[3 * o + 1], cor[3 * o + 2]), lc = 0.45 * Math.min(1, lm[o]), a = 255 * 1.1 * (1 - lc);
+      px[j] = Math.min(255, vd * a + 255 * lc); px[j + 1] = Math.min(255, vd * a); px[j + 2] = Math.min(255, az * a); px[j + 3] = 255;
     }
     OLHO.tex[i].needsUpdate = true;
   }
@@ -1227,6 +1354,8 @@ function sbUpdate(dtw, now) {
   if (CORPO.malha) CORPO.malha.group.visible = !!(fisicoNoChao || animado);
   if (fisicoNoChao) corpoPose();
   else if (animado) animPose(f, dtw);
+  if (APP.mundo && (fisicoNoChao || animado)) animBoca(f);
+  animBocaSimples(f, APP.mundo && !fisicoNoChao && !animado);
   if (!animado) for (const l of ANIM.leques) l.visible = false;
   SBR.fly.position.set(x, f.z, z);
   SBR.fly.rotation.set(f.flying ? -0.12 : 0, -f.th, 0, 'YXZ');
@@ -1402,8 +1531,20 @@ function sbFrame(dtw) {
   R.setClearColor(SBR.bg, 1); R.clear();
   const [eL, eR] = f.eyes || [0, 0];
   const estado = f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.z > 0 ? `andando numa plataforma a ${Math.round(f.z)} px` : 'andando no chão';
-  if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred') {
-    if (SBR.mode === 'spec' || SBR.mode === 'pred') {
+  if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred' || SBR.mode === 'fantasma') {
+    if (SBR.mode === 'fantasma') {
+      fantMover(dtw);
+      const cp = Math.cos(FANT.pitch);
+      SBR.cam.position.set(FANT.x, FANT.y, FANT.z);
+      SBR.cam.near = 0.2; SBR.cam.aspect = w / h; SBR.cam.updateProjectionMatrix();
+      SBR.cam.lookAt(FANT.x + Math.sin(FANT.yaw) * cp, FANT.y + Math.sin(FANT.pitch), FANT.z - Math.cos(FANT.yaw) * cp);
+      R.render(SBR.scene, SBR.cam);
+      const s = Math.round(Math.min(w * 0.17, h * 0.22));
+      sbRenderEye(0, w - 2 * s - 14, h - s - 30, s, s);
+      sbRenderEye(1, w - s - 8, h - s - 30, s, s);
+      const m = Math.round(Math.min(w * 0.22, h * 0.26));
+      sbRenderMap(w - m - 8, 44, m, m);
+    } else if (SBR.mode === 'spec' || SBR.mode === 'pred') {
       // espectador: atrás e acima dela (ou da Sentinela), seguindo com atraso
       const P = SBR.mode === 'pred' && PRED.on ? { x: PRED.x, y: PRED.y, z: PRED.z + 10, th: PRED.th, flying: true } : f;
       // a câmera segue um alvo suavizado: no corpo físico o rumo balança 10-20° a cada passo e a posição chega aos
@@ -1424,7 +1565,7 @@ function sbFrame(dtw) {
       const want = new THREE.Vector3(cx, Math.max(pzAlt + up, sbSurface(cx + SB.W / 2, cz + SB.H / 2) + 55), cz);
       SBR.cam.position.lerp(want, SBR.camReady ? 1 - Math.exp(-dtw / (P.flying ? 0.12 : 0.4)) : 1);
       SBR.camReady = true;
-      SBR.cam.aspect = w / h; SBR.cam.updateProjectionMatrix();
+      SBR.cam.near = 1; SBR.cam.aspect = w / h; SBR.cam.updateProjectionMatrix();
       SBR.cam.lookAt(x + Math.sin(th) * 70, pzAlt + 10, z - Math.cos(th) * 70);
       R.render(SBR.scene, SBR.cam);
       // HUD: os dois olhos em cima à direita, o mapa embaixo à direita
@@ -1441,13 +1582,101 @@ function sbFrame(dtw) {
     }
     const placar = PRED.on ? ` · louva-a-deus: ${PRED.captures} ${PRED.captures === 1 ? 'mosca comida' : 'moscas comidas'}, ${PRED.escapes} fugas, ${PRED.botes} botes` : '';
     if (PRED.on) predHud(f);
-    $('#sbCap').innerHTML = `<span>${estado}${placar}</span><span><b class="ev-l">olho E</b> ${Math.round(eL * 100)}% · <b class="ev-r">olho D</b> ${Math.round(eR * 100)}%</span>`;
+    const fant = SBR.mode === 'fantasma' ? `fantasma · ${(FANT.vel / CORPO.S).toFixed(0)} mm/s · ` : '';
+    const legenda = SBR.mode === 'olhos' && OLHO.mapa ? '<span>cores que ela capta (sem vermelho) · vermelho: onde o LC10a responde</span>' : '';
+    $('#sbCap').innerHTML = `<span>${fant}${estado}${placar}</span>${legenda}<span><b class="ev-l">olho E</b> ${Math.round(eL * 100)}% · <b class="ev-r">olho D</b> ${Math.round(eR * 100)}%</span>`;
   } else {
     sbRenderMap(0, 0, w, h);
     $('#sbCap').innerHTML = `<span>de cima · ${estado}</span><span>leques: o campo de cada olho</span>`;
   }
   R.setScissorTest(false);
 }
+
+/* ───────────── fantasma: câmera livre, como o espectador livre de um jogo de tiro ───────────── */
+// W/S vai para onde a câmera olha, A/D para os lados, Espaço ou E sobe, C ou Q desce, Shift acelera, a roda do mouse
+// muda a velocidade, F vai para perto dela. O mouse olha: clique na cena para prender o mouse (Esc solta) ou arraste.
+// Atravessa tudo e não mexe na mosca nem no que os olhos dela veem
+const FANT = { x: 0, y: 60, z: 0, yaw: 0, pitch: -0.3, vel: 35, teclas: new Set(), arrasta: null };
+const FANT_TECLAS = { ArrowUp: 'KeyW', ArrowDown: 'KeyS', ArrowLeft: 'KeyA', ArrowRight: 'KeyD' };
+function fantDaCamera() {
+  const c = SBR.cam, d = new THREE.Vector3();
+  c.getWorldDirection(d);
+  Object.assign(FANT, { x: c.position.x, y: c.position.y, z: c.position.z, yaw: Math.atan2(d.x, -d.z), pitch: Math.asin(clamp(d.y, -1, 1)) });
+}
+function fantPerto() {
+  // atrás dela e um pouco acima, olhando para ela (o corpo real tem ~18 px)
+  const [x, z] = sbTo3(fly.x, fly.y), d = 45;
+  Object.assign(FANT, { x: x - Math.sin(fly.th) * d, y: (fly.z || 0) + 20, z: z + Math.cos(fly.th) * d, yaw: fly.th, pitch: -0.4 });
+}
+function fantMover(dt) {
+  const k = FANT.teclas, t = c => k.has(c);
+  const v = FANT.vel * (t('ShiftLeft') || t('ShiftRight') ? 4 : 1) * Math.min(dt, 0.1);
+  const cp = Math.cos(FANT.pitch), fx = Math.sin(FANT.yaw) * cp, fy = Math.sin(FANT.pitch), fz = -Math.cos(FANT.yaw) * cp;
+  const dx = Math.cos(FANT.yaw), dz = Math.sin(FANT.yaw);   // para a direita
+  let mx = 0, my = 0, mz = 0;
+  if (t('KeyW')) { mx += fx; my += fy; mz += fz; }
+  if (t('KeyS')) { mx -= fx; my -= fy; mz -= fz; }
+  if (t('KeyD')) { mx += dx; mz += dz; }
+  if (t('KeyA')) { mx -= dx; mz -= dz; }
+  if (t('Space') || t('KeyE')) my += 1;
+  if (t('KeyC') || t('KeyQ')) my -= 1;
+  const n = Math.hypot(mx, my, mz);
+  if (n) { FANT.x += mx / n * v; FANT.y += my / n * v; FANT.z += mz / n * v; }
+  FANT.x = clamp(FANT.x, -SB.W, SB.W); FANT.z = clamp(FANT.z, -SB.H, SB.H); FANT.y = clamp(FANT.y, 0.5, 3000);
+}
+{
+  const cv = document.getElementById('world');
+  cv.addEventListener('mousedown', e => {
+    if (!SB.on || SBR.mode !== 'fantasma') return;
+    FANT.arrasta = { x: e.clientX, y: e.clientY };
+    try { const p = cv.requestPointerLock?.(); if (p?.catch) p.catch(() => {}); } catch { /* sem prender: arrastar funciona */ }
+  });
+  addEventListener('mouseup', () => { FANT.arrasta = null; });
+  addEventListener('mousemove', e => {
+    if (!SB.on || SBR.mode !== 'fantasma') return;
+    let mx, my;
+    if (document.pointerLockElement === cv) { mx = e.movementX; my = e.movementY; }
+    else if (FANT.arrasta) { mx = e.clientX - FANT.arrasta.x; my = e.clientY - FANT.arrasta.y; FANT.arrasta = { x: e.clientX, y: e.clientY }; }
+    else return;
+    FANT.yaw += mx * 0.0025;
+    FANT.pitch = clamp(FANT.pitch - my * 0.0025, -1.55, 1.55);
+  });
+  cv.addEventListener('wheel', e => {
+    if (!SB.on || SBR.mode !== 'fantasma') return;
+    e.preventDefault();
+    FANT.vel = clamp(FANT.vel * (e.deltaY < 0 ? 1.25 : 0.8), 3, 3000);
+  }, { passive: false });
+  addEventListener('keydown', e => {
+    if (!SB.on || SBR.mode !== 'fantasma' || e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('input, textarea, select')) return;
+    if (e.code === 'KeyF') { fantPerto(); return; }
+    const c = FANT_TECLAS[e.code] || e.code;
+    if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyE', 'KeyQ', 'KeyC', 'Space', 'ShiftLeft', 'ShiftRight'].includes(c)) {
+      FANT.teclas.add(c);
+      e.preventDefault();
+    }
+  });
+  addEventListener('keyup', e => FANT.teclas.delete(FANT_TECLAS[e.code] || e.code));
+  addEventListener('blur', () => FANT.teclas.clear());
+}
+
+/* ───────────── tamanho da tela do sandbox ───────────── */
+// Ampliar: o sandbox ocupa a largura toda (o cérebro vai para baixo). Tela cheia: só o sandbox, na tela inteira
+function sbAmpliar(on) {
+  document.body.classList.toggle('sb-grande', on);
+  $('#sbAmpliar').classList.toggle('on', on);
+  $('#sbAmpliar').textContent = on ? 'Lado a lado' : 'Ampliar';
+  try { localStorage.setItem('mosca-sb-grande', on ? '1' : '0'); } catch { /* sem armazenamento */ }
+  measure();
+  dispatchEvent(new Event('resize'));
+}
+$('#sbAmpliar').addEventListener('click', () => sbAmpliar(!document.body.classList.contains('sb-grande')));
+$('#sbCheia').addEventListener('click', () => {
+  const box = $('#worldBox');
+  if (document.fullscreenElement) document.exitFullscreen?.();
+  else box.requestFullscreen?.().catch(() => sbAmpliar(true));
+});
+document.addEventListener('fullscreenchange', () => { $('#sbCheia').classList.toggle('on', !!document.fullscreenElement); });
+try { if (localStorage.getItem('mosca-sb-grande') === '1') sbAmpliar(true); } catch { /* sem armazenamento */ }
 
 /* ───────────── ligar e desligar ───────────── */
 function sbSet(on) {
@@ -1476,6 +1705,13 @@ function sbSet(on) {
 }
 for (const b of document.querySelectorAll('#modeTabs button')) b.addEventListener('click', () => { if (!LAB.busy) sbSet(b.dataset.mode === '3d'); });
 function sbCamMode(m) {
+  if (m === 'fantasma' && SBR.mode !== 'fantasma') {
+    if ((SBR.mode === 'spec' || SBR.mode === 'pred') && SBR.camReady) fantDaCamera(); else fantPerto();
+  }
+  if (m !== 'fantasma' && document.pointerLockElement) document.exitPointerLock();
+  FANT.teclas.clear();
+  $('#fantHelp').hidden = m !== 'fantasma';
+  $('#predHelp').hidden = !PRED.on || m === 'fantasma';
   SBR.mode = m; SBR.camReady = false;
   for (const o of document.querySelectorAll('#sbModes button[data-mode]')) o.classList.toggle('on', o.dataset.mode === m);
 }

@@ -1,0 +1,19 @@
+{
+  "metodo": "Chrome sem janela (headless=1), worker real, Cozinha 3D, corpo real animado sem física. Uma realização de cada condição: são sinais para conferir regressões, não estatística. 'antes' = commit 68fee90 servido de uma cópia congelada; 'sem inércia' = pacote de realismo do Codex (contato, boca, antenas, pausas); 'com inércia' = o mesmo com a boca estendendo acima de 25 Hz e recolhendo só abaixo de 12 Hz. Marcha contada a cada 0,5 s de relógio.",
+  "livre_100s_de_relogio": {
+    "antes": { "cerebro_s": 57, "comeu": { "acucar": 7, "pessego": 2, "banana": 4 }, "voos": 3, "fome_final": 0.11, "distancia_px": 2808 },
+    "sem_inercia": { "cerebro_s": 63, "comeu": { "acucar": 6, "uvas": 1 }, "voos": 1, "fome_final": 0.83, "distancia_px": 1186, "marcha": { "andar": 84, "pausa": 55, "provar": 52, "girar": 5 } },
+    "com_inercia": { "cerebro_s": 31, "comeu": { "acucar": 8, "banana": 2 }, "voos": 1, "fome_final": 0.14, "distancia_px": 710, "marcha": { "andar": 109, "pausa": 16, "provar": 67, "girar": 3 } }
+  },
+  "sobre_o_acucar_6s": {
+    "metodo": "Mosca parada (LAB.freeze) em cima do açúcar, fome 1, 6 s de cérebro, amostras a cada 100 ms.",
+    "sem_inercia": "2 mordidas no primeiro segundo; depois a saída da probóscide adapta e fica entre 1 e 34 Hz, em volta do limiar de 25 Hz: a boca abre e fecha pela metade (0,1 a 0,86) a cada 100 ms e não morde mais.",
+    "com_inercia": "3 mordidas em 6 s, em provas de ~0,9 s com a boca toda estendida, separadas por pausas de ~1 s."
+  },
+  "cheiro_sem_voar": {
+    "metodo": "12 largadas a 127-248 px (18-35 mm) da borda de banana, pêssego, morango e uvas, rumo sorteado (mesma semente nas duas versões), fome 1, voo desligado, 12 s de cérebro cada. Chegou = a menos de 8 px da borda.",
+    "antes_antenas_a_4_6_mm": { "chegou": 4, "de": 12 },
+    "depois_antenas_a_0_28_mm": { "chegou": 5, "de": 12 },
+    "leitura": "Com as antenas na distância real, a diferença de cheiro entre elas cai ~16 vezes, mas ela chega às frutas tanto quanto antes: quem guia a aproximação é a visão (LC10a -> DNa02), não a comparação entre as antenas. As uvas nunca foram alcançadas nas duas versões."
+  }
+}

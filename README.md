@@ -10,7 +10,7 @@ A página precisa de um servidor local (o navegador não carrega os dados via `f
 python scripts/servir.py
 ```
 
-Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar. O `servir.py` manda o navegador conferir os arquivos a cada carga; com o `python -m http.server` comum, depois de uma mudança o navegador pode continuar rodando os `.js` antigos.
+Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar. O `servir.py` manda o navegador conferir os arquivos a cada carga; com o `python -m http.server` comum, depois de uma mudança o navegador pode continuar rodando os `.js` antigos. Ele também responde em HTTP/1.1: no HTTP/1.0 padrão do Python, o servidor fecha a conexão logo depois de mandar o arquivo, e no Windows isso cortava o fim de alguns downloads (6 de 30 em paralelo; no navegador, "network error" ou "Failed to fetch"). Rode um servidor só: dois na mesma porta dividem os pedidos entre si.
 
 ## Estrutura
 
@@ -18,6 +18,7 @@ Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar. O `se
 - `web/sistemas.js`: os sistemas em teste (Pedidos e Financeiro) e os bugs plantados
 - `web/olhos3d.js`: a aba "Pelos olhos dela" (a tela em 3D, os campos de visão e o olho composto)
 - `web/sandbox.js`: o modo Sandbox 3D (plataformas, voo e o visual de Matrix)
+- `web/corpo-natural.js`: geometria de referência e regras de contato, extensão da boca e pausas na Cozinha 3D
 - `web/sim-worker.js`: a simulação, numa thread separada
 - `web/data/`: o conectoma empacotado para o navegador (base64, ~26 MB)
 - `scripts/`: o processamento em Python que gera `web/data/` a partir dos dados do Janelia
@@ -90,6 +91,9 @@ O simulador (`web/sim-worker.js`) só calcula os neurônios fora do repouso e s�
 - **No ar:** o voo é comandado pelos neurônios motores das asas (ver "Voo pelos motores das asas"). A altura e o pouso (perto de algo que ela ainda não provou) são regras do corpo.
 - O visual (grade neon, chuva de código, glitches vermelhos) é só para quem assiste. Os sentidos dela são os mesmos da página, agora com altura: cheiro, olhos e gosto nas patas.
 - A tela mostra o mundo (câmera de espectador, olhos compostos e mapa) ao lado do cérebro, com os neurônios acendendo.
+- **Fantasma:** uma câmera livre, como o espectador livre de um jogo de tiro. W/S vai para onde se olha, A/D para os lados, o mouse olha (clique para prender o mouse, Esc solta; ou arraste), Espaço/E sobe, C/Q desce, Shift acelera, a roda muda a velocidade e F leva a câmera para perto dela. Atravessa tudo e não aparece para os olhos dela; com o louva-a-deus ligado, as teclas movem a câmera, não o louva-a-deus.
+- **Ampliar** deixa o sandbox na largura toda, com o cérebro embaixo (a escolha fica guardada no navegador). **Tela cheia** mostra só o sandbox.
+- **As cores dos olhos:** a imagem dos olhos compostos mostra as cores que os receptores dela captam, não mais o verde e o azul de cada tipo de omatídeo. Ela não tem receptor de vermelho: os R8 "amarelos" (Rh6, ~508 nm) dão o verde dela e os "pálidos" (Rh5, ~437 nm), o azul. Na tela, esses dois canais viram um mundo azul e amarelo, como numa simulação de daltonismo: o branco continua branco e o vermelho escurece (o morango fica quase preto). Ela também vê ultravioleta (R7), mas a cena desenhada só tem vermelho, verde e azul. Os pesos de cada cor da tela em cada receptor (`corMosca`, em `web/olhos3d.js`) são aproximados. É só a imagem: o LC10a continua recebendo o brilho de cada omatídeo (canal verde nos amarelos, azul nos pálidos, como no flygym). A mancha vermelha marca onde os LC10a respondem, e vermelho ela não vê.
 
 ### O mundo natural: a Cozinha
 
@@ -109,6 +113,20 @@ Um terceiro "sistema" que não é software: um pedaço de 20 × 20 cm de bancada
 - **Decepção:** provar comida que já acabou, ou o vinagre (cheira a fermentação, mas não tem açúcar), esperando comer, liga a PPL1 (Felsenberg et al. 2018).
 - **Primeiras observações** (teste sem janela, corpo simples, 81 s de cérebro no 3D): comeu açúcar 7 vezes, voou até as uvas e comeu até acabar, voltou a elas vazias e se decepcionou, depois comeu pêssego (6), banana (3) e morango (2). Na página 2D, comeu açúcar, pêssego e banana e ficou saciada em 21 s.
 - **Limites:** o cheiro é uma nuvem parada em volta de cada coisa (sem vento nem turbulência); na física, as frutas são blocos (a forma redonda é só o desenho); a comida não volta.
+
+### Contato, probóscide e pausas na Cozinha 3D
+
+Implementação em `web/corpo-natural.js`, integrada à página e à sandbox. O cérebro e seus parâmetros permanecem os mesmos.
+
+- **Antenas:** os centros de referência dos funículos da NeuroMechFly ficam a 0,28418 mm entre si (antes, os pontos de amostragem estavam separados por 32 px = 4,57 mm). A posição e a altura entram no cálculo do cheiro; no corpo físico, vêm das peças da pose recebida. Sem malha, usa a mesma geometria de referência com o corpo ereto. Não houve aumento compensatório do ganho de virada pelo cheiro.
+- **Gosto e alimentação são contatos diferentes:** as pontas dos tarsos alcançam o topo de um objeto e fornecem gosto. Na física, exige também força de contato naquela pata; sem física, os pontos de apoio são aproximados pela pose de pé. A saída `proboscide` acima do limiar já usado pela página comanda a extensão. Só há mordida com a boca estendida, alcance de até 1,15 mm da raiz e contato da ponta por 0,12 s cerebrais. Esses alcances, tolerâncias e tempos são parâmetros do corpo, ainda não calibrados contra vídeos de alimentação.
+- **Animação:** as peças `c_rostrum` e `c_haustellum` se orientam e alongam entre raiz, dobra e ponta. É extensão geométrica, não uma simulação muscular nem preservação exata dos comprimentos articulares. As patas da frente fazem um breve tateamento visual; não são disparos de um circuito de tateamento. Sem malha, a boca aparece como uma peça simples. No corpo físico, a boca é uma sobreposição visual e o contato é geométrico; não aplica forças no MuJoCo.
+- **Inércia da boca:** a boca estende quando a saída da probóscide passa de 25 Hz e só recolhe abaixo de 12 Hz (regra do corpo). Depois de duas mordidas, a saída adaptada do cérebro fica oscilando em volta de 25 Hz; sem a inércia, a boca abria e fechava pela metade a cada 100 ms e ela parava de comer. Com a inércia, parada no açúcar, ela prova por ~0,9 s, morde, recolhe e volta a provar (3 mordidas em 6 s; `docs/medicoes/realismo-livre.json`).
+- **Pausas:** regra com estados andar (0,8–3,2 s), pausar/girar (0,15–0,65 s) e provar. O sentido das curvas continua usando as leituras atuais do cérebro e do cheiro. A alimentação suspende a caminhada; ameaça, fuga, ré e escalada têm prioridade. Os tempos são aproximados e usam o relógio cerebral; não representam distribuições medidas em animais.
+- **Limites:** a geometria de contato continua sendo o topo plano de cada plataforma (inclusive frutas desenhadas arredondadas). Não há alimentação nas paredes. Perder contato, decolar ou ficar presa impede novas mordidas; a captura/fuga recolhe imediatamente a boca. O modo 2D e os experimentos de caça a bugs mantêm a alimentação anterior.
+- **Triagem anterior à implementação:** `node scripts/realismo_triagem.mjs`, resultado em `docs/medicoes/realismo-triagem.json`. No worker da página, uma realização com açúcar a 160 Hz por neurônio produziu 290 disparos/s somados no grupo da probóscide, primeiro sinal no relatório de 30 ms; a fase seguinte sem estímulo não registrou disparos. Ameaça a 200 Hz produziu rajadas da fibra gigante. Isso sustenta o uso dos sinais; não valida a mecânica da boca nem as pausas como emergentes do mapa.
+- **Solta na Cozinha** (uma rodada de cada, `docs/medicoes/realismo-livre.json`): antes do pacote, 13 refeições em 57 s de cérebro; sem a inércia da boca, 7 em 63 s; com ela, 10 em 31 s, quase saciada. Com as antenas na escala real, a diferença de cheiro entre elas cai ~16 vezes, mas ela chega às frutas andando tanto quanto antes (5 de 12 largadas, contra 4 de 12): quem guia a aproximação é a visão (LC10a), não a comparação entre as antenas.
+- **Verificação:** `node scripts/corpo_natural_teste.mjs` confere orientação/separação das antenas, contato por altura e borda, extensão e prioridade de ameaça/escalada. `node scripts/realismo_sandbox_teste.mjs` usa o cérebro real no Chrome com perfil em `_tmp/` e grava `docs/medicoes/realismo-sandbox.json`; a imagem de conferência fica em `_realismo_boca.png`.
 
 ### Corpo físico (opcional)
 
