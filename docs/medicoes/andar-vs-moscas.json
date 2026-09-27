@@ -9748,6 +9748,1596 @@
     "clique": 8,
     "comeu": 8
    }
+  },
+  {
+   "rotulo": "longa-sentidos-b-1",
+   "data": "2026-09-27T19:51:35.923Z",
+   "versao": {
+    "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+    "sandbox.js": "96a999375a748e5ce1658d63f4a0fff3095d1ad9b01aa911203edd1aeb03c8b6",
+    "corpo-natural.js": "60529893f33c89316d39890dc32c4d7c8634943a341cb52dff97a35da93a6572",
+    "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+   },
+   "configuracao": {
+    "porta": 8765,
+    "fisico": false,
+    "sentidos": true,
+    "semOlhos": false,
+    "sonda_mofo": false,
+    "sonda_cheiro": false
+   },
+   "metodo_da_rodada": "Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.",
+   "inicio_cerebro_s": 0.42,
+   "fim": {
+    "fome": 1,
+    "visao": {
+     "tempo_s": 119.21000000002408,
+     "olhos_reais_s": 119.21000000002408,
+     "corpo_fisico_s": 0,
+     "alvo_real": 1155,
+     "alvo_aproximado": 0,
+     "sem_alvo": 0
+    },
+    "olhos_reais_recentes": true
+   },
+   "detalhes_eventos": [
+    {
+     "t": 1.96,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 1.96
+    },
+    {
+     "t": 1.96,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 1.96
+    },
+    {
+     "t": 3.77,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 3.77
+    },
+    {
+     "t": 3.77,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 3.77
+    },
+    {
+     "t": 4.67,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 4.67
+    },
+    {
+     "t": 4.67,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 4.67
+    },
+    {
+     "t": 8.16,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 8.16
+    },
+    {
+     "t": 8.16,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 8.16
+    },
+    {
+     "t": 9.06,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 9.06
+    },
+    {
+     "t": 9.06,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 9.06
+    },
+    {
+     "t": 12.42,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 12.42
+    },
+    {
+     "t": 12.42,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 12.42
+    },
+    {
+     "t": 13.32,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 13.32
+    },
+    {
+     "t": 13.32,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 13.32
+    },
+    {
+     "t": 31.04,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.47,
+      0.48
+     ],
+     "doce": 0,
+     "lc": [
+      7414,
+      138
+     ],
+     "tops": "ORN_DM2_R 120, ORN_DM2_L 119, ORN_DM3_R 107, ORN_DM3_L 107, ORN_DM1_R 49",
+     "relogio_cerebral_s": 31.04
+    },
+    {
+     "t": 31.09,
+     "type": "fugaDirecao",
+     "lida": 0,
+     "real": 0,
+     "relogio_cerebral_s": 31.09
+    },
+    {
+     "t": 31.09,
+     "type": "sacada",
+     "relogio_cerebral_s": 31.09
+    },
+    {
+     "t": 32.59,
+     "type": "fugaDirecao",
+     "lida": -65,
+     "real": 0,
+     "relogio_cerebral_s": 32.59
+    },
+    {
+     "t": 32.59,
+     "type": "sacada",
+     "relogio_cerebral_s": 32.59
+    },
+    {
+     "t": 2.4,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 33.44
+    },
+    {
+     "t": 54.14,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.5,
+      0.46
+     ],
+     "doce": 0,
+     "lc": [
+      6851,
+      133
+     ],
+     "tops": "ORN_DM2_L 100, ORN_DM2_R 99, ORN_DM3_L 86, ORN_DM3_R 86, ORN_DM1_L 46",
+     "relogio_cerebral_s": 54.14
+    },
+    {
+     "t": 54.18,
+     "type": "sacada",
+     "relogio_cerebral_s": 54.18
+    },
+    {
+     "t": 55.68,
+     "type": "fugaDirecao",
+     "lida": -52,
+     "real": 0,
+     "relogio_cerebral_s": 55.68
+    },
+    {
+     "t": 55.68,
+     "type": "sacada",
+     "relogio_cerebral_s": 55.68
+    },
+    {
+     "t": 2.4,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 56.54
+    },
+    {
+     "t": 57.18,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.49,
+      0.46
+     ],
+     "doce": 0,
+     "lc": [
+      7684,
+      107
+     ],
+     "tops": "ORN_DM2_L 27, ORN_DM2_R 26, ORN_DM3_L 24, ORN_DM3_R 24, ORN_DM1_L 11",
+     "relogio_cerebral_s": 57.18
+    },
+    {
+     "t": 58.68,
+     "type": "fugaDirecao",
+     "lida": -43,
+     "real": 0,
+     "relogio_cerebral_s": 58.68
+    },
+    {
+     "t": 58.68,
+     "type": "sacada",
+     "relogio_cerebral_s": 58.68
+    },
+    {
+     "t": 2.39,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 59.57
+    },
+    {
+     "t": 60.18,
+     "type": "fugaDirecao",
+     "lida": -56,
+     "real": 0,
+     "relogio_cerebral_s": 60.18
+    },
+    {
+     "t": 60.18,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.43,
+      0.52
+     ],
+     "doce": 0,
+     "lc": [
+      9257,
+      125
+     ],
+     "tops": "ORN_DM2_R 7, ORN_DM2_L 7, ORN_DM3_R 6, ORN_DM3_L 6, ORN_DM1_R 3",
+     "relogio_cerebral_s": 60.18
+    },
+    {
+     "t": 2.31,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 62.49
+    },
+    {
+     "t": 62.78,
+     "type": "fugaDirecao",
+     "lida": -73,
+     "real": 0,
+     "relogio_cerebral_s": 62.78
+    },
+    {
+     "t": 62.78,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.57,
+      0.38
+     ],
+     "doce": 0,
+     "lc": [
+      6912,
+      144
+     ],
+     "tops": "ORN_DM1_R 137, ORN_DM1_L 137, ORN_VA2_R 113, ORN_VA2_L 113, ORN_DP1m_R 78",
+     "relogio_cerebral_s": 62.78
+    },
+    {
+     "t": 64.28,
+     "type": "fugaDirecao",
+     "lida": -16,
+     "real": 0,
+     "relogio_cerebral_s": 64.28
+    },
+    {
+     "t": 64.28,
+     "type": "sacada",
+     "relogio_cerebral_s": 64.28
+    },
+    {
+     "t": 2.38,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 65.16
+    },
+    {
+     "t": 68.96,
+     "type": "fugaDirecao",
+     "lida": -43,
+     "real": 0,
+     "relogio_cerebral_s": 68.96
+    },
+    {
+     "t": 68.96,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.49,
+      0.46
+     ],
+     "doce": 0,
+     "lc": [
+      7512,
+      109
+     ],
+     "tops": "ORN_DM2_L 26, ORN_DM2_R 25, ORN_DM3_L 23, ORN_DM3_R 23, ORN_DM1_L 10",
+     "relogio_cerebral_s": 68.96
+    },
+    {
+     "t": 70.46,
+     "type": "fugaDirecao",
+     "lida": 16,
+     "real": 0,
+     "relogio_cerebral_s": 70.46
+    },
+    {
+     "t": 70.46,
+     "type": "sacada",
+     "relogio_cerebral_s": 70.46
+    },
+    {
+     "t": 2.37,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 71.33
+    },
+    {
+     "t": 89.45,
+     "type": "fugaDirecao",
+     "lida": 80,
+     "real": 0,
+     "relogio_cerebral_s": 89.45
+    },
+    {
+     "t": 89.45,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.48,
+      0.48
+     ],
+     "doce": 0,
+     "lc": [
+      7652,
+      134
+     ],
+     "tops": "ORN_DM2_R 98, ORN_DM2_L 98, ORN_DM3_R 88, ORN_DM3_L 88, ORN_DM1_R 39",
+     "relogio_cerebral_s": 89.45
+    },
+    {
+     "t": 90.95,
+     "type": "fugaDirecao",
+     "lida": -60,
+     "real": 0,
+     "relogio_cerebral_s": 90.95
+    },
+    {
+     "t": 90.95,
+     "type": "sacada",
+     "relogio_cerebral_s": 90.95
+    },
+    {
+     "t": 2.37,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 91.82
+    }
+   ],
+   "erros": [],
+   "mofo": null,
+   "cheiro": null,
+   "janela_ms": 100,
+   "relogio_s": 300,
+   "cerebro_s": 119.2,
+   "amostras": 11921,
+   "fracoes_do_tempo": {
+    "parada": 0.14,
+    "andando_reto": 0.563,
+    "comendo": 0.046,
+    "virando": 0.111,
+    "voando": 0.139
+   },
+   "busca_pelo_cheiro": {
+    "dentro": 0.649,
+    "perdeu": 0.084
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 10.5,
+    "p10": 6,
+    "p90": 15.031
+   },
+   "trecho_andando_s": {
+    "n": 49,
+    "media": 1.634,
+    "mediana": 0.79
+   },
+   "paradas_s": {
+    "n": 42,
+    "media": 0.534,
+    "mediana": 0.16,
+    "frac_menos_0_3s": 0.64,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 41,
+    "mediana": 2.704,
+    "p90": 28.643
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.67,
+    "duracao_ms_mediana": 60,
+    "amplitude_graus_mediana": 7
+   },
+   "eventos": {
+    "clique": 7,
+    "comeu": 7,
+    "voo": 7,
+    "fugaDirecao": 11,
+    "sacada": 8,
+    "pouso": 7
+   }
+  },
+  {
+   "rotulo": "longa-sentidos-b-2",
+   "data": "2026-09-27T19:56:43.731Z",
+   "versao": {
+    "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+    "sandbox.js": "96a999375a748e5ce1658d63f4a0fff3095d1ad9b01aa911203edd1aeb03c8b6",
+    "corpo-natural.js": "60529893f33c89316d39890dc32c4d7c8634943a341cb52dff97a35da93a6572",
+    "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+   },
+   "configuracao": {
+    "porta": 8765,
+    "fisico": false,
+    "sentidos": true,
+    "semOlhos": false,
+    "sonda_mofo": false,
+    "sonda_cheiro": false
+   },
+   "metodo_da_rodada": "Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.",
+   "inicio_cerebro_s": 0.8,
+   "fim": {
+    "fome": 1,
+    "visao": {
+     "tempo_s": 89.95000000000911,
+     "olhos_reais_s": 89.95000000000911,
+     "corpo_fisico_s": 0,
+     "alvo_real": 0,
+     "alvo_aproximado": 0,
+     "sem_alvo": 0
+    },
+    "olhos_reais_recentes": true
+   },
+   "detalhes_eventos": [
+    {
+     "t": 1.51,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 1.51
+    },
+    {
+     "t": 1.51,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 1.51
+    },
+    {
+     "t": 2.41,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 2.41
+    },
+    {
+     "t": 2.41,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 2.41
+    },
+    {
+     "t": 4.66,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 4.66
+    },
+    {
+     "t": 4.66,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 4.66
+    },
+    {
+     "t": 7.55,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 7.55
+    },
+    {
+     "t": 7.55,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 7.55
+    },
+    {
+     "t": 11.42,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 11.42
+    },
+    {
+     "t": 11.42,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 11.42
+    },
+    {
+     "t": 15.12,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 15.12
+    },
+    {
+     "t": 15.12,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 15.12
+    },
+    {
+     "t": 16.02,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 16.02
+    },
+    {
+     "t": 16.02,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 16.02
+    },
+    {
+     "t": 20.35,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 20.35
+    },
+    {
+     "t": 20.35,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 20.35
+    },
+    {
+     "t": 21.25,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 21.25
+    },
+    {
+     "t": 21.61,
+     "type": "decepcao",
+     "id": "k-acucar",
+     "expect": 1,
+     "relogio_cerebral_s": 21.61
+    }
+   ],
+   "erros": [],
+   "mofo": null,
+   "cheiro": null,
+   "janela_ms": 100,
+   "relogio_s": 300,
+   "cerebro_s": 90,
+   "amostras": 8995,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.689,
+    "parada": 0.147,
+    "comendo": 0.076,
+    "virando": 0.087
+   },
+   "busca_pelo_cheiro": {
+    "dentro": 0.942,
+    "perdeu": 0.044
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 9.015,
+    "p10": 6.607,
+    "p90": 13.325
+   },
+   "trecho_andando_s": {
+    "n": 45,
+    "media": 1.547,
+    "mediana": 0.62
+   },
+   "paradas_s": {
+    "n": 44,
+    "media": 0.46,
+    "mediana": 0.22,
+    "frac_menos_0_3s": 0.77,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 44,
+    "mediana": 0.893,
+    "p90": 22.245
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.45,
+    "duracao_ms_mediana": 50,
+    "amplitude_graus_mediana": 6
+   },
+   "eventos": {
+    "clique": 9,
+    "comeu": 8,
+    "decepcao": 1
+   }
+  },
+  {
+   "rotulo": "longa-sentidos-b-3",
+   "data": "2026-09-27T20:01:51.093Z",
+   "versao": {
+    "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+    "sandbox.js": "96a999375a748e5ce1658d63f4a0fff3095d1ad9b01aa911203edd1aeb03c8b6",
+    "corpo-natural.js": "60529893f33c89316d39890dc32c4d7c8634943a341cb52dff97a35da93a6572",
+    "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+   },
+   "configuracao": {
+    "porta": 8765,
+    "fisico": false,
+    "sentidos": true,
+    "semOlhos": false,
+    "sonda_mofo": false,
+    "sonda_cheiro": false
+   },
+   "metodo_da_rodada": "Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.",
+   "inicio_cerebro_s": 0.43,
+   "fim": {
+    "fome": 1,
+    "visao": {
+     "tempo_s": 106.01000000001733,
+     "olhos_reais_s": 106.01000000001733,
+     "corpo_fisico_s": 0,
+     "alvo_real": 1030,
+     "alvo_aproximado": 0,
+     "sem_alvo": 0
+    },
+    "olhos_reais_recentes": true
+   },
+   "detalhes_eventos": [
+    {
+     "t": 4.6,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 4.6
+    },
+    {
+     "t": 4.6,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 4.6
+    },
+    {
+     "t": 5.5,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 5.5
+    },
+    {
+     "t": 5.5,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 5.5
+    },
+    {
+     "t": 8.44,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 8.44
+    },
+    {
+     "t": 8.44,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 8.44
+    },
+    {
+     "t": 9.34,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 9.34
+    },
+    {
+     "t": 9.34,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 9.34
+    },
+    {
+     "t": 26.87,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.48,
+      0.48
+     ],
+     "doce": 0,
+     "lc": [
+      6993,
+      134
+     ],
+     "tops": "ORN_DM2_L 110, ORN_DM2_R 109, ORN_DM3_L 96, ORN_DM3_R 96, ORN_DM1_L 48",
+     "relogio_cerebral_s": 26.87
+    },
+    {
+     "t": 26.91,
+     "type": "fugaDirecao",
+     "lida": 0,
+     "real": 0,
+     "relogio_cerebral_s": 26.91
+    },
+    {
+     "t": 26.91,
+     "type": "sacada",
+     "relogio_cerebral_s": 26.91
+    },
+    {
+     "t": 27.11,
+     "type": "atracao",
+     "id": "k-banana",
+     "relogio_cerebral_s": 27.11
+    },
+    {
+     "t": 28.18,
+     "type": "mofo",
+     "relogio_cerebral_s": 28.18
+    },
+    {
+     "t": 28.41,
+     "type": "fugaDirecao",
+     "lida": -30,
+     "real": 0,
+     "relogio_cerebral_s": 28.41
+    },
+    {
+     "t": 28.41,
+     "type": "sacada",
+     "relogio_cerebral_s": 28.41
+    },
+    {
+     "t": 2.39,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 29.26
+    },
+    {
+     "t": 45.96,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.46,
+      0.5
+     ],
+     "doce": 0,
+     "lc": [
+      8271,
+      140
+     ],
+     "tops": "ORN_DM2_L 112, ORN_DM2_R 112, ORN_DM3_L 98, ORN_DM3_R 98, ORN_DM1_L 49",
+     "relogio_cerebral_s": 45.96
+    },
+    {
+     "t": 46,
+     "type": "fugaDirecao",
+     "lida": 0,
+     "real": 0,
+     "relogio_cerebral_s": 46
+    },
+    {
+     "t": 46,
+     "type": "sacada",
+     "relogio_cerebral_s": 46
+    },
+    {
+     "t": 46.04,
+     "type": "atracao",
+     "id": "k-banana",
+     "relogio_cerebral_s": 46.04
+    },
+    {
+     "t": 47.5,
+     "type": "fugaDirecao",
+     "lida": -11,
+     "real": 0,
+     "relogio_cerebral_s": 47.5
+    },
+    {
+     "t": 47.5,
+     "type": "sacada",
+     "relogio_cerebral_s": 47.5
+    },
+    {
+     "t": 2.39,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 48.35
+    },
+    {
+     "t": 56.28,
+     "type": "fugaDirecao",
+     "lida": 75,
+     "real": 0,
+     "relogio_cerebral_s": 56.28
+    },
+    {
+     "t": 56.28,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.49,
+      0.47
+     ],
+     "doce": 0,
+     "lc": [
+      7518,
+      123
+     ],
+     "tops": "ORN_DM4_R 47, ORN_DM4_L 46, ORN_DM1_R 38, ORN_DM1_L 38, ORN_DM2_R 25",
+     "relogio_cerebral_s": 56.28
+    },
+    {
+     "t": 57.78,
+     "type": "fugaDirecao",
+     "lida": -19,
+     "real": 0,
+     "relogio_cerebral_s": 57.78
+    },
+    {
+     "t": 57.78,
+     "type": "sacada",
+     "relogio_cerebral_s": 57.78
+    },
+    {
+     "t": 2.37,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 58.65
+    },
+    {
+     "t": 59.54,
+     "type": "fugaDirecao",
+     "lida": -86,
+     "real": 0,
+     "relogio_cerebral_s": 59.54
+    },
+    {
+     "t": 59.54,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.45,
+      0.5
+     ],
+     "doce": 0,
+     "lc": [
+      7433,
+      112
+     ],
+     "tops": "ORN_DM1_R 16, ORN_DM1_L 16, ORN_VA2_R 12, ORN_VA2_L 12, ORN_DP1m_R 8",
+     "relogio_cerebral_s": 59.54
+    },
+    {
+     "t": 0.41,
+     "type": "alvoVoo",
+     "id": "sentidos",
+     "relogio_cerebral_s": 59.95
+    },
+    {
+     "t": 1.31,
+     "type": "pouso",
+     "z": 54,
+     "id": "k-uvas",
+     "relogio_cerebral_s": 60.85
+    },
+    {
+     "t": 77.76,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.5,
+      0.46
+     ],
+     "doce": 0,
+     "lc": [
+      7059,
+      148
+     ],
+     "tops": "ORN_DM4_L 89, ORN_DM4_R 89, ORN_DM1_L 82, ORN_DM1_R 81, ORN_DM2_L 51",
+     "relogio_cerebral_s": 77.76
+    },
+    {
+     "t": 77.79,
+     "type": "fugaDirecao",
+     "lida": 0,
+     "real": 0,
+     "relogio_cerebral_s": 77.79
+    },
+    {
+     "t": 77.79,
+     "type": "sacada",
+     "relogio_cerebral_s": 77.79
+    },
+    {
+     "t": 79.29,
+     "type": "fugaDirecao",
+     "lida": -6,
+     "real": 0,
+     "relogio_cerebral_s": 79.29
+    },
+    {
+     "t": 79.29,
+     "type": "sacada",
+     "relogio_cerebral_s": 79.29
+    },
+    {
+     "t": 2.39,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 80.15
+    },
+    {
+     "t": 80.85,
+     "type": "fugaDirecao",
+     "lida": 37,
+     "real": 0,
+     "relogio_cerebral_s": 80.85
+    },
+    {
+     "t": 80.85,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.48,
+      0.48
+     ],
+     "doce": 0,
+     "lc": [
+      8259,
+      116
+     ],
+     "tops": "",
+     "relogio_cerebral_s": 80.85
+    },
+    {
+     "t": 82.35,
+     "type": "fugaDirecao",
+     "lida": -8,
+     "real": 0,
+     "relogio_cerebral_s": 82.35
+    },
+    {
+     "t": 82.35,
+     "type": "sacada",
+     "relogio_cerebral_s": 82.35
+    },
+    {
+     "t": 2.38,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 83.23
+    },
+    {
+     "t": 83.85,
+     "type": "fugaDirecao",
+     "lida": 25,
+     "real": 0,
+     "relogio_cerebral_s": 83.85
+    },
+    {
+     "t": 83.85,
+     "type": "voo",
+     "why": "fuga",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.46,
+      0.49
+     ],
+     "doce": 0,
+     "lc": [
+      8153,
+      135
+     ],
+     "tops": "",
+     "relogio_cerebral_s": 83.85
+    },
+    {
+     "t": 85.47,
+     "type": "mofo",
+     "relogio_cerebral_s": 85.47
+    },
+    {
+     "t": 2.33,
+     "type": "pouso",
+     "z": 0,
+     "id": null,
+     "relogio_cerebral_s": 86.18
+    }
+   ],
+   "erros": [],
+   "mofo": null,
+   "cheiro": null,
+   "janela_ms": 100,
+   "relogio_s": 300,
+   "cerebro_s": 106,
+   "amostras": 10601,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.586,
+    "parada": 0.111,
+    "comendo": 0.05,
+    "virando": 0.105,
+    "voando": 0.147
+   },
+   "busca_pelo_cheiro": {
+    "dentro": 0.635,
+    "perdeu": 0.02
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 9.469,
+    "p10": 6,
+    "p90": 15
+   },
+   "trecho_andando_s": {
+    "n": 35,
+    "media": 2.091,
+    "mediana": 0.57
+   },
+   "paradas_s": {
+    "n": 28,
+    "media": 0.614,
+    "mediana": 0.15,
+    "frac_menos_0_3s": 0.61,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 27,
+    "mediana": 0.812,
+    "p90": 24.52
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.42,
+    "duracao_ms_mediana": 60,
+    "amplitude_graus_mediana": 9
+   },
+   "eventos": {
+    "clique": 4,
+    "comeu": 4,
+    "voo": 7,
+    "fugaDirecao": 12,
+    "sacada": 8,
+    "atracao": 2,
+    "mofo": 2,
+    "pouso": 7,
+    "alvoVoo": 1
+   }
+  },
+  {
+   "rotulo": "longa-sentidos-b-4",
+   "data": "2026-09-27T20:07:00.184Z",
+   "versao": {
+    "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+    "sandbox.js": "96a999375a748e5ce1658d63f4a0fff3095d1ad9b01aa911203edd1aeb03c8b6",
+    "corpo-natural.js": "60529893f33c89316d39890dc32c4d7c8634943a341cb52dff97a35da93a6572",
+    "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+   },
+   "configuracao": {
+    "porta": 8765,
+    "fisico": false,
+    "sentidos": true,
+    "semOlhos": false,
+    "sonda_mofo": false,
+    "sonda_cheiro": false
+   },
+   "metodo_da_rodada": "Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.",
+   "inicio_cerebro_s": 0.75,
+   "fim": {
+    "fome": 1,
+    "visao": {
+     "tempo_s": 146.6400000000116,
+     "olhos_reais_s": 146.6400000000116,
+     "corpo_fisico_s": 0,
+     "alvo_real": 0,
+     "alvo_aproximado": 0,
+     "sem_alvo": 0
+    },
+    "olhos_reais_recentes": true
+   },
+   "detalhes_eventos": [
+    {
+     "t": 5.07,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 5.07
+    },
+    {
+     "t": 5.07,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 5.07
+    },
+    {
+     "t": 5.97,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 5.97
+    },
+    {
+     "t": 5.97,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 5.97
+    },
+    {
+     "t": 9.04,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 9.04
+    },
+    {
+     "t": 9.04,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 9.04
+    },
+    {
+     "t": 9.94,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 9.94
+    },
+    {
+     "t": 9.94,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 9.94
+    },
+    {
+     "t": 17.82,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 17.82
+    },
+    {
+     "t": 17.82,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 17.82
+    },
+    {
+     "t": 18.72,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 18.72
+    },
+    {
+     "t": 18.72,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 18.72
+    },
+    {
+     "t": 21.92,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 21.92
+    },
+    {
+     "t": 21.92,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 21.92
+    },
+    {
+     "t": 22.82,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 22.82
+    },
+    {
+     "t": 22.82,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 22.82
+    }
+   ],
+   "erros": [],
+   "mofo": null,
+   "cheiro": null,
+   "janela_ms": 100,
+   "relogio_s": 300,
+   "cerebro_s": 146.6,
+   "amostras": 14664,
+   "fracoes_do_tempo": {
+    "parada": 0.259,
+    "andando_reto": 0.613,
+    "comendo": 0.064,
+    "virando": 0.064
+   },
+   "busca_pelo_cheiro": {
+    "dentro": 0.667,
+    "perdeu": 0.063
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 11.783,
+    "p10": 7.884,
+    "p90": 15
+   },
+   "trecho_andando_s": {
+    "n": 43,
+    "media": 2.305,
+    "mediana": 1.03
+   },
+   "paradas_s": {
+    "n": 43,
+    "media": 1.103,
+    "mediana": 0.21,
+    "frac_menos_0_3s": 0.56,
+    "frac_mais_5s": 0.05
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 42,
+    "mediana": 0.298,
+    "p90": 13.818
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.01,
+    "duracao_ms_mediana": 50,
+    "amplitude_graus_mediana": 6
+   },
+   "eventos": {
+    "clique": 8,
+    "comeu": 8
+   }
+  },
+  {
+   "rotulo": "longa-sentidos-b-5",
+   "data": "2026-09-27T20:12:07.297Z",
+   "versao": {
+    "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+    "sandbox.js": "96a999375a748e5ce1658d63f4a0fff3095d1ad9b01aa911203edd1aeb03c8b6",
+    "corpo-natural.js": "60529893f33c89316d39890dc32c4d7c8634943a341cb52dff97a35da93a6572",
+    "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+   },
+   "configuracao": {
+    "porta": 8765,
+    "fisico": false,
+    "sentidos": true,
+    "semOlhos": false,
+    "sonda_mofo": false,
+    "sonda_cheiro": false
+   },
+   "metodo_da_rodada": "Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.",
+   "inicio_cerebro_s": 0.81,
+   "fim": {
+    "fome": 1,
+    "visao": {
+     "tempo_s": 130.13000000002663,
+     "olhos_reais_s": 130.13000000002663,
+     "corpo_fisico_s": 0,
+     "alvo_real": 15,
+     "alvo_aproximado": 0,
+     "sem_alvo": 0
+    },
+    "olhos_reais_recentes": true
+   },
+   "detalhes_eventos": [
+    {
+     "t": 3.46,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 3.46
+    },
+    {
+     "t": 3.46,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 3.46
+    },
+    {
+     "t": 4.97,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 4.97
+    },
+    {
+     "t": 4.97,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 4.97
+    },
+    {
+     "t": 6.72,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 6.72
+    },
+    {
+     "t": 6.72,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 6.72
+    },
+    {
+     "t": 7.62,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 7.62
+    },
+    {
+     "t": 7.62,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 7.62
+    },
+    {
+     "t": 10.56,
+     "type": "clique",
+     "id": "k-acucar",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 10.56
+    },
+    {
+     "t": 10.56,
+     "type": "comeu",
+     "id": "k-acucar",
+     "relogio_cerebral_s": 10.56
+    },
+    {
+     "t": 15.14,
+     "type": "voo",
+     "why": "subir",
+     "ameaca": 0,
+     "tato": 0,
+     "olhos": [
+      0.49,
+      0.47
+     ],
+     "doce": 0,
+     "lc": [
+      7632,
+      133
+     ],
+     "tops": "ORN_DM1_R 149, ORN_DM1_L 149, ORN_VA2_R 127, ORN_VA2_L 126, ORN_DP1m_R 90",
+     "relogio_cerebral_s": 15.14
+    },
+    {
+     "t": 15.18,
+     "type": "fugaDirecao",
+     "lida": -35,
+     "real": 0,
+     "relogio_cerebral_s": 15.18
+    },
+    {
+     "t": 15.18,
+     "type": "sacada",
+     "relogio_cerebral_s": 15.18
+    },
+    {
+     "t": 15.23,
+     "type": "atracao",
+     "id": "k-pessego",
+     "relogio_cerebral_s": 15.23
+    },
+    {
+     "t": 0.16,
+     "type": "alvoVoo",
+     "id": "sentidos",
+     "relogio_cerebral_s": 15.3
+    },
+    {
+     "t": 0.93,
+     "type": "pouso",
+     "z": 107,
+     "id": "k-pessego",
+     "relogio_cerebral_s": 16.07
+    },
+    {
+     "t": 16.58,
+     "type": "clique",
+     "id": "k-pessego",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 16.58
+    },
+    {
+     "t": 16.58,
+     "type": "comeu",
+     "id": "k-pessego",
+     "relogio_cerebral_s": 16.58
+    },
+    {
+     "t": 17.48,
+     "type": "clique",
+     "id": "k-pessego",
+     "bug": null,
+     "arriscado": false,
+     "relogio_cerebral_s": 17.48
+    },
+    {
+     "t": 17.48,
+     "type": "comeu",
+     "id": "k-pessego",
+     "relogio_cerebral_s": 17.48
+    }
+   ],
+   "erros": [],
+   "mofo": null,
+   "cheiro": null,
+   "janela_ms": 100,
+   "relogio_s": 300,
+   "cerebro_s": 130.1,
+   "amostras": 13013,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.61,
+    "parada": 0.225,
+    "comendo": 0.047,
+    "virando": 0.111,
+    "voando": 0.007
+   },
+   "busca_pelo_cheiro": {
+    "dentro": 0.938,
+    "perdeu": 0.054
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 9.273,
+    "p10": 5.99,
+    "p90": 13.458
+   },
+   "trecho_andando_s": {
+    "n": 36,
+    "media": 2.602,
+    "mediana": 1.31
+   },
+   "paradas_s": {
+    "n": 34,
+    "media": 1.041,
+    "mediana": 0.23,
+    "frac_menos_0_3s": 0.65,
+    "frac_mais_5s": 0.09
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 34,
+    "mediana": 2.219,
+    "p90": 16.954
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.57,
+    "duracao_ms_mediana": 70,
+    "amplitude_graus_mediana": 11
+   },
+   "eventos": {
+    "clique": 7,
+    "comeu": 7,
+    "voo": 1,
+    "fugaDirecao": 1,
+    "sacada": 1,
+    "atracao": 1,
+    "alvoVoo": 1,
+    "pouso": 1
+   }
   }
  ]
 }

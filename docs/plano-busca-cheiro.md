@@ -15,8 +15,8 @@ fazem.
 - [x] B1 Sonda de busca pelo cheiro (`scripts/cheiro_sonda.js`, via `andar_medida.mjs --sonda-cheiro`) e linha de base
 - [x] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes
 - [x] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
-- [~] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério (sonda depois rodando)
-- [ ] B5 (depois) Pouso e decolagem pelos sentidos (passos 2 e 3 do resultado negativo)
+- [x] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério (melhorou, não passou)
+- [ ] B5 Pouso e decolagem pelos sentidos (passos 2 e 3 do resultado negativo). **Próximo: o pouso** (13 de 15 pousos no balcão)
 - [ ] B6 README, texto da página, `AGENTS.md`, commit
 
 Notas de cada passo, em ordem (a mais recente é a última):
@@ -86,6 +86,21 @@ andar livre 90 s com `--sentidos` (conferir virando/pausas) e a série `longa-se
   rodar de novo as rodadas que faltam** (`node scripts/andar_medida.mjs --segundos 300 --sentidos --rotulo
   longa-sentidos-b-N`, uma por vez) e o resumo. Aplicar o mesmo critério de antes (fruta ≥ 3/5, pouso em fruta ≥ 2/5,
   refeições ≥ metade do modo com atalhos).
+
+**B4 concluído (27/09/2026): melhorou, não passou o critério.** Série `longa-sentidos-b-1..5` (busca pelo cheiro v3),
+resumo em `sentidos-comparacao.json` → `rodadas_longas_b`:
+
+| 5 rodadas de 300 s, olhos reais | Com atalhos | Só sentidos (antes) | Só sentidos + busca pelo cheiro |
+|---|---|---|---|
+| Rodadas com fruta comida | 3/5 | 0/5 | 1/5 (pêssego) |
+| Rodadas com pouso em fruta | 3/5 | 0/5 | 2/5 (uvas; pêssego) |
+| Voos por rodada | 0, 0, 3, 5, 6 | 0, 0, 0, 1, 2 | 0, 0, 1, 7, 7 |
+| Pousos no balcão / em fruta | – | 2 / 0 | 13 / 2 |
+| Refeições por rodada (mediana) | 9 | 8 | 7 |
+
+Critério: fruta ≥ 3/5 (não), pouso em fruta ≥ 2/5 (sim, no limite), refeições ≥ metade (sim). O padrão continua com
+os atalhos. Agora ela voa mais (decola na base das frutas, `sbWantsFly` do modo só sentidos), e o gargalo é o **pouso**:
+13 de 15 pousos foram no balcão, por tempo (`VOO_MAX`). Próximo: B5, o pouso.
 
 ## O que as moscas fazem (base da regra)
 
