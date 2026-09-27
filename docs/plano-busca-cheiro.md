@@ -102,6 +102,16 @@ Critério: fruta ≥ 3/5 (não), pouso em fruta ≥ 2/5 (sim, no limite), refei�
 os atalhos. Agora ela voa mais (decola na base das frutas, `sbWantsFly` do modo só sentidos), e o gargalo é o **pouso**:
 13 de 15 pousos foram no balcão, por tempo (`VOO_MAX`). Próximo: B5, o pouso.
 
+**B5 começado: o pouso (27/09/2026).** Diagnóstico: o pouso do modo só sentidos era avaliado só a cada 0,25 s (no
+bloco de `f.alvoT`) e exigia cheiro forte (`f.atrInata` > 0,35, ou > 0,1 sem crescer) na altura do voo; voando a
+~128 mm/s, ela passa por cima de uma fruta de 40 mm em ~0,3 s, e o cheiro enfraquece com a altura. Mudança em
+`sbFly` (`web/sandbox.js`), só com `soSentidos()`: o pouso é avaliado a cada tique, fora do bloco do alvo: coisa
+embaixo (`sbSurface` > `SB_STEP`), superfície suave (`sbInclinacao` < 0,5) e cheiro bom presente (`f.atrInata` > 0,1);
+com uma coisa embaixo, a velocidade cai a 35% (para dar tempo de pousar); sem pousar, desce onde estiver só depois
+de 3 s (`VOO_MAX_SENTIDOS`; com atalhos continua 1,5 s). Série `longa-sentidos-c-1..5` lançada (logs
+`_tmp/_longa-sentidos-c-*.log`; resumo `--serie sentidos-c --chave rodadas_longas_c`). Se não estiver completa em
+`andar-vs-moscas.json`, rodar as que faltam, uma por vez.
+
 ## O que as moscas fazem (base da regra)
 
 | O que | Referência | Uso aqui |

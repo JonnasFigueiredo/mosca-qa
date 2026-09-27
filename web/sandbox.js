@@ -381,6 +381,7 @@ function sbTakeoff(f, why) {
 // atraente à frente e pousa nela quando chega perto; sem nada que atraia, pousa em ~3 s onde estiver.
 // Do cérebro: o bater das asas, a estabilização pelos halteres e as sacadas de desvio. Regras nossas: a escolha do
 // alvo, a aproximação e o pouso (os neurônios de pouso do mapa, DNp07 e DNp10, não responderam no modelo)
+const VOO_MAX_SENTIDOS = 3;   // só sentidos: sem alvo da lista, procura por mais tempo antes de pousar onde estiver
 const VOO_MAX = 1.5; // s de tempo cerebral sem alvo antes de pousar onde estiver (moscas em lugar fechado: voos de 1-2 s)
 // o quanto uma coisa atrai em voo: o cheiro (valência inata, com fome), o que ela aprendeu e o que ainda não provou
 function sbAtrativo(f, r) {
@@ -441,16 +442,22 @@ function sbFly(f, dt) {
     // de crescer (chegou perto da fonte). A altura embaixo conta como o que a parte de baixo dos olhos vê
     const r = soSentidos() ? null : sbEscolheAlvo(f), embaixo = sbSurface(f.x, f.y);
     if (r) { f.pouso = { id: r.id, x: r.x + r.w / 2, y: r.y + r.h / 2, z: r.z || 0, r }; labEvent('alvoVoo', { id: r.id, t: +f.flyT.toFixed(2) }); }
-    else if (soSentidos() && embaixo > SB_STEP && sbInclinacao(f.x, f.y) < 0.5 && ((f.atrInata || 0) > 0.35 || ((f.atrInata || 0) > 0.1 && (f.dCheiro || 0) <= 0))) {
-      f.pouso = { id: null, x: f.x + Math.sin(f.th) * 8, y: f.y - Math.cos(f.th) * 8, z: embaixo };
-      labEvent('alvoVoo', { id: 'sentidos', t: +f.flyT.toFixed(2) });
-    }
-    else if (f.flyT > VOO_MAX || f.flyT > 6) {
+    else if (!soSentidos() && (f.flyT > VOO_MAX || f.flyT > 6) || soSentidos() && f.flyT > VOO_MAX_SENTIDOS) {
       const px = f.x + Math.sin(f.th) * 40, py = f.y - Math.cos(f.th) * 40;
       f.pouso = { id: null, x: Math.min(SB.W - 20, Math.max(20, px)), y: Math.min(SB.H - 20, Math.max(20, py)), z: sbSurface(px, py) };
     }
   }
   if (f.flyT > 6 && f.pouso && f.pouso.id) f.pouso = null;   // não chegou em 6 s: pousa onde estiver (abaixo)
+  // só sentidos (regra, B5 de docs/plano-busca-cheiro.md): pousa na coisa que a parte de baixo dos olhos vê embaixo, se a
+  // superfície ali é suave e há cheiro bom. Avalia a cada instante (antes, a cada 0,25 s, e ela passava por cima de uma
+  // fruta de 40 mm em ~0,3 s) e sem exigir cheiro forte na altura do voo (a nuvem de cheiro enfraquece com a altura)
+  if (!f.pouso && soSentidos() && f.flyT > 0.15) {
+    const embaixo = sbSurface(f.x, f.y);
+    if (embaixo > SB_STEP && sbInclinacao(f.x, f.y) < 0.5 && (f.atrInata || 0) > 0.1) {
+      f.pouso = { id: null, x: f.x + Math.sin(f.th) * 8, y: f.y - Math.cos(f.th) * 8, z: embaixo };
+      labEvent('alvoVoo', { id: 'sentidos', t: +f.flyT.toFixed(2) });
+    }
+  }
   const P = f.pouso;
   let dist = Infinity;
   if (!P && soSentidos()) {
@@ -470,7 +477,8 @@ function sbFly(f, dt) {
   f.landing = !!P;
   // velocidade: a força das asas (motores DLM e DVM, na página); chegando perto do pouso, freia
   // (freia até quase parar: com velocidade mínima alta, o raio de curva fica maior que o alvo e ela orbita)
-  const v = (f.vVoo || SB_FLY_SPEED) * (P ? clamp(dist / 120, 0.06, 1) : 1);
+  // (só sentidos: com uma coisa embaixo, desacelera para poder pousar nela, como moscas se aproximando para pousar)
+  const v = (f.vVoo || SB_FLY_SPEED) * (P ? clamp(dist / 120, 0.06, 1) : soSentidos() && sbSurface(f.x, f.y) > SB_STEP ? 0.35 : 1);
   f.x = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * Math.min(v * dt, P ? dist : Infinity)));
   f.y = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * Math.min(v * dt, P ? dist : Infinity)));
   // o que cresce à frente em voo: a parede do mundo ou uma coisa mais alta que ela, na direção do voo. O crescimento
