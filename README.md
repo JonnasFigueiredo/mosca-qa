@@ -53,6 +53,14 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - Sem as conexões excitatórias entre PNs e LNs do lobo antenal, que num modelo de neurônio-ponto viram um eco que nunca desliga.
 - Sem autapses.
 
+### Desempenho
+
+O simulador (`web/sim-worker.js`) só calcula os neurônios fora do repouso e só propaga os disparos que existem. A página manda `worker.postMessage({ type: 'perf', on: true })` para medir o tempo de cada parte (propagação, entradas, integração, aprendizado, espera); `scripts/worker_teste.mjs` roda o worker no Node, com os dados reais e um estímulo fixo, e compara as taxas de disparo de cada grupo entre versões.
+
+- **O gargalo era a integração** (~95% do tempo): 37 a 88 ns por neurônio por passo, porque cada neurônio ativo lia 5 vetores separados, em ordem salteada.
+- **O que mudou:** o estado de cada neurônio fica junto na memória (8 floats) e os ativos são percorridos em ordem crescente, por um mapa de bits; o próximo bloco de 10 ms é agendado por `MessageChannel`, sem a espera mínima de 4 ms do `setTimeout` encadeado (~0,47 s por segundo de cérebro); a adaptação decai de uma vez quando o neurônio acorda, em vez de mantê-lo ~2 s no laço; um neurônio conta como parado a 0,05 mV do repouso (antes 0,005; o limiar está 7 mV acima).
+- **Resultado** (página, rodadas alternadas com a versão anterior, o PC ocupado): de 0,33–0,35× para 0,65–1,2× o tempo real; neurônios no laço de 14–15 mil para 6–9 mil. As taxas de disparo de cada grupo no teste do Node ficaram iguais dentro do ruído (Kenyon 0,35 Hz, MBONs ~2,9 e 2,2 Hz, probóscide 7–8 Hz, DNa ~27 Hz).
+
 ### Os sistemas e o cheiro
 
 - Cada elemento clicável tem um cheiro feito de duas partes: **notas da sua função** (rede, cálculo, formulário, lista, navegação; dois glomérulos fortes cada) e um **par próprio** de glomérulos, único entre todos os elementos dos dois sistemas.

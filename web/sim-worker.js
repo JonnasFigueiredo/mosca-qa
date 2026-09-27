@@ -9,7 +9,7 @@ const GAIN = 0.5;               // este mapa é mais denso que o FlyWire; calibr
 const W_EXT = 250 * W_SYN;      // entrada Poisson forte, como em Shiu et al.
 const DT = 0.25;                // ms
 const REPORT_MS = 10;           // relatório para a página a cada 10 ms de tempo cerebral
-const EPS = 5e-3;
+const EPS = 5e-2;                // mV: abaixo disso o neurônio conta como parado (o limiar está 7 mV acima; 5e-3 mantinha 15% mais neurônios no laço sem mudar os disparos)
 const EPS_A = 0.05;             // abaixo disso a adaptação é desprezível (0,05 mV)
 // adaptação lenta: cada spike deixa o neurônio um pouco "cansado" (hiperpolariza).
 // Só pesa em quem dispara sem parar, e é o que desliga os circuitos que se sustentam sozinhos.
@@ -40,7 +40,15 @@ let forgetting = true;
 let bias, isKC, kcIds, kcTrace, setA, setR, memory = 0, memoryR = 0;
 
 let N, indptr, idx, w, sign;
-let v, g, ad, ref, isActive, active, nActive = 0;
+// estado de cada neurônio junto na memória (8 floats: voltagem, condutância, adaptação, refratário, tônus e folga):
+// num passo, um neurônio ativo lê tudo de uma vez só. Com 5 vetores separados e acesso salteado, cada neurônio
+// custava 5 buscas lentas na memória (medido: 37-68 ns por neurônio por passo; assim, 15-19 ns)
+const F = 8, O_V = 0, O_G = 1, O_A = 2, O_R = 3, O_B = 4, O_T = 5;
+// adaptação preguiçosa: um neurônio com voltagem e condutância paradas "dorme" mesmo com adaptação, guardando a hora
+// (O_T = t + 1). Ao acordar, recebe o decaimento exato do tempo que passou, a·exp(-Δt/τA), e a voltagem volta ao
+// equilíbrio rest - a (ela segue a adaptação com 20 ms de atraso: erro de ~2% de a). Antes, quem disparava uma vez
+// ficava ~2 s no laço só para a adaptação decair
+let S, act, nWords, nActive = 0;   // act: mapa de bits dos neurônios fora do repouso (percorrido em ordem crescente)
 let ring, ringLen, ringSlot = 0, D;
 let groups = {}, outGroups = {}, rates = {};
 // entrada por neurônio (olhos reais: cada LC10a com a taxa do seu campo receptivo): ids e taxas acumuladas
@@ -140,12 +148,9 @@ async function load() {
   groups = {};
   for (const [k, ids] of Object.entries(meta.groups)) groups[k] = Int32Array.from(ids);
   setGain(gain);
-  v = new Float32Array(N).fill(V_REST);
-  g = new Float32Array(N);
-  ad = new Float32Array(N);
-  ref = new Float32Array(N);
-  isActive = new Uint8Array(N);
-  active = new Int32Array(N);
+  S = new Float32Array(N * F);
+  nWords = (N + 31) >> 5;
+  act = new Uint32Array(nWords);
   D = Math.round(DELAY / DT);
   ringLen = D + 1;
   ring = Array.from({ length: ringLen }, () => ({ ids: new Int32Array(N), n: 0 }));
@@ -169,8 +174,8 @@ function setGain(k) {
 }
 
 function restState() {
-  v.fill(V_REST); g.fill(0); ad.fill(0); ref.fill(0); isActive.fill(0); nActive = 0;
-  for (let i = 0; i < N; i++) if (bias[i]) v[i] = V_REST + bias[i];
+  S.fill(0); act.fill(0); nActive = 0;
+  for (let i = 0; i < N; i++) { S[i * F + O_V] = V_REST + bias[i]; S[i * F + O_B] = bias[i]; }
 }
 
 // Um conjunto de sinapses que aprende: Kenyon -> um grupo de saídas, agrupadas por célula de Kenyon
@@ -308,19 +313,21 @@ function gauss() {
 }
 
 function touch(i) {
-  if (!isActive[i]) { isActive[i] = 1; active[nActive++] = i; }
+  act[i >> 5] |= 1 << (i & 31);
 }
 
 function step() {
   const p0 = perfOn ? performance.now() : 0;
+  // referências locais: no laço quente, o JavaScript não precisa reler as variáveis globais a cada volta
+  const S_ = S, act_ = act, idx_ = idx, w_ = w, ip = indptr;
   // 1) spikes que chegam agora (atraso sináptico)
-  const slot = ring[ringSlot];
-  for (let s = 0; s < slot.n; s++) {
-    const j = slot.ids[s], sj = sign[j];
-    for (let k = indptr[j], end = indptr[j + 1]; k < end; k++) {
-      const post = idx[k];
-      g[post] += w[k] * sj;
-      touch(post);
+  const slot = ring[ringSlot], sids = slot.ids;
+  for (let s = 0, ns = slot.n; s < ns; s++) {
+    const j = sids[s], sj = sign[j];
+    for (let k = ip[j], end = ip[j + 1]; k < end; k++) {
+      const post = idx_[k];
+      S_[post * F + O_G] += w_[k] * sj;
+      act_[post >> 5] |= 1 << (post & 31);
     }
   }
   if (perfOn) { for (let s = 0; s < slot.n; s++) { const j = slot.ids[s]; PERF.arestas += indptr[j + 1] - indptr[j]; } }
@@ -335,7 +342,7 @@ function step() {
     if (!(r > 0)) continue;
     const ids = groups[k];
     const n = poisson(ids.length * r * DT / 1000);
-    for (let s = 0; s < n; s++) { const i = ids[(Math.random() * ids.length) | 0]; g[i] += W_EXT; touch(i); }
+    for (let s = 0; s < n; s++) { const i = ids[(Math.random() * ids.length) | 0]; S[i * F + O_G] += W_EXT; touch(i); }
   }
   // mesma ideia com taxa própria por neurônio: sorteia quantos spikes no total e, para cada um, qual neurônio
   // (proporcional à taxa dele, por busca binária na soma acumulada)
@@ -345,7 +352,7 @@ function step() {
       const u = Math.random() * vetor.total;
       let lo = 0, hi = c.length - 1;
       while (lo < hi) { const m = (lo + hi) >> 1; if (c[m] < u) lo = m + 1; else hi = m; }
-      const i = vetor.ids[lo]; g[i] += W_EXT; touch(i);
+      const i = vetor.ids[lo]; S[i * F + O_G] += W_EXT; touch(i);
     }
   }
 
@@ -353,34 +360,59 @@ function step() {
   // 3) integra só quem está fora do repouso
   const out = ring[(ringSlot + D) % ringLen];
   const kM = DT / TAU_M, kS = DT / TAU_SYN, kA = DT / TAU_A;
-  let n = 0;
-  for (let a = 0; a < nActive; a++) {
-    const i = active[a];
-    let vi = v[i];
-    const gi = g[i], ai = ad[i];
-    if (ref[i] > 0) ref[i] -= DT;
-    else vi += kM * ((V_REST - vi) + gi - ai + bias[i]);
-    g[i] = gi - kS * gi;
-    ad[i] = ai - kA * ai;
-    if (vi >= V_TH) {
-      vi = V_RESET; ref[i] = T_REF; ad[i] += A_INC;
-      out.ids[out.n++] = i;
-      if (spikeCount < N) spikeBuf[spikeCount++] = i;
+  let n = 0, nSp = spikeCount, nOut = out.n;
+  const oids = out.ids, sbuf = spikeBuf, NW = nWords, aInc = A_INC, tAgora = t;
+  for (let wi = 0; wi < NW; wi++) {
+    let word = act_[wi];
+    if (word === 0) continue;
+    let keep = word;
+    while (word !== 0) {
+      const low = word & -word;
+      word ^= low;
+      const i = (wi << 5) | (31 - Math.clz32(low)), o = i * F;
+      let vi = S_[o], gi = S_[o + O_G], ai = S_[o + O_A], ri = S_[o + O_R];
+      const bi = S_[o + O_B];
+      const dormiu = S_[o + O_T];
+      if (dormiu > 0) {   // acordou: a adaptação decaiu enquanto dormia
+        ai *= Math.exp(-(tAgora - (dormiu - 1)) / TAU_A);
+        if (ai < EPS_A) ai = 0;
+        vi = V_REST + bi - ai;
+        S_[o + O_T] = 0;
+      }
+      if (ri > 0) ri -= DT;
+      else vi += kM * ((V_REST - vi) + gi - ai + bi);
+      gi -= kS * gi;
+      ai -= kA * ai;
+      if (vi >= V_TH) {
+        vi = V_RESET; ri = T_REF; ai += aInc;
+        oids[nOut++] = i;
+        if (nSp < N) sbuf[nSp++] = i;
+      }
+      const rest = V_REST + bi;
+      if (ri <= 0 && Math.abs(gi) < EPS && Math.abs(vi - (rest - ai)) < EPS + 0.03 * ai) {
+        // parado: dorme (com a adaptação guardada, se ainda houver)
+        if (ai < EPS_A) { S_[o] = rest; S_[o + O_A] = 0; }
+        else { S_[o] = rest - ai; S_[o + O_A] = ai; S_[o + O_T] = tAgora + 1; }
+        S_[o + O_G] = 0; S_[o + O_R] = ri;
+        keep ^= low;
+      } else {
+        S_[o] = vi; S_[o + O_G] = gi; S_[o + O_A] = ai; S_[o + O_R] = ri;
+        n++;
+      }
     }
-    v[i] = vi;
-    const rest = V_REST + bias[i];
-    if (ref[i] <= 0 && Math.abs(g[i]) < EPS && Math.abs(vi - rest) < EPS && ad[i] < EPS_A) {
-      v[i] = rest; g[i] = 0; ad[i] = 0; isActive[i] = 0;
-    } else {
-      active[n++] = i;
-    }
+    act_[wi] = keep;
   }
+  out.n = nOut; spikeCount = nSp;
   nActive = n;
   ringSlot = (ringSlot + 1) % ringLen;
   t += DT;
   if (perfOn) { const p3 = performance.now(); PERF.prop += p1 - p0; PERF.entrada += p2 - p1; PERF.integra += p3 - p2; PERF.passos++; PERF.ativos += n; }
 }
 
+// próximo bloco: MessageChannel devolve a vez às mensagens da página (taxas) sem a espera mínima de 4 ms que o
+// navegador impõe a setTimeout(0) encadeado (medido: ~0,5 s de espera por segundo de cérebro)
+const proximo = new MessageChannel();
+proximo.port1.onmessage = () => loop();
 let isOut;
 function buildOutIndex() {
   // mapeia neurônio -> lista de grupos (poucos neurônios pertencem a algum grupo)
@@ -422,7 +454,7 @@ function loop() {
   if (perfOn) { PERF.aprende += performance.now() - pa; PERF.blocos++; PERF.fimBloco = performance.now(); }
   simSinceWall += REPORT_MS;
   postMessage({ type: 'tick', t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, memoryR, learned, kcDrive, kcBase, kcDriveR, kcBaseR }, [spikes.buffer]);
-  setTimeout(loop, 0);
+  proximo.port2.postMessage(0);
 }
 
 onmessage = async ({ data }) => {
