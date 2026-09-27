@@ -485,9 +485,14 @@ function sbFly(f, dt) {
   // do tamanho aparente liga os detectores de ameaça (LPLC2, LC4); se a fibra gigante disparar, ela faz uma sacada.
   // (Não conta o alvo do pouso: é para ele que ela vai)
   let dObst = Infinity;
+  // só sentidos: sobre uma coisa, desacelerando para pousar nela, o que está logo à frente nela não conta como obstáculo
+  // (moscas distinguem a aproximação para pousar, que leva ao pouso, de um obstáculo que cresce de lado, que leva a uma
+  // guinada: Tammero e Dickinson 2002). Sem isso, a fruta em que ia pousar disparava a fibra gigante e ela fugia
+  const aproxima = !P && soSentidos() && sbSurface(f.x, f.y) > SB_STEP;
   for (let d = 15; d <= 420; d += 15) {
     const px = f.x + Math.sin(f.th) * d, py = f.y - Math.cos(f.th) * d;
     const fora = px < 0 || px > SB.W || py < 0 || py > SB.H;
+    if (aproxima && d < 60) continue;
     if (fora || (sbSurface(px, py) > f.z - 4 && !(P && Math.hypot(px - P.x, py - P.y) < 60))) { dObst = d; break; }
   }
   const R = 45;
@@ -502,6 +507,7 @@ function sbFly(f, dt) {
   const emCima = P && (P.r ? (SB.formas ? sbAlturaObjeto(P.id, f.x, f.y) > -Infinity : f.x >= P.r.x && f.x <= P.r.x + P.r.w && f.y >= P.r.y && f.y <= P.r.y + P.r.h) : dist < 20);
   if (emCima && f.z - below < 6) {
     f.flying = false; f.z = below; f.vz = 0; f.pouso = null; f.voarCd = 5;
+    f.loomObst = 0;   // o "obstáculo que cresce" é do voo: pousada, não fica ameaçando (antes, podia disparar uma fuga ao pousar)
     if (SB.fisico) corpoTeleporte(f);   // o corpo físico recomeça onde ela pousou
     // (só sentidos: o pouso não tem alvo; registra o que ficou embaixo, só para medir)
     const debaixo = P.id || (SB.formas ? rects.find(q => sbAlturaObjeto(q.id, f.x, f.y) > -Infinity)?.id : null) || null;

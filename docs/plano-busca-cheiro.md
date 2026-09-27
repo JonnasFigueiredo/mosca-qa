@@ -112,6 +112,23 @@ de 3 s (`VOO_MAX_SENTIDOS`; com atalhos continua 1,5 s). Série `longa-sentidos-
 `_tmp/_longa-sentidos-c-*.log`; resumo `--serie sentidos-c --chave rodadas_longas_c`). Se não estiver completa em
 `andar-vs-moscas.json`, rodar as que faltam, uma por vez.
 
+**B5, série do pouso (`longa-sentidos-c`, 27/09/2026).** Pousos em alguma coisa: **8 de 15** (pêssego 2, uvas 2,
+vinagre 2, laranja 2), contra 2 de 15 na série anterior; pouso em fruta em 2/5 rodadas. Mas **fruta comida em 0/5**:
+ela pousa e não come. Hipótese: no corpo simples o corpo fica reto na encosta (pousa com até ~27° de inclinação); as
+patas do lado de cima ficam dentro da fruta e as de baixo no ar, e o contato (`CorpoNatural.contato`) só aceitava a
+pata a no máximo 0,25 mm da superfície. Próximo: aceitar a pata até 1 mm para dentro da superfície (ela se apoia na
+encosta) e repetir a série (`longa-sentidos-d`). Com os atalhos, ela pousa no centro (plano) e come.
+
+**B5, a hipótese do contato estava errada; a causa é a fuga ao pousar (27/09/2026).** Sonda da encosta
+(`_sonda_encosta.js`, temporário: parada no pêssego, 4 s em cada posição): com o contato antigo ela já sentia o açúcar
+(patas na fruta 87–100% do tempo) e comia (2–3 mordidas) até 0,78 de inclinação; com a correção, 100% e 2–3. A
+correção do contato (aceitar a pata até 1 mm para dentro da superfície) ficou, mas quase não muda nada. A causa: nas
+rodadas, logo depois de pousar no pêssego vem `fugaDirecao` + `voo` em 0–0,3 s. Voando baixo e devagar sobre a fruta,
+ela mesma contava como obstáculo que cresce à frente (`f.loomObst`), que liga LPLC2/LC4 e a fibra gigante; e o valor não
+era zerado ao pousar. Correções em `sbFly`: `f.loomObst = 0` ao pousar (vale nos dois modos); e, só com `soSentidos()`,
+na aproximação sobre uma coisa, os primeiros 60 px à frente não contam como obstáculo (Tammero e Dickinson 2002:
+expansão centrada leva ao pouso, lateral a uma guinada). Série `longa-sentidos-d-1..5` a seguir.
+
 ## O que as moscas fazem (base da regra)
 
 | O que | Referência | Uso aqui |

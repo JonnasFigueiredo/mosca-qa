@@ -20,7 +20,9 @@ const CorpoNatural = (() => {
     return objetos.find(r => {
       if (r.disabled || p.x < r.x || p.x > r.x+r.w || p.y < r.y || p.y > r.y+r.h) return false;
       const zt = alturaDe ? alturaDe(r, p.x, p.y) : (r.z || 0);
-      return zt > -Infinity && Math.abs(p.z-zt) <= tolerancia*escala;
+      // a pata encosta se está até `tolerancia` acima da superfície, ou até 1 mm para dentro dela: numa encosta, o corpo
+      // simples fica reto e a pata do lado de cima "entra" na fruta; a de verdade se apoia nela
+      return zt > -Infinity && p.z-zt <= tolerancia*escala && zt-p.z <= escala;
     }) || null;
   }
   function impedida(f) {
