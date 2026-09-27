@@ -18,7 +18,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 
 - [x] P2.1 Medidor do andar (`scripts/andar_medida.mjs`) e linha de base, antes de mudar qualquer coisa
 - [x] P1.1 Chave "só sentidos" (`?sentidos=1`), sem mudar o comportamento padrão
-- [~] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos (feito com a visão aproximada; falta usar os olhos reais)
+- [~] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos (feito, com os olhos reais e com a aproximação; falta validar em rodadas longas)
 - [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
 - [x] P1.4 Sem "novidade" escondida na Cozinha
 - [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
@@ -26,7 +26,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
 
-Notas do último passo:
+Notas de cada passo, em ordem (a mais recente é a última; a lista "Próximos passos" no fim delas diz o que fazer agora):
 
 **P2.1 feito (27/09/2026).** `node scripts/andar_medida.mjs --segundos 90 [--fisico] --rotulo nome` acrescenta uma
 linha em `docs/medicoes/andar-vs-moscas.json`. Janela de 100 ms (com 50 ms o balanço de cada passada do corpo físico
