@@ -220,11 +220,12 @@ const COZINHA = {
   id: 'cozinha', nome: 'Cozinha', url: 'bancada.cozinha', papel: 'mundo', mundo: true,
   bugs: {},
   estado() { return { rota: 'cozinha', msg: '' }; },
-  // x, y: centro (mm, y cresce para longe da janela); w, d: largura e profundidade; h: altura
+  // x, y: centro (mm, y cresce para longe da janela); w, d: largura e profundidade; h: altura. A forma de cada coisa
+  // (no desenho 3D, na física e na altura usada pela página) vem de sbFormas, em sandbox.js
   objetos: {
     'k-banana': { r: 'Banana madura', x: 55, y: 60, w: 50, d: 22, h: 18, forma: 'banana', gosto: 'doce', porcoes: 10, alcance: 30,
       cheiro: { DM2: 1, DM3: 0.9, DM1: 0.4, VA2: 0.3 } },
-    'k-uvas': { r: 'Uvas', x: 140, y: 40, w: 34, d: 24, h: 15, forma: 'uvas', gosto: 'doce', porcoes: 6, alcance: 20,
+    'k-uvas': { r: 'Uvas', x: 140, y: 40, w: 34, d: 24, h: 8.5, forma: 'uvas', gosto: 'doce', porcoes: 6, alcance: 20,
       cheiro: { DM4: 0.8, DM1: 0.6, DM2: 0.4 } },
     'k-pessego': { r: 'Pêssego passado', x: 150, y: 110, w: 40, d: 38, h: 16, forma: 'pessego', gosto: 'doce', porcoes: 12, alcance: 35,
       cheiro: { DM1: 1, VA2: 0.8, DP1m: 0.5, DM2: 0.5, DM4: 0.4 } },

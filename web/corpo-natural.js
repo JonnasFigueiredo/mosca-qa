@@ -14,9 +14,14 @@ const CorpoNatural = (() => {
     const v = o.map((x, i) => escala * (x + F[i]*p[0] + L[i]*p[1] + B[i]*p[2]));
     return {x:v[0], y:-v[1], z:v[2]};
   }
-  function contato(p, objetos, tolerancia = 0.25) {
-    // Contato com o topo plano usado pela colisão atual; sem margem lateral que atravesse bordas.
-    return objetos.find(r => !r.disabled && p.x >= r.x && p.x <= r.x+r.w && p.y >= r.y && p.y <= r.y+r.h && Math.abs(p.z-(r.z || 0)) <= tolerancia*escala) || null;
+  function contato(p, objetos, tolerancia = 0.25, alturaDe = null) {
+    // Contato com a superfície do objeto: o topo plano da plataforma ou, com alturaDe (a forma redonda do mundo
+    // natural), a altura da forma naquele ponto; sem margem lateral que atravesse bordas.
+    return objetos.find(r => {
+      if (r.disabled || p.x < r.x || p.x > r.x+r.w || p.y < r.y || p.y > r.y+r.h) return false;
+      const zt = alturaDe ? alturaDe(r, p.x, p.y) : (r.z || 0);
+      return zt > -Infinity && Math.abs(p.z-zt) <= tolerancia*escala;
+    }) || null;
   }
   function impedida(f) {
     return !!(f.flying || f.jumping || f.presa || f.naParede || f.back > 0 || f.threat > 0 || f.loom > 30 || f.alarmeCorpo);

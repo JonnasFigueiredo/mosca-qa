@@ -17,7 +17,9 @@ POST /passo       {"t": tempo do cérebro em s, "sinal": [esq, dir]} -> pose atu
 POST /teleporte   {"x", "y" em mm, "rumo" em rad, "z"}: põe o corpo ali (depois de um voo); com "parede": [nx, ny]
                   (normal da face, para fora), põe o corpo de barriga para a parede, de cabeça para cima, na altura z
 POST /agarrar     {"parede": [nx, ny]}: o agarrão ao começar a subir uma parede (0,2 s de força contra ela)
-POST /mundo       {"plataformas": [[cx, cy, meia largura, meia prof., meia altura], ...] em mm}: refaz o mundo
+POST /mundo       {"plataformas": [[cx, cy, meia largura, meia prof., meia altura], ...] em mm}: refaz o mundo;
+                  "formas": [[tipo, cx, cy, cz, a, b, c], ...] em mm, com tipo esfera (raio a), elipsoide (semieixos
+                  a, b, c), capsula (raio a, meio comprimento b, deitada ao longo de x) ou cilindro (raio a, meia altura b)
 POST /reset       volta a mosca para o começo
 """
 import json
@@ -32,7 +34,7 @@ import mujoco as mj
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "terceiros"))
-from flygym.compose.world.complex_terrain import _ComplexTerrainWorld  # noqa: E402
+from flygym.compose.world.complex_terrain import GEOM_TYPES, _ComplexTerrainWorld  # noqa: E402
 from flygym.simulation import Simulation  # noqa: E402
 from flygym.utils.math import Rotation3D  # noqa: E402
 from flygym_demo.complex_terrain import (  # noqa: E402
@@ -78,23 +80,54 @@ def cor(nome):
     return [0.45, 0.33, 0.2]
 
 
-class MundoPlataformas(_ComplexTerrainWorld):
-    """Chão plano mais as plataformas do sandbox, como blocos sólidos: as patas pisam e perdem o chão de verdade."""
+FORMAS = {"esfera": "sphere", "elipsoide": "ellipsoid", "capsula": "capsule", "cilindro": "cylinder"}
 
-    def __init__(self, plataformas):
+
+def normal_forma(forma, p):
+    """Normal para fora da superfície de uma forma no ponto mais perto de p (mm), e a distância até ela (aproximada)."""
+    tipo, cx, cy, cz, a, b, c = forma
+    d = np.asarray(p, float) - (cx, cy, cz)
+    if tipo in ("esfera", "elipsoide"):
+        eixos = np.array([a, a, a] if tipo == "esfera" else [a, b, c])
+        q = d / eixos
+        gr = q / eixos
+        return gr / (np.linalg.norm(gr) + 1e-12), (np.linalg.norm(q) - 1) * eixos.min()
+    if tipo == "capsula":
+        v = d - (np.clip(d[0], -b, b), 0, 0)
+        return v / (np.linalg.norm(v) + 1e-12), np.linalg.norm(v) - a
+    rad = np.hypot(d[0], d[1])   # cilindro em pé
+    lado, topo = rad - a, d[2] - b
+    if topo > lado:
+        return np.array([0.0, 0.0, 1.0]), topo
+    return np.array([d[0] / (rad + 1e-12), d[1] / (rad + 1e-12), 0.0]), lado
+
+
+class MundoPlataformas(_ComplexTerrainWorld):
+    """Chão plano mais as plataformas do sandbox, como blocos sólidos: as patas pisam e perdem o chão de verdade.
+    No mundo natural, as coisas têm a forma do desenho (esferas, elipsoides, cápsulas, cilindros), não caixas."""
+
+    def __init__(self, plataformas, formas=()):
         super().__init__(name="plataformas")
         self._add_ground_plane("chao", size=(1000, 1000, 1), pos=(0, 0, 0), rgba=(0.1, 0.2, 0.1, 1))
         for i, (cx, cy, hx, hy, hz) in enumerate(plataformas):
             self._add_ground_box(f"plataforma{i}", size=(hx, hy, hz), pos=(cx, cy, hz), rgba=(0.1, 0.3, 0.2, 1))
+        for i, (tipo, cx, cy, cz, a, b, c) in enumerate(formas):
+            tam = {"esfera": (a, 0, 0), "elipsoide": (a, b, c), "capsula": (a, b, 0), "cilindro": (a, b, 0)}[tipo]
+            # a cápsula do MuJoCo fica em pé (eixo z); deitada ao longo de x é girada 90° em torno de y
+            quat = (np.cos(np.pi / 4), 0, np.sin(np.pi / 4), 0) if tipo == "capsula" else (1, 0, 0, 0)
+            geom = self.mjcf_root.worldbody.add_geom(type=GEOM_TYPES[FORMAS[tipo]], name=f"forma{i}", size=tam,
+                                                     pos=(cx, cy, cz), quat=quat, rgba=(0.1, 0.3, 0.2, 1),
+                                                     contype=0, conaffinity=0)
+            self.ground_geoms.append(geom)
 
 
 class Corpo:
-    def __init__(self, plataformas=()):
+    def __init__(self, plataformas=(), formas=()):
         self.lock = threading.Lock()
         self.vivo = True
         self.fly = make_locomotion_fly(adhesion_gain=ADESAO)
         self.fly.add_vision()   # as câmeras dos olhos, como o flygym as define (a página renderiza por elas)
-        world = MundoPlataformas(plataformas)
+        world = MundoPlataformas(plataformas, formas)
         # com mais de um chão, os sensores de contato do flygym não funcionam; o tato vem da força nos tarsos
         world.add_fly(self.fly, spawn_position=[0, 0, 1.0], spawn_rotation=Rotation3D("quat", [1, 0, 0, 0]),
                       add_ground_contact_sensors=False)
@@ -124,6 +157,11 @@ class Corpo:
         # quantos segundos de física por segundo de relógio a máquina consegue (média dos passos em que trabalhou);
         # a página usa para o cérebro andar no mesmo ritmo, sem ficar parando e esperando o corpo
         self.capacidade = 0.5
+        # a pegada (regra nossa): nas formas do mundo natural, a força que a segura aponta para dentro da superfície em
+        # que ela está (a mais perto do tórax: a fruta ou o balcão). Faz o papel das garras e da adesão, que as
+        # passadas gravadas no chão não têm: com a gravidade de sempre, ela sobe uns mm de uma fruta redonda e cai
+        self.formas = list(formas)
+        self.na_forma = None
         self.reset()
         threading.Thread(target=self._laco, daemon=True).start()
 
@@ -152,6 +190,8 @@ class Corpo:
                         acao = self.ctrl.step(self.sinal.copy(), obs)
                         self.tropecos |= self.ctrl.last_info["stumbling_mask"]
                         apply_locomotion_action(self.sim, self.fly.name, acao)
+                    if self.formas and self.assenta_ate < 0:
+                        self._pegada()
                     for _ in range(DEC):
                         self.sim.step()
                     self.t += dt
@@ -164,6 +204,22 @@ class Corpo:
                     print(f"passo lento: {lento:.2f} s em t = {self.t:.3f} s, {self.sim.mj_data.ncon} contatos", flush=True)
             else:
                 time.sleep(0.001)
+
+    def _pegada(self):
+        p = self.sim.get_body_positions(self.fly.name)[self.thorax]
+        g = float(np.linalg.norm(self.g))
+        melhor = min((normal_forma(f, p) for f in self.formas), key=lambda nd: nd[1])
+        n, dist = melhor
+        # a passagem do balcão para a fruta é gradual: o peso vai de "para baixo" para "para dentro da fruta" conforme
+        # o tórax fica mais perto dela que do balcão (em ~1 mm), enquanto o corpo empina
+        w = float(np.clip((p[2] - dist) / 1.0 + 0.5, 0.0, 1.0)) if dist < 2.5 else 0.0
+        if w > 0:
+            d = (1 - w) * np.array([0.0, 0.0, -1.0]) - w * n
+            self.m.opt.gravity[:] = d / np.linalg.norm(d) * g
+            self.na_forma = n if w > 0.5 else None
+        else:
+            self.na_forma = None
+            self.m.opt.gravity[:] = self.g
 
     def passo(self, t, sinal):
         s = np.clip(np.asarray(sinal, float), -1.5, 1.5)
@@ -193,7 +249,7 @@ class Corpo:
         costas = [2 * (x * z + w * y), 2 * (y * z - w * x), 1 - 2 * (x * x + y * y)]
         return {"t": round(self.t, 4), "capacidade": round(self.capacidade, 3), "torax": [round(float(v), 4) for v in p], "rumo": round(rumo, 4), "toque": toque, "olhos": olhos,
                 "frente": [round(float(v), 3) for v in frente], "costas": [round(float(v), 3) for v in costas],
-                "tropeco": tropeco, "junta": junta,
+                "tropeco": tropeco, "junta": junta, "na_forma": self.na_forma is not None,
                 "geoms": np.concatenate([pos, mat], axis=1).ravel().tolist()}
 
     def teleporte(self, x, y, rumo, z=None, parede=None):
@@ -306,8 +362,9 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"ok": True})
         elif self.path.startswith("/mundo"):
             # plataformas do sandbox, em mm: [centro x, centro y, meia largura, meia profundidade, meia altura]
-            trocar_corpo(Corpo([tuple(map(float, p)) for p in dados.get("plataformas", [])]))
-            self._json({"ok": True, "plataformas": len(dados.get("plataformas", []))})
+            formas = [(str(f[0]), *map(float, f[1:7])) for f in dados.get("formas", [])]
+            trocar_corpo(Corpo([tuple(map(float, p)) for p in dados.get("plataformas", [])], formas))
+            self._json({"ok": True, "plataformas": len(dados.get("plataformas", [])), "formas": len(formas)})
         elif self.path.startswith("/reset"):
             corpo.reset()
             self._json({"ok": True})

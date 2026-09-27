@@ -24,11 +24,12 @@ function sbBuild() {
   if (APP.mundo) {
     // mundo natural: cada coisa é a sua própria plataforma, no tamanho real (mm -> px)
     const S = CORPO.S;
-    SB.platforms = []; SB.layout = {};
+    SB.platforms = []; SB.layout = {}; SB.formas = [];
     for (const [id, o] of Object.entries(APP.objetos)) {
       const p = { x: (o.x - o.w / 2) * S, y: (o.y - o.d / 2) * S, w: o.w * S, h: o.d * S, z: o.h * S, id };
       SB.platforms.push(p);
       SB.layout[id] = { x: p.x, y: p.y, w: p.w, h: p.h, z: p.z };
+      for (const f of sbFormas(o)) SB.formas.push({ id, tipo: f.tipo, x: (o.x + f.dx) * S, y: (o.y + f.dy) * S, z: f.z * S, a: f.a * S, b: f.b * S, c: f.c * S });
     }
     SBR.built = '';
     return;
@@ -36,6 +37,7 @@ function sbBuild() {
   const groups = {};
   for (const [id, e] of Object.entries(APP.elementos)) (groups[e.notas[0]] ||= []).push(id);
   const chunks = [];
+  SB.formas = null;
   for (const ids of Object.values(groups).sort((a, b) => b.length - a.length))
     for (let i = 0; i < ids.length; i += 6) chunks.push(ids.slice(i, i + 6));
   SB.platforms = []; SB.layout = {};
@@ -62,13 +64,44 @@ function sbRects() {
   }
   return out;
 }
+// Formas do mundo natural (mm, a partir do centro de cada coisa; y cresce para longe da janela, como na página).
+// As frutas são meias-cúpulas apoiadas no balcão (metade de um elipsoide), as uvas, três meias-esferas, e a tampa, um
+// cilindro. O desenho 3D, a física e a altura usada pela página saem daqui, então as bordas batem. Nada tem "barriga"
+// embaixo: numa fruta inteira deitada, a mosca física teria de andar de cabeça para baixo, e as passadas gravadas no
+// chão não fazem isso. O que tem menos de 1 mm (açúcar, água, folhas) é um retângulo plano, fora da física
+function sbFormas(o) {
+  const { w, d, h } = o;
+  if (h < 1) return [{ tipo: 'plano', dx: 0, dy: 0, z: 0, a: w / 2, b: d / 2, c: h }];
+  if (o.forma === 'uvas') {
+    const r = h;
+    return [[-w / 2 + r, d / 2 - r], [0, -d / 2 + r], [w / 2 - r, d / 2 - r]].map(([dx, dy]) => ({ tipo: 'esfera', dx, dy, z: 0, a: r, b: r, c: r }));
+  }
+  if (o.forma === 'vinagre') return [{ tipo: 'cilindro', dx: 0, dy: 0, z: h / 2, a: w / 2, b: h / 2, c: 0 }];
+  return [{ tipo: 'elipsoide', dx: 0, dy: 0, z: 0, a: w / 2, b: d / 2, c: h }];
+}
+// altura do topo de uma forma (px) no ponto (x, y) da página, ou -Infinity fora dela
+function sbAlturaForma(f, x, y) {
+  const dx = x - f.x, dy = y - f.y;
+  if (f.tipo === 'plano') return Math.abs(dx) <= f.a && Math.abs(dy) <= f.b ? f.c : -Infinity;
+  if (f.tipo === 'cilindro') return dx * dx + dy * dy <= f.a * f.a ? f.z + f.b : -Infinity;
+  const u = (dx / f.a) ** 2 + (dy / f.b) ** 2;   // esfera e elipsoide (na esfera, b = c = a)
+  return u <= 1 ? f.z + f.c * Math.sqrt(1 - u) : -Infinity;
+}
+function sbAlturaObjeto(id, x, y) {
+  let z = -Infinity;
+  for (const f of SB.formas || []) if (f.id === id) z = Math.max(z, sbAlturaForma(f, x, y));
+  return z;
+}
 function sbSurface(x, y) {
   let z = 0;
+  if (SB.formas) { for (const f of SB.formas) z = Math.max(z, sbAlturaForma(f, x, y)); return z; }
   for (const p of SB.platforms || []) if (x >= p.x && x <= p.x + p.w && y >= p.y && y <= p.y + p.h) z = Math.max(z, p.z);
   return z;
 }
 
 /* ───────────── sentidos e contato na escala do corpo ───────────── */
+// no mundo natural, o contato é com a superfície da forma (redonda); nas plataformas, com o topo plano
+const sbAlturaDe = (r, x, y) => (SB.formas ? sbAlturaObjeto(r.id, x, y) : (r.z || 0));
 function sbPoseNatural(f) { return SB.fisico && !f.flying && !f.presa ? CORPO.pose : null; }
 function sbAntenas(f) {
   const pose = sbPoseNatural(f);
@@ -97,7 +130,7 @@ function sbContatoNatural(f, dt) {
             z:(g[k+2]+g[k+9]*v[0]+g[k+10]*v[1]+g[k+11]*v[2])*CORPO.S};
       } else pt=CorpoNatural.ponto(f,t.ponto);
       // A física usa margem de adesão de 0,3 mm; a malha visível não coincide exatamente com o contato.
-      const r=CorpoNatural.contato(pt,rects,pose ? 0.5 : 0.25);
+      const r=CorpoNatural.contato(pt,rects,pose ? 0.5 : 0.25,sbAlturaDe);
       if (r) { f.patasEl=r; break; }
     }
   }
@@ -105,7 +138,7 @@ function sbContatoNatural(f, dt) {
   const alvo=CorpoNatural.ponto(f,[0.75,0,-CorpoNatural.altura],pose);
   f.pisoBoca=sbSurface(alvo.x,alvo.y);
   const b=CorpoNatural.bocaPontos(f,pose);
-  if (f.patasEl && f.boca > 0.9 && b.alcanca && !CorpoNatural.impedida(f)) f.bocaEl=CorpoNatural.contato(b.ponta,rects,0.08);
+  if (f.patasEl && f.boca > 0.9 && b.alcanca && !CorpoNatural.impedida(f)) f.bocaEl=CorpoNatural.contato(b.ponta,rects,0.08,sbAlturaDe);
   f.contatoBocaT=f.bocaEl ? (antes === f.bocaEl.id ? (f.contatoBocaT || 0)+dt : dt) : 0;
 }
 
@@ -287,7 +320,8 @@ function sbMove(f, dt, v) {
   const nx = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * v * dt));
   const ny = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * v * dt));
   const s = sbSurface(nx, ny);
-  if (Math.abs(s - f.z) <= SB_STEP) { f.x = nx; f.y = ny; f.z = s; return; }
+  // vence um degrau de SB_STEP e rampas de até ~55° (o topo redondo das frutas); paredes, não
+  if (Math.abs(s - f.z) <= SB_STEP + 1.5 * Math.hypot(nx - f.x, ny - f.y)) { f.x = nx; f.y = ny; f.z = s; return; }
   // beira de uma plataforma, ou parede de outra mais alta (logo depois de pousar, ela anda antes de voar de novo)
   if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) sbTakeoff(f, s > f.z ? 'subir' : 'beira');
   else f.th += Math.PI * (0.55 + 0.4 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
@@ -408,7 +442,7 @@ function sbFly(f, dt) {
   f.vz += ((target - f.z) * 3 - f.vz) * Math.min(1, dt * 5);
   f.z = Math.max(below, f.z + f.vz * dt);
   // pousa ao chegar em cima do alvo (a área do objeto, ou 20 px do ponto escolhido) e perto da altura dele
-  const emCima = P && (P.r ? f.x >= P.r.x && f.x <= P.r.x + P.r.w && f.y >= P.r.y && f.y <= P.r.y + P.r.h : dist < 20);
+  const emCima = P && (P.r ? (SB.formas ? sbAlturaObjeto(P.id, f.x, f.y) > -Infinity : f.x >= P.r.x && f.x <= P.r.x + P.r.w && f.y >= P.r.y && f.y <= P.r.y + P.r.h) : dist < 20);
   if (emCima && f.z - below < 6) {
     f.flying = false; f.z = below; f.vz = 0; f.pouso = null; f.voarCd = 5;
     if (SB.fisico) corpoTeleporte(f);   // o corpo físico recomeça onde ela pousou
@@ -610,8 +644,10 @@ async function corpoMundo() {
   const S = CORPO.S;
   // o que tem menos de 1 mm de altura (açúcar, água, folhas) fica fora da física: é chão para as patas. Como blocos
   // de 0,4 mm, as patas encostavam no bloco e no chão ao mesmo tempo e a física ficava 12 vezes mais lenta
-  const plats = SB.platforms.filter(p => p.z >= S).map(p => [(p.x + p.w / 2) / S, -(p.y + p.h / 2) / S, p.w / 2 / S, p.h / 2 / S, p.z / 2 / S]);
-  await fetch(CORPO.url + '/mundo', { method: 'POST', body: JSON.stringify({ plataformas: plats }) });
+  // no mundo natural vão as formas redondas (as mesmas do desenho); nas plataformas, blocos
+  const plats = SB.formas ? [] : SB.platforms.filter(p => p.z >= S).map(p => [(p.x + p.w / 2) / S, -(p.y + p.h / 2) / S, p.w / 2 / S, p.h / 2 / S, p.z / 2 / S]);
+  const formas = (SB.formas || []).filter(f => f.tipo !== 'plano').map(f => [f.tipo, f.x / S, -f.y / S, f.z / S, f.a / S, f.b / S, f.c / S]);
+  await fetch(CORPO.url + '/mundo', { method: 'POST', body: JSON.stringify({ plataformas: plats, formas }) });
   CORPO.mundo = SB.app;
 }
 async function corpoTeleporte(f) {
@@ -622,6 +658,7 @@ async function corpoTeleporte(f) {
 }
 // a face de plataforma mais perto (px) e a normal dela, para fora; só plataformas mais altas que o piso onde ela está
 function sbParede(f, alcance, piso = sbSurface(f.x, f.y)) {
+  if (SB.formas) return sbParedeNatural(f, alcance, piso);
   let best = null;
   for (const p of SB.platforms || []) {
     if (p.z <= piso + SB_STEP) continue;
@@ -630,6 +667,24 @@ function sbParede(f, alcance, piso = sbSurface(f.x, f.y)) {
     if (d > alcance || (best && d >= best.d)) continue;
     const n = Math.abs(f.x - cx) >= Math.abs(f.y - cy) ? [Math.sign(f.x - cx) || 1, 0] : [0, Math.sign(f.y - cy) || 1];
     best = { p, cx, cy, d, n, piso };
+  }
+  return best;
+}
+// no mundo natural: a borda (no balcão) da forma mais perto, mais alta que o piso, e a normal dela para fora
+function sbParedeNatural(f, alcance, piso) {
+  let best = null;
+  for (const s of SB.formas) {
+    if (s.tipo === 'plano') continue;
+    const topo = s.tipo === 'cilindro' ? s.z + s.b : s.z + s.c;
+    if (topo <= piso + SB_STEP) continue;
+    const ax = s.a, by = s.tipo === 'elipsoide' ? s.b : s.a, dx = f.x - s.x, dy = f.y - s.y;
+    const u = Math.hypot(dx / ax, dy / by) || 1e-6;
+    const cx = s.x + dx / u, cy = s.y + dy / u, d = u >= 1 ? Math.hypot(f.x - cx, f.y - cy) : 0;
+    if (d > alcance || (best && d >= best.d)) continue;
+    let nx = dx / (ax * ax), ny = dy / (by * by);
+    const nn = Math.hypot(nx, ny) || 1;
+    nx /= nn; ny /= nn;
+    best = { p: { x: s.x - ax, y: s.y - by, w: 2 * ax, h: 2 * by, z: topo }, cx, cy, d, n: [nx, ny], piso, natural: true };
   }
   return best;
 }
@@ -731,15 +786,22 @@ async function corpoTick() {
       fly.x = p.torax[0] * CORPO.S; fly.y = -p.torax[1] * CORPO.S;
       fly.z = Math.max(0, (p.torax[2] - 1.15) * CORPO.S);
       const empe = p.frente && p.frente[2] > 0.6, deitada = !p.frente || (p.frente[2] < 0.35 && p.costas[2] > 0.7);
+      // nas formas redondas, a subida começa assim que ela empina sobre a fruta (a pegada do servidor já a segura)
+      const naForma = SB.formas && p.na_forma && p.frente && p.frente[2] > 0.3;
       if (!fly.naParede) {
         fly.th = Math.PI / 2 - p.rumo;
         // subiu a parede andando: as patas da frente grudaram na face e o corpo empinou
-        const w = empe && sbParede(fly, 40, CORPO.piso ?? sbSurface(fly.x, fly.y));
+        const w = (empe || naForma) && sbParede(fly, 40, CORPO.piso ?? sbSurface(fly.x, fly.y));
         if (w) {
           fly.naParede = w; labEvent('parede', { como: 'andando' });
-          logEvent('Andou contra a plataforma e começou a subir pela parede: as almofadinhas das patas seguram.', 's');
-          // o agarrão (regra nossa, 0,2 s de força contra a parede): faz o papel das garras, que as passadas de chão não têm
-          fetch(CORPO.url + '/agarrar', { method: 'POST', body: JSON.stringify({ parede: [w.n[0], -w.n[1]] }) }).catch(() => {});
+          // (nas encostas das frutas ela entra e sai da "parede" várias vezes; a mensagem sai no máximo a cada 4 s)
+          if (!w.natural || performance.now() > (CORPO.paredeLog || 0)) {
+            CORPO.paredeLog = performance.now() + 4000;
+            logEvent(w.natural ? 'Andou contra a fruta e começou a subir por ela.' : 'Andou contra a plataforma e começou a subir pela parede: as almofadinhas das patas seguram.', 's');
+          }
+          // o agarrão (regra nossa, 0,2 s de força contra a parede): faz o papel das garras, que as passadas de chão não
+          // têm. Nas formas redondas, a pegada do servidor faz isso o tempo todo
+          if (!w.natural) fetch(CORPO.url + '/agarrar', { method: 'POST', body: JSON.stringify({ parede: [w.n[0], -w.n[1]] }) }).catch(() => {});
           CORPO.graca = performance.now() + 1000;
         }
         else CORPO.piso = sbSurface(fly.x, fly.y);
@@ -748,7 +810,7 @@ async function corpoTick() {
         const w = sbParede(fly, 40, fly.naParede.piso) || fly.naParede;
         fly.naParede = w;
         fly.th = Math.atan2(-w.n[0], w.n[1]);   // de frente para a parede
-        if (p.torax[2] >= w.p.z / CORPO.S - 2) {
+        if (!w.natural && p.torax[2] >= w.p.z / CORPO.S - 2) {
           // as patas da frente alcançaram a beira de cima (o tórax a 2 mm dela; a cabeça fica ~1,2 mm à frente):
           // a passagem da parede para o topo é regra nossa, como a de baixo
           fly.x = w.cx - w.n[0] * 2.5 * CORPO.S; fly.y = w.cy - w.n[1] * 2.5 * CORPO.S; fly.z = w.p.z;
@@ -760,12 +822,20 @@ async function corpoTick() {
         // reagarrão (regra nossa, igual ao agarrão): escorregou mais de 1 mm em meio segundo, aperta de novo contra a parede
         const agora = performance.now(), hist = (CORPO.zHist = (CORPO.zHist || []).filter(h => agora - h[0] < 500));
         hist.push([agora, p.torax[2]]);
-        if (hist[0][1] - p.torax[2] > 1 && agora > (CORPO.reagarra || 0)) {
+        if (!w.natural && hist[0][1] - p.torax[2] > 1 && agora > (CORPO.reagarra || 0)) {
           CORPO.reagarra = agora + 1000; CORPO.zHist = [];
           fetch(CORPO.url + '/agarrar', { method: 'POST', body: JSON.stringify({ parede: [w.n[0], -w.n[1]] }) }).catch(() => {});
           labEvent('reagarrar', {});
         }
-        if (deitada) { fly.naParede = null; labEvent('saiuDaParede', {}); }
+        // voltou a ficar de pé: saiu da parede. Nas frutas redondas é assim que ela chega em cima, sem passagem por regra
+        // (com folga: entra na parede com o corpo a mais de 0,3 de inclinação e sai abaixo de 0,2)
+        const dePe = w.natural ? !p.na_forma || !p.frente || p.frente[2] < 0.2 : deitada;
+        if (dePe) {
+          fly.naParede = null; CORPO.piso = sbSurface(fly.x, fly.y);
+          const emCima = w.natural && fly.z > 7;
+          labEvent(emCima ? 'topo' : 'saiuDaParede', {});
+          if (emCima && performance.now() > (CORPO.topoLog || 0)) { CORPO.topoLog = performance.now() + 4000; logEvent('Subiu pela fruta e chegou em cima.', 's'); }
+        }
       }
       // reflexo tarsal: quando as seis patas perdem o apoio (passou da beira, caiu da parede), a mosca começa a voar
       const apoio = Object.values(p.toque || {}).reduce((a, b) => a + b, 0);
@@ -1207,31 +1277,36 @@ function sbTema(natural) {
 function sbObjeto(o) {
   const S = CORPO.S, W = o.w * S, D = o.d * S, Hh = Math.max(2, o.h * S), g = new THREE.Group();
   const esfera = (r, mat, x = 0, y = 0, z = 0, sy = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat); m.position.set(x, y, z); m.scale.y = sy; g.add(m); return m; };
+  // frutas e tampa: as mesmas formas da física e da altura (sbFormas); as frutas são meias-cúpulas apoiadas no balcão
+  const cupula = (f, mat) => {
+    const m = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2), mat);
+    m.scale.set(f.a * S, f.c * S, f.b * S); m.position.set(f.dx * S, f.z * S, f.dy * S); g.add(m); return m;
+  };
+  const formas = sbFormas(o);
   if (o.forma === 'banana') {
-    // pedaço de banana madura, deitado: cilindro com pontas arredondadas, casca com pintas marrons
-    const r = D / 2, mat = sbMat('#ffffff', { map: sbTex('#f3dc7e', [['#8a6424', 60, 2, 7], ['#e8c85e', 20, 10, 30]]) });
-    const corpo = new THREE.Mesh(new THREE.CylinderGeometry(r, r, W - D, 28), mat);
-    corpo.rotation.z = Math.PI / 2; corpo.scale.set(Hh / D, 1, 1); corpo.position.y = Hh / 2; g.add(corpo);   // deitado: o x local vira a altura
-    esfera(r, mat, -(W - D) / 2, Hh / 2, 0, Hh / D); esfera(r, mat, (W - D) / 2, Hh / 2, 0, Hh / D);
+    // pedaço de banana madura deitado, casca com pintas marrons
+    cupula(formas[0], sbMat('#ffffff', { map: sbTex('#f3dc7e', [['#8a6424', 60, 2, 7], ['#e8c85e', 20, 10, 30]]) }));
   } else if (o.forma === 'uvas') {
-    const r = Hh / 2;
-    esfera(r, sbMat('#5e2c68', { roughness: 0.25 }), -W / 2 + r, r, D / 2 - r);
-    esfera(r, sbMat('#6d3777', { roughness: 0.25 }), 0, r, -D / 2 + r);
-    esfera(r, sbMat('#88a846', { roughness: 0.3 }), W / 2 - r, r, D / 2 - r);
+    formas.forEach((f, i) => cupula(f, sbMat(['#5e2c68', '#6d3777', '#88a846'][i % 3], { roughness: 0.25 })));
   } else if (o.forma === 'pessego' || o.forma === 'laranja') {
-    // metade deitada com a casca para cima (domo)
     const tex = o.forma === 'pessego' ? sbTex('#f2a45c', [['#d8553a', 25, 20, 60], ['#7a4a22', 12, 3, 8]]) : sbTex('#ee8a26', [['#e6eddc', 18, 14, 34], ['#a9bf8e', 14, 10, 26], ['#f4a64a', 20, 4, 10]]);
-    const dom = new THREE.Mesh(new THREE.SphereGeometry(W / 2, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), sbMat('#ffffff', { map: tex, roughness: 0.7 }));
-    dom.scale.set(1, Hh / (W / 2), D / W); g.add(dom);
+    cupula(formas[0], sbMat('#ffffff', { map: tex, roughness: 0.7 }));
   } else if (o.forma === 'morango') {
-    const m = esfera(W / 2, sbMat('#ffffff', { map: sbTex('#c81c32', [['#f2d27a', 70, 1.5, 3]]), roughness: 0.35 }), 0, Hh / 2, 0, Hh / W);
-    m.scale.z = D / W;
-    for (let i = 0; i < 5; i++) { const f = new THREE.Mesh(new THREE.ConeGeometry(W * 0.12, W * 0.3, 6), sbMat('#3e8a2e')); const a = i / 5 * Math.PI * 2; f.position.set(-W * 0.42 + Math.cos(a) * 6, Hh * 0.75, Math.sin(a) * 6); f.rotation.z = Math.PI / 2 + Math.cos(a) * 0.5; g.add(f); }
+    const f = formas[0];
+    cupula(f, sbMat('#ffffff', { map: sbTex('#c81c32', [['#f2d27a', 70, 1.5, 3]]), roughness: 0.35 }));
+    // o cálice: folhinhas verdes deitadas no balcão, em volta da base
+    for (let i = 0; i < 6; i++) {
+      const a = i / 6 * Math.PI * 2, fo = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 6), sbMat('#3e8a2e'));
+      fo.scale.set(f.a * S * 0.35, 1.2, f.a * S * 0.14); fo.rotation.y = -a;
+      fo.position.set(Math.cos(a) * f.a * S * 1.05, 0.8, Math.sin(a) * f.b * S * 1.05); g.add(fo);
+    }
   } else if (o.forma === 'vinagre') {
-    const tampa = new THREE.Mesh(new THREE.CylinderGeometry(W / 2, W / 2, Hh, 32, 1, true), sbMat('#d9dcd6', { metalness: 0.4, roughness: 0.35, side: THREE.DoubleSide }));
-    tampa.position.y = Hh / 2; g.add(tampa);
-    const liquido = new THREE.Mesh(new THREE.CircleGeometry(W / 2 - 2, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
-    liquido.rotation.x = -Math.PI / 2; liquido.position.y = Hh - 4; g.add(liquido);
+    const f = formas[0], r = f.a * S, alt = 2 * f.b * S;
+    const tampa = new THREE.Mesh(new THREE.CylinderGeometry(r, r, alt, 32, 1, true), sbMat('#d9dcd6', { metalness: 0.4, roughness: 0.35, side: THREE.DoubleSide }));
+    tampa.position.y = alt / 2; g.add(tampa);
+    // o vinagre enche a tampa até a borda (é nele que ela pisa, na física)
+    const liquido = new THREE.Mesh(new THREE.CircleGeometry(r - 0.5, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
+    liquido.rotation.x = -Math.PI / 2; liquido.position.y = alt - 0.3; g.add(liquido);
   } else if (o.forma === 'acucar') {
     const base = new THREE.Mesh(new THREE.CircleGeometry(W / 2, 24), sbMat('#f7f5ee'));
     base.rotation.x = -Math.PI / 2; base.scale.y = D / W; base.position.y = 0.5; g.add(base);
@@ -1540,8 +1615,9 @@ function sbFrame(dtw) {
   R.setViewport(0, 0, w, h); R.setScissor(0, 0, w, h);
   R.setClearColor(SBR.bg, 1); R.clear();
   const [eL, eR] = f.eyes || [0, 0];
-  const estado = (f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.z > 0 ? `andando numa plataforma a ${Math.round(f.z)} px` : 'andando no chão')
-    + (SB.fisico && CORPO.ritmo < 0.97 ? ` · câmera lenta: a física do corpo roda a ${CORPO.ritmo.toFixed(1).replace('.', ',')}× do tempo real` : '');
+  const mm = v => (v / CORPO.S).toFixed(0);
+  const estado = (f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.naParede ? 'subindo' : f.z > 3 ? (APP.mundo ? `em cima, a ${mm(f.z)} mm do balcão` : `andando numa plataforma a ${Math.round(f.z)} px`) : APP.mundo ? 'no balcão' : 'andando no chão')
+    + (SB.fisico && CORPO.ritmo < 0.97 ? ` · câmera lenta ${CORPO.ritmo.toFixed(1).replace('.', ',')}×` : '');
   if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred' || SBR.mode === 'fantasma') {
     if (SBR.mode === 'fantasma') {
       fantMover(dtw);

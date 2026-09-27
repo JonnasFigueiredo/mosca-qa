@@ -1,0 +1,21 @@
+{
+  "data": "2026-09-27",
+  "metodo": "Cozinha com as formas do desenho também na física (flygym 2.1, MuJoCo 3.9): frutas como meias-cúpulas apoiadas no balcão (meio elipsoide), uvas como três meias-esferas, tampa como cilindro; açúcar, água e folhas planos e fora da física. Testes em Python (servidor sozinho, uma realização) e na página (Chrome sem janela, corpo físico).",
+  "antes": "Na física, cada coisa era a caixa do tamanho do desenho: ela pisava no ar nos cantos da caixa, fora da fruta desenhada, e subia uma parede reta onde se via uma curva.",
+  "sem_pegada": {
+    "andando_do_chao": "pêssego 3,5 mm, morango 1,6, banana 1,5, laranja 5,0, vinagre 6,4 (não chegou ao topo em nenhum; morango e banana ainda eram elipsoide inteiro e cápsula, com barriga embaixo)",
+    "comecando_na_parede_domos": "pêssego 6,4 mm, morango 3,1, banana 10,7, laranja 8,0, uva 5,9: sobe alguns mm e escorrega",
+    "comparacao_mesmo_tamanho": "bloco 40x38x16: sobe a 14,5 mm em 3,8 s; cilindro r19: 14,9 mm em 2 s; meia-esfera r19: 8 mm e cai; meio elipsoide: 3 mm e cai. As passadas gravadas no chão aguentam parede reta, não a curva que vai de vertical a horizontal"
+  },
+  "com_pegada": {
+    "regra": "a força que a segura aponta para dentro da superfície mais perto do tórax (fruta ou balcão), passando de uma para a outra em ~1 mm; faz o papel das garras e da adesão",
+    "comecando_na_parede_domos": { "pessego": "em cima em 1,33 s", "morango": "2,65 s", "banana": "1,78 s", "laranja": "0,95 s", "uva": "0,48 s" },
+    "andando_do_chao_python": { "morango": "passou do topo em 1,78 s", "uva": "1,15 s", "vinagre": "0,69 s", "laranja": "chegou a 16,8 de 18 mm", "pessego": "3,0 mm (escorregou)", "banana": "5,5 mm (escorregou)" },
+    "formas_com_barriga": "morango como elipsoide inteiro e banana como cápsula deitada: 3 mm e cai (ela teria de andar de cabeça para baixo)"
+  },
+  "pagina_corpo_fisico": {
+    "de_frente_para_cada_objeto_15s": { "laranja": "em cima em 0,8 s", "vinagre": "0,9 s", "pessego": "2,0 s (comeu 2 vezes)", "morango": "2,3 s", "uvas": "3,8 s (comeu 2 vezes)", "banana": "4,9 s" },
+    "solta_60s": { "cerebro_s": 22.7, "pausas_do_cerebro": 0, "atraso_mediano_s": 0.032, "subiu_em_frutas": 3, "comeu": 4 }
+  },
+  "pagina_corpo_simples_100s": { "cerebro_s": 47, "voos": 2, "pousos": "pêssego, uvas", "comeu": { "acucar": 6, "pessego": 2, "uvas": 2 } }
+}
