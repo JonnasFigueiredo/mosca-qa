@@ -12,7 +12,7 @@ function serie(nome) {
   const medidas = Array.from({ length: 5 }, (_, i) => todas.findLast(m => m.rotulo === `longa-${nome}-${i + 1}`));
   if (medidas.some(m => !m)) return null;
   for (const m of medidas) {
-    if (m.relogio_s !== 300 || m.mofo || m.erros?.length || !m.amostras || m.configuracao.semOlhos)
+    if (m.relogio_s !== 300 || m.mofo || m.cheiro || m.erros?.length || !m.amostras || m.configuracao.semOlhos)
       throw new Error(`Medição incompatível ou inválida: ${m.rotulo}`);
     if (m.configuracao.fisico && m.fim.visao.corpo_fisico_s < m.fim.visao.tempo_s * 0.99)
       throw new Error(`Corpo físico desligou durante ${m.rotulo}`);

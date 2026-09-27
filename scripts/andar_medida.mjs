@@ -17,6 +17,7 @@ const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ?
 const tem = k => process.argv.includes('--' + k);
 const segundos = +arg('segundos', 90), porta = +arg('porta', 8765), janelaMs = +arg('janela', 100), fisico = tem('fisico'), sentidos = tem('sentidos'), semOlhos = tem('sem-olhos');
 if (fisico && tem('sonda-mofo')) throw new Error('a sonda do mofo reinicia apenas o corpo simples; não usar com --fisico');
+if (fisico && tem('sonda-cheiro')) throw new Error('a sonda do cheiro reinicia apenas o corpo simples; não usar com --fisico');
 const rotulo = arg('rotulo', `${fisico ? 'fisico' : 'simples'}${sentidos ? '-sentidos' : ''}${semOlhos ? '-sem-olhos' : ''}`);
 const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const RAIZ = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
@@ -94,6 +95,9 @@ try {
   if (prep !== 'ok') throw new Error(prep);
   const inicio = await ev('brainClock / 1000');
   const mofo = tem('sonda-mofo') ? await ev(readFileSync(join(RAIZ, 'scripts/mofo_sonda.js'), 'utf8')) : null;
+  // sonda de busca pelo cheiro (docs/plano-busca-cheiro.md, B1)
+  const cheiro = tem('sonda-cheiro') ? await ev(readFileSync(join(RAIZ, 'scripts/cheiro_sonda.js'), 'utf8')) : null;
+  if (cheiro) console.log('sonda do cheiro:', JSON.stringify({ chegadas: cheiro.chegadas, de: cheiro.de, tempo_mediano_s: cheiro.tempo_mediano_s }));
   const prazo = Date.now() + segundos * 1000;
   while (Date.now() < prazo) {
     await sleep(Math.min(50000, prazo - Date.now()));
@@ -166,9 +170,9 @@ try {
   let tAndando = 0; for (let i = J; i < n; i++) if (estado(i) === 'andando') tAndando += dt[i];
   const vAnd = []; for (let i = J; i < n; i++) if (estado(i) === 'andando') vAnd.push(vel[i]);
   const resultado = {
-    rotulo, data: new Date().toISOString(), versao, configuracao: { porta, fisico, sentidos, semOlhos, sonda_mofo: !!mofo },
+    rotulo, data: new Date().toISOString(), versao, configuracao: { porta, fisico, sentidos, semOlhos, sonda_mofo: !!mofo, sonda_cheiro: !!cheiro },
     metodo_da_rodada: 'Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.',
-    inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo,
+    inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo, cheiro,
     janela_ms: J * 10, relogio_s: segundos, cerebro_s: +tTot.toFixed(1), amostras: n,
     fracoes_do_tempo: frac,
     velocidade_andando_mm_s: { mediana: q(vAnd, 0.5), p10: q(vAnd, 0.1), p90: q(vAnd, 0.9) },

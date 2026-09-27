@@ -12,8 +12,8 @@ fazem.
 
 `[x]` feito e medido; `[~]` começado; `[ ]` não começado.
 
-- [ ] B1 Sonda de busca pelo cheiro (`scripts/cheiro_sonda.js`, via `andar_medida.mjs --sonda-cheiro`) e linha de base
-- [ ] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes
+- [~] B1 Sonda de busca pelo cheiro (`scripts/cheiro_sonda.js`, via `andar_medida.mjs --sonda-cheiro`) e linha de base (sonda pronta; linha de base rodando)
+- [~] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes (rascunho testado em `_tmp/`, falta mover)
 - [ ] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
 - [ ] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério
 - [ ] B5 (depois) Pouso e decolagem pelos sentidos (passos 2 e 3 do resultado negativo)
@@ -21,7 +21,22 @@ fazem.
 
 Notas de cada passo, em ordem (a mais recente é a última):
 
-(vazio)
+**B1 e B2 começados (27/09/2026).**
+- `scripts/cheiro_sonda.js` + `andar_medida.mjs --sonda-cheiro --segundos 0` (não usar com `--fisico`; o resumo
+  `resumir_sentidos.mjs` agora ignora medidas com sonda do cheiro). Oito largadas (banana, pêssego, morango, uvas; a
+  20 e a 35 mm da borda), semente 20260927, voo inibido, fome 1, 20 s cerebrais cada. Mede: `chegou_s` (borda a menos
+  de 1 mm ou patas na fruta), distância mínima, o cheiro bom nas antenas (p10, mediana, p90, máximo; frações do tempo
+  acima de 0,02 / 0,05 / 0,1 / 0,2) para escolher o limiar da regra, giro total e sacadas.
+- Linha de base lançada nos dois modos: rótulos `cheiro-base-atalhos` e `cheiro-base-sentidos` em
+  `docs/medicoes/andar-vs-moscas.json` (campo `cheiro`); logs em `_tmp/_cheiro_base_*.log`. **Se estes rótulos não
+  estiverem no JSON, rodar de novo** (um de cada vez): `node scripts/andar_medida.mjs --sonda-cheiro --segundos 0
+  [--sentidos] --rotulo cheiro-base-...`. Cada um leva ~8 min de relógio (o cérebro anda ~0,35× com os olhos).
+- Rascunho da regra: `_tmp/_busca_cheiro.js` (função `buscaCheiro(e, dt, cL, cR, aleatorio)` e constantes `BUSCA`),
+  testes em `_tmp/_busca_teste.mjs` (passam: sem cheiro neutra; subindo acelera, sem pausa, ruído 0,3; perdendo, giros
+  de 60–150° a cada 0,4–0,8 s, para a antena com mais cheiro quando a diferença relativa passa de 2%). `_tmp/` não vai
+  para o git: o código do rascunho e dos testes está no apêndice no fim deste arquivo. Próximo: escolher `BUSCA.LIMIAR` pelos números
+  da linha de base, mover a função para `web/corpo-natural.js` (exportar `buscaCheiro` e `BUSCA` no objeto
+  `CorpoNatural`), mover os testes para `scripts/corpo_natural_teste.mjs`, e seguir para B3.
 
 ## O que as moscas fazem (base da regra)
 
@@ -111,3 +126,68 @@ a chance de decolar. Medir cada um separadamente, com a mesma série e o mesmo c
 - Um servidor por porta (`netstat -ano | grep -E ":876[56]"`); um navegador de teste por vez; temporários com `_`.
 - `index.html` usa CRLF; editar com o Edit ou gravar com `newline='\r\n'`; conferir caracteres de controle depois.
 - Commit só quando o usuário pedir ou antes de mudança grande; autor só o Jonnas, sem `Co-Authored-By`.
+
+## Apêndice: rascunho da regra (B2) e dos testes
+
+Para colar dentro do `CorpoNatural` em `web/corpo-natural.js` (e exportar `buscaCheiro` e `BUSCA`):
+
+```js
+  // Busca pelo cheiro ao longo do tempo (docs/plano-busca-cheiro.md). Regra do corpo, com base em comportamento medido:
+  // moscas andando aceleram enquanto sentem o cheiro e, ao perdê-lo, desaceleram e viram mais (Álvarez-Salvado et al.
+  // 2018); param menos com o cheiro presente (Demir et al. 2020); as viradas respondem à perda, não ao tempo dentro
+  // (Jayaram et al. 2023). Sem vento, não há a orientação contra o vento. c = cheiro bom em cada antena (antes da fome)
+  const BUSCA = { LIMIAR: 0.05, TAU_C: 0.2, TAU_D: 0.3, QUEDA: -0.3, PERDEU_S: 1.5, FORA_S: 3,
+    VEL_DENTRO: 1.3, VEL_PERDEU: 0.6, RUIDO_DENTRO: 0.3, GIRO_MIN: 1.05, GIRO_MAX: 2.6, GIRO_T_MIN: 0.4, GIRO_T_MAX: 0.8, LADO_MIN: 0.02 };
+  function buscaCheiro(e, dt, cL, cR, aleatorio = Math.random) {
+    const c = (cL + cR) / 2, k = x => 1 - Math.exp(-dt / x);
+    const antes = e.c ?? c;
+    e.c = antes + (c - antes) * k(BUSCA.TAU_C);
+    e.dc = (e.dc ?? 0) + ((e.c - antes) / Math.max(dt, 1e-6) - (e.dc ?? 0)) * k(BUSCA.TAU_D);
+    const relativa = e.dc / Math.max(e.c, BUSCA.LIMIAR);   // queda relativa por segundo
+    e.modo = e.modo || 'fora'; e.t = (e.t || 0) + dt;
+    const muda = m => { e.modo = m; e.t = 0; e.giroT = 0; };
+    if (e.modo === 'fora' && e.c >= BUSCA.LIMIAR && relativa >= BUSCA.QUEDA) muda('dentro');
+    else if (e.modo === 'dentro' && (e.c < BUSCA.LIMIAR || relativa < BUSCA.QUEDA)) muda('perdeu');
+    else if (e.modo === 'perdeu' && e.t > BUSCA.PERDEU_S) muda(e.c >= BUSCA.LIMIAR && relativa >= 0 ? 'dentro' : 'fora');
+    if (e.modo === 'dentro') return { modo: 'dentro', velocidade: BUSCA.VEL_DENTRO, semPausa: true, ruido: BUSCA.RUIDO_DENTRO, giro: 0 };
+    if (e.modo === 'perdeu') {
+      let giro = 0;
+      e.giroT = (e.giroT ?? 0) - dt;
+      if (e.giroT <= 0) {
+        // para o lado da antena com mais cheiro, se a diferença for mensurável; senão, sorteado (negativo = esquerda)
+        const dif = (cL - cR) / Math.max(c, BUSCA.LIMIAR);
+        const lado = Math.abs(dif) > BUSCA.LADO_MIN ? -Math.sign(dif) : (aleatorio() < 0.5 ? -1 : 1);
+        giro = lado * (BUSCA.GIRO_MIN + (BUSCA.GIRO_MAX - BUSCA.GIRO_MIN) * aleatorio());
+        e.giroT = BUSCA.GIRO_T_MIN + (BUSCA.GIRO_T_MAX - BUSCA.GIRO_T_MIN) * aleatorio();
+      }
+      return { modo: 'perdeu', velocidade: BUSCA.VEL_PERDEU, semPausa: true, ruido: 1, giro };
+    }
+    return { modo: 'fora', velocidade: 1, semPausa: false, ruido: 1, giro: 0 };
+  }
+```
+
+Testes (hoje em `_tmp/_busca_teste.mjs`; mover para `scripts/corpo_natural_teste.mjs`):
+
+```js
+import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+const ctx = vm.createContext({});
+vm.runInContext(readFileSync('_tmp/_busca_cheiro.js', 'utf8') + ';globalThis.B=buscaCheiro;globalThis.P=BUSCA;', ctx);
+const B = ctx.B, P = ctx.P;
+// sem cheiro: neutra
+let e = {}; let r; for (let i = 0; i < 200; i++) r = B(e, 0.01, 0, 0, () => 0.5);
+assert.equal(r.modo, 'fora'); assert.equal(r.velocidade, 1); assert.equal(r.semPausa, false);
+// cheiro subindo: mais rápida, sem pausa, mais reta
+for (let i = 0; i < 100; i++) r = B(e, 0.01, 0.02 + i * 0.002, 0.02 + i * 0.002, () => 0.5);
+assert.equal(r.modo, 'dentro'); assert.ok(r.velocidade > 1); assert.equal(r.semPausa, true); assert.ok(r.ruido < 1);
+// perdeu: cai rápido
+let giros = [];
+for (let i = 0; i < 120; i++) { r = B(e, 0.01, Math.max(0, 0.22 - i * 0.004), Math.max(0, 0.22 - i * 0.004), () => 0.7); if (r.giro) giros.push(r.giro); }
+assert.ok(giros.length >= 1, 'gira ao perder'); assert.ok([...Array(1)].every(() => e.modo === 'perdeu' || e.modo === 'fora'));
+// lado: antena esquerda mais forte -> giro para a esquerda (negativo)
+e = { modo: 'dentro', c: 0.2, dc: 0, t: 0 };
+let lado = 0; for (let i = 0; i < 60; i++) { r = B(e, 0.01, 0.1, 0.05, () => 0.9); if (r.giro) { lado = Math.sign(r.giro); break; } }
+assert.equal(lado, -1, 'vira para a antena com mais cheiro');
+console.log('busca pelo cheiro: fora neutra, dentro acelera, perdeu vira (para a antena mais forte):', giros.length, 'giros; ok');
+```
