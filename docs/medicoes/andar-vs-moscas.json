@@ -251,6 +251,107 @@
     "pouso": 2,
     "alvoVoo": 1
    }
+  },
+  {
+   "rotulo": "pausas-expo-simples",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 39.9,
+   "amostras": 3990,
+   "fracoes_do_tempo": {
+    "parada": 0.275,
+    "andando_reto": 0.61,
+    "comendo": 0.099,
+    "virando": 0.013
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 9.911,
+    "p10": 6.323,
+    "p90": 14.998
+   },
+   "trecho_andando_s": {
+    "n": 14,
+    "media": 1.776,
+    "mediana": 0.6
+   },
+   "paradas_s": {
+    "n": 15,
+    "media": 0.996,
+    "mediana": 0.12,
+    "frac_menos_0_3s": 0.67,
+    "frac_mais_5s": 0.07
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 13,
+    "mediana": 5.581,
+    "p90": 9.166
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 0.12,
+    "duracao_ms_mediana": 120,
+    "amplitude_graus_mediana": 27
+   },
+   "eventos": {
+    "clique": 5,
+    "comeu": 5
+   }
+  },
+  {
+   "rotulo": "pausas-expo-fisico",
+   "data": "2026-09-27",
+   "janela_ms": 200,
+   "relogio_s": 90,
+   "cerebro_s": 21.3,
+   "amostras": 2126,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.317,
+    "parada": 0.482,
+    "virando": 0.019,
+    "voando": 0.078,
+    "comendo": 0.095
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 11.6,
+    "p10": 3.61,
+    "p90": 15.229
+   },
+   "trecho_andando_s": {
+    "n": 10,
+    "media": 0.722,
+    "mediana": 0.33
+   },
+   "paradas_s": {
+    "n": 9,
+    "media": 1.353,
+    "mediana": 0.08,
+    "frac_menos_0_3s": 0.56,
+    "frac_mais_5s": 0.11
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 8,
+    "mediana": 13.913,
+    "p90": 24.869
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 2.63,
+    "duracao_ms_mediana": 20,
+    "amplitude_graus_mediana": 9
+   },
+   "eventos": {
+    "tropeco": 4,
+    "parede": 2,
+    "reflexoTarsal": 1,
+    "voo": 1,
+    "fugaDirecao": 1,
+    "sacada": 1,
+    "alvoVoo": 1,
+    "pouso": 1,
+    "topo": 1,
+    "clique": 1,
+    "comeu": 1,
+    "atracao": 1
+   }
   }
  ]
 }

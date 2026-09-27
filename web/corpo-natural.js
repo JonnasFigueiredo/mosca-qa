@@ -51,15 +51,24 @@ const CorpoNatural = (() => {
     const meio = Object.fromEntries(['x','y','z'].map(k => [k, dobra[k]+((a[k]+fim[k])*0.5-dobra[k])*e]));
     return {raiz:a, meio, ponta, alcanca:alcance <= 1.15};
   }
+  // Durações sorteadas como nas moscas reais (Valente et al. 2007, arena aberta): trechos andando com distribuição
+  // exponencial (média ~1,4-2,1 s) e paradas quase sempre curtas (~76% abaixo de 0,3 s), com algumas longas (> 5 s).
+  // Depois de parar, na maioria das vezes elas seguem na mesma direção: girar no lugar é a exceção
+  const expo = (media, u) => -media * Math.log(1 - Math.min(u, 0.999));
+  const ANDAR_S = 1.7, PARADA_CURTA_S = 0.15, PARADA_LONGA_S = 2.5, FRAC_LONGA = 0.25, FRAC_GIRAR = 0.2;
   function marcha(f, dt, provando, aleatorio = Math.random) {
     let estado = f.marcha || 'andar';
-    f.marchaT = (f.marchaT ?? (0.8+2.4*aleatorio())) - dt;
-    if (impedida(f) || f.aversion > 0.3) { estado = 'andar'; f.marchaT = 0.5; }
+    f.marchaT = (f.marchaT ?? expo(ANDAR_S, aleatorio())) - dt;
+    // ameaça, fuga, ré, escalada e aversão forte têm prioridade (andando, sem pausa)
+    if (impedida(f) || f.aversion > 0.6) { estado = 'andar'; f.marchaT = 0.5; }
     else if (provando) { estado = 'provar'; f.marchaT = 0.3; }
     else if (estado === 'provar') { estado = 'pausa'; f.marchaT = 0.2; }
     else if (f.marchaT <= 0) {
-      if (estado === 'andar') { estado = aleatorio() < 0.45 ? 'girar' : 'pausa'; f.marchaT = 0.15+0.5*aleatorio(); }
-      else { estado = 'andar'; f.marchaT = 0.8+2.4*aleatorio(); }
+      if (estado === 'andar') {
+        if (aleatorio() < FRAC_GIRAR) { estado = 'girar'; f.marchaT = 0.1 + 0.2 * aleatorio(); }
+        else { estado = 'pausa'; f.marchaT = aleatorio() < FRAC_LONGA ? expo(PARADA_LONGA_S, aleatorio()) : expo(PARADA_CURTA_S, aleatorio()); }
+      }
+      else { estado = 'andar'; f.marchaT = expo(ANDAR_S, aleatorio()); }
     }
     f.marcha = estado;
     return {andar:estado === 'andar' ? 1 : 0, girar:estado === 'andar' || estado === 'girar' ? 1 : 0};

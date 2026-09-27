@@ -22,7 +22,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
 - [x] P1.4 Sem "novidade" escondida na Cozinha
 - [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
-- [~] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (velocidade feita; faltam pausas e viradas)
+- [~] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (velocidade e pausas feitas; faltam as viradas)
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
 
@@ -79,17 +79,30 @@ Leitura:
 - Ainda fora do alvo (mesma medida): parada 3% do tempo (moscas: muito mais; 63% numa arena sem comida) e virando 34%
   (viradas de ~140 ms e ~48°; moscas: sacadas de ~90 ms e ~15°, rumo quase parado entre elas).
 
+**P2.2 pausas (27/09/2026).** `CorpoNatural.marcha`: trechos andando exponenciais (média 1,7 s), paradas 75% curtas
+(exponencial, média 0,15 s) e 25% longas (média 2,5 s), girar no lugar só em 20% das paradas (0,1–0,3 s); a pausa só é
+desligada por aversão forte (`f.aversion > 0.6`, antes 0,3). Medido (uma rodada de cada, `andar-vs-moscas.json`):
+
+| Medida | Simples (`pausas-expo-simples`) | Físico (`pausas-expo-fisico`, janela 200 ms) | Moscas reais |
+|---|---|---|---|
+| Parada / andando / virando | 27,5% / 61% / 1,3% (+ comendo 10%) | 48% / 32% / 1,9% (+ voando 8%, comendo 9,5%) | 63% / 29% / 9% (sem comida) |
+| Velocidade andando, mediana | 9,9 mm/s | 11,6 mm/s | ~11–15 |
+| Trechos andando, média | 1,8 s | 0,7 s (o balanço do físico pica os trechos) | 1,4–2,1 s |
+| Paradas < 0,3 s / > 5 s | 67% / 7% | 56% / 11% | ~76% / algumas |
+| Reorientação depois de parar | 5,6° | 14° | ~0° |
+
+Descoberta: os 26–34% "virando" das medidas anteriores vêm da regra de aversão (`away = fleeDir * 4.5` em `stepBody`,
+4,5 rad/s = 258°/s, contínuo até sair do cheiro): perto da laranja mofada ela gira em círculo. Nas rodadas sem
+passar pela laranja, "virando" fica em 1–2%.
+
 Próximos passos, nesta ordem:
-1. P2.2, pausas: em `CorpoNatural.marcha` (`web/corpo-natural.js`), durações exponenciais (andar com média ~1,5–2 s;
-   parada com a maioria < 0,3 s e cauda longa, algumas > 5 s) e a pausa não ser desligada por qualquer aversão
-   (`f.aversion > 0.3` desliga hoje; perto da laranja mofada ela nunca para). Ajustar o teste
-   `scripts/corpo_natural_teste.mjs` se a regra mudar.
-2. P2.2, viradas: em `stepBody` (`web/index.html`, `let turn = ...`), juntar a virada pedida (visão/cérebro, cheiro,
+1. P2.2, viradas: em `stepBody` (`web/index.html`, `let turn = ...`), juntar a virada pedida (visão/cérebro, cheiro,
    ruído) e soltá-la em sacadas de ~90 ms acima de 200°/s, com o rumo quase parado entre elas; o sentido e o total
-   continuam os do cérebro. O ruído de hoje (`(Math.random() - 0.5) * 2.2`) é grande: medir sem ele.
-3. P1.2 com os olhos reais: no sandbox desenhado, trocar `f.seen` pela maior mancha de `OLHO.obj` (direção pelos
-   omatídeos, `OLHO.mapa.direcao`). `f.seen` continua como reserva (página 2D, `?headless=1`, `?olhos=0`).
-4. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
+   continuam os do cérebro. O ruído de hoje (`(Math.random() - 0.5) * 2.2`) é grande: medir sem ele. Começar pela
+   fuga do cheiro ruim (`away`): em vez de girar contínuo a 258°/s, uma ou duas sacadas para longe e seguir reto.
+2. P1.2: validar o voo pelos olhos reais (`sbAlvoVisual`, já feito) em rodadas longas (300 s ou mais) e ajustar os
+   limites de elevação e o limiar de pouso.
+3. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
    `--sem-olhos`, gravar em `docs/medicoes/sentidos-comparacao.json`. Se o modo só sentidos comer fruta e pousar em
    comida com frequência razoável, virar o padrão (e `?sentidos=0` volta aos atalhos). Atualizar README e página.
 
