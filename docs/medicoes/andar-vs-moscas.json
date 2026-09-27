@@ -352,6 +352,97 @@
     "comeu": 1,
     "atracao": 1
    }
+  },
+  {
+   "rotulo": "sacadas-simples",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 27.6,
+   "amostras": 2764,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.356,
+    "parada": 0.257,
+    "comendo": 0.121,
+    "virando": 0.262
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 8.749,
+    "p10": 5.958,
+    "p90": 11.857
+   },
+   "trecho_andando_s": {
+    "n": 16,
+    "media": 0.917,
+    "mediana": 0.49
+   },
+   "paradas_s": {
+    "n": 15,
+    "media": 0.858,
+    "mediana": 0.26,
+    "frac_menos_0_3s": 0.6,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 15,
+    "mediana": 29.467,
+    "p90": 50.783
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 2.93,
+    "duracao_ms_mediana": 80,
+    "amplitude_graus_mediana": 15
+   },
+   "eventos": {
+    "clique": 3,
+    "comeu": 3,
+    "mofo": 2
+   }
+  },
+  {
+   "rotulo": "sacadas-simples-v2",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 26,
+   "amostras": 2596,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.515,
+    "parada": 0.304,
+    "comendo": 0.122,
+    "virando": 0.054
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 8.696,
+    "p10": 6.535,
+    "p90": 9.465
+   },
+   "trecho_andando_s": {
+    "n": 12,
+    "media": 1.232,
+    "mediana": 0.62
+   },
+   "paradas_s": {
+    "n": 11,
+    "media": 1.007,
+    "mediana": 0.83,
+    "frac_menos_0_3s": 0.27,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 11,
+    "mediana": 0,
+    "p90": 9.743
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.76,
+    "duracao_ms_mediana": 50,
+    "amplitude_graus_mediana": 6
+   },
+   "eventos": {
+    "clique": 4,
+    "comeu": 4
+   }
   }
  ]
 }

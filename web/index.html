@@ -718,6 +718,8 @@ const bw = () => (SB.on ? SB.W : W), bh = () => (SB.on ? SB.H : H);
 // medidos; moscas andam a ~11-15 mm/s (Valente et al. 2007). A página 2D da Cozinha (2,8 px por mm) já dava 15 mm/s.
 // Por isso, no 3D do mundo natural, a mesma velocidade em mm/s: 42 x 7 / 2,8 = 105 px/s (stepBody escolhe)
 const WALK_PAGINA = 42, WALK_COZINHA_3D = 105;
+// sacadas do andar (corpo simples, Cozinha 3D): dispara quando a virada acumulada passa de ~13° e gira a 300°/s
+const SACADA_MIN = 0.22, SACADA_VEL = 5.2;
 let WALK = WALK_PAGINA;
 let brainClock = 0;
 let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memory = 0, memoryR = 0;
@@ -957,7 +959,14 @@ function stepBody(dt, counts) {
   const [dAv, dAt, sAt] = ina ? [ina.vL - ina.vR, ina.aL - ina.aR, ina.aL + ina.aR] : [tL - tR, tL - tR, tL + tR];
   if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(dAv) > 0.03 ? Math.sign(dAv) : (Math.random() < 0.5 ? -1 : 1);
   if (f.aversion < 0.05) f.fleeDir = 0;
-  const away = (f.fleeDir || 0) * 4.5;
+  // no corpo simples da Cozinha 3D, as viradas saem em sacadas (abaixo) e a fuga do cheiro ruim é um giro de ~100°
+  // para o lado escolhido, seguido de reta (outro se ainda sentir o cheiro 1 s depois); no resto, giro contínuo
+  const sacadas = SB.on && APP.mundo && !SB.fisico && !f.flying;
+  const away = sacadas ? 0 : (f.fleeDir || 0) * 4.5;
+  if (sacadas && f.fleeDir) {
+    f.fugaGiroT = (f.fugaGiroT ?? 0) - dt;
+    if (f.fugaGiroT <= 0) { f.giroAcum = (f.giroAcum || 0) + f.fleeDir * 1.75; f.fugaGiroT = 1; }
+  } else f.fugaGiroT = 0;
   // atração: as sinapses dizem que o cheiro é bom; a diferença entre as antenas diz de que lado
   // ele está (a mesma leitura do desvio, com o sinal trocado)
   const toward = -ATTR_TURN * dAt / (sAt + 0.05);
@@ -1001,6 +1010,23 @@ function stepBody(dt, counts) {
   } else if (SB.on && SB.fisico && !f.flying) f.turnCmd = clamp(turn, -6, 6);
   // com o corpo físico no chão, quem gira a mosca são as patas: o cérebro só manda o comando de virada.
   // No ar (ou sem o corpo físico), a virada vai direto para o rumo
+  else if (sacadas) {
+    // viradas em sacadas (Geurten et al. 2014: ~15° em ~90 ms, acima de 200°/s, com o rumo quase parado entre elas):
+    // a virada pedida (cérebro, cheiro, ruído, bordas) se acumula e sai de uma vez a 300°/s quando passa de ~13°.
+    // O sentido e o total são os pedidos; o formato é regra do corpo
+    // fugindo do cheiro ruim, o resto da virada (a visão puxa para a coisa grande e clara que cheira mal) perde peso;
+    // parada, a virada acumulada se desfaz (depois de parar, moscas seguem no mesmo rumo: Valente et al. 2007)
+    const peso = f.fleeDir ? 1 - 0.8 * f.aversion : 1;
+    if (marcha.andar === 0 && marcha.girar === 0) f.giroAcum = 0;
+    else f.giroAcum = clamp((f.giroAcum || 0) + clamp(turn * peso, -6, 6) * dt, -2, 2);
+    if (!f.sacadaSentido && Math.abs(f.giroAcum) > SACADA_MIN) f.sacadaSentido = Math.sign(f.giroAcum);
+    if (f.sacadaSentido) {
+      const passo = f.sacadaSentido * Math.min(Math.abs(f.giroAcum), SACADA_VEL * dt);
+      f.th += passo; f.giroAcum -= passo;
+      if (Math.abs(f.giroAcum) < 0.02 || Math.sign(f.giroAcum) !== f.sacadaSentido) f.sacadaSentido = 0;
+    }
+    f.omega = 0;
+  }
   else { f.th += clamp(turn, -6, 6) * dt; f.omega = 0; }
 
   // andar de ré (moonwalker)

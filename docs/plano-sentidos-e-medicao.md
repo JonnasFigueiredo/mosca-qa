@@ -22,7 +22,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
 - [x] P1.4 Sem "novidade" escondida na Cozinha
 - [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
-- [~] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (velocidade e pausas feitas; faltam as viradas)
+- [x] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (corpo simples; no físico, só pausas e velocidade)
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
 
@@ -95,14 +95,23 @@ Descoberta: os 26–34% "virando" das medidas anteriores vêm da regra de avers�
 4,5 rad/s = 258°/s, contínuo até sair do cheiro): perto da laranja mofada ela gira em círculo. Nas rodadas sem
 passar pela laranja, "virando" fica em 1–2%.
 
+**P2.2 viradas (27/09/2026).** Só no corpo simples da Cozinha 3D (`sacadas` em `stepBody`): a virada pedida se acumula
+em `f.giroAcum` e sai a 300°/s (`SACADA_VEL`) quando passa de 0,22 rad (`SACADA_MIN`); parada zera o acumulado; a
+fuga do cheiro ruim virou um giro de 1,75 rad (~100°) a cada 1 s enquanto a aversão dura, e o resto da virada pesa
+`1 - 0,8·aversão`. Medido (`sacadas-simples-v2`): andando 51,5%, parada 30%, comendo 12%, virando 5,4% (moscas: 9%);
+reorientação depois de parar 0°; velocidade 8,7 mm/s. Perto da laranja mofada (`_sonda_mofo.js`, 3 largadas de 6 s):
+antes girava 1500–1800° e se aproximava (a visão puxa para a coisa grande e clara); agora 490–725°, e saiu do
+cheiro em 1 de 3 (noutra, meio caminho). Limites da medida: com janela de 100 ms, sacadas de ~45 ms aparecem menores
+(mediana 6°) e paradas curtas (< 0,15 s) somem; com pouca amostra (11 paradas), as frações variam muito.
+
 Próximos passos, nesta ordem:
-1. P2.2, viradas: em `stepBody` (`web/index.html`, `let turn = ...`), juntar a virada pedida (visão/cérebro, cheiro,
-   ruído) e soltá-la em sacadas de ~90 ms acima de 200°/s, com o rumo quase parado entre elas; o sentido e o total
-   continuam os do cérebro. O ruído de hoje (`(Math.random() - 0.5) * 2.2`) é grande: medir sem ele. Começar pela
-   fuga do cheiro ruim (`away`): em vez de girar contínuo a 258°/s, uma ou duas sacadas para longe e seguir reto.
-2. P1.2: validar o voo pelos olhos reais (`sbAlvoVisual`, já feito) em rodadas longas (300 s ou mais) e ajustar os
+1. Fuga do cheiro ruim mais decidida (numa de 3 largadas ela ainda fica perto da laranja): por exemplo, andar mais
+   rápido enquanto foge (hoje a aversão *reduz* a velocidade: `(1 - 0.45 * f.aversion)` em `f.speed`) e não parar
+   (`CorpoNatural.marcha` já não para acima de 0,6 de aversão).
+2. Rodadas mais longas (300 s) e várias (5) do medidor para ter distribuições estáveis, no corpo simples e no físico.
+3. P1.2: validar o voo pelos olhos reais (`sbAlvoVisual`, já feito) em rodadas longas (300 s ou mais) e ajustar os
    limites de elevação e o limiar de pouso.
-3. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
+4. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
    `--sem-olhos`, gravar em `docs/medicoes/sentidos-comparacao.json`. Se o modo só sentidos comer fruta e pousar em
    comida com frequência razoável, virar o padrão (e `?sentidos=0` volta aos atalhos). Atualizar README e página.
 
