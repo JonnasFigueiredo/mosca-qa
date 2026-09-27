@@ -205,5 +205,53 @@ const FINANCEIRO = {
   },
 };
 
-window.SISTEMAS = { NOTAS, NOTA_NOME, ID_POOL, lista: [PEDIDOS, FINANCEIRO] };
+/* ───────────── Mundo natural: a Cozinha ───────────── */
+// Um pedaço de 20 x 20 cm de bancada de cozinha, o habitat da Drosophila melanogaster, na escala dela (2,5 mm).
+// Cada coisa tem posição e tamanho em mm, altura, cheiro e gosto. Os cheiros usam os glomérulos que respondem
+// a eles em moscas reais (pesos = força relativa):
+//  - fermentação e vinagre (ácido acético, acetato de etila): DM1, VA2, DM4, DP1m (Semmelhack e Wang 2009;
+//    Ai et al. 2010). DM1 e VA2 são os que fazem a mosca ir atrás do vinagre;
+//  - ésteres de fruta (acetato de isoamila, butirato de etila): DM2 (Or22a) e DM3 (Or47a);
+//  - geosmina, o cheiro de mofo e de micróbios perigosos: só o DA2 (Or56a; Stensmyr et al. 2012);
+//  - limoneno, da casca de cítricos: DC1 (Or19a; Dweck et al. 2013).
+// O gosto: doce (açúcar), amargo (a laranja mofada) ou água. Doce entra pelos neurônios de açúcar das patas;
+// amargo, pela dopamina de punição (PPL1), como nas moscas reais.
+const COZINHA = {
+  id: 'cozinha', nome: 'Cozinha', url: 'bancada.cozinha', papel: 'mundo', mundo: true,
+  bugs: {},
+  estado() { return { rota: 'cozinha', msg: '' }; },
+  // x, y: centro (mm, y cresce para longe da janela); w, d: largura e profundidade; h: altura
+  objetos: {
+    'k-banana': { r: 'Banana madura', x: 55, y: 60, w: 50, d: 22, h: 18, forma: 'banana', gosto: 'doce', porcoes: 10, alcance: 30,
+      cheiro: { DM2: 1, DM3: 0.9, DM1: 0.4, VA2: 0.3 } },
+    'k-uvas': { r: 'Uvas', x: 140, y: 40, w: 34, d: 24, h: 15, forma: 'uvas', gosto: 'doce', porcoes: 6, alcance: 20,
+      cheiro: { DM4: 0.8, DM1: 0.6, DM2: 0.4 } },
+    'k-pessego': { r: 'Pêssego passado', x: 150, y: 110, w: 40, d: 38, h: 16, forma: 'pessego', gosto: 'doce', porcoes: 12, alcance: 35,
+      cheiro: { DM1: 1, VA2: 0.8, DP1m: 0.5, DM2: 0.5, DM4: 0.4 } },
+    'k-morango': { r: 'Morango', x: 95, y: 150, w: 24, d: 22, h: 20, forma: 'morango', gosto: 'doce', porcoes: 5, alcance: 20,
+      cheiro: { DM2: 0.7, DM4: 0.4, VA2: 0.3 } },
+    'k-laranja': { r: 'Laranja mofada', x: 40, y: 130, w: 42, d: 42, h: 18, forma: 'laranja', gosto: 'amargo', porcoes: 0, alcance: 20,
+      cheiro: { DA2: 1, DC1: 0.8 } },
+    'k-vinagre': { r: 'Tampa com vinagre', x: 170, y: 170, w: 24, d: 24, h: 6, forma: 'vinagre', gosto: 'acido', porcoes: 0, alcance: 40,
+      cheiro: { DM1: 1, VA2: 1, DP1m: 1, DM4: 0.3 } },
+    'k-acucar': { r: 'Açúcar derramado', x: 100, y: 90, w: 24, d: 16, h: 0.4, forma: 'acucar', gosto: 'doce', porcoes: 8, alcance: 0, cheiro: {} },
+    'k-agua': { r: 'Gotas d\'água', x: 30, y: 90, w: 14, d: 10, h: 0.4, forma: 'agua', gosto: 'agua', porcoes: 0, alcance: 0, cheiro: {} },
+    'k-folhas': { r: 'Folhas de manjericão', x: 180, y: 55, w: 22, d: 26, h: 0.4, forma: 'folhas', gosto: null, porcoes: 0, alcance: 0, cheiro: {} },
+  },
+  elementos: {},
+  checar() { return null; },
+  pendentes() { return []; },
+  // página 2D: a bancada vista de cima (2,8 px por mm; 560 x 560 px, abaixo de uma faixa com a janela)
+  render(s, b, restos) {
+    const k = 2.8, top = 64;
+    const obj = Object.entries(this.objetos).map(([id, o]) => {
+      const sobra = restos ? restos(id) : 1;
+      return `<button data-el="${id}" class="k-obj k-${o.forma}${sobra <= 0 && o.porcoes ? ' k-vazio' : ''}" tabindex="-1" style="left:${((o.x - o.w / 2) * k).toFixed(1)}px;top:${(top + (o.y - o.d / 2) * k).toFixed(1)}px;width:${(o.w * k).toFixed(1)}px;height:${(o.d * k).toFixed(1)}px"><span>${o.r}</span></button>`;
+    }).join('');
+    return `<div class="sx sx-cozinha"><div class="k-janela"><span>janela</span></div>${obj}<div class="k-escala"><i></i>1 cm</div></div>`;
+  },
+};
+for (const [id, o] of Object.entries(COZINHA.objetos)) COZINHA.elementos[id] = { r: o.r, notas: [], acao: () => {} };
+
+window.SISTEMAS = { NOTAS, NOTA_NOME, ID_POOL, lista: [PEDIDOS, FINANCEIRO, COZINHA] };
 })();

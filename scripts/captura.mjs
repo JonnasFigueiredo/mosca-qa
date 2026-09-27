@@ -8,7 +8,7 @@
 // --alvo (seletor CSS a fotografar; padrão .brain-box), --app (pedidos ou financeiro), --tema (claro ou escuro),
 // --js (código a rodar antes da espera), --porta, --chrome.
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -20,7 +20,15 @@ const tema = arg('tema', '');
 const js = arg('js', '');       // código a rodar na página antes da espera (ex.: sbTakeoff(fly, 'beira'))   // claro ou escuro; vazio = o do sistema
 const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const cdp = 9300 + Math.floor(Math.random() * 600);
-const perfil = mkdtempSync(join(tmpdir(), 'mosca-cap-'));
+const TMP = process.env.MOSCA_TMP || new URL('../_tmp', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+mkdirSync(TMP, { recursive: true });
+// apaga o próprio perfil do Chrome (em _tmp, no D): espera o Chrome soltar os arquivos e tenta de novo
+async function limpaPerfil(dir) {
+  for (let i = 0; i < 10; i++) {
+    try { rmSync(dir, { recursive: true, force: true }); return; } catch { await new Promise(r => setTimeout(r, 700)); }
+  }
+}
+const perfil = mkdtempSync(join(TMP, 'mosca-cap-'));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const proc = spawn(chrome, [
@@ -88,5 +96,5 @@ try {
   ws?.close();
   proc.kill();
   await sleep(1500);
-  try { rmSync(perfil, { recursive: true, force: true }); } catch { /* o Chrome às vezes segura arquivos */ }
+  await limpaPerfil(perfil);
 }

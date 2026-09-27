@@ -316,6 +316,7 @@ function evShow(on) {
   $('#eyeview').hidden = !on;
   $('#evUi').hidden = !on;
   document.querySelector('.brain-labels').hidden = on;
+  if (typeof FORMAS !== 'undefined' && FORMAS.linhas) $('#formasUi').hidden = on;
   $('#bpTitle').textContent = on ? 'Pelos olhos dela' : 'O cérebro';
   for (const b of document.querySelectorAll('#viewTabs button')) b.classList.toggle('on', (b.dataset.view === 'olhos') === on);
 }

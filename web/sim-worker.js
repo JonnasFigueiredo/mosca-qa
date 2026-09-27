@@ -43,9 +43,14 @@ let N, indptr, idx, w, sign;
 let v, g, ad, ref, isActive, active, nActive = 0;
 let ring, ringLen, ringSlot = 0, D;
 let groups = {}, outGroups = {}, rates = {};
+// entrada por neurônio (olhos reais: cada LC10a com a taxa do seu campo receptivo): ids e taxas acumuladas
+let vetor = null;
 let t = 0, running = false;
 let spikeBuf, spikeCount = 0;
 let lastWall = 0, simSinceWall = 0;
+// medidor opcional (mensagem 'perf'): tempo em cada parte do passo, para achar o gargalo
+let perfOn = false;
+const PERF = { prop: 0, entrada: 0, integra: 0, aprende: 0, espera: 0, passos: 0, arestas: 0, ativos: 0, blocos: 0, fimBloco: 0 };
 
 async function fetchBytes(url, onBytes, tries = 3) {
   try { return await fetchOnce(url, onBytes); }
@@ -307,6 +312,7 @@ function touch(i) {
 }
 
 function step() {
+  const p0 = perfOn ? performance.now() : 0;
   // 1) spikes que chegam agora (atraso sináptico)
   const slot = ring[ringSlot];
   for (let s = 0; s < slot.n; s++) {
@@ -317,7 +323,9 @@ function step() {
       touch(post);
     }
   }
+  if (perfOn) { for (let s = 0; s < slot.n; s++) { const j = slot.ids[s]; PERF.arestas += indptr[j + 1] - indptr[j]; } }
   slot.n = 0;
+  const p1 = perfOn ? performance.now() : 0;
 
   // 2) entrada sensorial (Poisson)
   // sorteia QUANTOS neurônios do grupo recebem um spike (Poisson) e depois QUAIS;
@@ -329,7 +337,19 @@ function step() {
     const n = poisson(ids.length * r * DT / 1000);
     for (let s = 0; s < n; s++) { const i = ids[(Math.random() * ids.length) | 0]; g[i] += W_EXT; touch(i); }
   }
+  // mesma ideia com taxa própria por neurônio: sorteia quantos spikes no total e, para cada um, qual neurônio
+  // (proporcional à taxa dele, por busca binária na soma acumulada)
+  if (vetor) {
+    const n = poisson(vetor.total * DT / 1000), c = vetor.cum;
+    for (let s = 0; s < n; s++) {
+      const u = Math.random() * vetor.total;
+      let lo = 0, hi = c.length - 1;
+      while (lo < hi) { const m = (lo + hi) >> 1; if (c[m] < u) lo = m + 1; else hi = m; }
+      const i = vetor.ids[lo]; g[i] += W_EXT; touch(i);
+    }
+  }
 
+  const p2 = perfOn ? performance.now() : 0;
   // 3) integra só quem está fora do repouso
   const out = ring[(ringSlot + D) % ringLen];
   const kM = DT / TAU_M, kS = DT / TAU_SYN, kA = DT / TAU_A;
@@ -358,6 +378,7 @@ function step() {
   nActive = n;
   ringSlot = (ringSlot + 1) % ringLen;
   t += DT;
+  if (perfOn) { const p3 = performance.now(); PERF.prop += p1 - p0; PERF.entrada += p2 - p1; PERF.integra += p3 - p2; PERF.passos++; PERF.ativos += n; }
 }
 
 let isOut;
@@ -375,6 +396,7 @@ function buildOutIndex() {
 function loop() {
   if (!running) return;
   const wall0 = performance.now();
+  if (perfOn && PERF.fimBloco) PERF.espera += wall0 - PERF.fimBloco;
   // não deixa o cérebro correr mais rápido que o tempo real
   const now = wall0;
   if (lastWall) simSinceWall -= (now - lastWall);
@@ -389,6 +411,7 @@ function loop() {
     const gs = isOut.get(spikeBuf[s]);
     if (gs) for (const k of gs) counts[k] = (counts[k] || 0) + 1;
   }
+  const pa = perfOn ? performance.now() : 0;
   const learned = learn(counts.dor || 0, counts.recompensa || 0);
   // quanto da força original as sinapses do cheiro atual têm, para "aproximar" e para "evitar"
   const [kcDrive, kcBase] = drive(setA);
@@ -396,6 +419,7 @@ function loop() {
   const spikes = spikeBuf.slice(0, spikeCount);
   spikeCount = 0;
   const wallMs = performance.now() - wall0;
+  if (perfOn) { PERF.aprende += performance.now() - pa; PERF.blocos++; PERF.fimBloco = performance.now(); }
   simSinceWall += REPORT_MS;
   postMessage({ type: 'tick', t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, memoryR, learned, kcDrive, kcBase, kcDriveR, kcBaseR }, [spikes.buffer]);
   setTimeout(loop, 0);
@@ -413,8 +437,18 @@ onmessage = async ({ data }) => {
     if (data.floor != null) W_FLOOR = data.floor;
     if (data.tauF != null) TAU_F = data.tauF;
     if (data.forgetting != null) forgetting = !!data.forgetting;
+  } else if (data.type === 'perf') {
+    if (data.on != null) { perfOn = !!data.on; for (const k in PERF) PERF[k] = 0; }
+    postMessage({ type: 'perf', perf: { ...PERF } });
   } else if (data.type === 'rates') {
     rates = data.rates;
+    vetor = null;
+    if (data.vetor) {
+      const { ids, taxas } = data.vetor, cum = new Float64Array(ids.length);
+      let s = 0;
+      for (let k = 0; k < ids.length; k++) { s += taxas[k] > 0 ? taxas[k] : 0; cum[k] = s; }
+      if (s > 0) vetor = { ids, cum, total: s };
+    }
   } else if (data.type === 'run') {
     if (!running && data.on) { running = true; lastWall = 0; simSinceWall = 0; loop(); }
     running = data.on;

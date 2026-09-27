@@ -1,0 +1,97 @@
+{
+ "data": "2026-09-26",
+ "metodo": "_fugacheck (sandbox, corpo simples): a Sentinela investe a 300 px/s de 170 px, a -90 (esquerda), 90 (direita), 0 (frente) e 180 graus (trás), duas vezes cada. 'lida' = de onde o cérebro diz que veio (DNp04 E-D; DNp02 - DNp11); 'real' = de onde a Sentinela estava na hora (0 = frente, negativo = esquerda).",
+ "ensaios": [
+  {
+   "ataque_graus": -90,
+   "fugas_lida_real": [
+    [
+     -90,
+     -94
+    ]
+   ],
+   "capturada": false
+  },
+  {
+   "ataque_graus": 90,
+   "fugas_lida_real": [
+    [
+     90,
+     91
+    ],
+    [
+     97,
+     170
+    ]
+   ],
+   "capturada": true
+  },
+  {
+   "ataque_graus": 0,
+   "fugas_lida_real": [
+    [
+     0,
+     1
+    ]
+   ],
+   "capturada": false
+  },
+  {
+   "ataque_graus": 180,
+   "fugas_lida_real": [],
+   "capturada": false
+  },
+  {
+   "ataque_graus": -90,
+   "fugas_lida_real": [
+    [
+     -101,
+     null
+    ]
+   ],
+   "capturada": false
+  },
+  {
+   "ataque_graus": 90,
+   "fugas_lida_real": [
+    [
+     90,
+     77
+    ],
+    [
+     111,
+     144
+    ]
+   ],
+   "capturada": true
+  },
+  {
+   "ataque_graus": 0,
+   "fugas_lida_real": [
+    [
+     -67,
+     -10
+    ],
+    [
+     -62,
+     -117
+    ]
+   ],
+   "capturada": true
+  },
+  {
+   "ataque_graus": 180,
+   "fugas_lida_real": [],
+   "capturada": false
+  }
+ ],
+ "erro_primeira_fuga_graus": [
+  4,
+  1,
+  1,
+  13,
+  57
+ ],
+ "erro_mediano_graus": 4,
+ "nota": "Por trás ela não fugiu: a Sentinela fica no ponto cego (a página só calcula o crescimento aparente dentro do campo dos olhos)."
+}

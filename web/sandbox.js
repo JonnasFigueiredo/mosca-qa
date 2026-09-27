@@ -21,6 +21,18 @@ const SB_COL = { L: new THREE.Color('#5cc8ff'), R: new THREE.Color('#ffb347'), n
 /* ───────────── o mundo ───────────── */
 function sbBuild() {
   SB.app = APP.id;
+  if (APP.mundo) {
+    // mundo natural: cada coisa é a sua própria plataforma, no tamanho real (mm -> px)
+    const S = CORPO.S;
+    SB.platforms = []; SB.layout = {};
+    for (const [id, o] of Object.entries(APP.objetos)) {
+      const p = { x: (o.x - o.w / 2) * S, y: (o.y - o.d / 2) * S, w: o.w * S, h: o.d * S, z: o.h * S, id };
+      SB.platforms.push(p);
+      SB.layout[id] = { x: p.x, y: p.y, w: p.w, h: p.h, z: p.z };
+    }
+    SBR.built = '';
+    return;
+  }
   const groups = {};
   for (const [id, e] of Object.entries(APP.elementos)) (groups[e.notas[0]] ||= []).push(id);
   const chunks = [];
@@ -45,7 +57,8 @@ function sbRects() {
   const out = [];
   for (const node of document.querySelectorAll('#shop [data-el]')) {
     const L = SB.layout[node.dataset.el];
-    if (L) out.push({ id: node.dataset.el, ...L, disabled: node.disabled, node });
+    const o = APP.objetos?.[node.dataset.el];
+    if (L) out.push({ id: node.dataset.el, ...L, disabled: node.disabled, node, sigma: o ? o.alcance * CORPO.S : 0 });
   }
   return out;
 }
@@ -58,6 +71,7 @@ function sbSurface(x, y) {
 /* ───────────── andar e voar ───────────── */
 function sbMove(f, dt, v) {
   predStep(f, dt);
+  if (f.presa) return;   // presa nas patas do louva-a-deus
   if (SB.fisico && !f.flying) { f.startle = (f.startle || 0) - dt; return; }
   if (f.flying) return sbFly(f, dt);
   const nx = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * v * dt));
@@ -74,21 +88,30 @@ function sbWantsFly(f) {
   return Math.random() < (novel ? 0.3 + 0.6 * f.hunger : 0.12);
 }
 function sbTakeoff(f, why) {
+  if (f.presa) { if (why === 'fuga') predTranco(f); return; }
   const noAr = f.flying;
   if (noAr && why !== 'fuga') return;
   // no ar, a fibra gigante vira uma guinada de fuga; no chão, decolagem
-  if (!noAr) { f.flying = true; f.flyT = 0; }
+  if (!noAr) { f.flying = true; f.flyT = 0; f.naParede = null; }
   f.vz = why === 'fuga' ? (noAr ? 120 : 150) : 70;
-  if (why === 'fuga') f.th += Math.PI * (0.6 + 0.8 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
-  // fuga que conta: a Sentinela por perto, e não é o voo de quando ela acabou de ser pega
+  // a direção da fuga vem do cérebro (fugaRumo, na página); sem sinal claro, sorteada
+  if (why === 'fuga') { const r = fugaRumo(f); f.th = r ?? f.th + Math.PI * (0.6 + 0.8 * Math.random()) * (Math.random() < 0.5 ? -1 : 1); }
+  // fuga que conta: o louva-a-deus por perto, e não é o voo de quando ela acabou de escapar das patas
   if (why === 'fuga' && PRED.on && PRED.cd <= 0 && Math.hypot(PRED.x - f.x, PRED.y - f.y, PRED.z - f.z) < 180) {
     PRED.escapes++;
     labEvent('fugaSentinela', {});
-    logEvent('Viu a Sentinela crescer na frente dela: os detectores de ameaça (LPLC2, LC4) dispararam a fibra gigante e ela fugiu.', 'a');
+    logEvent(PRED.bote ? 'Viu as patas do louva-a-deus vindo: os detectores de ameaça (LPLC2, LC4) dispararam a fibra gigante e ela escapou do bote.'
+      : 'Viu o louva-a-deus crescer na frente dela: os detectores de ameaça (LPLC2, LC4) dispararam a fibra gigante e ela fugiu.', 'a');
   }
   if (noAr) return;
-  labEvent('voo', { why });
+  // o que entrava no cérebro na hora (para entender decolagens de susto)
+  const tatoAgora = Object.keys(rates).filter(k => k.startsWith('tato_')).reduce((sm, k) => sm + rates[k], 0);
+  const lc = f.olhoReal && f.olhoReal.celulas ? Array.from(f.olhoReal.celulas) : [];
+  const tops = Object.entries(rates).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v]) => k + ' ' + Math.round(v)).join(', ');
+  labEvent('voo', { why, ameaca: Math.round(rates.ameaca || 0), tato: Math.round(tatoAgora), olhos: (f.eyes || []).map(v => +v.toFixed(2)), doce: Math.round(rates.doce || 0),
+    lc: lc.length ? [Math.round(lc.reduce((a, b) => a + b, 0)), Math.round(Math.max(...lc))] : null, tops });
   logEvent(why === 'fuga' ? 'A fibra gigante (DNp01) disparou: decolou de susto.'
+    : why === 'tarsal' ? 'As seis patas perderam o apoio (passou da beira): pelo reflexo tarsal, começou a bater as asas.'
     : why === 'subir' ? 'Deu de cara com uma plataforma mais alta e decolou para ver o que tem lá.'
       : 'Chegou na beira da plataforma e decolou.', why === 'fuga' ? '' : 's');
 }
@@ -115,79 +138,179 @@ function sbNovelBelow(f, below) {
     Math.hypot(r.x + r.w / 2 - f.x, r.y + r.h / 2 - f.y) < 80);
 }
 
-/* ───────────── você: a Sentinela ───────────── */
-// Você controla um predador. A mosca não sabe que é um predador: ela vê um objeto (LC10a) e, quando ele
-// cresce rápido na frente dela, os detectores de ameaça (LPLC2, LC4) disparam. Se a fibra gigante disparar,
-// ela foge. Se você a pegar, a dopamina de punição (PPL1) marca o cheiro do lugar onde ela estava.
-const PRED = { on: false, x: 0, y: 0, z: 90, th: 0, lunge: 0, lungeCd: 0, cd: 0, keys: new Set(), prevSize: 0, captures: 0, escapes: 0 };
-const PRED_R = 16, PRED_SPEED = 80, PRED_LUNGE = 240, PRED_TURN = 2.4;
+/* ───────────── você: o louva-a-deus ───────────── */
+// Você controla uma ninfa de louva-a-deus (~15 mm), predador de emboscada: em criações, ninfas de louva-a-deus
+// comem moscas-da-fruta. A mosca não sabe o que é um louva-a-deus: vê um objeto (olhos) e, quando algo cresce
+// rápido na frente dela, os detectores de ameaça (LPLC2, LC4) disparam; se a fibra gigante disparar em rajada,
+// ela foge. Rastejar devagar, ou chegar pelo ponto cego atrás dela, quase não faz nada crescer.
+// O bote das patas da frente vai e volta em 90 ms; se ela ainda estiver lá, você a segura. Presa, ela sente as
+// patas agarradas (todas as cerdas) e a dor (PPL1); a cada mordida a cabeça do louva-a-deus avança e cresce na
+// frente dela, e cada rajada da fibra gigante é um tranco que afrouxa o aperto.
+const PRED = { on: false, x: 0, y: 0, z: 0, th: 0, keys: new Set(), cd: 0, captures: 0, escapes: 0, botes: 0,
+  bote: null, cdBote: 0, presa: null, passo: 0, andando: false, alerta: 0, prev: {} };
+const PRED_R = 10;   // raio da cabeça (px), para o tamanho aparente
+const LOUVA = {
+  anda: 175, rasteja: 55, gira: 2.2, giraDevagar: 1.1,     // px/s e rad/s de tempo cerebral (7 px = 1 mm)
+  cabeca: 47, alturaCabeca: 28,                             // a cabeça: px à frente do centro, px acima do chão
+  pontaRepouso: 42, pontaMax: 82, alturaPonta: 16,          // a ponta das patas da frente: dobrada e no fim do bote
+  bote: 0.09, recarga: 1.0, pega: 18,                       // s, s, px de tolerância para agarrar
+  come: 4.0, tranco: 0.34, aperta: 0.1, abre: 0.6,          // s para levar à boca; aperto por tranco e por espaço; ângulo do alcance
+};
 const PRED_LOOM = 60;   // Hz nos detectores de ameaça por rad/s de crescimento do tamanho aparente
 function predSpawn() {
   const a = Math.random() * Math.PI * 2;
-  PRED.x = Math.min(SB.W - 60, Math.max(60, fly.x + Math.sin(a) * 340));
-  PRED.y = Math.min(SB.H - 60, Math.max(60, fly.y - Math.cos(a) * 340));
-  PRED.z = Math.max(90, sbSurface(PRED.x, PRED.y) + 50);
+  PRED.x = Math.min(SB.W - 60, Math.max(60, fly.x + Math.sin(a) * 320));
+  PRED.y = Math.min(SB.H - 60, Math.max(60, fly.y - Math.cos(a) * 320));
+  PRED.z = sbSurface(PRED.x, PRED.y);
   PRED.th = Math.atan2(fly.x - PRED.x, -(fly.y - PRED.y));
-  PRED.prevSize = 0; PRED.cd = 1;
+  PRED.prev = {}; PRED.cd = 1; PRED.bote = null; PRED.presa = null;
+}
+// um ponto à frente do louva-a-deus (px) e a altura dele
+function predFrente(dist, alt) { return { x: PRED.x + Math.sin(PRED.th) * dist, y: PRED.y - Math.cos(PRED.th) * dist, z: PRED.z + alt }; }
+// até onde vai a ponta das patas agora: dobrada, no bote (vai e volta) ou segurando
+function predPonta() {
+  if (PRED.presa || !PRED.bote) return LOUVA.pontaRepouso;
+  const u = PRED.bote.t / LOUVA.bote, ida = u < 0.5 ? u * 2 : 2 - u * 2;
+  return LOUVA.pontaRepouso + (LOUVA.pontaMax - LOUVA.pontaRepouso) * Math.sin(ida * Math.PI / 2);
+}
+// o que ela vê crescer: a cabeça (avança a cada mordida) e a ponta das patas (no bote)
+function predPartes() {
+  const mord = PRED.presa ? PRED.presa.mordida : 0;
+  return { cabeca: { ...predFrente(LOUVA.cabeca + 10 * mord, LOUVA.alturaCabeca), r: PRED_R }, ponta: { ...predFrente(predPonta(), LOUVA.alturaPonta), r: 5 } };
+}
+// de onde vem a ameaça agora (para a direção da fuga, na página): a parte que mais cresce
+function predAmeacaPos() { return PRED.bote ? predPartes().ponta : predPartes().cabeca; }
+// a mosca está no alcance do bote?
+function predNoAlcance(f) {
+  const dx = f.x - PRED.x, dy = f.y - PRED.y, d = Math.hypot(dx, dy);
+  let a = Math.atan2(dx, -dy) - PRED.th;
+  a = Math.atan2(Math.sin(a), Math.cos(a));
+  return !f.flying && d > LOUVA.pontaRepouso - 12 && d < LOUVA.pontaMax + LOUVA.pega && Math.abs(a) < LOUVA.abre && Math.abs((f.z || 0) - PRED.z) < 20;
 }
 function predStep(f, dt) {
   if (!PRED.on) { f.loom = 0; return; }
-  const k = PRED.keys;
-  const turn = (k.has('d') || k.has('arrowright') ? 1 : 0) - (k.has('a') || k.has('arrowleft') ? 1 : 0);
-  const fwd = (k.has('w') || k.has('arrowup') ? 1 : 0) - (k.has('s') || k.has('arrowdown') ? 0.6 : 0);
-  const up = (k.has('e') ? 1 : 0) - (k.has('q') ? 1 : 0);
-  PRED.th += turn * PRED_TURN * dt;
-  PRED.lunge -= dt; PRED.lungeCd -= dt; PRED.cd -= dt;
-  const v = PRED.lunge > 0 ? PRED_LUNGE : PRED_SPEED * fwd;
-  PRED.x = Math.min(SB.W - 20, Math.max(20, PRED.x + Math.sin(PRED.th) * v * dt));
-  PRED.y = Math.min(SB.H - 20, Math.max(20, PRED.y - Math.cos(PRED.th) * v * dt));
-  PRED.z = Math.min(280, Math.max(sbSurface(PRED.x, PRED.y) + PRED_R, PRED.z + up * 70 * dt));
-  // o que ela vê: o tamanho aparente e quanto ele cresce (é o que LPLC2 e LC4 medem)
-  const hx = f.x + Math.sin(f.th) * 10, hy = f.y - Math.cos(f.th) * 10, hz = f.z + 6;
-  const d = Math.hypot(PRED.x - hx, PRED.y - hy, PRED.z - hz);
-  const size = 2 * Math.atan(PRED_R / Math.max(d, 1));
-  let a = Math.atan2(PRED.x - f.x, -(PRED.y - f.y)) - f.th;
-  a = Math.atan2(Math.sin(a), Math.cos(a));
-  const grow = (size - PRED.prevSize) / Math.max(dt, 1e-3);
-  PRED.prevSize = size;
-  f.loom = Math.abs(a) < EYE_BACK ? Math.min(200, PRED_LOOM * Math.max(0, grow)) : 0;
-  if (d < PRED_R + 9 && PRED.cd <= 0) predCatch(f);
+  if (PRED.presa && !f.presa) PRED.presa = null;   // trocou de mosca (outro sistema) no meio
+  const k = PRED.keys, devagar = k.has('shift');
+  PRED.cd -= dt; PRED.cdBote -= dt;
+  PRED.andando = false;
+  if (!PRED.presa) {
+    const turn = (k.has('d') || k.has('arrowright') ? 1 : 0) - (k.has('a') || k.has('arrowleft') ? 1 : 0);
+    const fwd = (k.has('w') || k.has('arrowup') ? 1 : 0) - (k.has('s') || k.has('arrowdown') ? 0.5 : 0);
+    PRED.th += turn * (devagar ? LOUVA.giraDevagar : LOUVA.gira) * dt;
+    const v = fwd * (devagar ? LOUVA.rasteja : LOUVA.anda);
+    PRED.x = Math.min(SB.W - 20, Math.max(20, PRED.x + Math.sin(PRED.th) * v * dt));
+    PRED.y = Math.min(SB.H - 20, Math.max(20, PRED.y - Math.cos(PRED.th) * v * dt));
+    PRED.passo += (Math.abs(v) + Math.abs(turn) * 40) * dt;
+    PRED.andando = Math.abs(v) > 1 || turn !== 0;
+  }
+  // insetos escalam: ele acompanha a superfície embaixo (sobe nas frutas)
+  PRED.z += (sbSurface(PRED.x, PRED.y) - PRED.z) * Math.min(1, dt * 8);
+  if (PRED.bote) {
+    PRED.bote.t += dt;
+    // no fim da ida: se ela ainda está ali, agarra
+    if (!PRED.bote.checou && PRED.bote.t >= LOUVA.bote / 2) {
+      PRED.bote.checou = true;
+      const p = predFrente(LOUVA.pontaMax, LOUVA.alturaPonta);
+      if (!f.flying && !f.jumping && Math.hypot(p.x - f.x, p.y - f.y) < LOUVA.pega && Math.abs(p.z - (f.z || 0) - 4) < 20) predPega(f);
+      else labEvent('boteErrado', { voando: !!f.flying });
+    }
+    if (PRED.bote && PRED.bote.t >= LOUVA.bote) PRED.bote = null;
+  }
+  if (PRED.presa) {
+    // segurando: leva à boca, mordendo a cada 0,5 s (a cabeça avança)
+    const P = PRED.presa;
+    P.t += dt; P.p = Math.min(1, P.t / LOUVA.come);
+    P.mordida = Math.max(0, Math.sin(P.t * Math.PI * 2 / 0.5)) ** 3;
+    const pos = predFrente(LOUVA.pontaRepouso + 4 - 6 * P.p, LOUVA.alturaPonta + 8 * P.p);
+    f.x = pos.x; f.y = pos.y; f.z = pos.z - 4;
+    if (P.aperto <= 0) predSolta(f, 'escapou');
+    else if (P.p >= 1) predCome(f);
+  }
+  // o que ela vê: o tamanho aparente de cada parte e quanto ele cresce (é o que LPLC2 e LC4 medem); ponto cego atrás
+  const hx = f.x + Math.sin(f.th) * 10, hy = f.y - Math.cos(f.th) * 10, hz = (f.z || 0) + 6;
+  let loom = 0;
+  for (const [nome, A] of Object.entries(predPartes())) {
+    const d = Math.hypot(A.x - hx, A.y - hy, A.z - hz), size = 2 * Math.atan(A.r / Math.max(d, 1));
+    let a = Math.atan2(A.x - f.x, -(A.y - f.y)) - f.th;
+    a = Math.atan2(Math.sin(a), Math.cos(a));
+    const grow = PRED.prev[nome] != null ? (size - PRED.prev[nome]) / Math.max(dt, 1e-3) : 0;
+    PRED.prev[nome] = size;
+    if (Math.abs(a) < EYE_BACK) loom = Math.max(loom, PRED_LOOM * Math.max(0, grow));
+    if (nome === 'cabeca') PRED.noPontoCego = Math.abs(a) >= EYE_BACK;
+  }
+  f.loom = Math.min(200, loom);
+  PRED.alerta += (f.loom / 200 - PRED.alerta) * Math.min(1, dt / 0.15);
 }
-// a Sentinela como objeto nos olhos (LC10a), igual a um elemento novo
+// o louva-a-deus como objeto nos olhos (LC10a), igual a um elemento novo
 function predView(f) {
   if (!PRED.on) return [0, 0];
   const dx = PRED.x - f.x, dy = PRED.y - f.y, d = Math.hypot(dx, dy, PRED.z - f.z);
   if (d < 6) return [0, 0];
   let a = Math.atan2(dx, -dy) - f.th;
   a = Math.atan2(Math.sin(a), Math.cos(a));
-  const s = Math.min(1, 2 * Math.atan(PRED_R * 2 / d) / EYE_SAT) ** 2;
+  const s = Math.min(1, 2 * Math.atan(30 / d) / EYE_SAT) ** 2;
   return [a > -EYE_BACK && a < EYE_FRONT ? s : 0, a < EYE_BACK && a > -EYE_FRONT ? s : 0];
 }
-function predCatch(f) {
-  PRED.captures++; PRED.cd = 3;
-  f.pain = 0.5; f.lastPain = brainT / 1000; f.threat = 0.4;
+function predPega(f) {
+  PRED.presa = { t: 0, p: 0, aperto: 1, mordida: 0, trancos: 0 };
+  PRED.bote = null;
+  f.presa = true; f.flying = false; f.jumping = false; f.naParede = null;
+  f.pain = 0.5; f.lastPain = brainT / 1000;
   labEvent('captura', {});
-  logEvent('A Sentinela pegou a mosca. Dopamina de punição (PPL1): o cheiro de onde ela estava vai repelir.', 'b');
-  sbTakeoff(f, 'fuga');
-  f.vz = 180;
+  logEvent('O louva-a-deus agarrou a mosca com as patas da frente. Ela sente as patas presas (todas as cerdas) e a dor (dopamina PPL1).', 'b');
+}
+// a fibra gigante disparou em rajada enquanto presa: um tranco que afrouxa o aperto
+function predTranco(f) {
+  const P = PRED.presa;
+  P.aperto -= LOUVA.tranco; P.trancos++;
+  labEvent('tranco', { aperto: +P.aperto.toFixed(2) });
+  logEvent(`Tranco! A fibra gigante dela disparou e ela se debateu: aperto em ${Math.max(0, Math.round(P.aperto * 100))}%.`, 'a');
+}
+function predSolta(f, como) {
+  PRED.presa = null; f.presa = false; PRED.cd = 1.5; PRED.cdBote = 1;
+  if (como === 'escapou') {
+    PRED.escapes++;
+    labEvent('escapouDoLouva', {});
+    logEvent('Ela se debateu até afrouxar as patas do louva-a-deus e escapou voando.', 'a');
+  } else logEvent('Você soltou a mosca.');
+  sbTakeoff(f, 'fuga'); f.vz = 160;
+}
+function predCome(f) {
+  PRED.presa = null; f.presa = false; PRED.captures++; PRED.cd = 3;
+  labEvent('comida', {});
+  logEvent('O louva-a-deus comeu a mosca. A simulação continua: ela volta do outro lado da bancada, com o mesmo cérebro e a memória da dor.', 'b');
+  const a = PRED.th + Math.PI + (Math.random() - 0.5);
+  f.x = Math.min(SB.W - 40, Math.max(40, PRED.x + Math.sin(a) * 520));
+  f.y = Math.min(SB.H - 40, Math.max(40, PRED.y - Math.cos(a) * 520));
+  f.z = sbSurface(f.x, f.y); f.flying = false; f.vz = 0; f.th = Math.random() * Math.PI * 2;
+  if (SB.fisico) corpoTeleporte(f);
 }
 function predSet(on) {
   PRED.on = on;
   if (on) predSpawn();
-  else fly && (fly.loom = 0);
+  else { if (PRED.presa && fly) predSolta(fly, 'soltou'); fly && (fly.loom = 0); }
   $('#predBtn').classList.toggle('on', on);
   $('#predHelp').hidden = !on;
+  $('#predHud').hidden = !on;
   if (SBR.pred) SBR.pred.visible = on;
+  if (SBR.predAlcance) SBR.predAlcance.visible = on;
   if (on) sbCamMode('pred');
   else if (SBR.mode === 'pred') sbCamMode('spec');
-  logEvent(on ? 'Uma Sentinela entrou no mundo. É você.' : 'A Sentinela saiu.');
+  logEvent(on ? 'Um louva-a-deus entrou no mundo. É você.' : 'O louva-a-deus saiu.');
 }
 addEventListener('keydown', e => {
   if (!SB.on || !PRED.on || e.target.closest?.('input, textarea')) return;
   const k = e.key.toLowerCase();
-  if (k === ' ') { if (PRED.lungeCd <= 0) { PRED.lunge = 0.7; PRED.lungeCd = 2; } }
-  else PRED.keys.add(k);
-  if ([' ', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) e.preventDefault();
+  if (k === ' ') {
+    e.preventDefault();
+    if (e.repeat) return;
+    if (PRED.presa) PRED.presa.aperto = Math.min(1, PRED.presa.aperto + LOUVA.aperta);
+    else if (PRED.cdBote <= 0 && !PRED.bote) { PRED.bote = { t: 0 }; PRED.cdBote = LOUVA.recarga; PRED.botes++; labEvent('bote', { alcance: predNoAlcance(fly) }); }
+    return;
+  }
+  if (k === 'r') { if (PRED.presa) predSolta(fly, 'soltou'); return; }
+  PRED.keys.add(k);
+  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) e.preventDefault();
 });
 addEventListener('keyup', e => PRED.keys.delete(e.key.toLowerCase()));
 addEventListener('blur', () => PRED.keys.clear());
@@ -198,12 +321,41 @@ addEventListener('blur', () => PRED.keys.clear());
 // escala: 7 px por mm (a mosca, com ~2,5 mm, fica com ~18 px, bem menor que um botão)
 const CORPO = { url: 'http://localhost:8766', ok: false, malha: null, t0: 0, pose: null, busy: false, iv: 0, S: 7, pausado: false };
 // física (mm, y para cima) <-> tela (px, y para baixo), com a origem no canto do mundo
-const corpoDaTela = f => ({ x: f.x / CORPO.S, y: -f.y / CORPO.S, rumo: Math.PI / 2 - f.th });
+const corpoDaTela = f => ({ x: f.x / CORPO.S, y: -f.y / CORPO.S, rumo: Math.PI / 2 - f.th, z: sbSurface(f.x, f.y) / CORPO.S });
+// as plataformas do sandbox viram blocos sólidos na física (mm)
+async function corpoMundo() {
+  const S = CORPO.S;
+  const plats = SB.platforms.map(p => [(p.x + p.w / 2) / S, -(p.y + p.h / 2) / S, p.w / 2 / S, p.h / 2 / S, p.z / 2 / S]);
+  await fetch(CORPO.url + '/mundo', { method: 'POST', body: JSON.stringify({ plataformas: plats }) });
+  CORPO.mundo = SB.app;
+}
 async function corpoTeleporte(f) {
   // poses pedidas antes (ou durante) o teleporte são descartadas: mostrariam o lugar antigo
   CORPO.gen = (CORPO.gen || 0) + 1; CORPO.teleportando = true;
   try { await fetch(CORPO.url + '/teleporte', { method: 'POST', body: JSON.stringify(corpoDaTela(f)) }); } catch { /* o próximo passo avisa */ }
   CORPO.teleportando = false; CORPO.gen++; CORPO.prev = null; CORPO.pose = null;
+}
+// a face de plataforma mais perto (px) e a normal dela, para fora; só plataformas mais altas que o piso onde ela está
+function sbParede(f, alcance, piso = sbSurface(f.x, f.y)) {
+  let best = null;
+  for (const p of SB.platforms || []) {
+    if (p.z <= piso + SB_STEP) continue;
+    const cx = Math.min(p.x + p.w, Math.max(p.x, f.x)), cy = Math.min(p.y + p.h, Math.max(p.y, f.y));
+    const d = Math.hypot(f.x - cx, f.y - cy);
+    if (d > alcance || (best && d >= best.d)) continue;
+    const n = Math.abs(f.x - cx) >= Math.abs(f.y - cy) ? [Math.sign(f.x - cx) || 1, 0] : [0, Math.sign(f.y - cy) || 1];
+    best = { p, cx, cy, d, n, piso };
+  }
+  return best;
+}
+// põe o corpo na parede, de barriga para ela e cabeça para cima (a virada do chão para a parede é regra nossa)
+async function corpoParede(f, w) {
+  const S = CORPO.S;
+  CORPO.gen = (CORPO.gen || 0) + 1; CORPO.teleportando = true;
+  const pose = { x: w.cx / S, y: -w.cy / S, rumo: 0, z: w.piso / S + 1.8, parede: [w.n[0], -w.n[1]] };
+  try { await fetch(CORPO.url + '/teleporte', { method: 'POST', body: JSON.stringify(pose) }); } catch { /* o próximo passo avisa */ }
+  CORPO.teleportando = false; CORPO.gen++; CORPO.prev = null; CORPO.pose = null;
+  CORPO.graca = performance.now() + 1500;
 }
 async function corpoPing() {
   try { CORPO.ok = (await fetch(CORPO.url + '/ping', { cache: 'no-store' })).ok; } catch { CORPO.ok = false; }
@@ -230,37 +382,125 @@ function corpoMeshes(info, bin) {
 // sinal descendente: a velocidade que o corpo pede (parar para provar, desviar, ré) e a virada dos DNa01-03
 function corpoSinal(f) {
   if (f.startle > 0) return [1.5 * f.startleDir, -1.5 * f.startleDir];
-  const v = (f.back > 0 ? -0.8 : 1) * Math.min(1.2, (f.speed || 0) / WALK);
-  const u = Math.max(-0.9, Math.min(0.9, 0.15 * (f.turnCmd || 0)));
+  let v = (f.back > 0 ? -0.8 : 1) * Math.min(1.2, (f.speed || 0) / WALK);
+  if (f.naParede) v = Math.max(v, 0.9);   // regra do corpo: na parede ela não para (parada, a passada solta as patas e ela escorrega)
+  let u = Math.max(-0.9, Math.min(0.9, 0.15 * (f.turnCmd || 0)));
+  const P = CORPO.pose;
+  if (f.naParede && P && P.frente) {
+    // regra do corpo (geotaxia negativa): na parede, vira para cima. Moscas sobem paredes, mas o caminho que faz
+    // isso no cérebro não é conhecido; o sinal lateral da gravidade nas antenas depende da mecânica da antena.
+    // As passadas (gravadas no chão) só a seguram subindo reto: de lado ela escorrega (corpo/parede_teste.py).
+    // Por isso, na parede, a virada do cérebro vale 1/4 e a regra de subir manda
+    const [a, b] = P.costas, [d, e] = P.frente, esqZ = a * e - b * d;   // z de (costas × frente): para onde fica a esquerda dela
+    u = 0.25 * u - Math.max(-0.8, Math.min(0.8, 2 * Math.asin(Math.max(-1, Math.min(1, esqZ)))));
+  }
   return [v + u, v - u];
 }
 async function corpoTick() {
   if (CORPO.busy || !SB.fisico || !fly) return;
   CORPO.busy = true;
+  if (CORPO.mundo !== SB.app) {
+    // trocou de sistema: o mundo físico ganha as plataformas novas e a mosca é posta onde está
+    try { await corpoMundo(); await corpoTeleporte(fly); } catch { /* tenta de novo no próximo passo */ }
+    CORPO.busy = false;
+    return;
+  }
   try {
     const tb = brainT / 1000 - CORPO.t0, gen = CORPO.gen;
     // no ar, o corpo físico fica parado esperando o pouso
-    const p = await (await fetch(CORPO.url + '/passo', { method: 'POST', body: JSON.stringify({ t: tb, sinal: fly.flying ? [0, 0] : corpoSinal(fly) }) })).json();
-    if (CORPO.teleportando || gen !== CORPO.gen) return;
+    // com tempo-limite: se a física atrasar (um passo lento), pula este e tenta de novo; só desiste depois de ~4 s
+    const ctl = new AbortController(), tmo = setTimeout(() => ctl.abort(), 1500);
+    let p;
+    try {
+      p = await (await fetch(CORPO.url + '/passo', { method: 'POST', signal: ctl.signal, body: JSON.stringify({ t: tb, sinal: fly.flying || fly.presa ? [0, 0] : corpoSinal(fly) }) })).json();
+      CORPO.atrasos = 0;
+    } catch (e) {
+      if (e.name !== 'AbortError' || ++CORPO.atrasos > 3) throw e;
+      return;
+    } finally { clearTimeout(tmo); }
+    if (CORPO.teleportando || gen !== CORPO.gen || CORPO.mundo !== SB.app) return;
     // guarda a pose anterior para desenhar o meio do caminho entre as duas (a tela é mais rápida que a física)
     const agora = performance.now();
     CORPO.prev = CORPO.pose ? CORPO.pose.geoms : p.geoms;
     CORPO.dtArr = Math.min(250, Math.max(30, agora - (CORPO.tArr || agora)));
     CORPO.tArr = agora;
     CORPO.pose = p;
-    fly.toque = fly.flying ? null : p.toque;
-    if (!fly.flying) {
-      // a posição e o rumo dela vêm da física (mm -> px; o y da física aponta para cima na tela)
-      const nx = p.torax[0] * CORPO.S, ny = -p.torax[1] * CORPO.S, s = sbSurface(nx, ny);
-      if (Math.abs(s - fly.z) <= SB_STEP) { fly.x = nx; fly.y = ny; fly.z = s; fly.th = Math.PI / 2 - p.rumo; }
-      else if (sbWantsFly(fly)) {
-        // beira de plataforma (ou parede de outra): decola dali mesmo
+    // tato fásico: as cerdas respondem a mudança de contato (pisar, levantar a pata), não ao apoio parado
+    if (fly.flying || !p.toque) { fly.toque = null; CORPO.toqueAnt = null; }
+    else {
+      const ant = CORPO.toqueAnt || p.toque;
+      fly.toque = Object.fromEntries(Object.entries(p.toque).map(([perna, v]) => [perna, Math.abs(v - (ant[perna] || 0))]));
+      CORPO.toqueAnt = p.toque;
+    }
+    // o resto do que as patas e as antenas sentem: tropeço (reflexo do controlador), carga no apoio, movimento
+    // da junta fêmur-tíbia (órgão cordotonal) e o quanto a cabeça aponta para cima (gravidade nas antenas)
+    if (fly.flying || !p.junta) { fly.cordo = null; fly.carga = null; fly.gravidade = 0; }
+    else {
+      fly.cordo = p.junta; fly.carga = p.toque; fly.gravidade = p.frente ? p.frente[2] : 0;
+      for (const [perna, v] of Object.entries(p.tropeco || {})) if (v) { (fly.tropeco = fly.tropeco || {})[perna] = performance.now(); labEvent('tropeco', { perna }); }
+    }
+    if (!fly.flying && !fly.presa) {
+      // a posição, o rumo e a altura vêm da física (mm -> px; o y da física aponta para cima na tela)
+      fly.x = p.torax[0] * CORPO.S; fly.y = -p.torax[1] * CORPO.S;
+      fly.z = Math.max(0, (p.torax[2] - 1.15) * CORPO.S);
+      const empe = p.frente && p.frente[2] > 0.6, deitada = !p.frente || (p.frente[2] < 0.35 && p.costas[2] > 0.7);
+      if (!fly.naParede) {
         fly.th = Math.PI / 2 - p.rumo;
-        sbTakeoff(fly, s > fly.z ? 'subir' : 'beira');
-      } else {
-        // não anda para o vazio: meia-volta, e o corpo volta para antes da beira
-        fly.th += Math.PI * (0.6 + 0.4 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
-        corpoTeleporte(fly);
+        // subiu a parede andando: as patas da frente grudaram na face e o corpo empinou
+        const w = empe && sbParede(fly, 40, CORPO.piso ?? sbSurface(fly.x, fly.y));
+        if (w) {
+          fly.naParede = w; labEvent('parede', { como: 'andando' });
+          logEvent('Andou contra a plataforma e começou a subir pela parede: as almofadinhas das patas seguram.', 's');
+          // o agarrão (regra nossa, 0,2 s de força contra a parede): faz o papel das garras, que as passadas de chão não têm
+          fetch(CORPO.url + '/agarrar', { method: 'POST', body: JSON.stringify({ parede: [w.n[0], -w.n[1]] }) }).catch(() => {});
+          CORPO.graca = performance.now() + 1000;
+        }
+        else CORPO.piso = sbSurface(fly.x, fly.y);
+      }
+      if (fly.naParede) {
+        const w = sbParede(fly, 40, fly.naParede.piso) || fly.naParede;
+        fly.naParede = w;
+        fly.th = Math.atan2(-w.n[0], w.n[1]);   // de frente para a parede
+        if (p.torax[2] >= w.p.z / CORPO.S - 2) {
+          // as patas da frente alcançaram a beira de cima (o tórax a 2 mm dela; a cabeça fica ~1,2 mm à frente):
+          // a passagem da parede para o topo é regra nossa, como a de baixo
+          fly.x = w.cx - w.n[0] * 2.5 * CORPO.S; fly.y = w.cy - w.n[1] * 2.5 * CORPO.S; fly.z = w.p.z;
+          fly.naParede = null; CORPO.piso = w.p.z;
+          labEvent('topo', {}); logEvent('Subiu a parede inteira e chegou ao topo da plataforma.', 's');
+          await corpoTeleporte(fly);
+          return;
+        }
+        // reagarrão (regra nossa, igual ao agarrão): escorregou mais de 1 mm em meio segundo, aperta de novo contra a parede
+        const agora = performance.now(), hist = (CORPO.zHist = (CORPO.zHist || []).filter(h => agora - h[0] < 500));
+        hist.push([agora, p.torax[2]]);
+        if (hist[0][1] - p.torax[2] > 1 && agora > (CORPO.reagarra || 0)) {
+          CORPO.reagarra = agora + 1000; CORPO.zHist = [];
+          fetch(CORPO.url + '/agarrar', { method: 'POST', body: JSON.stringify({ parede: [w.n[0], -w.n[1]] }) }).catch(() => {});
+          labEvent('reagarrar', {});
+        }
+        if (deitada) { fly.naParede = null; labEvent('saiuDaParede', {}); }
+      }
+      // reflexo tarsal: quando as seis patas perdem o apoio (passou da beira, caiu da parede), a mosca começa a voar
+      const apoio = Object.values(p.toque || {}).reduce((a, b) => a + b, 0);
+      CORPO.semApoio = apoio < 0.05 && performance.now() > (CORPO.graca || 0) ? (CORPO.semApoio || 0) + 1 : 0;
+      if (CORPO.semApoio >= 2) { CORPO.semApoio = 0; fly.naParede = null; labEvent('reflexoTarsal', {}); sbTakeoff(fly, 'tarsal'); }
+      // de cara com uma plataforma mais alta: se pede para andar e não sai do lugar, sobe a parede (se estiver de
+      // frente para ela); se não, vira ou decola (regras do corpo)
+      const avanco = Math.hypot(fly.x - (CORPO.ult ? CORPO.ult[0] : fly.x), fly.y - (CORPO.ult ? CORPO.ult[1] : fly.y));
+      CORPO.parada = !fly.naParede && corpoSinal(fly)[0] + corpoSinal(fly)[1] > 1 && avanco < 0.3 ? (CORPO.parada || 0) + 1 : 0;
+      CORPO.ult = [fly.x, fly.y];
+      if (CORPO.parada > 12) {
+        CORPO.parada = 0;
+        const w = sbParede(fly, 40);
+        const deFrente = w && Math.sin(fly.th) * -w.n[0] + -Math.cos(fly.th) * -w.n[1] > 0.5;
+        if (deFrente && !sbWantsFly(fly)) {
+          fly.naParede = w; labEvent('parede', { como: 'virada' });
+          logEvent('Parou de cara com uma plataforma e começou a subir pela parede.', 's');
+          await corpoParede(fly, w);
+          return;
+        }
+        if (sbWantsFly(fly)) sbTakeoff(fly, 'subir');
+        else { fly.startle = 0.35; fly.startleDir = Math.random() < 0.5 ? -1 : 1; }
       }
     }
     // se o corpo ficar muito para trás, o cérebro espera (com folga, para não ficar liga-desliga)
@@ -273,7 +513,7 @@ async function corpoTick() {
   } finally { CORPO.busy = false; }
 }
 function corpoPose() {
-  const cur = CORPO.pose.geoms, prev = CORPO.prev || cur, S = CORPO.S, ox = -SB.W / 2, oz = -SB.H / 2, oy = fly.z;
+  const cur = CORPO.pose.geoms, prev = CORPO.prev || cur, S = CORPO.S, ox = -SB.W / 2, oz = -SB.H / 2, oy = 0;
   const a = Math.min(1, (performance.now() - CORPO.tArr) / CORPO.dtArr);
   const g = prev.length === cur.length ? cur.map((v, i) => prev[i] + (v - prev[i]) * a) : cur;
   CORPO.malha.meshes.forEach((mesh, i) => {
@@ -295,8 +535,8 @@ async function corpoPreparar() {
     CORPO.malha = corpoMeshes(info, bin);
     SBR.scene.add(CORPO.malha.group);
   }
-  const r = await fetch(CORPO.url + '/reset', { method: 'POST', body: '{}' });
-  if (!r.ok) throw new Error('reset respondeu ' + r.status);
+  const r = await fetch(CORPO.url + '/ping', { cache: 'no-store' });
+  if (!r.ok) throw new Error('ping respondeu ' + r.status);
 }
 async function corpoSet(on) {
   if (on === SB.fisico) return;
@@ -310,6 +550,7 @@ async function corpoSet(on) {
       } catch (e) { erro = e; await new Promise(r => setTimeout(r, 600)); }
     }
     if (erro) { logEvent('Não deu para ligar o corpo físico: ' + erro.message + '. O servidor (corpo/servidor.py) está rodando?'); return; }
+    try { await corpoMundo(); } catch { logEvent('O servidor do corpo não aceitou as plataformas.'); return; }
     SB.fisico = true;
     fly.startle = 0;
     CORPO.t0 = brainT / 1000; CORPO.pose = null; CORPO.prev = null;
@@ -351,6 +592,17 @@ async function olhoCarregar() {
   OLHO.cena = new THREE.Scene();
   OLHO.quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: OLHO.tex[0], transparent: true, depthTest: false }));
   OLHO.cena.add(OLHO.quad);
+  OLHO.obj = [new Float32Array(M.omatidios), new Float32Array(M.omatidios)];
+  OLHO.lcMapa = [new Float32Array(M.omatidios), new Float32Array(M.omatidios)];
+  // campo receptivo de cada LC10a (scripts/lc_omatidios.py, das sinapses do Janelia): quais omatídeos e com que peso
+  try {
+    const rf = await fetch('data/lc10a_rf.json', { cache: 'no-cache' }).then(r => r.json());
+    OLHO.rf = {
+      ids: Int32Array.from(rf.celulas.map(c => c[0])), olho: Uint8Array.from(rf.celulas.map(c => c[1])),
+      om: rf.celulas.map(c => Int32Array.from(c[5])), w: rf.celulas.map(c => Float32Array.from(c[6])),
+    };
+    OLHO.lcTaxa = new Float32Array(rf.celulas.length);
+  } catch { OLHO.rf = null; }
 }
 // pose das câmeras dos olhos: do corpo físico (servidor) ou, sem ele, uma aproximação na cabeça
 function olhoPoses(f) {
@@ -358,7 +610,7 @@ function olhoPoses(f) {
   if (SB.fisico && CORPO.pose && CORPO.pose.olhos && !f.flying) {
     OLHO.cams.forEach((cam, i) => {
       const [px, py, pz, m0, m1, m2, m3, m4, m5, m6, m7, m8] = CORPO.pose.olhos[i];
-      cam.matrixWorld.set(m0, m1, m2, ox + S * px, m6, m7, m8, f.z + S * pz, -m3, -m4, -m5, oz - S * py, 0, 0, 0, 1);
+      cam.matrixWorld.set(m0, m1, m2, ox + S * px, m6, m7, m8, S * pz, -m3, -m4, -m5, oz - S * py, 0, 0, 0, 1);
       cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
     });
     return;
@@ -377,7 +629,7 @@ function olhoAmostrar(f) {
   const M = OLHO.mapa, R = SBR.r;
   olhoPoses(f);
   // o próprio corpo não aparece para os olhos (o flygym esconde cabeça, olhos, antenas e tórax)
-  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group].filter(Boolean);
+  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance].filter(Boolean);
   const vis = esconde.map(o => o.visible);
   esconde.forEach(o => { o.visible = false; });
   const feats = [];
@@ -399,22 +651,51 @@ function olhoAmostrar(f) {
     for (let o = 0; o < M.omatidios; o++) mu += v[o];
     mu /= M.omatidios;
     let obj = 0;
-    for (let o = 0; o < M.omatidios; o++) obj += Math.max(0, v[o] - mu - 0.06);
+    const ob = OLHO.obj[i];
+    for (let o = 0; o < M.omatidios; o++) { ob[o] = Math.max(0, v[o] - mu - 0.06); obj += ob[o]; }
     feats.push(obj);
-    // imagem do olho para o HUD: cada pixel pinta o valor do seu omatídeo
-    const px = OLHO.tex[i].image.data;
-    for (let k = 0; k < M.fonte_px.length; k++) {
-      const o = M.omatidio_px[k], r = (k / M.colunas) | 0, c = k % M.colunas, j = ((M.linhas - 1 - r) * M.colunas + c) * 4;
-      if (o < 0) { px[j + 3] = 0; continue; }
-      const b = Math.min(255, v[o] * 255 * 1.6);
-      px[j] = M.palido[o] ? b * 0.45 : b * 0.25; px[j + 1] = M.palido[o] ? b * 0.7 : b; px[j + 2] = M.palido[o] ? b : b * 0.45; px[j + 3] = 255;
-    }
-    OLHO.tex[i].needsUpdate = true;
   }
   R.setRenderTarget(null);
   esconde.forEach((o, k) => { o.visible = vis[k]; });
   const [L, Rr] = feats, g = 4;
-  f.olhoReal = { L: L / (L + Rr + g), R: Rr / (L + Rr + g), bruto: feats, t: performance.now() };
+  f.olhoReal = { L: L / (L + Rr + g), R: Rr / (L + Rr + g), bruto: feats, t: performance.now(), celulas: lcTaxas() };
+  // imagem de cada olho para o HUD: cada pixel pinta o valor do seu omatídeo; em vermelho, onde os LC10a estão vendo algo
+  for (let i = 0; i < 2; i++) {
+    const v = OLHO.val[i], lm = OLHO.lcMapa[i], px = OLHO.tex[i].image.data;
+    for (let k = 0; k < M.fonte_px.length; k++) {
+      const o = M.omatidio_px[k], r = (k / M.colunas) | 0, c = k % M.colunas, j = ((M.linhas - 1 - r) * M.colunas + c) * 4;
+      if (o < 0) { px[j + 3] = 0; continue; }
+      const b = Math.min(255, v[o] * 255 * 1.6), lc = Math.min(1, lm[o]);
+      px[j] = Math.min(255, (M.palido[o] ? b * 0.45 : b * 0.25) + 255 * lc);
+      px[j + 1] = (M.palido[o] ? b * 0.7 : b) * (1 - 0.6 * lc); px[j + 2] = (M.palido[o] ? b : b * 0.45) * (1 - 0.6 * lc); px[j + 3] = 255;
+    }
+    OLHO.tex[i].needsUpdate = true;
+  }
+}
+// taxa de cada LC10a: o quanto de "coisa clara" cai no campo receptivo dela (soma ponderada dos omatídeos),
+// numa curva que satura (LC_D50) e dividida pela atividade de todas as células dos dois olhos (normalização:
+// numa tela cheia, sobressai o que destoa). A curva e a normalização são regras nossas; os campos vêm do mapa
+const LC_MAX = 200, LC_D50 = 0.08, LC_POOL = 1.5;
+function lcTaxas() {
+  const rf = OLHO.rf;
+  if (!rf) return null;
+  const n = rf.ids.length, d = new Float32Array(n);
+  let media = 0;
+  for (let c = 0; c < n; c++) {
+    const ob = OLHO.obj[rf.olho[c]], om = rf.om[c], w = rf.w[c];
+    let s = 0;
+    for (let k = 0; k < om.length; k++) s += w[k] * ob[om[k]];
+    d[c] = s; media += s;
+  }
+  media /= n;
+  OLHO.lcMapa[0].fill(0); OLHO.lcMapa[1].fill(0);
+  for (let c = 0; c < n; c++) {
+    const t = LC_MAX * d[c] / (d[c] + LC_D50 + LC_POOL * media);
+    OLHO.lcTaxa[c] = t;
+    const lm = OLHO.lcMapa[rf.olho[c]], om = rf.om[c], w = rf.w[c], a = t / LC_MAX;
+    for (let k = 0; k < om.length; k++) lm[om[k]] += a * w[k] * 5;
+  }
+  return OLHO.lcTaxa;
 }
 function olhoDesenhar(i, vx, vy, vw, vh) {
   const M = OLHO.mapa, a = M.colunas / M.linhas;
@@ -437,13 +718,13 @@ function sbInitRender() {
   const s = SBR.scene = new THREE.Scene();
   SBR.bg = new THREE.Color('#010503');
   s.fog = new THREE.FogExp2('#010503', 0.00085);
-  s.add(new THREE.HemisphereLight('#aaffd0', '#021a0c', 0.7));
-  const key = new THREE.DirectionalLight('#e6fff0', 0.55);
+  SBR.hemi = new THREE.HemisphereLight('#aaffd0', '#021a0c', 0.7); s.add(SBR.hemi);
+  const key = SBR.key = new THREE.DirectionalLight('#e6fff0', 0.55);
   key.position.set(-500, 900, 300); s.add(key);
   // chão de grade
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(SB.W + 1600, SB.H + 1600), new THREE.MeshStandardMaterial({ color: '#020b06', roughness: 1 }));
-  floor.rotation.x = -Math.PI / 2; s.add(floor);
-  const grid = new THREE.GridHelper(SB.W + 1600, 60, '#2bff86', '#0a4a24');
+  floor.rotation.x = -Math.PI / 2; s.add(floor); SBR.floor = floor;
+  const grid = SBR.grid = new THREE.GridHelper(SB.W + 1600, 60, '#2bff86', '#0a4a24');
   grid.material.transparent = true; grid.material.opacity = 0.45; grid.position.y = 0.3; s.add(grid);
   // chuva de código ao redor
   SBR.rain = sbRain(); s.add(SBR.rain.mesh);
@@ -465,26 +746,15 @@ function sbInitRender() {
   // marcador dela no mapa
   SBR.marker = new THREE.Mesh(new THREE.ConeGeometry(18, 40, 3), new THREE.MeshBasicMaterial({ color: '#d8ffe9' }));
   SBR.marker.rotation.x = -Math.PI / 2; SBR.marker.visible = false; s.add(SBR.marker);
-  // a Sentinela: cabeça metálica, olhos vermelhos, tentáculos
-  const pred = SBR.pred = new THREE.Group();
-  pred.add(new THREE.Mesh(new THREE.SphereGeometry(PRED_R, 24, 18), new THREE.MeshStandardMaterial({ color: '#58616b', metalness: 0.45, roughness: 0.35, emissive: '#1c0707' })));
-  const band = new THREE.Mesh(new THREE.TorusGeometry(PRED_R * 0.98, 1.1, 8, 40, Math.PI * 1.1), new THREE.MeshBasicMaterial({ color: '#ff3b3b' }));
-  band.rotation.set(Math.PI / 2, 0, Math.PI * 0.95); band.position.y = 1.5;
-  pred.add(band);
-  const eyeM = new THREE.MeshBasicMaterial({ color: '#ff2a2a' });
-  for (let i = 0; i < 6; i++) {
-    const e = new THREE.Mesh(new THREE.SphereGeometry(2.4, 10, 8), eyeM);
-    const a = (i % 3 - 1) * 0.45, b = i < 3 ? 0.18 : -0.2;
-    e.position.set(Math.sin(a) * PRED_R * 0.95, b * PRED_R + 2, -Math.cos(a) * PRED_R * 0.95);
-    pred.add(e);
-  }
-  const glow = new THREE.PointLight('#ff2a2a', 1.4, 220);
-  glow.position.set(0, 0, -PRED_R - 6); pred.add(glow);
-  SBR.tent = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 8, 6), new THREE.MeshStandardMaterial({ color: '#4a525a', metalness: 0.4, roughness: 0.4, emissive: '#3a0a0a' }), 8 * 12);
-  SBR.tent.frustumCulled = false;
-  pred.add(SBR.tent);
+  // o louva-a-deus e o alcance do bote no chão (os olhos dela não veem o alcance)
+  const pred = SBR.pred = sbLouva();
   pred.visible = false;
   s.add(pred);
+  const alc = SBR.predAlcance = new THREE.Group();
+  const setor = new THREE.Mesh(new THREE.RingGeometry(LOUVA.pontaRepouso - 12, LOUVA.pontaMax + LOUVA.pega, 32, 1, Math.PI / 2 - LOUVA.abre, 2 * LOUVA.abre),
+    new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.18, depthWrite: false, side: THREE.DoubleSide }));
+  setor.rotation.x = -Math.PI / 2; alc.add(setor); alc.userData.setor = setor; alc.visible = false;
+  s.add(alc);
   SBR.predMarker = new THREE.Mesh(new THREE.ConeGeometry(20, 44, 3), new THREE.MeshBasicMaterial({ color: '#ff3b4a' }));
   SBR.predMarker.rotation.x = -Math.PI / 2; SBR.predMarker.visible = false; s.add(SBR.predMarker);
   SBR.cam = new THREE.PerspectiveCamera(58, 1, 1, 6000);
@@ -556,6 +826,129 @@ function sbGridTex() {
   return t;
 }
 
+/* ───────────── o mundo natural (a Cozinha) ───────────── */
+// textura pintada num canvas: cor de fundo e manchas
+function sbTex(fundo, manchas = [], w = 256, h = 256, riscos = null) {
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const g = cv.getContext('2d');
+  g.fillStyle = fundo; g.fillRect(0, 0, w, h);
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  for (const [cor, n, r0, r1] of manchas) {
+    g.fillStyle = cor;
+    for (let i = 0; i < n; i++) { g.beginPath(); g.ellipse(rnd() * w, rnd() * h, r0 + rnd() * (r1 - r0), (r0 + rnd() * (r1 - r0)) * (0.6 + rnd() * 0.6), rnd() * 3, 0, Math.PI * 2); g.fill(); }
+  }
+  if (riscos) { g.strokeStyle = riscos; g.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const y = rnd() * h; g.beginPath(); g.moveTo(0, y); g.bezierCurveTo(w * 0.3, y + (rnd() - 0.5) * 12, w * 0.7, y + (rnd() - 0.5) * 12, w, y + (rnd() - 0.5) * 8); g.stroke(); } }
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+const sbMat = (cor, extra = {}) => new THREE.MeshStandardMaterial({ color: cor, roughness: 0.6, metalness: 0, ...extra });
+// o cenário: bancada de madeira, parede e a janela (a luz vem dela). No mundo natural some o visual de Matrix
+function sbTema(natural) {
+  if (SBR.temaNatural === natural) return;
+  SBR.temaNatural = natural;
+  const s = SBR.scene;
+  SBR.rain.mesh.visible = SBR.grid.visible = SBR.floor.visible = !natural;
+  if (SBR.cenario) { s.remove(SBR.cenario); SBR.cenario = null; }
+  if (natural) {
+    SBR.bg = new THREE.Color('#e9dfd1');
+    s.fog = new THREE.FogExp2('#e9dfd1', 0.00022);
+    SBR.hemi.color.set('#fff8ee'); SBR.hemi.groundColor.set('#7a634a'); SBR.hemi.intensity = 0.5;
+    SBR.key.color.set('#fff3e0'); SBR.key.intensity = 0.7; SBR.key.position.set(150, 1100, -1300);
+    const c = SBR.cenario = new THREE.Group();
+    const madeira = sbTex('#b89468', [['#a8845a', 30, 20, 60]], 512, 512, 'rgba(110, 75, 40, 0.4)');
+    madeira.repeat.set(3, 3);
+    const bancada = new THREE.Mesh(new THREE.PlaneGeometry(SB.W + 900, SB.H + 900), sbMat('#ffffff', { map: madeira, roughness: 0.75 }));
+    bancada.rotation.x = -Math.PI / 2; c.add(bancada);
+    // parede com azulejos e a janela, do lado de y = 0 (norte)
+    const zp = -SB.H / 2 - 40;
+    const azulejo = sbTex('#dcd6cb', [], 128, 128);
+    { const g = azulejo.image.getContext('2d'); g.strokeStyle = '#d9d3c7'; g.lineWidth = 4; g.strokeRect(0, 0, 128, 128); azulejo.needsUpdate = true; }
+    azulejo.repeat.set(24, 10);
+    const parede = new THREE.Mesh(new THREE.PlaneGeometry(SB.W + 900, 1100), sbMat('#ffffff', { map: azulejo, roughness: 0.4 }));
+    parede.position.set(0, 550, zp); c.add(parede);
+    const ceu = document.createElement('canvas'); ceu.width = 16; ceu.height = 256;
+    { const g = ceu.getContext('2d'), gr = g.createLinearGradient(0, 0, 0, 256); gr.addColorStop(0, '#9fd0ff'); gr.addColorStop(1, '#f2fbff'); g.fillStyle = gr; g.fillRect(0, 0, 16, 256); }
+    const janela = new THREE.Mesh(new THREE.PlaneGeometry(1000, 520), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(ceu), fog: false }));
+    janela.position.set(0, 440, zp + 2); c.add(janela);
+    const moldura = new THREE.Mesh(new THREE.PlaneGeometry(1060, 580), sbMat('#fbfbf7'));
+    moldura.position.set(0, 440, zp + 1); c.add(moldura);
+    for (const x of [-170, 170]) { const trave = new THREE.Mesh(new THREE.BoxGeometry(16, 520, 8), sbMat('#fbfbf7')); trave.position.set(x, 440, zp + 6); c.add(trave); }
+    const luz = new THREE.PointLight('#fff4e0', 0.25, 2600); luz.position.set(0, 500, zp + 200); c.add(luz);
+    s.add(c);
+  } else {
+    SBR.bg = new THREE.Color('#010503');
+    s.fog = new THREE.FogExp2('#010503', 0.00085);
+    SBR.hemi.color.set('#aaffd0'); SBR.hemi.groundColor.set('#021a0c'); SBR.hemi.intensity = 0.7;
+    SBR.key.color.set('#e6fff0'); SBR.key.intensity = 0.55; SBR.key.position.set(-500, 900, 300);
+  }
+  SBR.hex.uniforms.bg.value.copy(SBR.bg);
+}
+// cada coisa da cozinha, no tamanho real (px = mm x 7), apoiada na bancada
+function sbObjeto(o) {
+  const S = CORPO.S, W = o.w * S, D = o.d * S, Hh = Math.max(2, o.h * S), g = new THREE.Group();
+  const esfera = (r, mat, x = 0, y = 0, z = 0, sy = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 28, 20), mat); m.position.set(x, y, z); m.scale.y = sy; g.add(m); return m; };
+  if (o.forma === 'banana') {
+    // pedaço de banana madura, deitado: cilindro com pontas arredondadas, casca com pintas marrons
+    const r = D / 2, mat = sbMat('#ffffff', { map: sbTex('#f3dc7e', [['#8a6424', 60, 2, 7], ['#e8c85e', 20, 10, 30]]) });
+    const corpo = new THREE.Mesh(new THREE.CylinderGeometry(r, r, W - D, 28), mat);
+    corpo.rotation.z = Math.PI / 2; corpo.scale.set(Hh / D, 1, 1); corpo.position.y = Hh / 2; g.add(corpo);   // deitado: o x local vira a altura
+    esfera(r, mat, -(W - D) / 2, Hh / 2, 0, Hh / D); esfera(r, mat, (W - D) / 2, Hh / 2, 0, Hh / D);
+  } else if (o.forma === 'uvas') {
+    const r = Hh / 2;
+    esfera(r, sbMat('#5e2c68', { roughness: 0.25 }), -W / 2 + r, r, D / 2 - r);
+    esfera(r, sbMat('#6d3777', { roughness: 0.25 }), 0, r, -D / 2 + r);
+    esfera(r, sbMat('#88a846', { roughness: 0.3 }), W / 2 - r, r, D / 2 - r);
+  } else if (o.forma === 'pessego' || o.forma === 'laranja') {
+    // metade deitada com a casca para cima (domo)
+    const tex = o.forma === 'pessego' ? sbTex('#f2a45c', [['#d8553a', 25, 20, 60], ['#7a4a22', 12, 3, 8]]) : sbTex('#ee8a26', [['#e6eddc', 18, 14, 34], ['#a9bf8e', 14, 10, 26], ['#f4a64a', 20, 4, 10]]);
+    const dom = new THREE.Mesh(new THREE.SphereGeometry(W / 2, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2), sbMat('#ffffff', { map: tex, roughness: 0.7 }));
+    dom.scale.set(1, Hh / (W / 2), D / W); g.add(dom);
+  } else if (o.forma === 'morango') {
+    const m = esfera(W / 2, sbMat('#ffffff', { map: sbTex('#c81c32', [['#f2d27a', 70, 1.5, 3]]), roughness: 0.35 }), 0, Hh / 2, 0, Hh / W);
+    m.scale.z = D / W;
+    for (let i = 0; i < 5; i++) { const f = new THREE.Mesh(new THREE.ConeGeometry(W * 0.12, W * 0.3, 6), sbMat('#3e8a2e')); const a = i / 5 * Math.PI * 2; f.position.set(-W * 0.42 + Math.cos(a) * 6, Hh * 0.75, Math.sin(a) * 6); f.rotation.z = Math.PI / 2 + Math.cos(a) * 0.5; g.add(f); }
+  } else if (o.forma === 'vinagre') {
+    const tampa = new THREE.Mesh(new THREE.CylinderGeometry(W / 2, W / 2, Hh, 32, 1, true), sbMat('#d9dcd6', { metalness: 0.4, roughness: 0.35, side: THREE.DoubleSide }));
+    tampa.position.y = Hh / 2; g.add(tampa);
+    const liquido = new THREE.Mesh(new THREE.CircleGeometry(W / 2 - 2, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
+    liquido.rotation.x = -Math.PI / 2; liquido.position.y = Hh - 4; g.add(liquido);
+  } else if (o.forma === 'acucar') {
+    const base = new THREE.Mesh(new THREE.CircleGeometry(W / 2, 24), sbMat('#f7f5ee'));
+    base.rotation.x = -Math.PI / 2; base.scale.y = D / W; base.position.y = 0.5; g.add(base);
+    const cristais = new THREE.InstancedMesh(new THREE.BoxGeometry(3, 3, 3), sbMat('#ffffff', { roughness: 0.2 }), 90);
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler();
+    for (let i = 0; i < 90; i++) {
+      const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random());
+      e.set(Math.random() * 3, Math.random() * 3, Math.random() * 3); q.setFromEuler(e);
+      m4.compose(new THREE.Vector3(Math.cos(a) * r * W / 2, 1.5, Math.sin(a) * r * D / 2), q, new THREE.Vector3(1, 1, 1));
+      cristais.setMatrixAt(i, m4);
+    }
+    g.add(cristais);
+  } else if (o.forma === 'agua') {
+    const mat = sbMat('#bfe3ff', { roughness: 0.05, transparent: true, opacity: 0.55 });
+    esfera(D * 0.42, mat, -W * 0.22, 0, 0, 0.35); esfera(D * 0.3, mat, W * 0.28, 0, D * 0.1, 0.35);
+  } else if (o.forma === 'folhas') {
+    const mat = sbMat('#ffffff', { map: sbTex('#4c9a3f', [['#5fb04f', 10, 10, 30]], 128, 128, 'rgba(40, 90, 35, 0.6)') });
+    for (const [x, z, r] of [[-W * 0.18, -D * 0.1, 0.5], [W * 0.2, D * 0.15, -0.7]]) { const f = esfera(W * 0.34, mat, x, 1.5, z, 0.08); f.scale.z = 0.55; f.rotation.y = r; }
+  }
+  return g;
+}
+// rótulos para quem assiste (os olhos dela não os veem)
+function sbRotulo(texto) {
+  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 96;
+  const g = cv.getContext('2d');
+  g.font = '600 44px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const w = g.measureText(texto).width + 40;
+  g.fillStyle = 'rgba(255, 252, 245, 0.85)'; g.beginPath(); if (g.roundRect) g.roundRect(256 - w / 2, 12, w, 72, 30); else g.rect(256 - w / 2, 12, w, 72); g.fill();
+  g.fillStyle = '#4a3a28'; g.fillText(texto, 256, 50);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false }));
+  sp.scale.set(96, 18, 1);
+  return sp;
+}
+
 // plataformas e elementos; refeitos quando o sistema muda
 function sbSyncWorld() {
   const sig = SB.app + ':' + rects.map(r => r.id + (r.disabled ? 0 : 1)).join('|');
@@ -564,6 +957,21 @@ function sbSyncWorld() {
   for (const o of SBR.worldObjs || []) { SBR.scene.remove(o); o.traverse(c => { c.geometry?.dispose(); [].concat(c.material || []).forEach(m => { m.map?.dispose(); m.dispose(); }); }); }
   SBR.worldObjs = []; SBR.boxes.clear();
   const add = o => { SBR.scene.add(o); SBR.worldObjs.push(o); };
+  sbTema(!!APP.mundo);
+  if (APP.mundo) {
+    SBR.rotulos = new THREE.Group(); add(SBR.rotulos);
+    for (const [id, o] of Object.entries(APP.objetos)) {
+      const L = SB.layout[id];
+      if (!L) continue;
+      const [x, z] = sbTo3(L.x + L.w / 2, L.y + L.h / 2);
+      const g = sbObjeto(o);
+      g.position.set(x, 0, z);
+      add(g);
+      const rot = sbRotulo(o.r); rot.position.set(x, L.z + 55, z); SBR.rotulos.add(rot);
+      SBR.boxes.set(id, { mesh: g, natural: true, base: new THREE.Vector3(x, L.z, z), vazio: false });
+    }
+    return;
+  }
   const gridTex = sbGridTex();
   for (const p of SB.platforms) {
     const [x, z] = sbTo3(p.x + p.w / 2, p.y + p.h / 2);
@@ -608,6 +1016,11 @@ function sbUpdate(dtw, now) {
   const seen = new Map((f.seen || []).map(([r, sl, sr]) => [r.id, [sl, sr]]));
   const c = new THREE.Color();
   for (const [id, b] of SBR.boxes) {
+    if (b.natural) {
+      const vazio = !!(APP.objetos?.[id]?.porcoes && restoDe(id) <= 0);
+      if (vazio !== b.vazio) { b.vazio = vazio; b.mesh.traverse(m => { if (m.material?.color) m.material.color.multiplyScalar(vazio ? 0.5 : 2); }); }
+      continue;
+    }
     const st = el(id);
     const [sl, sr] = seen.get(id) || [0, 0];
     if (st.bug) {
@@ -628,7 +1041,7 @@ function sbUpdate(dtw, now) {
   }
   // a mosca
   const [x, z] = sbTo3(f.x, f.y);
-  const fisicoNoChao = SB.fisico && CORPO.malha && CORPO.pose && !f.flying;
+  const fisicoNoChao = SB.fisico && CORPO.malha && CORPO.pose && !f.flying && !f.presa;
   SBR.fly.visible = !fisicoNoChao;
   if (CORPO.malha) CORPO.malha.group.visible = !!fisicoNoChao;
   if (fisicoNoChao) corpoPose();
@@ -668,23 +1081,92 @@ function sbUpdate(dtw, now) {
     const [px, pz] = sbTo3(PRED.x, PRED.y);
     SBR.pred.position.set(px, PRED.z, pz);
     SBR.pred.rotation.y = -PRED.th;
-    // tentáculos: oito correntes de esferas que ondulam atrás da cabeça
-    const m = new THREE.Matrix4(), t = now / 1000;
-    for (let j = 0; j < 8; j++) {
-      const ang = j / 8 * Math.PI * 2;
-      for (let i = 0; i < 12; i++) {
-        const u = i / 11, wig = Math.sin(t * 6 + i * 0.7 + j) * 5 * u;
-        const r = PRED_R * 0.55 * (1 - 0.4 * u);
-        m.makeScale(2.6 * (1 - 0.6 * u), 2.6 * (1 - 0.6 * u), 2.6 * (1 - 0.6 * u));
-        m.setPosition(Math.cos(ang) * r + wig * Math.cos(ang + 1.5), Math.sin(ang) * r + wig * Math.sin(ang + 1.5), PRED_R * 0.6 + u * 62);
-        SBR.tent.setMatrixAt(j * 12 + i, m);
-      }
-    }
-    SBR.tent.instanceMatrix.needsUpdate = true;
+    const U = SBR.pred.userData;
+    // patas da frente: dobradas (balançando de leve, como um graveto ao vento), no bote ou segurando
+    let pf = 0.95 + 0.05 * Math.sin(now / 650), pt = -2.7;
+    if (PRED.presa) { pf = 0.25; pt = -1.35; }
+    else if (PRED.bote) { const u = PRED.bote.t / LOUVA.bote, e = Math.sin((u < 0.5 ? u * 2 : 2 - u * 2) * Math.PI / 2); pf = 0.95 - 1.05 * e; pt = -2.7 + 2.5 * e; }
+    for (const b of U.bracos) { b.femur.rotation.x = pf; b.tibia.rotation.x = pt; }
+    U.cabeca.position.z = U.cabeca0 - (PRED.presa ? 10 * PRED.presa.mordida : 0);
+    U.pernas.forEach((q, i) => { q.rotation.y = q.userData.base + (PRED.andando ? 0.3 * Math.sin(PRED.passo * 0.09 + (i % 2 ? Math.PI : 0) + (i > 1 ? Math.PI : 0)) : 0); });
+    // alcance do bote no chão: verde quando ela está nele
+    SBR.predAlcance.position.set(px, PRED.z + 0.8, pz);
+    SBR.predAlcance.rotation.y = -PRED.th;
+    SBR.predAlcance.userData.setor.material.color.set(PRED.presa ? '#ffcc33' : predNoAlcance(f) ? '#3dff7a' : '#ffffff');
+    SBR.predAlcance.userData.setor.material.opacity = PRED.presa ? 0.08 : predNoAlcance(f) ? 0.4 : 0.16;
     SBR.predMarker.position.set(px, 905, pz); SBR.predMarker.rotation.z = PRED.th + Math.PI;
   }
   SBR.rainT += dtw;
   if (SBR.rainT > 0.07) { SBR.rainT = 0; SBR.rain.step(); }
+}
+
+// o modelo do louva-a-deus (px; a frente é -z, 1 mm = 7 px): abdômen, tórax, protórax longo, cabeça triangular com
+// olhos grandes, antenas, quatro pernas de andar e as duas patas raptoriais (fêmur com espinhos e tíbia), que dobram
+function sbLouva() {
+  const g = new THREE.Group();
+  const verde = new THREE.MeshStandardMaterial({ color: '#7fb446', roughness: 0.55 });
+  const claro = new THREE.MeshStandardMaterial({ color: '#b3d676', roughness: 0.6 });
+  const olho = new THREE.MeshStandardMaterial({ color: '#d9eeb0', roughness: 0.25 });
+  const escuro = new THREE.MeshBasicMaterial({ color: '#23300f' });
+  // cilindro com a base na origem, crescendo em +y
+  const cil = (r0, r1, len, mat) => { const geo = new THREE.CylinderGeometry(r1, r0, len, 10); geo.translate(0, len / 2, 0); return new THREE.Mesh(geo, mat); };
+  const abd = new THREE.Mesh(new THREE.SphereGeometry(9, 18, 12), verde); abd.scale.set(0.95, 0.8, 3.1); abd.position.set(0, 13, 25); abd.rotation.x = -0.2; g.add(abd);
+  const tor = new THREE.Mesh(new THREE.SphereGeometry(6, 14, 10), verde); tor.scale.set(1, 0.9, 1.8); tor.position.set(0, 14, 0); g.add(tor);
+  const pro = cil(3.6, 2.8, 40, claro); pro.position.set(0, 14, -6); pro.rotation.x = -Math.PI / 2 + 0.35; g.add(pro);
+  // cabeça (grupo, para avançar na mordida)
+  const cab = new THREE.Group(); cab.position.set(0, LOUVA.alturaCabeca, -LOUVA.cabeca);
+  const face = new THREE.Mesh(new THREE.SphereGeometry(5, 16, 12), verde); face.scale.set(1.7, 1, 0.9); cab.add(face);
+  const boca = new THREE.Mesh(new THREE.ConeGeometry(2.4, 5, 8), claro); boca.rotation.x = Math.PI; boca.position.set(0, -4, -1); cab.add(boca);
+  for (const lado of [-1, 1]) {
+    const o = new THREE.Mesh(new THREE.SphereGeometry(3.4, 14, 10), olho); o.position.set(lado * 7.5, 2, 0.5); cab.add(o);
+    const pu = new THREE.Mesh(new THREE.SphereGeometry(0.9, 8, 6), escuro); pu.position.set(lado * 8.2, 2.3, -2.6); cab.add(pu);
+    const ant = cil(0.35, 0.25, 26, escuro); ant.position.set(lado * 2, 3, -2); ant.rotation.set(-1.0, 0, lado * -0.35); cab.add(ant);
+  }
+  g.add(cab);
+  // patas raptoriais: coxa no protórax, fêmur com espinhos, tíbia dobrada
+  const bracos = [];
+  for (const lado of [-1, 1]) {
+    const base = new THREE.Group(); base.position.set(lado * 3.5, 24, -34);
+    const coxa = cil(1.8, 1.5, 9, claro); coxa.rotation.x = Math.PI - 0.3; base.add(coxa);
+    const femur = new THREE.Group(); femur.position.set(0, -8.5, -2.5); base.add(femur);
+    const fm = cil(2.4, 1.8, 26, verde); fm.rotation.x = -Math.PI / 2; femur.add(fm);
+    for (let i = 0; i < 4; i++) { const e = new THREE.Mesh(new THREE.ConeGeometry(0.6, 3, 5), escuro); e.position.set(0, -2.2, -6 - i * 5); e.rotation.x = Math.PI; femur.add(e); }
+    const tibia = new THREE.Group(); tibia.position.set(0, 0, -26); femur.add(tibia);
+    const tb = cil(1.5, 1.0, 20, verde); tb.rotation.x = -Math.PI / 2; tibia.add(tb);
+    const garra = new THREE.Mesh(new THREE.ConeGeometry(0.8, 3.5, 6), escuro); garra.rotation.x = -Math.PI / 2; garra.position.set(0, 0, -21); tibia.add(garra);
+    g.add(base);
+    bracos.push({ femur, tibia });
+  }
+  // quatro pernas de andar
+  const pernas = [];
+  for (const [z, lado] of [[-2, -1], [-2, 1], [9, -1], [9, 1]]) {
+    const q = new THREE.Group(); q.position.set(lado * 3, 13, z);
+    const sup = cil(0.9, 0.7, 20, verde); sup.rotation.z = lado * -1.15; q.add(sup);
+    const inf = cil(0.7, 0.45, 20, verde); inf.position.set(lado * 18, 8, 0); inf.rotation.z = lado * 2.55; q.add(inf);
+    q.userData.base = lado * (z < 0 ? -0.35 : 0.35);
+    q.rotation.y = q.userData.base;
+    g.add(q); pernas.push(q);
+  }
+  g.userData = { bracos, pernas, cabeca: cab, cabeca0: cab.position.z };
+  return g;
+}
+
+// painel de quem joga com o louva-a-deus: o quanto ela te vê, o alcance, o aperto
+function predHud(f) {
+  const barra = (v, cor) => `<span class="ph-bar"><i style="width:${Math.round(Math.max(0, Math.min(1, v)) * 100)}%;background:${cor}"></i></span>`;
+  let html;
+  if (PRED.presa) {
+    const P = PRED.presa;
+    html = `<b>Segurando a mosca</b><span>aperto ${barra(P.aperto, '#ffcc33')}</span><span>até a boca ${barra(P.p, '#ff6b5a')}</span>
+      <small>Espaço: apertar · R: soltar. Cada rajada da fibra gigante dela é um tranco.</small>`;
+  } else {
+    const alerta = PRED.alerta, viu = alerta > 0.35;
+    html = `<b>Louva-a-deus</b><span>ela te vê crescer ${barra(alerta, viu ? '#ff4d4d' : '#9fd36a')}</span>
+      <span>${PRED.noPontoCego ? 'você está no ponto cego dela' : viu ? 'ela está te vendo chegar!' : 'ela não te vê como ameaça'}</span>
+      <span>bote: ${PRED.cdBote > 0 ? 'recarregando' : predNoAlcance(f) ? '<b class="ph-ok">no alcance</b>' : 'fora do alcance'}</span>`;
+  }
+  const el = $('#predHud');
+  if (el.innerHTML !== html) el.innerHTML = html;
 }
 
 function sbRenderEye(i, vx, vy, vw, vh) {
@@ -740,16 +1222,23 @@ function sbFrame(dtw) {
   if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred') {
     if (SBR.mode === 'spec' || SBR.mode === 'pred') {
       // espectador: atrás e acima dela (ou da Sentinela), seguindo com atraso
-      const P = SBR.mode === 'pred' && PRED.on ? { x: PRED.x, y: PRED.y, z: PRED.z - 20, th: PRED.th, flying: true } : f;
-      const [x, z] = sbTo3(P.x, P.y);
+      const P = SBR.mode === 'pred' && PRED.on ? { x: PRED.x, y: PRED.y, z: PRED.z + 10, th: PRED.th, flying: true } : f;
+      // a câmera segue um alvo suavizado: no corpo físico o rumo balança 10-20° a cada passo e a posição chega aos
+      // saltos (a cada 40 ms); ela acompanha a média do movimento, não o balanço
+      const [px, pz] = sbTo3(P.x, P.y);
+      if (!SBR.camReady) { SBR.camX = px; SBR.camZ = pz; SBR.camY = P.z; SBR.camTh = P.th; }
+      const k = tau => 1 - Math.exp(-dtw / tau);
+      SBR.camX += (px - SBR.camX) * k(0.3); SBR.camZ += (pz - SBR.camZ) * k(0.3); SBR.camY += (P.z - SBR.camY) * k(0.4);
+      SBR.camTh += Math.atan2(Math.sin(P.th - SBR.camTh), Math.cos(P.th - SBR.camTh)) * k(SB.fisico && !P.flying ? 1.2 : 0.4);
+      const x = SBR.camX, z = SBR.camZ, th = SBR.camTh, pzAlt = SBR.camY;
       const back = SBR.mode === 'pred' ? 130 : P.flying ? 190 : 170, up = SBR.mode === 'pred' ? 55 : P.flying ? 70 : 95;
-      const cx = x - Math.sin(P.th) * back, cz = z + Math.cos(P.th) * back;
+      const cx = x - Math.sin(th) * back, cz = z + Math.cos(th) * back;
       // a câmera nunca fica dentro de uma plataforma
-      const want = new THREE.Vector3(cx, Math.max(P.z + up, sbSurface(cx + SB.W / 2, cz + SB.H / 2) + 55), cz);
+      const want = new THREE.Vector3(cx, Math.max(pzAlt + up, sbSurface(cx + SB.W / 2, cz + SB.H / 2) + 55), cz);
       SBR.cam.position.lerp(want, SBR.camReady ? 1 - Math.exp(-dtw / 0.4) : 1);
       SBR.camReady = true;
       SBR.cam.aspect = w / h; SBR.cam.updateProjectionMatrix();
-      SBR.cam.lookAt(x + Math.sin(P.th) * 70, P.z + 10, z - Math.cos(P.th) * 70);
+      SBR.cam.lookAt(x + Math.sin(th) * 70, pzAlt + 10, z - Math.cos(th) * 70);
       R.render(SBR.scene, SBR.cam);
       // HUD: os dois olhos em cima à direita, o mapa embaixo à direita
       const s = Math.round(Math.min(w * 0.17, h * 0.22));
@@ -763,7 +1252,8 @@ function sbFrame(dtw) {
       sbRenderEye(1, ew + Math.round((ew - s) / 2), h - 28 - s - 6, s, s);
       sbRenderMap(0, 40, w, h - eh - 40);
     }
-    const placar = PRED.on ? ` · Sentinela: ${PRED.captures} capturas, ${PRED.escapes} fugas` : '';
+    const placar = PRED.on ? ` · louva-a-deus: ${PRED.captures} ${PRED.captures === 1 ? 'mosca comida' : 'moscas comidas'}, ${PRED.escapes} fugas, ${PRED.botes} botes` : '';
+    if (PRED.on) predHud(f);
     $('#sbCap').innerHTML = `<span>${estado}${placar}</span><span><b class="ev-l">olho E</b> ${Math.round(eL * 100)}% · <b class="ev-r">olho D</b> ${Math.round(eR * 100)}%</span>`;
   } else {
     sbRenderMap(0, 0, w, h);

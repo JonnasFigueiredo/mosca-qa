@@ -88,6 +88,30 @@ button.ctl[disabled] { opacity: .5; cursor: default; }
 .sx button.tab { background: none; color: #4A5568; border-radius: 0; border-bottom: 2px solid transparent; padding: 10px 12px; }
 .sx button.tab.on { color: var(--sx-acc); border-bottom-color: var(--sx-acc); }
 .sx button[disabled] { background: #E2E6EC !important; color: #7A8594 !important; cursor: default; }
+/* mundo natural: a bancada da cozinha vista de cima (2,8 px por mm) */
+.sx-cozinha { display: block; background: repeating-linear-gradient(90deg, #e9d3b0 0 38px, #e3caa4 38px 40px, #ecd8b8 40px 90px, #e5cea8 90px 92px); color: #5a4630; }
+.k-janela { position: absolute; left: 0; right: 0; top: 0; height: 56px; background: linear-gradient(#bfe3ff, #eaf6ff); border-bottom: 6px solid #fbfbf8; box-shadow: 0 3px 8px rgba(80, 60, 30, .25); display: grid; place-items: center; font: 600 11px var(--sans); color: #5b7a94; letter-spacing: .08em; text-transform: uppercase; }
+.sx .k-obj { position: absolute; padding: 0; border-radius: 50%; box-shadow: 0 4px 6px rgba(70, 45, 20, .35); cursor: default; }
+.k-obj span { position: absolute; left: 50%; bottom: -15px; transform: translateX(-50%); font: 600 10px var(--sans); color: #6b5238; white-space: nowrap; pointer-events: none; }
+.sx .k-banana { background: radial-gradient(circle at 30% 45%, #8a6a2a 0 4%, transparent 5%), radial-gradient(circle at 62% 60%, #7a5a22 0 5%, transparent 6%), radial-gradient(circle at 80% 35%, #8a6a2a 0 3%, transparent 4%), linear-gradient(#fbeeb0, #f3d97a); border-radius: 48% / 60%; }
+.sx .k-uvas { background: radial-gradient(circle at 22% 55%, #6b3470 0 21%, transparent 22%), radial-gradient(circle at 52% 40%, #7c4486 0 22%, transparent 23%), radial-gradient(circle at 80% 58%, #8fb24a 0 20%, transparent 21%); box-shadow: none; border-radius: 30%; }
+.sx .k-pessego { background: radial-gradient(circle, #8a4a2a 0 13%, #f7c27a 14% 62%, #ec8a4a 63%); }
+.sx .k-morango { background: radial-gradient(circle at 50% 12%, #3e8a2e 0 18%, transparent 19%), radial-gradient(circle at 35% 55%, #f2d27a 0 3%, transparent 4%), radial-gradient(circle at 62% 70%, #f2d27a 0 3%, transparent 4%), #c81c32; border-radius: 45% 45% 50% 50% / 40% 40% 60% 60%; }
+.sx .k-laranja { background: radial-gradient(circle at 35% 38%, #e6eddc 0 17%, transparent 18%), radial-gradient(circle at 66% 64%, #b9caa0 0 15%, transparent 16%), radial-gradient(circle at 60% 30%, #d7e2c8 0 9%, transparent 10%), #ee8a26; }
+.sx .k-vinagre { background: radial-gradient(circle, #c98b2b 0 62%, #f4f4f2 63% 74%, #b8b8b4 75%); }
+.sx .k-acucar { background: radial-gradient(circle at 30% 40%, #fff 0 8%, transparent 9%), radial-gradient(circle at 70% 60%, #fff 0 7%, transparent 8%), #f2efe6; border-radius: 40%; box-shadow: 0 1px 2px rgba(70, 45, 20, .2); }
+.sx .k-agua { background: radial-gradient(circle at 30% 50%, rgba(170, 215, 255, .9) 0 22%, transparent 23%), radial-gradient(circle at 72% 45%, rgba(170, 215, 255, .9) 0 18%, transparent 19%); box-shadow: none; }
+.sx .k-folhas { background: linear-gradient(135deg, transparent 48%, #2e6e2a 49% 51%, transparent 52%), #4c9a3f; border-radius: 70% 8%; box-shadow: 0 1px 3px rgba(40, 60, 20, .35); }
+.sx .k-obj.k-vazio { filter: grayscale(.6) brightness(.9); opacity: .6; }
+.k-escala { position: absolute; left: 14px; bottom: 12px; font: 600 10px var(--sans); color: #6b5238; display: flex; align-items: center; gap: 6px; }
+.k-escala i { display: block; width: 28px; height: 4px; background: #6b5238; }
+.pred-hud { position: absolute; left: 10px; top: 56px; display: grid; gap: 4px; min-width: 190px; max-width: 260px; padding: 8px 10px; border-radius: 8px; background: rgba(8, 14, 10, 0.72); color: #e6f2e8; font: 12px/1.35 var(--sans); pointer-events: none; }
+.pred-hud b { font-weight: 600; }
+.pred-hud span { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pred-hud small { color: #b9c9bd; font-size: 11px; }
+.pred-hud .ph-ok { color: #3dff7a; }
+.ph-bar { display: block; width: 90px; height: 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.15); overflow: hidden; }
+.ph-bar i { display: block; height: 100%; }
 .sx .mofo { background: #6B6444 !important; color: #F2EED8 !important; box-shadow: 0 0 0 3px #B8AC6A66; }
 .sx .mofo::after { content: " · bug"; font-weight: 500; }
 .sx .pressed { box-shadow: 0 0 0 4px #F2C94C99; }
@@ -194,6 +218,14 @@ body.sandbox .brain-labels { color: #3fae6e; }
 .ev-cap .ev-l { color: #3D7BD9; } .ev-cap .ev-r { color: #E07B39; }
 .ev-modes { position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; pointer-events: auto; }
 .ev-modes button { background: var(--surface); }
+.formas-ui { position: absolute; right: 10px; top: 10px; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; pointer-events: none; max-width: 60%; }
+.formas-btn { pointer-events: auto; font: 600 11px var(--sans); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.formas-btn.on { color: var(--ink); border-color: var(--ink); }
+.formas-leg { list-style: none; margin: 0; padding: 6px 8px; display: grid; gap: 2px; border-radius: 8px; background: color-mix(in srgb, var(--surface) 80%, transparent); font: 11px/1.3 var(--sans); color: var(--muted); }
+.formas-leg li { display: flex; align-items: center; justify-content: flex-end; gap: 6px; text-align: right; }
+.formas-leg i { width: 14px; height: 3px; border-radius: 2px; flex: none; }
+.formas-leg[hidden] { display: none; }
+body.sandbox .formas-leg { background: rgba(1, 5, 3, 0.7); color: #8fd6a8; }
 .brain-labels { position: absolute; left: 10px; bottom: 8px; right: 10px; display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--muted); pointer-events: none; }
 .loader { position: absolute; inset: 0; display: grid; place-content: center; gap: 10px; padding: 24px; text-align: center; background: var(--surface); }
 .loader .bar { width: min(260px, 70vw); height: 4px; background: var(--track); border-radius: 2px; overflow: hidden; margin: 0 auto; }
@@ -312,13 +344,14 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
 
   <main class="stage">
     <section>
-      <div class="panel-head"><h2>O sistema em teste</h2><span class="app-tabs" id="modeTabs"><button data-mode="2d" class="on">Página</button><button data-mode="3d">Sandbox 3D</button></span><span class="app-tabs" id="appTabs"><button data-app="pedidos">Treino · Pedidos</button><button data-app="financeiro">Sistema novo · Financeiro</button></span></div>
+      <div class="panel-head"><h2>O sistema em teste</h2><span class="app-tabs" id="modeTabs"><button data-mode="2d" class="on">Página</button><button data-mode="3d">Sandbox 3D</button></span><span class="app-tabs" id="appTabs"><button data-app="pedidos">Treino · Pedidos</button><button data-app="financeiro">Sistema novo · Financeiro</button><button data-app="cozinha">Mundo · Cozinha</button></span></div>
       <div class="world-box" id="worldBox" hidden>
         <canvas id="world" aria-label="Sandbox 3D: o sistema em teste espalhado em plataformas, a mosca andando e voando, com os olhos dela e o mapa"></canvas>
         <div class="sb-ui">
           <div class="sb-cap mono" id="sbCap"></div>
-          <div class="app-tabs sb-modes" id="sbModes"><button data-mode="spec" class="on">Espectador</button><button data-mode="olhos">Olhos dela</button><button data-mode="cima">De cima</button><button data-mode="pred">Câmera da Sentinela</button><button id="predBtn" class="pred-btn">Você: Sentinela</button><button id="corpoBtn" class="corpo-btn" disabled title="Precisa do servidor do corpo: .venv/Scripts/python.exe corpo/servidor.py">Corpo físico</button></div>
-          <div class="sb-help mono" id="predHelp" hidden>WASD ou setas: mover · Q/E: subir e descer · espaço: bote</div>
+          <div class="app-tabs sb-modes" id="sbModes"><button data-mode="spec" class="on">Espectador</button><button data-mode="olhos">Olhos dela</button><button data-mode="cima">De cima</button><button data-mode="pred">Câmera do louva-a-deus</button><button id="predBtn" class="pred-btn">Você: louva-a-deus</button><button id="corpoBtn" class="corpo-btn" disabled title="Precisa do servidor do corpo: .venv/Scripts/python.exe corpo/servidor.py">Corpo físico</button></div>
+          <div class="sb-help mono" id="predHelp" hidden>W/S andar · A/D virar · Shift rastejar · Espaço bote/apertar · R soltar</div>
+          <div class="pred-hud" id="predHud" hidden></div>
         </div>
       </div>
       <div class="browser">
@@ -375,6 +408,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
           <div class="app-tabs ev-modes" id="evModes"><button data-mode="spec" class="on">Espectador</button><button data-mode="olhos">Olhos dela</button><button data-mode="cima">De cima</button></div>
         </div>
         <div class="brain-labels"><span>cérebro</span><span>cordão nervoso ventral</span></div>
+        <div class="formas-ui" id="formasUi" hidden><button class="formas-btn on" id="formasBtn" aria-pressed="true">Formas reais</button><ul class="formas-leg" id="formasLeg"></ul></div>
         <div class="loader" id="loader">
           <span class="eyebrow" id="ldStage">Baixando o conectoma</span>
           <div class="bar"><i id="ldBar"></i></div>
@@ -424,6 +458,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <h3>O mapa</h3>
         <p>Em 2026 o HHMI Janelia e o Google publicaram o <strong>conectoma completo do sistema nervoso central de uma mosca macho</strong>: 166.700 neurônios, do cérebro ao cordão nervoso ventral. A página usa as <strong>6,2 milhões de conexões com 5 ou mais sinapses</strong>.</p>
         <p>Cada neurônio excita ou inibe conforme o neurotransmissor previsto: acetilcolina excita; GABA, glutamato e histamina inibem.</p>
+        <p>No cérebro 3D, cada ponto é um neurônio (no corpo celular). Os 954 que mais contam nesta página aparecem com a <strong>forma real</strong>, o esqueleto traçado no próprio mapa: olhos (LC10a), detectores de ameaça, os neurônios que viram a mosca e os de fuga, as saídas do corpo cogumelar e a dopamina. Eles ficam brancos quando disparam.</p>
       </div>
       <div>
         <h3>A simulação</h3>
@@ -444,20 +479,27 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <h3>Como ela enxerga</h3>
         <p>Mais da metade dos neurônios do mapa são visuais: uns 105 mil, com a posição de cada coluna do olho. A página não simula a retina. A primeira etapa da visão funciona com voltagem graduada, sem disparos, e um modelo de disparos não a reproduz bem.</p>
         <p>Em vez disso, ela liga direto o <strong>LC10a</strong> de cada olho, um detector de objetos pequenos, na proporção do que aquele olho vê. Nos machos reais é o neurônio que segue a fêmea durante a corte. O que ela já provou chama menos a atenção (habituação).</p>
-        <p><strong>No sandbox, com olhos reais:</strong> o mundo 3D é visto pelo modelo de olho composto do flygym, com 721 omatídeos por olho. O LC10a recebe os omatídeos mais claros que o resto do olho. O HUD mostra exatamente essa imagem, e o vermelho aparece escuro, porque moscas quase não o enxergam.</p>
+        <p><strong>No sandbox, com olhos reais:</strong> o mundo 3D é visto pelo modelo de olho composto do flygym, com 721 omatídeos por olho. O LC10a recebe os omatídeos mais claros que o resto do olho. O HUD mostra exatamente essa imagem, e o vermelho de um objeto aparece escuro, porque moscas quase não o enxergam.</p>
+        <p><strong>Cada LC10a olha para um pedaço do olho.</strong> A tabela de 13 GB com a posição de cada sinapse do Janelia diz em que coluna do lóbulo cada LC10a recebe sua entrada, e as colunas são o mapa do olho. Com isso, cada uma das 275 células ganhou seu campo receptivo (uns 20° de largura) e recebe só o que cai nele. No HUD, o vermelho por cima da imagem mostra onde os LC10a estão vendo algo.</p>
+        <p>Isso mostrou uma coisa que não programamos: ligando só as células que olham para a frente, o DNa02 quase não muda (+0,7 Hz); as do meio do olho o fazem virar (+104 Hz), e as de lado, mais ainda (+137 Hz). Uma mosca real também não vira para o que já está à sua frente, só para o que está de lado. Isso veio das conexões.</p>
         <p>Testamos as famílias de neurônios de projeção visual uma a uma. O LC10a de um olho liga o DNa02 do mesmo lado em uns 90 Hz, e o DNa02 vira a mosca para o seu lado. <strong>Para onde ela anda é decidido pelo cérebro.</strong></p>
       </div>
       <div>
         <h3>O sandbox 3D</h3>
         <p>No modo <strong>Sandbox 3D</strong>, o sistema vira um mundo: cada grupo de elementos da mesma função fica numa plataforma, em alturas diferentes, e ela anda por cima delas e <strong>voa</strong> entre elas.</p>
         <p>Ela decola sozinha quando chega na beira de uma plataforma, ou dá de cara com uma mais alta, e há algo novo para ver. E decola de susto quando a <strong>fibra gigante</strong> dispara: quando um bug estoura, o glitch cresce na frente dela e liga os detectores de ameaça (LPLC2 e LC4). No ar, a direção continua vindo dos DNa01-03.</p>
+        <p><strong>Mundo · Cozinha:</strong> um pedaço de 20 × 20 cm de bancada, o habitat da mosca-da-fruta, na escala dela. As frutas têm açúcar para comer; os cheiros ligam os glomérulos que respondem a eles em moscas reais (fermentação e vinagre: DM1 e VA2; ésteres de fruta: DM2 e DM3; mofo, a geosmina: DA2; casca de laranja: DC1). Pisando em açúcar, os neurônios de gosto das patas ligam os da probóscide, e ela come; a fome regula esse gosto. A atração inata pelos cheiros de fruta e a aversão ao mofo são regras nossas, tiradas da literatura. A laranja mofada é amarga: provar liga a dopamina de punição.</p>
         <p>O visual de Matrix é para quem assiste. Ela sente esse mundo pelos mesmos canais da página: o cheiro de cada elemento, os olhos (LC10a) e o gosto nas patas.</p>
-        <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. A força de cada pata no chão liga os neurônios de tato daquela pata no cordão nervoso. Por enquanto a física é só do andar: no ar ela usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
+        <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. As plataformas são blocos sólidos, e quando as seis patas perdem o apoio (passou da beira), ela começa a voar: é o reflexo tarsal das moscas reais. No ar ela ainda usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
+        <p><strong>O que as patas e as antenas sentem:</strong> cada pisada liga as cerdas do tarso daquela pata; um tropeço liga todas as cerdas da pata; o apoio liga os sensores de carga, e o movimento da junta, o órgão cordotonal. Tudo entra no cordão nervoso pelo nervo de cada pata. As antenas sentem a gravidade (órgão de Johnston): de cabeça para cima, as duas pendem para trás. No mapa, o toque na pata da frente não chega a nenhum neurônio descendente, e o das outras patas quase não vira a mosca. A reação a um tropeço é um reflexo local da pata, e aqui ela está no controlador do corpo.</p>
+        <p><strong>Você: louva-a-deus.</strong> Você controla uma ninfa de louva-a-deus (~15 mm), predador de emboscada que caça moscas-da-fruta. A mosca não sabe o que ele é: vê um objeto e, quando algo cresce rápido na frente dela, os detectores de ameaça (LPLC2, LC4) disparam a fibra gigante e ela foge. Rastejar devagar (Shift) ou chegar pelo ponto cego atrás dela quase não faz nada crescer. O bote das patas da frente leva 90 ms. Presa, ela sente as patas agarradas e a dor; a cada mordida a cabeça do louva-a-deus cresce na frente dela, e cada rajada da fibra gigante é um tranco que afrouxa o seu aperto. A luta dela vem do cérebro.</p>
+        <p><strong>Escalada:</strong> com as almofadinhas adesivas, ela sobe as paredes das plataformas com física de verdade, a uns 5 mm/s. Andando contra uma parede, as patas da frente grudam e o corpo empina. São regras nossas: o agarrão ao começar (0,2 s de força contra a parede, no papel das garras), a preferência por subir e a passagem da parede para o topo. No teto ela ainda cai.</p>
       </div>
       <div class="wide">
         <h3>O que é cérebro e o que é corpo</h3>
-        <p><strong>Vem do cérebro simulado:</strong> para onde ela vira ao ver os elementos da tela, parar para provar um elemento (o clique), o pulo ou a decolagem de fuga, andar de ré e o quanto cada cheiro atrai depois de um bug.</p>
-        <p><strong>Vem de regras simples do corpo:</strong> o passo, a fome, o quanto um elemento já provado chama menos a atenção dos olhos, no sandbox a decolagem na beira, a altura do voo e o pouso, e o gesto de ir atrás de um cheiro conforme o saldo das sinapses que ele usa: se o saldo é bom, ela vira para o lado em que o cheiro está mais forte (a diferença entre as antenas), a mesma leitura usada para desviar. A regra só lê as sinapses da simulação; quem mudou essas sinapses foi a dopamina.</p>
+        <p><strong>Vem do cérebro simulado:</strong> para onde ela vira ao ver os elementos da tela, parar para provar um elemento (o clique), o pulo ou a decolagem de fuga e para que lado fugir, andar de ré e o quanto cada cheiro atrai depois de um bug.</p>
+        <p><strong>Para que lado fugir:</strong> cada detector de ameaça (LPLC2, LC4) olha para um pedaço do mundo, tirado das sinapses. No mapa, a fibra gigante dispara igual venha a ameaça de onde vier; quem diz de onde veio são outros descendentes: o DNp04 dispara do lado da ameaça, o DNp02 quando ela vem da frente e o DNp11 quando vem de trás. Ela pula para o lado oposto (essa leitura é regra nossa). Testando com um predador atacando de vários lados, a direção lida errou 4° na mediana. Por trás ela não vê: é o ponto cego.</p>
+        <p><strong>Vem de regras simples do corpo:</strong> o passo, a fome, o quanto um elemento já provado chama menos a atenção dos olhos, no sandbox a decolagem na beira, a altura do voo e o pouso, o agarrão e a preferência por subir na parede, e o gesto de ir atrás de um cheiro conforme o saldo das sinapses que ele usa: se o saldo é bom, ela vira para o lado em que o cheiro está mais forte (a diferença entre as antenas), a mesma leitura usada para desviar. A regra só lê as sinapses da simulação; quem mudou essas sinapses foi a dopamina.</p>
         <p><strong>Testamos tirar essa regra.</strong> No mapa, as saídas do corpo cogumelar chegam em um ou dois passos aos neurônios que viram a mosca (DNa02, DNa03) e ao que a faz andar de ré (MDN). Mas na simulação o efeito é pequeno demais: mesmo apagando todas as sinapses de um cheiro, a direção muda menos de 1 Hz, contra 7 Hz que o próprio cheiro produz, e o MDN não muda nas condições da página. A explicação provável é que cada antena manda o cheiro para os dois lados do cérebro: o corpo cogumelar diz se o cheiro é bom ou ruim, mas quase nada sobre onde ele está. Por isso a virada pelo cheiro continua sendo uma regra; a visão, que sabe onde as coisas estão, vira a mosca pelo próprio mapa.</p>
         <p>As saídas do corpo cogumelar ficam perto do limiar, como as reais, que disparam sozinhas; sem isso o cheiro não passava por elas.</p>
       </div>
@@ -477,7 +519,8 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <tr><td><b>Clique</b></td><td>Parar e estender a probóscide para provar</td><td class="mono">MN6, MN8, MN9, MN11, MN12</td></tr>
         <tr><td><b>Pulo para longe</b></td><td>Fuga pela fibra gigante</td><td class="mono">DNp01</td></tr>
         <tr><td><b>Andar de ré</b></td><td>Neurônio "moonwalker"</td><td class="mono">MDN</td></tr>
-        <tr><td>Elementos à vista</td><td>Objetos no campo de cada olho (o já provado chama menos atenção)</td><td class="mono">LC10a: 135 no olho esquerdo, 140 no direito</td></tr>
+        <tr><td>Elementos à vista</td><td>Objetos no campo de cada olho (o já provado chama menos atenção)</td><td class="mono">LC10a: 135 no olho esquerdo, 140 no direito (no sandbox, cada um com seu campo receptivo)</td></tr>
+        <tr><td>Andar com o corpo físico</td><td>Pisar, tropeçar, apoiar, dobrar a pata; cabeça para cima ou para baixo</td><td class="mono">cerdas táteis, placas de pelos, sensilas campaniformes e órgão cordotonal de cada pata; órgão de Johnston (zonas C e E)</td></tr>
         <tr><td><b>Curvas</b></td><td>O lado com os neurônios de direção mais ativos</td><td class="mono">DNa01, DNa02 e DNa03 de cada lado</td></tr>
       </tbody>
     </table>
@@ -508,9 +551,11 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
 'use strict';
 const $ = s => document.querySelector(s);
 // ?headless=1: usado pelo scripts/lab_headless.mjs, roda sem desenhar o cérebro em 3D
-const HEADLESS = /[?&]headless=1/.test(location.search);
+const HEADLESS = /[?&]headless=1\b/.test(location.search);
 // olhos: ligam se os dados trazem os grupos da visão; ?olhos=0 desliga, para comparar
-const EYES_OFF = /[?&]olhos=0/.test(location.search);
+const EYES_OFF = /[?&]olhos=0\b/.test(location.search);
+// ?campos=0: no sandbox com olhos reais, volta a dar a mesma taxa a todos os LC10a de um olho (sem campo receptivo)
+const CAMPOS_OFF = /[?&]campos=0\b/.test(location.search);
 let HAS_EYES = false;
 // alcance do cheiro de cada elemento (px, desvio da gaussiana); ?cheiro=60 muda, para comparar
 const ODOR_SIGMA = +(location.search.match(/[?&]cheiro=(\d+)/)?.[1] || 32);
@@ -536,7 +581,7 @@ function renderShop() {
   $('#url').textContent = APP.url + '/' + (appState.rota === '404' ? 'relatorios' : '');
   const b = (id, txt, cls = '', dis = false) =>
     `<button data-el="${id}" class="${cls}${el(id).bug ? ' mofo' : ''}"${dis ? ' disabled' : ''} tabindex="-1">${txt}</button>`;
-  $('#shop').innerHTML = APP.render(appState, b);
+  $('#shop').innerHTML = APP.render(appState, b, restoDe);
   for (const t of document.querySelectorAll('#appTabs button')) t.classList.toggle('on', t.dataset.app === APP.id);
   measure();   // mede já: sem depender do próximo quadro (que não vem com a aba escondida)
 }
@@ -544,6 +589,8 @@ function renderShop() {
 function switchApp(id) {
   APP = APPS[id]; appState = APP.estado();
   for (const k in elState) delete elState[k];
+  for (const k in restos) delete restos[k];
+  refeicoes.length = 0;
   fly = keepHunger(freshFly());
   Object.assign(disp, { x: fly.x, y: fly.y, th: fly.th, jump: null });
   if (trailCtx) trailCtx.clearRect(0, 0, W, H);
@@ -558,8 +605,9 @@ function measure() {
   const base = $('#scaler').getBoundingClientRect();
   const k = base.width / W || 1;
   rects = [...document.querySelectorAll('#shop [data-el]')].map(b => {
-    const r = b.getBoundingClientRect();
-    return { id: b.dataset.el, x: (r.left - base.left) / k, y: (r.top - base.top) / k, w: r.width / k, h: r.height / k, disabled: b.disabled, node: b };
+    const r = b.getBoundingClientRect(), o = APP.objetos?.[b.dataset.el];
+    return { id: b.dataset.el, x: (r.left - base.left) / k, y: (r.top - base.top) / k, w: r.width / k, h: r.height / k, disabled: b.disabled, node: b,
+      sigma: o ? o.alcance * 2.8 : 0 };   // mundo natural: alcance do cheiro em mm, a 2,8 px por mm na página
   });
 }
 
@@ -580,6 +628,18 @@ function renderMemory() {
 }
 function renderBugs() {
   const ul = $('#bugs');
+  if (APP.mundo) {
+    // mundo natural: em vez de bugs, o que ela comeu
+    const por = {};
+    for (const m of refeicoes) (por[m.id] ||= { n: 0, t: m.t }).n++;
+    ul.innerHTML = Object.keys(por).length ? Object.entries(por).map(([id, m]) =>
+      `<li class="bug"><span class="num">${m.n}×</span><span class="t">${label(id)}</span><span class="chip medio">${restoDe(id)} ${restoDe(id) === 1 ? 'resta' : 'restam'}</span>
+      <span class="d">Primeira mordida aos <span class="mono">${fmt1(m.t)} s</span> de tempo cerebral. Cheiro: ${odorName(id)}.</span></li>`).join('')
+      : '<li class="bug hidden"><span class="num">··</span><span class="t">Ela ainda não comeu nada.</span><span></span></li>';
+    $('#bugCount').textContent = refeicoes.length;
+    $('#bugSum').textContent = `${refeicoes.length === 1 ? 'mordida' : 'mordidas'} na Cozinha. ` + (fly && fly.hunger < 0.3 ? 'Ela está saciada.' : 'Ela está com fome.');
+    return;
+  }
   const mine = [...foundBugs.entries()].filter(([k]) => APP.bugs[k]);
   const total = Object.keys(APP.bugs).length, rest = total - mine.length;
   ul.innerHTML = mine.map(([k, f], i) => {
@@ -606,10 +666,11 @@ const IN_METERS = [
   ['cheiro', 'Cheiro', 'cada elemento tem o seu, nas antenas'],
   ['doce', 'Gosto doce', 'patas num elemento novo, ou bug achado'],
   ['recompensa', 'Recompensa', 'bug novo: dopamina PAM'],
-  ['fome', 'Fome de bug', 'cai quando ela acha um e volta com o tempo'],
+  ['fome', 'Fome', 'cai quando ela come (ou acha um bug) e volta com o tempo'],
   ['ameaca', 'Ameaça', 'algo crescendo na frente: LPLC2 e LC4'],
-  ['tato', 'Tato (patas)', 'corpo físico: o peso em cada pata'],
-  ['dor', 'Punição', 'dopamina PPL1: decepção, ou pega pela Sentinela'],
+  ['tato', 'Patas', 'corpo físico: cerdas, carga, juntas e tropeços'],
+  ['gravidade', 'Gravidade', 'corpo físico: antenas, cabeça para cima ou para baixo'],
+  ['dor', 'Punição', 'dopamina PPL1: decepção, amargo, ou presa pelo louva-a-deus'],
 ];
 const OUT_METERS = [
   ['kc', 'Células de Kenyon', 'o código do cheiro atual'],
@@ -670,13 +731,40 @@ const ODORS = {};
   let h = 12345;
   for (let i = pairs.length - 1; i > 0; i--) { h = (Math.imul(h, 1103515245) + 12345) >>> 0; const j = h % (i + 1); [pairs[i], pairs[j]] = [pairs[j], pairs[i]]; }
   let n = 0;
-  for (const a of Object.values(APPS)) for (const [id, e] of Object.entries(a.elementos)) {
-    const own = pairs[n++].map(i => ID_POOL[i]);
-    ODORS[id] = [...new Set([...e.notas.flatMap(k => NOTAS[k]), ...own])];
+  for (const a of Object.values(APPS)) {
+    if (a.mundo) continue;   // o mundo natural usa cheiros reais (abaixo)
+    for (const [id, e] of Object.entries(a.elementos)) {
+      const own = pairs[n++].map(i => ID_POOL[i]);
+      ODORS[id] = [...new Set([...e.notas.flatMap(k => NOTAS[k]), ...own])];
+    }
   }
 }
+// mundo natural: cada coisa cheira aos glomérulos que respondem a ela em moscas reais, com pesos (sistemas.js)
+const ODOR_PESO = {};
+for (const a of Object.values(APPS)) if (a.mundo) for (const [id, o] of Object.entries(a.objetos)) {
+  ODORS[id] = Object.keys(o.cheiro);
+  ODOR_PESO[id] = o.cheiro;
+}
 const odorOf = id => (ODORS[id] || []).map(n => GLOM_IX['ORN_' + n]).filter(i => i != null);
-const odorName = id => notesOf(id).map(k => NOTA_NOME[k]).join(' + ');
+const odorPesos = id => (ODORS[id] || []).map(n => [GLOM_IX['ORN_' + n], ODOR_PESO[id] ? ODOR_PESO[id][n] : 1]).filter(([i]) => i != null);
+const odorName = id => ODOR_PESO[id] ? (ODORS[id].join(' + ') || 'sem cheiro') : notesOf(id).map(k => NOTA_NOME[k]).join(' + ');
+// valência inata dos cheiros do mundo natural (regra nossa, da literatura): vinagre e fermentação atraem
+// (DM1, VA2: Semmelhack e Wang 2009), ésteres de fruta também; geosmina (DA2) e CO2 (V) afastam
+// (Stensmyr et al. 2012; Suh et al. 2004)
+const INATA = { ORN_DM1: 1, ORN_VA2: 1, ORN_DM2: 0.6, ORN_DM3: 0.6, ORN_DM4: 0.6, ORN_DP1m: 0.4, ORN_DA2: -2, ORN_V: -1.5 };
+function inata(glom) {
+  let a = 0, v = 0;
+  for (const [nome, w] of Object.entries(INATA)) {
+    const gi = GLOM_IX[nome];
+    if (gi == null) continue;
+    if (w > 0) a += w * glom[gi]; else v -= w * glom[gi];
+  }
+  return [a, v];
+}
+// comida que ainda sobra em cada coisa do mundo natural (mordidas)
+const restos = {};
+const restoDe = id => restos[id] ?? APP.objetos?.[id]?.porcoes ?? 0;
+const refeicoes = [];
 
 // o que uma antena sente num ponto: glomérulos (cérebro), total e curiosidade (corpo)
 function smellAt(px, py) {
@@ -687,10 +775,11 @@ function smellAt(px, py) {
     const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
     const dz = SB.on ? (fly.z || 0) - (r.z || 0) : 0;
     const d2 = (px - cx) ** 2 + (py - cy) ** 2 + dz * dz;
-    const c = Math.exp(-d2 / (2 * ODOR_SIGMA * ODOR_SIGMA));
-    tot += c;
+    const sg = r.sigma || ODOR_SIGMA;   // no mundo natural, cada coisa tem o seu alcance
+    const c = Math.exp(-d2 / (2 * sg * sg));
+    if (odorOf(r.id).length) tot += c;
     cur += el(r.id).novelty * Math.exp(-d2 / (2 * 80 * 80));
-    for (const gi of odorOf(r.id)) glom[gi] += c;
+    for (const [gi, w] of odorPesos(r.id)) glom[gi] += c * w;
   }
   return { glom, cur, tot };   // sem saturar: a comparação entre as antenas precisa da diferença
 }
@@ -724,6 +813,7 @@ function nearestButton(px, py, maxD) {
   let best = null, bd = maxD * maxD;
   for (const r of rects) {
     if (r.disabled) continue;
+    if (APP.mundo && !odorOf(r.id).length) continue;   // no mundo natural, só o que tem cheiro
     const d2 = (px - r.x - r.w / 2) ** 2 + (py - r.y - r.h / 2) ** 2 + (SB.on ? ((fly.z || 0) - (r.z || 0)) ** 2 : 0);
     if (d2 < bd) { bd = d2; best = r; }
   }
@@ -765,6 +855,21 @@ function stepBody(dt, counts) {
   // original. Zero para cheiro nunca provado; cresce quando ela se aproxima de onde comeu
   f.lv = ema(f.lv || 0, (kcLossR - kcLossA) / dt / LV_SCALE, dt, 0.25);
   f.attraction = f.lv > 0.1 ? clamp((f.lv - 0.1) / 0.5, 0, 1) * f.hunger : 0;
+  f.atrAprendida = f.attraction;
+  // mundo natural: atração e aversão inatas pelos cheiros (regra nossa, da literatura), somadas às aprendidas.
+  // Com fome, cheiro de fruta e de fermentação puxa; geosmina (mofo) afasta mesmo de barriga cheia
+  const ina = f.inata;
+  if (ina) {
+    f.atrInata = clamp((ina.aL + ina.aR) / 2 / 0.6, 0, 1) * f.hunger;
+    f.avInata = clamp((ina.vL + ina.vR) / 2 / 0.5, 0, 1);
+    f.aversion = Math.max(f.aversion, f.avInata);
+    f.attraction = Math.max(f.attraction, f.atrInata);
+    if (f.avInata > 0.5 && brainT / 1000 - (f.avisoMofo ?? -99) > 8) {
+      f.avisoMofo = brainT / 1000;
+      labEvent('mofo', {});
+      logEvent('Sentiu cheiro de mofo (geosmina, glomérulo DA2) e se afastou. Moscas-da-fruta evitam geosmina: é sinal de micróbios que as matam.', 'a');
+    }
+  } else { f.atrInata = 0; f.avInata = 0; }
   // klinocinese: com fome, se o valor aprendido sobe enquanto ela anda, segue reto;
   // se cai, dá uma virada para testar outra direção (é assim que larvas e moscas acham cheiros)
   const prevLv = f.lvSm ?? 0;
@@ -789,7 +894,7 @@ function stepBody(dt, counts) {
       logEvent(`Sentiu o cheiro de "${label(f.near.id)}" e ficou por perto: ele lembra açúcar.`, 's');
     }
     m.seen += dt;
-    if (f.aversion > 0.3 && brainT / 1000 - m.warned > 6 && brainT / 1000 - f.lastPain > 1.5) {
+    if (f.aversion - (f.avInata || 0) > 0.3 && brainT / 1000 - m.warned > 6 && brainT / 1000 - f.lastPain > 1.5) {
       m.warned = brainT / 1000;
       labEvent('desvio', { id: f.near.id });
       logEvent(`Sentiu o cheiro de "${label(f.near.id)}" e desviou: as sinapses desse cheiro estão com ${Math.round(f.keep * 100)}% da força de antes da dor.`, 'a');
@@ -798,7 +903,8 @@ function stepBody(dt, counts) {
 
   // probóscide ativa = parar para provar (cérebro); o passo em si é do corpo
   f.prob = ema(f.prob, hz('proboscide'), dt, 0.12);
-  f.speed = WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion) * (1 - 0.6 * f.attraction);
+  // desacelera perto do que o cheiro aprendido lembra (busca local); a atração inata, que vem de longe, não
+  f.speed = WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida);
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
   const dnDiff = outRate.dn_L - outRate.dn_R;
@@ -812,12 +918,14 @@ function stepBody(dt, counts) {
   const visionTurn = HAS_EYES ? -VIS_TURN * (outRate.dirige_L - outRate.dirige_R) / (outRate.dirige_L + outRate.dirige_R + 12) : 0;
   f.visionTurn = visionTurn;
   // aversão: escolhe um lado (o de menos cheiro; se empatar, sorteia) e mantém a curva até sair
-  if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(tL - tR) > 0.03 ? Math.sign(tL - tR) : (Math.random() < 0.5 ? -1 : 1);
+  // (no mundo natural, a diferença entre as antenas é a dos cheiros que afastam, como a geosmina)
+  const [dAv, dAt, sAt] = ina ? [ina.vL - ina.vR, ina.aL - ina.aR, ina.aL + ina.aR] : [tL - tR, tL - tR, tL + tR];
+  if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(dAv) > 0.03 ? Math.sign(dAv) : (Math.random() < 0.5 ? -1 : 1);
   if (f.aversion < 0.05) f.fleeDir = 0;
   const away = (f.fleeDir || 0) * 4.5;
   // atração: as sinapses dizem que o cheiro é bom; a diferença entre as antenas diz de que lado
   // ele está (a mesma leitura do desvio, com o sinal trocado)
-  const toward = -ATTR_TURN * (tL - tR) / (tL + tR + 0.05);
+  const toward = -ATTR_TURN * dAt / (sAt + 0.05);
   const chemo = (1 - f.aversion) * ((1 - f.attraction) * curiosity + f.attraction * toward) + f.aversion * away;
   const tumble = f.tumbleT > 0 ? f.tumbleDir * 3.5 * f.hunger : 0;
   let turn = (HAS_EYES ? visionTurn : brainTurn) + chemo + tumble + (Math.random() - 0.5) * (f.steady ? 0.6 : 2.2);
@@ -848,12 +956,21 @@ function stepBody(dt, counts) {
 
   // pulo de fuga (fibra gigante)
   f.jumpCd -= dt;
-  if (counts.fibra_gigante > 0 && f.jumpCd <= 0 && !f.jumping && !LAB.freeze && SB.on) {
+  // a fuga pede uma rajada: 3 disparos do DNp01 em 20 ms (dois relatórios do cérebro). Diante de uma ameaça ele dispara a
+  // ~400 Hz, a partir de 5-6 ms; um disparo solto do modelo (com o cordotonal inteiro ligado eram ~1 por segundo) não
+  // vira fuga (scripts/fibra_espontanea.py). Na mosca real, um disparo da fibra gigante basta para o salto
+  const gf = (counts.fibra_gigante || 0) + (f.gfAnt || 0);
+  f.gfAnt = counts.fibra_gigante || 0;
+  const rajada = gf >= 3;
+  // para onde fugir: DNp04 de cada lado, DNp02 (ameaça na frente) e DNp11 (atrás), com memória curta (~50 ms)
+  const dec = Math.exp(-dt / 0.05), fs = f.fugaSinal = f.fugaSinal || {};
+  for (const [k, g] of [['E', 'fuga_E'], ['D', 'fuga_D'], ['F', 'fuga_frente'], ['T', 'fuga_tras']]) fs[k] = (fs[k] || 0) * dec + (counts[g] || 0);
+  if (rajada && f.jumpCd <= 0 && !f.jumping && !LAB.freeze && SB.on) {
     f.jumpCd = 1.5;
     sbTakeoff(f, 'fuga');
-  } else if (counts.fibra_gigante > 0 && f.jumpCd <= 0 && !f.jumping && !LAB.freeze) {
+  } else if (rajada && f.jumpCd <= 0 && !f.jumping && !LAB.freeze) {
     f.jumpCd = 1.5;
-    const a = f.th + Math.PI + (Math.random() - 0.5) * 2.2;
+    const a = fugaRumo(f) ?? f.th + Math.PI + (Math.random() - 0.5) * 2.2;
     const dist = 120 + Math.random() * 60;
     f.x = clamp(f.x + Math.sin(a) * dist, 20, W - 20);
     f.y = clamp(f.y - Math.cos(a) * dist, 20, H - 20);
@@ -868,7 +985,7 @@ function stepBody(dt, counts) {
   f.clickCd -= dt;
   const extended = f.prob > 25;
   f.onEl = elementAt(f.x + Math.sin(f.th) * 12, f.y - Math.cos(f.th) * 12);
-  if (extended && f.onEl && f.clickCd <= 0 && !f.jumping && !f.flying && !LAB.noClick) { f.clickCd = 0.9; press(f.onEl); }
+  if (extended && f.onEl && f.clickCd <= 0 && !f.jumping && !f.flying && !f.presa && !LAB.noClick) { f.clickCd = 0.9; press(f.onEl); }
 
   // o que ela vai sentir no próximo passo
   const side = 16, ahead = 16;
@@ -877,25 +994,100 @@ function stepBody(dt, counts) {
   const L = smellAt(hxp - rx * side, hyp - ry * side);
   const R = smellAt(hxp + rx * side, hyp + ry * side);
   f.cv = [L.cur, R.cur]; f.ct = [L.tot, R.tot];
+  if (APP.mundo) { const [aL, vL] = inata(L.glom), [aR, vR] = inata(R.glom); f.inata = { aL, aR, vL, vR }; } else f.inata = null;
   f.sweet -= dt; f.threat -= dt; f.pain -= dt; f.reward -= dt;
   // as patas têm sensores de gosto: pisar num elemento ainda não provado tem gosto doce
-  const onNew = f.onEl ? el(f.onEl.id).novelty : 0;
+  // (no mundo natural: doce é pisar em algo com açúcar que ainda tem comida)
+  const onNew = APP.mundo ? (f.onEl && APP.objetos[f.onEl.id]?.gosto === 'doce' && restoDe(f.onEl.id) > 0 ? 1 : 0)
+    : (f.onEl ? el(f.onEl.id).novelty : 0);
   rates = {
-    doce: Math.max(160 * onNew, f.sweet > 0 ? 200 : 0),
+    // (no mundo natural, a fome regula a sensibilidade ao açúcar, como nas moscas reais: saciada, ela não estende a probóscide)
+    doce: Math.max(160 * onNew * (APP.mundo ? f.hunger : 1), f.sweet > 0 ? 200 : 0),
     ameaca: Math.max(f.threat > 0 ? 200 : 0, f.loom || 0),
     dor: f.pain > 0 ? 200 : 0,
     recompensa: f.reward > 0 ? 200 : 0,
     // tato: com o corpo físico no chão, a força de cada pata liga as cerdas daquela pata (nervos ProLN, MesoLN, MetaLN)
-    // (a força inclui a adesão das almofadinhas das patas: chega a ~5x o peso numa pata de apoio)
-    ...(f.toque && !f.flying ? Object.fromEntries(Object.entries(f.toque).map(([perna, v]) => ['tato_' + perna, Math.min(150, 30 * v)])) : {}),
-    ...(HAS_EYES ? (() => { const [eL, eR] = see(f); f.eyes = [eL, eR]; return { olho_L: VIS_RATE * eL, olho_R: VIS_RATE * eR }; })() : {}),
+    // f.toque é a variação da força de contato de cada pata, em pesos da mosca. Com a adesão das almofadinhas (20x o
+    // peso por pata, desde a escalada), a força salta entre ~0 e ~20 a cada pisada: é, na prática, pisou/levantou.
+    // Até 20 Hz por pisada; a 40 Hz nas seis patas o tato dava disparos soltos da fibra gigante (fugas sem ameaça).
+    // O grupo tem ~15% das cerdas de cada pata
+    ...(f.toque && !f.flying ? Object.fromEntries(Object.entries(f.toque).map(([perna, v]) => ['tato_' + perna, Math.min(20, v)])) : {}),
+    // o resto do que as patas sentem (corpo físico): todas as cerdas da pata num tropeço (150 ms), carga no apoio
+    // (placas de pelos e sensilas campaniformes) e o movimento da junta fêmur-tíbia (neurônios "hook" do órgão cordotonal, rad/s)
+    ...(f.tropeco && !f.flying ? Object.fromEntries(Object.entries(f.tropeco).filter(([, t]) => performance.now() - t < 150).map(([perna]) => ['tropeco_' + perna, 40])) : {}),
+    // presa nas patas do louva-a-deus: todas as cerdas das seis patas
+    ...(f.presa ? Object.fromEntries(['lf', 'lm', 'lh', 'rf', 'rm', 'rh'].map(p => ['tropeco_' + p, 40])) : {}),
+    ...(f.carga ? Object.fromEntries(Object.entries(f.carga).map(([perna, v]) => ['carga_' + perna, Math.min(40, 2 * v)])) : {}),
+    ...(f.cordo ? Object.fromEntries(Object.entries(f.cordo).map(([perna, w]) => ['cordotonal_' + perna, Math.min(30, w)])) : {}),
+    // gravidade nas antenas: de cabeça para cima as duas pendem para trás (zona E do órgão de Johnston); para baixo, zona C
+    ...(f.gravidade ? { gravidade_E: 40 * Math.max(0, f.gravidade), gravidade_C: 40 * Math.max(0, -f.gravidade) } : {}),
+    ...(HAS_EYES ? (() => { const [eL, eR] = see(f); f.eyes = [eL, eR]; return lcCelulas(f) ? {} : { olho_L: VIS_RATE * eL, olho_R: VIS_RATE * eR }; })() : {}),
   };
   for (let gi = 0; gi < ODOR_POOL.length; gi++) {
     rates[ODOR_POOL[gi] + '_L'] = 150 * Math.min(1, L.glom[gi]);
     rates[ODOR_POOL[gi] + '_R'] = 150 * Math.min(1, R.glom[gi]);
   }
+  // a ameaça liga cada detector (LPLC2, LC4) conforme ela cai no campo receptivo dele, quando se sabe de onde ela vem
+  const am = ameacaCelulas(f, rates.ameaca || 0);
+  f.ameacaR = rates.ameaca || 0;
+  if (am) delete rates.ameaca;
   for (const k in rates) if (rates[k] < 2) delete rates[k];   // abaixo de 2 Hz não faz diferença
-  worker.postMessage({ type: 'rates', rates });
+  const lc = lcCelulas(f);
+  let vetor = null;
+  if (lc && am) vetor = { ids: Int32Array.from([...OLHO.rf.ids, ...AMEACA_RF.ids]), taxas: Float32Array.from([...lc, ...am]) };
+  else if (lc) vetor = { ids: OLHO.rf.ids, taxas: lc };
+  else if (am) vetor = { ids: AMEACA_RF.ids, taxas: am };
+  worker.postMessage({ type: 'rates', rates, vetor });
+}
+// campo receptivo de cada detector de ameaça (LPLC2 e LC4), em graus no corpo (scripts/lc_omatidios.py)
+let AMEACA_RF = null;
+fetch('data/ameaca_rf.json', { cache: 'no-cache' }).then(r => r.json()).then(d => {
+  const c = d.celulas;
+  AMEACA_RF = { ids: Int32Array.from(c.map(x => x[0])), az: Float32Array.from(c.map(x => x[2])), el: Float32Array.from(c.map(x => x[3])),
+    sg: Float32Array.from(c.map(x => x[4])), taxas: new Float32Array(c.length) };
+}).catch(() => {});
+// de onde vem a ameaça, no corpo dela (azimute: + à esquerda; elevação; raio aparente, em graus): o louva-a-deus, se está
+// por perto; senão, o glitch de um bug que estoura, que acontece no elemento que ela acabou de clicar, à frente
+function ameacaDirecao(f) {
+  if (typeof PRED !== 'undefined' && PRED.on && ((f.loom || 0) > 0 || f.threat > 0)) {
+    // a parte do louva-a-deus que cresce na frente dela: a cabeça, ou a ponta das patas no bote
+    const A = predAmeacaPos();
+    const dx = A.x - f.x, dy = A.y - f.y, dh = Math.hypot(dx, dy), d = Math.max(1, Math.hypot(dh, A.z - (f.z || 0) - 6));
+    let a = Math.atan2(dx, -dy) - f.th;
+    a = Math.atan2(Math.sin(a), Math.cos(a));
+    return { az: -a * 180 / Math.PI, el: Math.atan2(A.z - (f.z || 0) - 6, dh) * 180 / Math.PI, raio: Math.atan(A.r / d) * 180 / Math.PI };
+  }
+  if (f.threat > 0) return { az: 0, el: -15, raio: 25 };
+  return null;
+}
+function ameacaCelulas(f, R) {
+  if (!AMEACA_RF || !(R > 0)) return null;
+  const dir = ameacaDirecao(f);
+  if (!dir) return null;
+  const rad = Math.PI / 180, A = AMEACA_RF, t = A.taxas;
+  const ca = Math.cos(dir.el * rad), vx = ca * Math.cos(dir.az * rad), vy = ca * Math.sin(dir.az * rad), vz = Math.sin(dir.el * rad);
+  for (let k = 0; k < t.length; k++) {
+    const ce = Math.cos(A.el[k] * rad);
+    const cos = vx * ce * Math.cos(A.az[k] * rad) + vy * ce * Math.sin(A.az[k] * rad) + vz * Math.sin(A.el[k] * rad);
+    const ang = Math.acos(Math.max(-1, Math.min(1, cos))) / rad, s = A.sg[k] + dir.raio;
+    t[k] = R * Math.exp(-ang * ang / (2 * s * s));
+  }
+  return t;
+}
+// para onde fugir: o DNp04 dispara do lado da ameaça; na frente liga mais o DNp02 e atrás, o DNp11 (scripts/fuga_direcao.py).
+// A leitura (pular para o lado oposto ao que esses neurônios apontam) é regra nossa; moscas reais pulam para longe da ameaça
+function fugaRumo(f) {
+  const s = f.fugaSinal || {};
+  const lat = (s.E || 0) - (s.D || 0), frente = ((s.F || 0) - (s.T || 0)) / 2;
+  if (Math.abs(lat) + Math.abs(frente) < 1) return null;   // o cérebro não diz de onde veio
+  const b = -Math.atan2(lat, frente);                      // de onde veio (0 = frente, negativo = esquerda)
+  labEvent('fugaDirecao', { lida: Math.round(b * 180 / Math.PI), real: (() => { const d = ameacaDirecao(f); return d ? Math.round(-d.az) : null; })() });
+  return f.th + b + Math.PI + (Math.random() - 0.5) * 0.6;
+}
+// olhos reais no sandbox: cada LC10a recebe a própria taxa, a do seu campo receptivo (sandbox.js, lcTaxas)
+function lcCelulas(f) {
+  if (!HAS_EYES || CAMPOS_OFF || !SB.on || !f.olhoReal || !f.olhoReal.celulas) return null;
+  return performance.now() - f.olhoReal.t < 600 ? f.olhoReal.celulas : null;
 }
 
 function press(r) {
@@ -907,6 +1099,13 @@ function press(r) {
   s.novelty *= 0.35;
   renderShop();
   requestAnimationFrame(measure);
+  if (APP.mundo) {
+    labEvent('clique', { id: r.id, bug: null, arriscado: false });
+    const expect = clamp((fly.lv - 0.1) / 0.5, 0, 1);
+    if (expect > 0) fly.omission = { id: r.id, w: performance.now(), n: refeicoes.length, expect };
+    comer(r.id);
+    return;
+  }
   const achado = APP.checar(appState, r.id, err);
   labEvent('clique', { id: r.id, bug: achado ? achado[0] : null, arriscado: notesOf(r.id).some(k => RISKY.has(k)) });
   // quanto ela esperava de recompensa: o mesmo valor aprendido que a atrai. Espera 1,1 s,
@@ -919,6 +1118,30 @@ function press(r) {
     if (appState.rota === '404') { appState.rota = 'pedidos'; renderShop(); requestAnimationFrame(measure); }
   }, 3500);
 }
+// mundo natural: provar com a probóscide. Açúcar: come, sacia a fome, e a dopamina PAM reforça o cheiro de onde
+// comeu. Amargo (a laranja mofada): dopamina PPL1, que ensina a evitar aquele cheiro, como nas moscas reais
+const MORDIDA = 0.12;   // quanto da fome cada mordida tira
+function comer(id) {
+  const o = APP.objetos[id], sobra = restoDe(id);
+  if (o.gosto === 'doce' && sobra > 0) {
+    restos[id] = sobra - 1;
+    refeicoes.push({ id, t: brainT / 1000 });
+    fly.sweet = 0.4; fly.reward = LAB.blockPAM ? 0 : 0.5;
+    fly.hunger = Math.max(0, fly.hunger - MORDIDA);
+    labEvent('comeu', { id });
+    sweetPop(fly.x, fly.y - 18);
+    logEvent(`Comeu ${o.r.toLowerCase()}: açúcar. A dopamina de recompensa (PAM) reforça esse cheiro. Fome em ${Math.round(fly.hunger * 100)}%.`, 's');
+    if (restos[id] === 0) { logEvent(`Acabou a comida de "${o.r}".`); renderShop(); requestAnimationFrame(measure); }
+  } else if (o.gosto === 'amargo') {
+    fly.pain = 0.5; fly.lastPain = brainT / 1000;
+    labEvent('amargo', { id });
+    logEvent(`Provou "${o.r}": amargo. A dopamina de punição (PPL1) marca esse cheiro, que vai afastá-la.`, 'b');
+  } else if (o.gosto === 'doce') logEvent(`Provou "${o.r}", mas já não sobra açúcar.`);
+  else if (o.gosto === 'agua') logEvent('Bebeu uma gota d\'água.');
+  else if (o.gosto === 'acido') logEvent(`Provou "${o.r}": cheira a comida (fermentação), mas não tem açúcar.`);
+  else logEvent(`Provou "${o.r}": nada para comer.`);
+  renderBugs();
+}
 // bugs que só aparecem com o tempo (carregando para sempre)
 function checkPending() {
   for (const [bug, elId, detail] of APP.pendentes(appState)) { renderShop(); requestAnimationFrame(measure); foundBug(bug, elId, detail); }
@@ -930,11 +1153,12 @@ function checkOmission() {
   const o = fly.omission;
   if (!o || performance.now() - o.w < 1100) return;
   fly.omission = null;
-  if (foundBugs.size !== o.n) return;
+  if ((APP.mundo ? refeicoes.length : foundBugs.size) !== o.n) return;
   fly.pain = 0.3 * o.expect;
   fly.lastPain = brainT / 1000;
   labEvent('decepcao', { id: o.id, expect: +o.expect.toFixed(2) });
-  logEvent(`Provou "${label(o.id)}" esperando um bug e não achou nada novo. A dopamina PPL1 registrou a decepção: esse cheiro vai atrair menos.`, 'a');
+  logEvent(APP.mundo ? `Provou "${label(o.id)}" esperando comida e não achou. A dopamina PPL1 registrou a decepção: esse cheiro vai atrair menos.`
+    : `Provou "${label(o.id)}" esperando um bug e não achou nada novo. A dopamina PPL1 registrou a decepção: esse cheiro vai atrair menos.`, 'a');
 }
 // Bug novo é a recompensa da caçadora: açúcar + dopamina PAM reforçam o cheiro do elemento
 // (as notas da função dele e a parte própria). Bug já relatado não dá nada.
@@ -1115,7 +1339,7 @@ async function initBrain() {
   lastAttr.setUsage(THREE.DynamicDrawUsage);
   geo.setAttribute('aLast', lastAttr);
   geo.setAttribute('aRegion', new THREE.BufferAttribute(region, 1));
-  uniforms = { uNow: { value: 0 }, uBase: { value: new THREE.Color() }, uSpike: { value: new THREE.Color() }, uPR: { value: devicePixelRatio || 1 }, uDark: { value: 0 } };
+  uniforms = { uNow: { value: 0 }, uBase: { value: new THREE.Color() }, uSpike: { value: new THREE.Color() }, uPR: { value: devicePixelRatio || 1 }, uDark: { value: 0 }, uDim: { value: 1 } };
   const mat = new THREE.ShaderMaterial({
     uniforms, transparent: true, depthWrite: false,
     vertexShader: `
@@ -1130,14 +1354,14 @@ async function initBrain() {
         gl_PointSize = (1.3 + 3.2 * b) * uPR;
       }`,
     fragmentShader: `
-      uniform vec3 uBase; uniform vec3 uSpike; uniform float uDark;
+      uniform vec3 uBase; uniform vec3 uSpike; uniform float uDark; uniform float uDim;
       varying float vB; varying float vR;
       void main() {
         vec2 c = gl_PointCoord - 0.5;
         if (dot(c, c) > 0.25) discard;
         float shade = vR == 1.0 ? 0.85 : (vR == 2.0 ? 1.1 : (vR == 4.0 ? 1.45 : 1.0));
         vec3 col = mix(uBase * shade, uSpike, vB);
-        float a = mix(uDark > 0.5 ? 0.16 : 0.13, 1.0, vB);
+        float a = mix(uDark > 0.5 ? 0.16 : 0.13, 1.0, vB) * uDim;
         gl_FragColor = vec4(col, a);
       }`,
   });
@@ -1161,7 +1385,79 @@ async function initBrain() {
   });
   canvas.addEventListener('pointerup', () => { dragging = false; });
   requestAnimationFrame(frame);
+  formasCarregar();
 }
+/* ───────────── Formas reais: os esqueletos dos neurônios que contam a história ───────────── */
+// 954 neurônios (olhos, ameaça, direção, fuga, ré, probóscide, corpo cogumelar, dopamina) com a forma traçada no
+// Male CNS v1.0 (Janelia), simplificada por scripts/esqueletos_web.py. Cada um acende quando dispara, como os pontos
+const FORMAS = { on: true, linhas: null, last: null, faixa: new Map(), grupos: [], uniforms: null };
+async function formasCarregar() {
+  try {
+    const [txt, info] = await Promise.all([fetch('data/esqueletos.b64.txt').then(r => r.text()), fetch('data/esqueletos.json').then(r => r.json())]);
+    const buf = Uint8Array.from(atob(txt), c => c.charCodeAt(0)).buffer, dv = new DataView(buf);
+    const K = dv.getUint32(0, true), V = dv.getUint32(4, true), E = dv.getUint32(8, true);
+    let o = 12;
+    const alvo = new Int32Array(buf, o, K); o += 4 * K;
+    const grupo = new Uint8Array(buf, o, K); o += K + (4 - K % 4) % 4;
+    const iniV = new Uint32Array(buf, o, K + 1); o += 4 * (K + 1);
+    const iniE = new Uint32Array(buf, o, K + 1); o += 4 * (K + 1);
+    const vert = new Int16Array(buf, o, V * 3); o += 6 * V;
+    const ares = new Uint16Array(buf, o, E * 2);
+    const pos = new Float32Array(V * 3), grp = new Float32Array(V), idx = new Uint32Array(E * 2);
+    for (let k = 0; k < K; k++) {
+      FORMAS.faixa.set(alvo[k], [iniV[k], iniV[k + 1]]);
+      for (let v = iniV[k]; v < iniV[k + 1]; v++) {
+        // mesmo referencial dos pontos (µm, centrado): x, -z, y
+        pos[v * 3] = vert[v * 3] / 2; pos[v * 3 + 1] = -vert[v * 3 + 2] / 2; pos[v * 3 + 2] = vert[v * 3 + 1] / 2;
+        grp[v] = grupo[k];
+      }
+      for (let e = iniE[k]; e < iniE[k + 1]; e++) { idx[e * 2] = ares[e * 2] + iniV[k]; idx[e * 2 + 1] = ares[e * 2 + 1] + iniV[k]; }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('aGrupo', new THREE.BufferAttribute(grp, 1));
+    FORMAS.last = new THREE.BufferAttribute(new Float32Array(V).fill(-1e6), 1);
+    FORMAS.last.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('aLast', FORMAS.last);
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    FORMAS.grupos = info.grupos;
+    const n = info.grupos.length;
+    FORMAS.uniforms = { uNow: uniforms.uNow, uDark: uniforms.uDark, uCores: { value: info.grupos.map(g => new THREE.Color(g.cor)) } };
+    const mat = new THREE.ShaderMaterial({
+      uniforms: FORMAS.uniforms, transparent: true, depthWrite: false,
+      vertexShader: `
+        attribute float aLast; attribute float aGrupo;
+        uniform float uNow; uniform float uDark; uniform vec3 uCores[${n}];
+        varying vec3 vCor; varying float vB;
+        void main() {
+          vec3 c = uCores[0];
+          for (int i = 1; i < ${n}; i++) if (float(i) == aGrupo) c = uCores[i];
+          vCor = uDark > 0.5 ? c : c * 0.62;
+          vB = exp(-max(uNow - aLast, 0.0) / 0.3);
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }`,
+      fragmentShader: `
+        uniform float uDark;
+        varying vec3 vCor; varying float vB;
+        void main() { gl_FragColor = vec4(mix(vCor, uDark > 0.5 ? vec3(1.0) : vec3(0.05), vB * 0.8), mix(0.3, 1.0, vB)); }`,
+    });
+    FORMAS.linhas = new THREE.LineSegments(geo, mat);
+    FORMAS.linhas.frustumCulled = false;
+    scene.add(FORMAS.linhas);
+    $('#formasLeg').innerHTML = info.grupos.map(g => `<li>${g.nome} <b>${g.neuronios}</b><i style="background:${g.cor}"></i></li>`).join('');
+    $('#formasUi').hidden = typeof EV !== 'undefined' && EV.on;
+    formasLigar(FORMAS.on);
+  } catch (e) { console.warn('sem as formas reais:', e); }
+}
+function formasLigar(on) {
+  FORMAS.on = on;
+  if (FORMAS.linhas) FORMAS.linhas.visible = on;
+  uniforms.uDim.value = on && FORMAS.linhas ? 0.55 : 1;
+  $('#formasBtn').classList.toggle('on', on);
+  $('#formasBtn').setAttribute('aria-pressed', on);
+  $('#formasLeg').hidden = !on;
+}
+$('#formasBtn').addEventListener('click', () => formasLigar(!FORMAS.on));
 let lastFrame = 0;
 function frame(now) {
   const dtw = Math.min(0.05, (now - lastFrame) / 1000 || 0);
@@ -1474,6 +1770,8 @@ worker.onmessage = ({ data: m }) => {
     logEvent(`Cérebro montado: ${fmtInt(m.neurons)} neurônios, ${fmtInt(m.edges)} conexões. A mosca começou a andar.`);
     if (keepMemory) restoreMemory();
     setRunning(true);
+  } else if (m.type === 'perf') {
+    window.__perf = m.perf;   // medidor do worker (worker.postMessage({ type: 'perf', on: true }))
   } else if (m.type === 'memoryDump') {
     saveMemory(m.memory);
   } else if (m.type === 'memoryLoaded') {
@@ -1501,6 +1799,12 @@ worker.onmessage = ({ data: m }) => {
     if (lastAttr) {
       const arr = lastAttr.array, ts = m.t / 1000;
       for (let s = 0; s < m.spikes.length; s++) arr[m.spikes[s]] = ts;
+      if (FORMAS.last) {
+        const fa = FORMAS.last.array;
+        let mudou = false;
+        for (let s = 0; s < m.spikes.length; s++) { const r = FORMAS.faixa.get(m.spikes[s]); if (r) { fa.fill(ts, r[0], r[1]); mudou = true; } }
+        if (mudou) FORMAS.last.needsUpdate = true;
+      }
       if (m.spikes.length) lastAttr.needsUpdate = true;
     }
     stepBody(dt, m.counts);
@@ -1523,10 +1827,10 @@ function updateReadouts(dt) {
   $('#stSpeed').textContent = speedRatio ? fmt1(speedRatio).replace(',0', '') + '× real' : '—';
   let odor = 0;
   for (const gName of ODOR_POOL) odor = Math.max(odor, rates[gName + '_L'] || 0, rates[gName + '_R'] || 0);
-  const tatos = Object.keys(rates).filter(k => k.startsWith('tato_'));
-  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, recompensa: rates.recompensa || 0, ameaca: rates.ameaca || 0,
-    tato: tatos.length ? tatos.reduce((s, k) => s + rates[k], 0) / 6 : 0 };
-  const full = { cheiro: 150, doce: 200, dor: 200, recompensa: 200, ameaca: 200, tato: 60 };
+  const tatos = Object.keys(rates).filter(k => /^(tato|tropeco|carga|cordotonal)_/.test(k));
+  const sums = { cheiro: odor, doce: rates.doce || 0, dor: rates.dor || 0, recompensa: rates.recompensa || 0, ameaca: fly.ameacaR || 0,
+    tato: tatos.length ? tatos.reduce((s, k) => s + rates[k], 0) / 6 : 0, gravidade: (rates.gravidade_E || 0) + (rates.gravidade_C || 0) };
+  const full = { cheiro: 150, doce: 200, dor: 200, recompensa: 200, ameaca: 200, tato: 80, gravidade: 40 };
   for (const k in sums) { inSm[k] = ema(inSm[k] || 0, sums[k], 0.08, 0.15); setMeter(k, inSm[k], inSm[k] / full[k]); }
   outMax.kc = Math.max(outMax.kc || 300, fly.kc);
   setMeter('kc', fly.kc, fly.kc / outMax.kc, fmtInt(fly.kc) + ' spk/s');

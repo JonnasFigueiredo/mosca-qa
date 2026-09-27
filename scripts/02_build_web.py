@@ -147,16 +147,42 @@ groups = {
     "olho_L": by_type(["LC10a"], "L"), "olho_R": by_type(["LC10a"], "R"),
     # direção: DNa01-03 de cada lado; o mais ativo vira a mosca para o seu lado
     "dirige_L": by_type(["DNa01", "DNa02", "DNa03"], "L"), "dirige_R": by_type(["DNa01", "DNa02", "DNa03"], "R"),
+    # de onde vem a ameaça (scripts/fuga_direcao.py): o DNp04 dispara do lado da ameaça; ameaça na frente liga mais o
+    # DNp02 e atrás, o DNp11. Na fuga, a mosca pula para o lado oposto (a leitura é regra nossa)
+    "fuga_E": by_type(["DNp04"], "L"), "fuga_D": by_type(["DNp04"], "R"),
+    "fuga_frente": by_type(["DNp02"]), "fuga_tras": by_type(["DNp11"]),
 }
 # tato: neurônios mecanossensoriais táteis (cerdas) de cada pata, pelo nervo por onde entram no cordão nervoso
-# (ProLN, MesoLN, MetaLN = patas da frente, do meio e de trás) e pelo lado de entrada (rootSide)
+# (ProLN, MesoLN, MetaLN = patas da frente, do meio e de trás) e pelo lado de entrada (rootSide). Só ~15% deles
+# (um a cada 7): a cada passo, só as cerdas do tarso tocam o chão. Com todas as cerdas ligadas juntas, o cordão
+# nervoso excitava a fibra gigante (DNp01 a ~0,5 Hz, fugas sem ameaça); com 15%, ela fica quieta
 _root = ann.rootSide.fillna("").to_numpy().astype(str)
 _nerv = ann.entryNerve.fillna("").to_numpy().astype(str)
+_sub = ann.subclass.fillna("").to_numpy().astype(str)
 for _perna, _n in (("f", "ProLN"), ("m", "MesoLN"), ("h", "MetaLN")):
     for _lado in "LR":
-        groups[f"tato_{_lado.lower()}{_perna}"] = np.flatnonzero((cls_all == "mechanosensory_tactile") & (_nerv == _n) & (_root == _lado)).tolist()
+        groups[f"tato_{_lado.lower()}{_perna}"] = np.flatnonzero((cls_all == "mechanosensory_tactile") & (_nerv == _n) & (_root == _lado))[::7].tolist()
+        # o resto dos sensores da pata (corpo físico, sandbox): todas as cerdas (tropeço), placas de pelos e sensilas
+        # campaniformes (carga) e o órgão cordotonal (movimento da junta fêmur-tíbia)
+        _m = (_nerv == _n) & (_root == _lado)
+        _k = _lado.lower() + _perna
+        groups[f"tropeco_{_k}"] = np.flatnonzero(_m & (cls_all == "mechanosensory_tactile")).tolist()
+        groups[f"carga_{_k}"] = np.flatnonzero(_m & np.isin(_sub, ["hair plate", "campaniform sensilla"])).tolist()
+        # do órgão cordotonal do fêmur, só os neurônios "hook" (direção do movimento da tíbia; tipos SNpp39 e SNpp41,
+        # com o sinônimo "FeCO hook" no mapa):
+        # a física dá a velocidade da junta. Os "claw" (posição) e "club" (vibração) ficam de fora; ligar os 392 juntos
+        # a 60 Hz fazia a fibra gigante disparar sozinha (scripts/fibra_espontanea.py)
+        groups[f"cordotonal_{_k}"] = np.flatnonzero(_m & (_sub == "chordotonal organ") & np.isin(typ.astype(str), ["SNpp39", "SNpp41"])).tolist()
+# gravidade: neurônios do órgão de Johnston das zonas C e E (vento/gravidade). A arista empurrada para trás
+# liga a zona E; para a frente, a C (Kamikouchi et al. 2009). De cabeça para cima, as duas antenas pendem para trás
+_grav = ann.subclass.fillna("").to_numpy().astype(str) == "wind_gravity"
+groups["gravidade_C"] = np.flatnonzero(_grav & np.char.startswith(typ.astype(str), "JO-C")).tolist()
+groups["gravidade_E"] = np.flatnonzero(_grav & np.char.startswith(typ.astype(str), "JO-E")).tolist()
 # um grupo por glomérulo e por antena: cada botão da loja ganha um cheiro com 6 deles
 ODOR_POOL = odor_pool(typ.astype(str), cls_all)
+# o mundo da Cozinha usa cheiros reais: vinagre e fermentação (DM1), geosmina, o cheiro de mofo (DA2), e CO2 (V).
+# Ficam fora do conjunto dos sistemas (DM1 é um hub no aprendizado), mas entram na lista para ter os grupos
+ODOR_POOL += ["ORN_DM1", "ORN_DA2", "ORN_V"]
 for g in ODOR_POOL:
     for sd in "LR":
         groups[f"{g}_{sd}"] = by_type([g], sd)

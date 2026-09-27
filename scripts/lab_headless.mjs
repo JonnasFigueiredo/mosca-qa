@@ -8,7 +8,7 @@
 // --app (bloqueio: pedidos ou financeiro), --inicio (primeiro ponto de partida), --olhos 0 (desliga a visão), --url (parâmetros a mais, ex.: cheiro=60),
 // --porta (do servidor local), --chrome (caminho do executável).
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -22,7 +22,15 @@ const reps = +arg('reps', 3), secs = +arg('secs', 90), inicio = +arg('inicio', 0
 const out = arg('out', `lab-${Date.now()}.json`);
 const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const cdp = 9300 + Math.floor(Math.random() * 600);
-const perfil = mkdtempSync(join(tmpdir(), 'mosca-lab-'));
+const TMP = process.env.MOSCA_TMP || new URL('../_tmp', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
+mkdirSync(TMP, { recursive: true });
+// apaga o próprio perfil do Chrome (em _tmp, no D): espera o Chrome soltar os arquivos e tenta de novo
+async function limpaPerfil(dir) {
+  for (let i = 0; i < 10; i++) {
+    try { rmSync(dir, { recursive: true, force: true }); return; } catch { await new Promise(r => setTimeout(r, 700)); }
+  }
+}
+const perfil = mkdtempSync(join(TMP, 'mosca-lab-'));
 const url = `http://localhost:${porta}/?headless=1${olhos ? '' : '&olhos=0'}${extra ? '&' + extra : ''}&r=${Date.now()}#lab`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = (...a) => console.log(new Date().toLocaleTimeString('pt-BR'), `[${cenario} ${inicio}${olhos ? '' : ' sem olhos'}]`, ...a);
@@ -89,5 +97,5 @@ try {
   ws?.close();
   proc.kill();
   await sleep(1500);
-  try { rmSync(perfil, { recursive: true, force: true }); } catch { /* o Chrome às vezes segura arquivos por uns segundos */ }
+  await limpaPerfil(perfil);
 }

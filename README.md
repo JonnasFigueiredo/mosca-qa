@@ -7,10 +7,10 @@ O conectoma completo do sistema nervoso central de uma mosca-da-fruta macho (166
 A página precisa de um servidor local (o navegador não carrega os dados via `file://`):
 
 ```bash
-python -m http.server 8765 --directory web
+python scripts/servir.py
 ```
 
-Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar.
+Abra http://localhost:8765. O cérebro leva uns 20 segundos para carregar. O `servir.py` manda o navegador conferir os arquivos a cada carga; com o `python -m http.server` comum, depois de uma mudança o navegador pode continuar rodando os `.js` antigos.
 
 ## Estrutura
 
@@ -31,6 +31,7 @@ Precisa de Python 3.12 com `pandas`, `pyarrow`, `numpy` e `scipy`.
    - `body-annotations-male-cns-v1.0-minconf-0.5.feather`
    - `body-neurotransmitters-male-cns-v1.0.feather`
    - `connectome-weights-male-cns-v1.0-minconf-0.5.feather` (1,1 GB)
+   Para as formas reais do cérebro 3D, os esqueletos vão para `data/raw/esqueletos/` (ver "Formas reais no cérebro 3D"; `scripts/esqueletos_web.py` os converte).
 2. Rode, dentro de `scripts/`:
 
 ```bash
@@ -59,6 +60,12 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - É uma metáfora: o cheiro representa pistas do que o elemento faz.
 - Nos dois sistemas os bugs se concentram em rede e cálculo (4 de 5 em cada um).
 
+### Formas reais no cérebro 3D
+
+- Cada ponto do cérebro 3D é um neurônio, no corpo celular. Os 954 que mais contam na página aparecem também com a **forma real**: o esqueleto traçado no Male CNS v1.0 (olhos LC10a, detectores de ameaça LPLC2 e LC4, direção DNa01-03, fuga DNp01/02/04/11, MDN, probóscide e gosto doce, MBONs, dopamina PAM e PPL1), coloridos por função, que ficam brancos quando o neurônio dispara. O botão "Formas reais" liga e desliga.
+- **Dados:** os esqueletos (formato `neuroglancer_skeletons`, 40,6 MB) vêm de `storage.googleapis.com/flyem-male-cns/v1.0/segmentation/skeletons-malecns/skeletons-precomputed/`, um arquivo por neurônio, em `data/raw/esqueletos/` (fora do git). As malhas 3D também existem, mas pesam ~100× mais (2,7 MB um único LC10a).
+- **Simplificação** (`scripts/esqueletos_web.py`): nm → µm no referencial dos pontos (o deslocamento sai dos corpos celulares), galhos terminais com menos de 4 µm podados, um ponto a cada 5 µm nos ramos, bifurcações mantidas: de 2 milhões para 298 mil vértices, 4 MB em `web/data/esqueletos.b64.txt`. O alinhamento confere: o corpo celular cai a 0,8 µm do esqueleto na mediana (90% até 1,4 µm).
+
 ### Visão
 
 - Uns 105 mil dos neurônios do mapa são visuais, com a posição de cada coluna do olho.
@@ -76,6 +83,25 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
 - O visual (grade neon, chuva de código, glitches vermelhos) é só para quem assiste. Os sentidos dela são os mesmos da página, agora com altura: cheiro, olhos e gosto nas patas.
 - A tela mostra o mundo (câmera de espectador, olhos compostos e mapa) ao lado do cérebro, com os neurônios acendendo.
 
+### O mundo natural: a Cozinha
+
+Um terceiro "sistema" que não é software: um pedaço de 20 × 20 cm de bancada de cozinha, o habitat da *Drosophila melanogaster*, na escala dela (2,5 mm de mosca). Na página é a bancada vista de cima; no sandbox 3D, cada coisa tem o tamanho real, com a janela ao fundo.
+
+- **O que tem:** banana madura, uvas, pêssego passado e morango (com açúcar para comer), uma laranja mofada, uma tampa com vinagre, açúcar derramado, gotas d'água e folhas de manjericão (`web/sistemas.js`).
+- **Os cheiros são reais:** cada coisa liga os glomérulos que respondem a ela em moscas de verdade:
+  - fermentação e vinagre: DM1, VA2, DM4, DP1m (Semmelhack e Wang 2009; Ai et al. 2010);
+  - ésteres de fruta: DM2 (Or22a) e DM3 (Or47a);
+  - geosmina, o cheiro de mofo: só o DA2 (Stensmyr et al. 2012);
+  - limoneno, da casca da laranja: DC1 (Or19a; Dweck et al. 2013).
+
+  O alcance do cheiro é o de cada coisa (20 a 40 mm), e a fruta fermentando e o vinagre cheiram mais longe.
+- **Atração inata (regra nossa, da literatura):** com fome, cheiro de fruta e de fermentação puxa (DM1 e VA2 mais forte); geosmina (DA2) e CO2 (V) afastam, mesmo de barriga cheia. A atração aprendida soma por cima.
+- **Comer vem do cérebro:** pisando em algo com açúcar, os neurônios de açúcar das patas acendem e, no mapa, ligam os neurônios motores da probóscide; quando ela a estende, prova e come. Cada mordida dá açúcar e dopamina de recompensa (PAM), reforça o cheiro de onde comeu e tira 12% da fome. A fome regula a sensibilidade ao açúcar, como nas moscas reais (regra nossa): saciada, ela não estende a probóscide. A comida de cada coisa acaba.
+- **Amargo:** o mapa não diz quais neurônios de gosto dos lábios são de amargo (os tipos LB1 a LB4 não têm modalidade anotada). Provar a laranja mofada liga a dopamina de punição (PPL1), que nas moscas reais responde a amargo, e ela aprende a evitar aquele cheiro.
+- **Decepção:** provar comida que já acabou, ou o vinagre (cheira a fermentação, mas não tem açúcar), esperando comer, liga a PPL1 (Felsenberg et al. 2018).
+- **Primeiras observações** (teste sem janela, corpo simples, 81 s de cérebro no 3D): comeu açúcar 7 vezes, voou até as uvas e comeu até acabar, voltou a elas vazias e se decepcionou, depois comeu pêssego (6), banana (3) e morango (2). Na página 2D, comeu açúcar, pêssego e banana e ficou saciada em 21 s.
+- **Limites:** o cheiro é uma nuvem parada em volta de cada coisa (sem vento nem turbulência); na física, as frutas são blocos (a forma redonda é só o desenho); a comida não volta.
+
 ### Corpo físico (opcional)
 
 - **O corpo:** a NeuroMechFly (flygym 2.1, EPFL), que vem de um micro-CT de uma mosca real, roda no MuJoCo com 42 articulações nas patas. No sandbox, a malha real anda por cima das plataformas, na escala de 7 px por mm (~18 px de mosca).
@@ -86,14 +112,64 @@ Este mapa tem mais que o dobro de sinapses do usado em 2024. Sem estes ajustes o
   - ~150°/s nas curvas;
   - ré com sinal negativo;
   - a física a ~0,4× o tempo real (passo de 0,2 ms, controlador a 500 Hz), mais rápida que o cérebro (~0,3×). A 250 Hz as curvas caíam pela metade.
-- **Modo híbrido:** no chão, a física move as patas. Na beira de uma plataforma ela decola ou dá meia-volta (regra do corpo). No ar, voa como no modo simples, inclusive a decolagem de susto pela fibra gigante. Ao pousar, o corpo físico é recolocado ali.
+- **Plataformas físicas:** as plataformas do sandbox são blocos sólidos no MuJoCo. A altura dela vem da física, e as patas pisam neles de verdade.
+- **Reflexo tarsal:** quando as seis patas perdem o apoio, como ao passar da beira, ela começa a voar. Nas moscas reais, perder o contato dos tarsos dispara o voo. Diante da parede de uma plataforma mais alta, ela sobe (ver Escalada), vira ou decola.
+- **Voo:** no ar, ela voa como no modo simples, inclusive a decolagem de susto pela fibra gigante. Ao pousar, o corpo físico é recolocado ali, de pé, com todas as juntas na pose neutra.
 - **Limites:**
   - ainda não há física de voo nem de salto: no ar ela usa o modelo simples;
-  - as plataformas não existem na física: a página cuida da altura e das beiradas;
   - quem move as patas é o controlador, não o cordão nervoso do conectoma.
 
-- **Tato:** a força de contato de cada pata liga os neurônios táteis (cerdas) daquela pata, pelo nervo por onde eles entram no cordão nervoso: ProLN, MesoLN e MetaLN, de cada lado, com 115 a 428 neurônios por pata. A força inclui a adesão das almofadinhas das patas. Por enquanto, o toque aparece no cérebro, mas não muda o comportamento.
-- **Olhos reais (no sandbox):** o modelo de olho composto do flygym, com 721 omatídeos por olho, câmera de 157° com correção de olho de peixe e omatídeos "amarelos" (canal verde) e "pálidos" (canal azul). O mundo 3D é renderizado pelas câmeras presas aos olhos da malha, que balançam com o passo, e cada pixel soma no seu omatídeo (`corpo/olho_mapas.py` gera a tabela). O HUD mostra essa imagem. O LC10a de cada olho recebe os omatídeos mais claros que o resto do olho, e o que ela ainda não provou brilha mais no mundo. Essa última etapa ainda é regra nossa: não simulamos fotorreceptor → LC, e o LC10a de cada olho recebe um total, não o campo receptivo de cada célula.
+- **Tato e propriocepção:** o que as patas sentem entra pelos nervos de cada pata (ProLN, MesoLN e MetaLN, de cada lado), vindo da física:
+  - **cerdas do tarso** (15% das cerdas, 17 a 62 neurônios por pata): pisar e levantar. Com a adesão das almofadinhas, a força de cada pata salta entre ~0 e ~20 pesos a cada pisada, então isso é, na prática, pisou/levantou (até 20 Hz);
+  - **todas as cerdas da pata** (115 a 428), por 150 ms, quando o controlador detecta um tropeço;
+  - **carga no apoio:** placas de pelos e sensilas campaniformes (2 a 20 por pata);
+  - **órgão cordotonal do fêmur, só os neurônios "hook"** (tipos SNpp39 e SNpp41, 4 a 17 por pata): a velocidade da junta fêmur-tíbia, até 30 Hz. Os hook sentem a direção do movimento; os "claw" (posição) e os "club" (vibração) ficam de fora. Ligar os 392 neurônios do órgão juntos a 60 Hz fazia o DNp01 disparar sozinho a ~0,8 Hz: numa ablação com o corpo inteiro, o cordotonal foi a única entrada que fazia isso (sem ele, 0 Hz; `docs/medicoes/fibra-espontanea-ablacao.json`).
+  - **Por que só 15% das cerdas a cada passo:** com todas ligadas juntas, o cordão nervoso excitava a fibra gigante (DNp01 a ~0,5 Hz no simulador em Python), e a mosca fugia sem ameaça.
+  - **O que o mapa faz com isso** (`scripts/tato_teste.py`, `docs/medicoes/tato-pernas.json`): tocar a **pata da frente** não muda nenhum neurônio descendente, nem com todas as cerdas. As **do meio e de trás** acendem descendentes do gnato (DNge104, DNg16, DNge049: +15 a +48 Hz), mas quase não viram a mosca (DNa02 até +5 Hz, contra +90 a +137 Hz da visão). O MDN (ré) e a fibra gigante não respondem. Numa mosca real, a reação a um tropeço é um reflexo local da pata; aqui ele está no controlador do corpo (levanta mais a pata que bateu), e o cérebro só sente.
+  - **No comportamento:** o toque entra pelo reflexo tarsal.
+- **A fuga pede uma rajada da fibra gigante** (`scripts/fibra_espontanea.py`, `docs/medicoes/fibra-espontanea.json`): com o corpo andando na parede e os sensores como estão agora, o DNp01 não disparou nenhuma vez em 10 s. Diante de uma ameaça (LPLC2 e LC4 a 200 Hz), dispara em rajada: ~250 disparos em 300 ms, o primeiro 5 a 6 ms depois do início. Com o cordotonal inteiro ligado, ele dava disparos soltos (~1 por segundo), e cada um virava uma fuga. Na mosca real um disparo da fibra gigante basta para o salto, mas ela não dispara sozinha. Por segurança contra esse ruído do modelo, a fuga pede 3 disparos em 20 ms: isso atrasa a fuga em ~3 ms e não perde nenhuma ameaça.
+- **Olhos reais (no sandbox):** o modelo de olho composto do flygym, com 721 omatídeos por olho, câmera de 157° com correção de olho de peixe e omatídeos "amarelos" (canal verde) e "pálidos" (canal azul). O mundo 3D é renderizado pelas câmeras presas aos olhos da malha, que balançam com o passo, e cada pixel soma no seu omatídeo (`corpo/olho_mapas.py` gera a tabela). O HUD mostra essa imagem. O LC10a recebe os omatídeos mais claros que o resto do olho, e o que ela ainda não provou brilha mais no mundo. Essa etapa é regra nossa: não simulamos fotorreceptor → LC.
+  - **Campo receptivo de cada LC10a, das sinapses:** a tabela de sinapses do Janelia (`syn-points`, 13 GB, baixada em `data/raw/`) traz, para cada sinapse no lóbulo, a coluna do olho em que ela está. `scripts/lc_campos.py` lê a tabela em lotes e calcula, para 5.326 dos 5.330 neurônios LC, LPLC e LLPC, o centro e o tamanho do campo (a média e a dispersão das colunas das suas 3,7 milhões de sinapses de entrada). A posição média de cada coluna no espaço diz como o mapa está deitado no lóbulo (ajuste linear, R² 0,98–0,99).
+  - **Orientação conferida:** a mesma coluna existe na medula e no lóbulo. Entre as duas passa o 2º quiasma óptico, que inverte frente e trás; em cima e embaixo não inverte. Nos dois lados o mapa mostra exatamente isso (`scripts/lc_orientacao.py`, `docs/medicoes/lc-orientacao.json`). Somado ao 1º quiasma (lâmina → medula), que também inverte, a frente do lóbulo é a frente do olho.
+  - **Do lóbulo aos omatídeos:** `scripts/lc_omatidios.py` estica as faixas do lóbulo sobre as direções dos 721 omatídeos do flygym (uma coluna vale o ângulo entre omatídeos vizinhos, 4,2°). Cada célula vira uma gaussiana de σ ≈ 4,7° (uns 20° de diâmetro) sobre ~24 omatídeos. O esticamento é linear: os campos ficam no lugar certo em média, não omatídeo por omatídeo.
+  - **No sandbox**, cada LC10a recebe a própria taxa: a soma do que cai no seu campo, numa curva que satura, dividida pela atividade de todas as células (normalização; a curva e a normalização são regras nossas). O HUD pinta de vermelho onde os LC10a estão vendo algo. `?campos=0` volta à taxa única por olho.
+  - **O que isso mostrou** (`scripts/visao_campo.py`, `docs/medicoes/visao-campo.json`): ligando 45 LC10a de cada faixa do olho a 100 Hz, as que olham para a **frente** quase não mexem no DNa02 (+0,7 Hz de índice lateral), as do **meio** o fazem virar (+104 Hz) e as de **lado e trás**, mais (+137 Hz). Em cima (+85) e embaixo (+76) pouco diferem. Uma mosca real também não vira para o que já está à sua frente, só para o que está de lado. Não programamos isso: está nas conexões.
+
+#### Você: louva-a-deus
+
+O modo predador: você controla uma ninfa de louva-a-deus (~15 mm), predador de emboscada que caça moscas-da-fruta (em criações, ninfas de louva-a-deus comem *Drosophila*). Ele substituiu a "Sentinela", uma esfera.
+
+- **Controles:** W/S anda, A/D vira, Shift rasteja (um terço da velocidade), Espaço dá o bote, R solta. Ele sobe nas coisas (acompanha a superfície embaixo).
+- **O que a mosca vê:** um objeto (olhos) e, quando algo cresce rápido na frente dela, os detectores de ameaça (LPLC2, LC4), calculados pelo crescimento do tamanho aparente da cabeça e da ponta das patas. Se a fibra gigante disparar em rajada, ela foge, e a direção da fuga vem do cérebro (DNp04, DNp02, DNp11). Atrás dela há um ponto cego.
+- **O bote:** as patas raptoriais vão e voltam em 90 ms (de 42 a 82 px à frente, ±34°). Se ela ainda estiver lá no fim da ida, ele a agarra.
+- **Presa:** ela sente todas as cerdas das seis patas e a dor (PPL1). Ele a leva à boca em 4 s, mordendo a cada 0,5 s: a cabeça avança e cresce na frente dela. Cada rajada da fibra gigante dela é um tranco que tira 34% do aperto; cada Espaço devolve 10%. Sem aperto, ela escapa voando; na boca, ele a come, e a simulação continua com a mesma mosca, reposta do outro lado da bancada, com a memória da dor.
+- **O painel** mostra o quanto ela está te vendo crescer, se você está no ponto cego dela, se ela está no alcance do bote, e o aperto.
+- **Teste** (jogador automático na Cozinha, corpo simples): chegando por trás rastejando, 3 botes e 3 capturas (2 a 3 trancos cada, comida no fim). Pela frente, andando rápido: numa ela viu e fugiu na aproximação, noutra escapou do bote, e numa foi pega.
+
+#### Para onde fugir
+
+- **O mapa sabe de onde vem a ameaça** (`scripts/fuga_direcao.py`, `docs/medicoes/fuga-direcao.json`). Com o campo receptivo de cada LPLC2 e LC4 (os detectores de ameaça), ligamos só os que olham para uma parte do mundo, a 200 Hz:
+  - a **fibra gigante** (DNp01) dispara igual para ameaças na frente, do lado e atrás (~350 Hz): ela só dá o "pule";
+  - o **DNp04** dispara do lado da ameaça: +353 Hz de diferença esquerda − direita com a ameaça à esquerda, −338 à direita, na frente, do lado ou atrás;
+  - **frente ou trás:** ameaça na frente liga mais o DNp02 (+121 a +230 Hz) que o DNp11 (quase nada); atrás, o contrário (DNp11 +136 a +272, DNp02 +66 a +72); de lado, os dois parecidos.
+- **Na página**, a ameaça (o predador que você controla, ou o glitch de um bug que estoura, à frente) liga cada LPLC2 e LC4 conforme cai no campo receptivo dele. Na fuga, a direção sai desses neurônios: o lado vem do DNp04 esquerdo contra o direito; frente e trás, do DNp02 contra o DNp11. Ela pula para o lado oposto. A leitura é regra nossa; o comportamento é o das moscas reais, que pulam para longe da ameaça (Card e Dickinson 2008). Os campos são os do lóbulo esticados sobre o olho, como os do LC10a.
+- **Testado na página** (`docs/medicoes/fuga-direcao-pagina.json`, com o predador anterior, uma esfera): ele investe pela esquerda, pela direita, pela frente e por trás, duas vezes cada. Na primeira fuga de cada ataque, a direção lida do cérebro errou 1°, 1°, 4°, 13° e 57° da real (mediana 4°). Por trás ela nunca fugiu: a Sentinela fica no ponto cego, como nas moscas reais, que têm um atrás.
+
+#### Escalada
+
+- **As almofadinhas seguram?** (`corpo/parede_teste.py`, `docs/medicoes/parede-gravidade.json`) A mosca anda no chão e a gravidade é girada: rampa de 45°, parede (90°), teto (180°).
+  - Com a física do exemplo do flygym, ela descola em 0,1–0,2 s a partir de 45°. Parada, com as seis almofadinhas grudadas, ela fica na parede e no teto; o problema é andar. Cada pata que levanta perde o contato, e sem margem a adesão não a puxa de volta; o cone de atrito piramidal do MuJoCo deixa as patas deslizarem devagar sob carga.
+  - **A física da escalada** (`servidor.ajustar_escalada`): adesão de 20× o peso por pata (o flygym usa 4×; insetos com almofadinhas aderem com dezenas de vezes o próprio peso), margem de 0,3 mm no contato das almofadinhas e cone de atrito elíptico.
+  - **Resultado:** no chão, 13,8 mm/s (igual antes); rampa de 45°, 7,8 mm/s; **parede vertical, 5,3 a 6,0 mm/s** em três sementes, sem descolar. A 135° e no teto ela ainda cai: as passadas foram gravadas de moscas no chão.
+- **No sandbox, com o corpo físico:** andando contra uma plataforma, as patas da frente grudam na face e o corpo empina. Daí em diante a subida é física. As regras nossas:
+  - o **agarrão**: ao começar a subir, por 0,2 s uma força a aperta contra a parede. Faz o papel das garras e do agarrar, que as passadas de chão não têm. Sem ele, ela sobe 3 a 5 mm e cai de volta;
+  - **na parede ela não para** (parada, a passada solta as patas e ela escorrega) e **vira para cima** (geotaxia negativa);
+  - o **reagarrão**: se escorrega mais de 1 mm em meio segundo, o mesmo agarrão de novo (no máximo um por segundo);
+  - a **passagem para o topo** da plataforma, quando as patas da frente alcançam a beira (o tórax a 2 mm dela), como a de baixo. Na física pura, na quina de cima ela cai;
+  - se empurra a parede sem conseguir empinar, a virada para a parede também é regra (teleporte de barriga para a face).
+  - Se ela cai da parede, as patas perdem o apoio e o reflexo tarsal a faz voar, como numa mosca real.
+- **A gravidade nas antenas** (`scripts/gravidade_teste.py`, `docs/medicoes/gravidade-antenas.json`): a mosca sente a gravidade pelo órgão de Johnston. Empurrar a arista para trás liga a zona E, para a frente liga a zona C (Kamikouchi et al. 2009). No mapa, a zona E dos dois lados acende vários descendentes (DNbe001 +89 Hz, DNp18 +58 Hz). A zona C de um lado com a E do outro, como numa mosca de lado na parede, vira a mosca para o lado da zona E (DNa01 −8 Hz, DNa02 −2,5 Hz).
+  - **O que não dá para afirmar:** se isso a vira para cima ou para baixo. Depende de como a gravidade deflete cada antena com a mosca de lado, que é mecânica da antena, fora do mapa; com suposições diferentes, o sentido se inverte. Por isso a preferência por subir é regra, e a gravidade entra no cérebro só pela parte robusta: de cabeça para cima as duas antenas pendem para trás (zona E); para baixo, zona C.
 
 Para rodar:
 
@@ -156,8 +232,9 @@ As medições estão em `docs/medicoes/` (fase 4).
 |---|---|---|
 | Bloqueio no Pedidos, 120 s, 5 pontos de partida | 4,4 bugs; achou o P4 em 2 de 5 | 4,0 bugs; P4 em 0 de 5 |
 | Treino no Pedidos, 120 s, mesmo ponto (olhos v2) | P4 em 4 de 5 | P4 em 0 de 5 |
-| Bloqueio no Financeiro, 90 s, sem olhos | 3,2 bugs | 4,0 bugs |
-| Bloqueio no Financeiro, 90 s, olhos v1 | 3,4 bugs | 2,8 bugs |
+| Bloqueio no Financeiro, 90 s, sem olhos | 3,2 bugs | 3,4 bugs |
+| Bloqueio no Financeiro, 90 s, olhos v1 (duas medições) | 3,4 e 3,2 bugs | 2,8 e 4,0 bugs |
+| Bloqueio no Financeiro, 90 s, olhos v2 | 2,4 bugs | 4,0 bugs |
 | Bloqueio no Financeiro, 90 s, olhos v2 e cheiro de 60 px | 3,4 bugs | 3,8 bugs |
 | Transferência para o Financeiro, 60 s, olhos v2 | treinada 1,8 bugs | ingênua 2,4 · controle 2,4 |
 
@@ -169,6 +246,7 @@ O que isso quer dizer:
   - A via visual do corpo cogumelar existe no mapa, mas no modelo acende só 2 a 5 das ~4 mil células de Kenyon (`scripts/visao_kc.py`).
   - Um cheiro de alcance maior (60 px) também não ajudou.
 - **Aprender com um exemplo engana.** No Financeiro, o primeiro bug costuma ser o de lista, o único de lista. Ela passa a esperar bug nos outros elementos de lista e se decepciona 5 a 7 vezes por sessão. Treinada no Pedidos, que tem um bug de menu, ela chega ao Financeiro esperando bug nos 11 itens de menu.
+- **No Financeiro, 5 rodadas não separam o efeito do aprendizado.** O mesmo código deu diferenças de ~1 bug nos dois sentidos (olhos v1: 3,4 contra 2,8 numa medição, 3,2 contra 4,0 na outra). Sem olhos, empatou (3,2 contra 3,4). Com os olhos v2, a mosca que aprende achou menos (2,4 contra 4,0) e ficou nos mesmos dois bugs (F3 e F5), o que combina com o item anterior. A segunda medição com olhos v1 estava na tabela como "sem olhos": o filtro `?olhos=0` da página nunca funcionou (um caractere de controle no lugar de `\b`), e foi corrigido em 26/09.
 - **O controle e o ponto de partida pareado mudaram as conclusões.** Sem eles, as primeiras rodadas pareciam mostrar transferência (treinada 4 bugs, ingênua 1,5), o que era efeito de onde cada mosca começava.
 
 Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.

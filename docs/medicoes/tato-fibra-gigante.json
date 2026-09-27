@@ -1,0 +1,19 @@
+{
+  "versao": "Tato: quantas cerdas das patas ligar sem disparar a fibra gigante (DNp01)",
+  "data": "2026-09-26",
+  "problema": "No sandbox com o corpo físico, depois de ligar o tato, a mosca decolava 'de susto' (fibra gigante) sem ameaça nenhuma: ameaça 0, tato 2 Hz, olhos 0,27 e 0,55 no instante da decolagem. Sem tato, nenhuma fuga espontânea em ~19 s.",
+  "mapa": "Tato -> DNp01 direto: 0 sinapses. Dois passos: o mais forte é AN23B001 (recebe 99 sinapses dos táteis, manda 26 ao DNp01, de 35.729 de entrada total).",
+  "simulador_python": {
+    "sem_tonus": {"tato_todas_as_cerdas_5Hz": "DNp01 0 Hz", "20Hz": "DNp01 0 Hz", "60Hz": "DNp01 0 Hz"},
+    "com_tonus_do_modelo": {
+      "descricao": "DNa01-03 a 7,3 mV e saídas do corpo cogumelar a 6,8 mV, como na página; 1 a 2 s",
+      "so_olhos_27_55Hz": "DNp01 0 Hz",
+      "olhos_mais_todas_as_cerdas_20Hz": "DNp01 0,5 Hz",
+      "so_todas_as_cerdas_20Hz": "DNp01 0,5 Hz",
+      "olhos_mais_15pct_das_cerdas_20Hz": "DNp01 0 Hz",
+      "olhos_mais_15pct_das_cerdas_40Hz": "DNp01 0 Hz"
+    }
+  },
+  "decisao": "Tato com ~15% das cerdas de cada pata (uma a cada 7; 17 a 62 neurônios por pata), a ordem das do tarso, que tocam o chão a cada passo. Disparo proporcional à variação da força de contato (pisar e levantar), até 40 Hz.",
+  "resultado_no_sandbox": "Sem fugas espontâneas em ~15 s de cérebro; decolagem pelo reflexo tarsal (seis patas sem apoio)."
+}
