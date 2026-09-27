@@ -16,8 +16,8 @@ fazem.
 - [x] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes
 - [x] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
 - [x] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério (melhorou, não passou)
-- [ ] B5 Pouso e decolagem pelos sentidos (passos 2 e 3 do resultado negativo). **Próximo: o pouso** (13 de 15 pousos no balcão)
-- [ ] B6 README, texto da página, `AGENTS.md`, commit
+- [x] B5 Pouso pelos sentidos (a decolagem não precisou mudar): passou o critério; "só sentidos" vira o padrão
+- [x] B6 README, texto da página, `AGENTS.md`, commit (só sentidos virou o padrão)
 
 Notas de cada passo, em ordem (a mais recente é a última):
 
@@ -130,6 +130,36 @@ na aproximação sobre uma coisa, os primeiros 60 px à frente não contam como 
 expansão centrada leva ao pouso, lateral a uma guinada). Série `longa-sentidos-d-1..5` a seguir. Atenção: zerar `f.loomObst` ao pousar também vale no modo com
 atalhos, então a série de referência `longa-simples` foi medida com o defeito; para comparar de forma justa no fim,
 repetir 5 rodadas com atalhos (`longa-simples-b-N`, e ajustar `serie('simples')` no resumo).
+
+**B5 concluído: passou o critério (27/09/2026).** Série `longa-sentidos-d-1..5` (busca pelo cheiro v3 + pouso
+visual avaliado a cada instante + sem fuga ao pousar), `sentidos-comparacao.json` → `rodadas_longas_d`:
+
+| 5 rodadas de 300 s, olhos reais | Com atalhos (`longa-simples`) | Só sentidos, antes (`a`) | + busca (`b`) | + pouso (`c`) | + sem fuga ao pousar (`d`) |
+|---|---|---|---|---|---|
+| Rodadas com fruta comida | 3/5 | 0/5 | 1/5 | 0/5 | **3/5** (pêssego e banana; uvas; banana) |
+| Rodadas com pouso em fruta | 3/5 | 0/5 | 2/5 | 2/5 | **3/5** |
+| Pousos em alguma coisa / no balcão | – | 0 / 2 | 2 / 13 | 8 / 7 | **6 / 1** |
+| Refeições nos primeiros 101 s cerebrais | 15, 8, 9, 14, 8 | 5, 7, 8, 8, 8 | 7, 8, 4, 8, 7 | 8, 5, 6, 8, 7 | **14, 12, 9, 8, 8** |
+
+Critério (escrito antes): fruta ≥ 3/5 (sim), pouso em fruta ≥ 2/5 (sim), refeições ≥ metade (sim). Decisão, como
+combinado: "só sentidos" vira o padrão na Cozinha, e `?sentidos=0` volta aos atalhos. Ressalva: a série com atalhos
+foi medida antes da correção de `f.loomObst` (que vale nos dois modos).
+
+**B6 e o novo padrão (27/09/2026).** `SENTIDOS` em `web/index.html` agora é o padrão (`?sentidos=0` volta aos atalhos).
+`scripts/andar_medida.mjs` continua medindo com atalhos quando não recebe `--sentidos` (passa `sentidos=0`), para as
+séries antigas manterem o significado. README e texto da página explicam o modo e o que é regra. Testes passam
+(`corpo_natural_teste.mjs`, `realismo_sandbox_teste.mjs`). Corpo físico no modo só sentidos, uma rodada de 300 s
+(`fisico-sentidos-1`): sem erros, 116 s cerebrais com a física ligada o tempo todo, comeu açúcar 6 vezes, subiu em
+frutas 2 vezes, não voou nem comeu fruta.
+
+Próximos passos sugeridos (não começados):
+1. **Comparação justa:** repetir 5 rodadas com atalhos depois da correção de `f.loomObst`
+   (`node scripts/andar_medida.mjs --segundos 300 --rotulo longa-simples-b-N`) e comparar com `longa-sentidos-d`.
+2. **Corpo físico no modo só sentidos:** série de 5 rodadas (`--fisico --janela 200 --sentidos`); a busca pelo cheiro
+   não age nele (quem vira são as patas): se for preciso, levar o giro de busca como pulso em `f.turnCmd`.
+3. **Sonda com mais réplicas:** a de 8 largadas varia de 0 a 3 chegadas entre rodadas; para ajustar a regra, repetir 3
+   vezes ou aumentar as largadas.
+4. O treino de caça a bugs continua para depois (o usuário escolhe o lugar).
 
 ## O que as moscas fazem (base da regra)
 

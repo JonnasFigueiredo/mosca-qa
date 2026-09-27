@@ -1722,5 +1722,550 @@
         }
       ]
     }
+  },
+  "rodadas_longas_d": {
+    "serie": "longa-sentidos-d",
+    "metodo": "Cinco sessões independentes de navegador por condição, 300 s de relógio após preparação, mesmo ponto inicial padrão, olhos reais ativos; sem sementes pareadas. Tempo cerebral e eventos preservados. Faixas e medianas são entre rodadas, não agrupamento das amostras. Janela de movimento 100 ms no simples e 200 ms no físico; comendo significa boca estendida, refeições são eventos comeu. Frutas: banana, uvas, pêssego e morango; açúcar contado separadamente. Poucas réplicas, sem inferência estatística ou validação biológica.",
+    "atalhos": {
+      "n": 5,
+      "rodadas": [
+        {
+          "rotulo": "longa-simples-1",
+          "cerebro_s": 101.4,
+          "versao": {
+            "index.html": "4d8c2dfc75e051dbbde9c5821ac6b88cf68cc196b87087d59a72c6361af08448",
+            "sandbox.js": "d2e764ec5102ba903e6237d164ecd3a0d5d45cc45eb446c40b9677b9c632b32d",
+            "corpo-natural.js": "e0e00dbf30885946cecfeef74c4be071b04646d52de45f68f05e44f2d72e4cd7",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 15,
+          "refeicoes_em_fruta": 7,
+          "refeicoes_por_100s_cerebrais": 14.792899408284024,
+          "comeu_por_objeto": {
+            "k-acucar": 8,
+            "k-pessego": 6,
+            "k-uvas": 1
+          },
+          "primeira_refeicao_s": 4.26,
+          "voos": 5,
+          "pousos": 5,
+          "pousos_em_fruta": 4,
+          "pousou_em": [
+            "k-pessego",
+            "k-uvas",
+            "k-pessego",
+            "k-vinagre",
+            "k-pessego"
+          ],
+          "fome_final": 0.36544000000008736,
+          "fracao_voando": 0.079,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-simples-2",
+          "cerebro_s": 133.7,
+          "versao": {
+            "index.html": "4d8c2dfc75e051dbbde9c5821ac6b88cf68cc196b87087d59a72c6361af08448",
+            "sandbox.js": "d2e764ec5102ba903e6237d164ecd3a0d5d45cc45eb446c40b9677b9c632b32d",
+            "corpo-natural.js": "e0e00dbf30885946cecfeef74c4be071b04646d52de45f68f05e44f2d72e4cd7",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "refeicoes_por_100s_cerebrais": 5.983545250560958,
+          "comeu_por_objeto": {
+            "k-acucar": 8
+          },
+          "primeira_refeicao_s": 4.07,
+          "voos": 0,
+          "pousos": 0,
+          "pousos_em_fruta": 0,
+          "pousou_em": [],
+          "fome_final": 1,
+          "fracao_voando": 0,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-simples-3",
+          "cerebro_s": 140.4,
+          "versao": {
+            "index.html": "4d8c2dfc75e051dbbde9c5821ac6b88cf68cc196b87087d59a72c6361af08448",
+            "sandbox.js": "d2e764ec5102ba903e6237d164ecd3a0d5d45cc45eb446c40b9677b9c632b32d",
+            "corpo-natural.js": "e0e00dbf30885946cecfeef74c4be071b04646d52de45f68f05e44f2d72e4cd7",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 9,
+          "refeicoes_em_fruta": 2,
+          "refeicoes_por_100s_cerebrais": 6.41025641025641,
+          "comeu_por_objeto": {
+            "k-acucar": 7,
+            "k-pessego": 2
+          },
+          "primeira_refeicao_s": 0.38,
+          "voos": 3,
+          "pousos": 3,
+          "pousos_em_fruta": 2,
+          "pousou_em": [
+            "k-pessego",
+            "k-vinagre",
+            "k-morango"
+          ],
+          "fome_final": 1,
+          "fracao_voando": 0.041,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-simples-4",
+          "cerebro_s": 118.4,
+          "versao": {
+            "index.html": "4d8c2dfc75e051dbbde9c5821ac6b88cf68cc196b87087d59a72c6361af08448",
+            "sandbox.js": "d2e764ec5102ba903e6237d164ecd3a0d5d45cc45eb446c40b9677b9c632b32d",
+            "corpo-natural.js": "e0e00dbf30885946cecfeef74c4be071b04646d52de45f68f05e44f2d72e4cd7",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 16,
+          "refeicoes_em_fruta": 10,
+          "refeicoes_por_100s_cerebrais": 13.513513513513512,
+          "comeu_por_objeto": {
+            "k-acucar": 6,
+            "k-pessego": 8,
+            "k-uvas": 2
+          },
+          "primeira_refeicao_s": 1.15,
+          "voos": 6,
+          "pousos": 6,
+          "pousos_em_fruta": 4,
+          "pousou_em": [
+            "k-pessego",
+            "k-vinagre",
+            "k-pessego",
+            "k-uvas",
+            "k-vinagre",
+            "k-pessego"
+          ],
+          "fome_final": 0.4873600000001055,
+          "fracao_voando": 0.093,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-simples-5",
+          "cerebro_s": 177,
+          "versao": {
+            "index.html": "4d8c2dfc75e051dbbde9c5821ac6b88cf68cc196b87087d59a72c6361af08448",
+            "sandbox.js": "d2e764ec5102ba903e6237d164ecd3a0d5d45cc45eb446c40b9677b9c632b32d",
+            "corpo-natural.js": "e0e00dbf30885946cecfeef74c4be071b04646d52de45f68f05e44f2d72e4cd7",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "refeicoes_por_100s_cerebrais": 4.519774011299435,
+          "comeu_por_objeto": {
+            "k-acucar": 8
+          },
+          "primeira_refeicao_s": 0.93,
+          "voos": 0,
+          "pousos": 0,
+          "pousos_em_fruta": 0,
+          "pousou_em": [],
+          "fome_final": 1,
+          "fracao_voando": 0,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        }
+      ],
+      "cerebro_s": {
+        "mediana": 133.7,
+        "minimo": 101.4,
+        "maximo": 177
+      },
+      "velocidade_mediana_por_rodada_mm_s": {
+        "mediana": 10.984,
+        "minimo": 7.706,
+        "maximo": 11.288
+      },
+      "trechos_media_por_rodada_s": {
+        "mediana": 1.477,
+        "minimo": 0.982,
+        "maximo": 1.902
+      },
+      "paradas_curtas_fracao_por_rodada": {
+        "mediana": 0.6,
+        "minimo": 0.55,
+        "maximo": 0.69
+      },
+      "fracoes_do_tempo": {
+        "andando_reto": {
+          "mediana": 0.546,
+          "minimo": 0.514,
+          "maximo": 0.685
+        },
+        "parada": {
+          "mediana": 0.216,
+          "minimo": 0.183,
+          "maximo": 0.308
+        },
+        "virando": {
+          "mediana": 0.062,
+          "minimo": 0.057,
+          "maximo": 0.079
+        },
+        "voando": {
+          "mediana": 0.041,
+          "minimo": 0,
+          "maximo": 0.093
+        },
+        "comendo": {
+          "mediana": 0.06,
+          "minimo": 0.041,
+          "maximo": 0.14
+        },
+        "escalando": {
+          "mediana": 0,
+          "minimo": 0,
+          "maximo": 0
+        }
+      },
+      "rodadas_com_fruta": 3,
+      "rodadas_com_pouso_em_fruta": 3,
+      "refeicoes_por_rodada": {
+        "mediana": 9,
+        "minimo": 8,
+        "maximo": 16
+      },
+      "fome_final": {
+        "mediana": 1,
+        "minimo": 0.36544000000008736,
+        "maximo": 1
+      }
+    },
+    "sentidos": {
+      "n": 5,
+      "rodadas": [
+        {
+          "rotulo": "longa-sentidos-d-1",
+          "cerebro_s": 149.7,
+          "versao": {
+            "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+            "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+            "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 16,
+          "refeicoes_em_fruta": 16,
+          "refeicoes_por_100s_cerebrais": 10.68804275217101,
+          "comeu_por_objeto": {
+            "k-pessego": 6,
+            "k-banana": 10
+          },
+          "primeira_refeicao_s": 15.92,
+          "voos": 4,
+          "pousos": 4,
+          "pousos_em_fruta": 3,
+          "pousou_em": [
+            "k-pessego",
+            "k-banana",
+            "k-vinagre",
+            "k-pessego"
+          ],
+          "fome_final": 0.653800000000064,
+          "fracao_voando": 0.063,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 689,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-sentidos-d-2",
+          "cerebro_s": 192.1,
+          "versao": {
+            "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+            "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+            "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 12,
+          "refeicoes_em_fruta": 4,
+          "refeicoes_por_100s_cerebrais": 6.246746486205102,
+          "comeu_por_objeto": {
+            "k-acucar": 8,
+            "k-uvas": 4
+          },
+          "primeira_refeicao_s": 0.66,
+          "voos": 1,
+          "pousos": 1,
+          "pousos_em_fruta": 1,
+          "pousou_em": [
+            "k-uvas"
+          ],
+          "fome_final": 1,
+          "fracao_voando": 0.024,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 315,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-sentidos-d-3",
+          "cerebro_s": 174.8,
+          "versao": {
+            "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+            "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+            "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 9,
+          "refeicoes_em_fruta": 2,
+          "refeicoes_por_100s_cerebrais": 5.148741418764302,
+          "comeu_por_objeto": {
+            "k-acucar": 7,
+            "k-banana": 2
+          },
+          "primeira_refeicao_s": 0.56,
+          "voos": 2,
+          "pousos": 2,
+          "pousos_em_fruta": 1,
+          "pousou_em": [
+            "k-banana",
+            null
+          ],
+          "fome_final": 1,
+          "fracao_voando": 0.036,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 392,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-sentidos-d-4",
+          "cerebro_s": 172.1,
+          "versao": {
+            "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+            "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+            "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "refeicoes_por_100s_cerebrais": 4.648460197559559,
+          "comeu_por_objeto": {
+            "k-acucar": 8
+          },
+          "primeira_refeicao_s": 1.04,
+          "voos": 0,
+          "pousos": 0,
+          "pousos_em_fruta": 0,
+          "pousou_em": [],
+          "fome_final": 1,
+          "fracao_voando": 0,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        },
+        {
+          "rotulo": "longa-sentidos-d-5",
+          "cerebro_s": 165.6,
+          "versao": {
+            "index.html": "b7811dbb08f10410ca580c93610c85078d53c2ca423ce2f52bdc26ddfa1a7350",
+            "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+            "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+            "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+          },
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "refeicoes_por_100s_cerebrais": 4.830917874396135,
+          "comeu_por_objeto": {
+            "k-acucar": 8
+          },
+          "primeira_refeicao_s": 1.44,
+          "voos": 0,
+          "pousos": 0,
+          "pousos_em_fruta": 0,
+          "pousou_em": [],
+          "fome_final": 1,
+          "fracao_voando": 0,
+          "fracao_olhos_reais": 1,
+          "chamadas_alvo_visual": {
+            "real": 0,
+            "aproximado": 0,
+            "ausente": 0
+          }
+        }
+      ],
+      "cerebro_s": {
+        "mediana": 172.1,
+        "minimo": 149.7,
+        "maximo": 192.1
+      },
+      "velocidade_mediana_por_rodada_mm_s": {
+        "mediana": 10.918,
+        "minimo": 9.403,
+        "maximo": 11.914
+      },
+      "trechos_media_por_rodada_s": {
+        "mediana": 2.174,
+        "minimo": 1.034,
+        "maximo": 2.573
+      },
+      "paradas_curtas_fracao_por_rodada": {
+        "mediana": 0.55,
+        "minimo": 0.41,
+        "maximo": 0.61
+      },
+      "fracoes_do_tempo": {
+        "andando_reto": {
+          "mediana": 0.637,
+          "minimo": 0.378,
+          "maximo": 0.713
+        },
+        "parada": {
+          "mediana": 0.24,
+          "minimo": 0.181,
+          "maximo": 0.253
+        },
+        "virando": {
+          "mediana": 0.065,
+          "minimo": 0.049,
+          "maximo": 0.1
+        },
+        "voando": {
+          "mediana": 0.024,
+          "minimo": 0,
+          "maximo": 0.063
+        },
+        "comendo": {
+          "mediana": 0.052,
+          "minimo": 0.04,
+          "maximo": 0.24
+        },
+        "escalando": {
+          "mediana": 0,
+          "minimo": 0,
+          "maximo": 0
+        }
+      },
+      "rodadas_com_fruta": 3,
+      "rodadas_com_pouso_em_fruta": 3,
+      "refeicoes_por_rodada": {
+        "mediana": 9,
+        "minimo": 8,
+        "maximo": 16
+      },
+      "fome_final": {
+        "mediana": 1,
+        "minimo": 0.653800000000064,
+        "maximo": 1
+      }
+    },
+    "janela_cerebral_comum": {
+      "segundos": 101,
+      "metodo": "Eventos restritos à mesma duração cerebral inicial em todas as dez rodadas; evita comparar exposição maior apenas porque uma sessão rodou mais rápido. Eventos antigos de pouso usam t como duração de voo, não relógio: nesses casos o pouso no recorte é null (indisponível), nunca zero. Contagens de pouso na sessão inteira continuam válidas.",
+      "atalhos": [
+        {
+          "rotulo": "longa-simples-1",
+          "refeicoes": 15,
+          "refeicoes_em_fruta": 7,
+          "pousos_em_fruta": null,
+          "voos": 5
+        },
+        {
+          "rotulo": "longa-simples-2",
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "pousos_em_fruta": 0,
+          "voos": 0
+        },
+        {
+          "rotulo": "longa-simples-3",
+          "refeicoes": 9,
+          "refeicoes_em_fruta": 2,
+          "pousos_em_fruta": null,
+          "voos": 3
+        },
+        {
+          "rotulo": "longa-simples-4",
+          "refeicoes": 14,
+          "refeicoes_em_fruta": 8,
+          "pousos_em_fruta": null,
+          "voos": 5
+        },
+        {
+          "rotulo": "longa-simples-5",
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "pousos_em_fruta": 0,
+          "voos": 0
+        }
+      ],
+      "sentidos": [
+        {
+          "rotulo": "longa-sentidos-d-1",
+          "refeicoes": 14,
+          "refeicoes_em_fruta": 14,
+          "pousos_em_fruta": 2,
+          "voos": 3
+        },
+        {
+          "rotulo": "longa-sentidos-d-2",
+          "refeicoes": 12,
+          "refeicoes_em_fruta": 4,
+          "pousos_em_fruta": 1,
+          "voos": 1
+        },
+        {
+          "rotulo": "longa-sentidos-d-3",
+          "refeicoes": 9,
+          "refeicoes_em_fruta": 2,
+          "pousos_em_fruta": 1,
+          "voos": 2
+        },
+        {
+          "rotulo": "longa-sentidos-d-4",
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "pousos_em_fruta": 0,
+          "voos": 0
+        },
+        {
+          "rotulo": "longa-sentidos-d-5",
+          "refeicoes": 8,
+          "refeicoes_em_fruta": 0,
+          "pousos_em_fruta": 0,
+          "voos": 0
+        }
+      ]
+    }
   }
 }

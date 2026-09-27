@@ -6,7 +6,8 @@
 //   node scripts/andar_medida.mjs [--segundos 90] [--fisico] [--sentidos] [--sem-olhos] [--janela 100] [--rotulo nome]
 //
 // --segundos: de relógio (o cérebro anda ~0,3-1x o tempo real). --fisico: corpo físico (servidor na 8766).
-// --sentidos: passa ?sentidos=1 (parte 1 do plano). --sem-olhos: ?headless=1 (sem desenhar; os olhos reais não
+// --sentidos: mede o modo só sentidos (?sentidos=1, o padrão da página desde 27/09/2026). Sem ele, mede com os atalhos
+// (?sentidos=0), para as séries antigas (longa-simples, cheiro-base-atalhos) manterem o significado. --sem-olhos: ?headless=1 (sem desenhar; os olhos reais não
 // funcionam e a visão usa a aproximação da página).
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -30,7 +31,7 @@ const versao = Object.fromEntries(await Promise.all(['index.html', 'sandbox.js',
 const perfil = mkdtempSync(join(TMP, 'mosca-andar-'));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const cdp = 9300 + Math.floor(Math.random() * 600);
-const busca = [semOlhos ? 'headless=1' : '', sentidos ? 'sentidos=1' : '', `r=${Date.now()}`].filter(Boolean).join('&');
+const busca = [semOlhos ? 'headless=1' : '', sentidos ? 'sentidos=1' : 'sentidos=0', `r=${Date.now()}`].filter(Boolean).join('&');
 
 // alvos da literatura (docs/plano-sentidos-e-medicao.md)
 const ALVOS = {
