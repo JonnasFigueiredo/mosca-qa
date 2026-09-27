@@ -1,0 +1,113 @@
+{
+ "metodo": "scripts/andar_medida.mjs: Cozinha 3D, Chrome sem janela, amostras a cada tique do cérebro (10 ms); velocidade e giro em janelas de ~100 ms; andando = acima de 2,5 mm/s no chão (volta a parada abaixo de 1,5); virando = acima de 200°/s. Uma realização por linha.",
+ "alvos": {
+  "velocidade_andando_mm_s": "picos em ~11,4 (junto à parede) e ~14,8 (centro); faixa 7,2-44,7 [Valente 2007; Mendes 2013]",
+  "trecho_andando_s": "exponencial, constante ~1,37 (parede) a ~2,1 (centro) [Valente 2007]",
+  "paradas": "~76% < 0,3 s (parede); no centro algumas > 5 s [Valente 2007]",
+  "reorientacao_depois_de_parar": "na maioria das vezes ~0° [Valente 2007]",
+  "viradas": "sacadas de ~15° em 40-120 ms (mediana 90), > 200°/s; rumo quase parado entre elas [Geurten 2014]",
+  "orcamento_de_tempo": "parada 63%, andando reto 29%, virando 9% (arena sem comida) [Geurten 2014]"
+ },
+ "medidas": [
+  {
+   "rotulo": "linha-de-base-simples",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 50,
+   "amostras": 4999,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.662,
+    "parada": 0.072,
+    "virando": 0.263
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 4.927,
+    "p10": 3.27,
+    "p90": 5.48
+   },
+   "trecho_andando_s": {
+    "n": 17,
+    "media": 2.709,
+    "mediana": 1.9
+   },
+   "paradas_s": {
+    "n": 16,
+    "media": 0.239,
+    "mediana": 0.21,
+    "frac_menos_0_3s": 0.56,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 16,
+    "mediana": 12.013,
+    "p90": 42.249
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 0.46,
+    "duracao_ms_mediana": 620,
+    "amplitude_graus_mediana": 35
+   },
+   "eventos": {
+    "mofo": 3
+   }
+  },
+  {
+   "rotulo": "linha-de-base-fisico",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 21.1,
+   "amostras": 2105,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.578,
+    "virando": 0.323,
+    "parada": 0.01,
+    "voando": 0.059,
+    "comendo": 0.026
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 10.567,
+    "p10": 5.169,
+    "p90": 18.987
+   },
+   "trecho_andando_s": {
+    "n": 11,
+    "media": 1.72,
+    "mediana": 1.41
+   },
+   "paradas_s": {
+    "n": 10,
+    "media": 0.079,
+    "mediana": 0.02,
+    "frac_menos_0_3s": 0.9,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 9,
+    "mediana": 21.798,
+    "p90": 48.704
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 5.71,
+    "duracao_ms_mediana": 30,
+    "amplitude_graus_mediana": 16
+   },
+   "eventos": {
+    "mofo": 3,
+    "tropeco": 2,
+    "parede": 9,
+    "saiuDaParede": 1,
+    "topo": 8,
+    "reflexoTarsal": 1,
+    "voo": 1,
+    "alvoVoo": 1,
+    "fugaDirecao": 1,
+    "sacada": 1,
+    "pouso": 1,
+    "clique": 1,
+    "comeu": 1
+   }
+  }
+ ]
+}
