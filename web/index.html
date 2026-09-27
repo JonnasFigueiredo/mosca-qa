@@ -487,7 +487,8 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
       <div>
         <h3>O sandbox 3D</h3>
         <p>No modo <strong>Sandbox 3D</strong>, o sistema vira um mundo: cada grupo de elementos da mesma função fica numa plataforma, em alturas diferentes, e ela anda por cima delas e <strong>voa</strong> entre elas.</p>
-        <p>Ela decola sozinha quando chega na beira de uma plataforma, ou dá de cara com uma mais alta, e há algo novo para ver. E decola de susto quando a <strong>fibra gigante</strong> dispara: quando um bug estoura, o glitch cresce na frente dela e liga os detectores de ameaça (LPLC2 e LC4). No ar, a direção continua vindo dos DNa01-03.</p>
+        <p>Ela decola sozinha quando chega na beira de uma plataforma, ou dá de cara com uma mais alta, e há algo novo para ver. E decola de susto quando a <strong>fibra gigante</strong> dispara: quando um bug estoura, o glitch cresce na frente dela e liga os detectores de ameaça (LPLC2 e LC4). </p>
+        <p><strong>O voo é do cérebro:</strong> em voo, os halteres batem e o vento chega às antenas, e isso liga, no mapa, os neurônios motores das asas. A amplitude de cada asa vem dos motores de direção daquele lado (b1, b2 e b3 aumentam; i1 e iii3 diminuem) e a força, dos motores DLM e DVM. Quando o corpo gira, os halteres mandam o giro de volta, e o mapa corrige: é o reflexo que estabiliza o voo das moscas. Uma parede à frente cresce na visão e dispara a fibra gigante, e ela faz uma sacada, uma curva rápida para o lado que os neurônios da fuga indicam. Os voos são curtos, como os de uma mosca numa cozinha: ela sobe o cheiro, mira uma fruta à frente e pousa nela, em 1 a 2 s. A escolha do alvo, a altura e o pouso são regras (os neurônios de pouso do mapa não responderam no modelo).</p>
         <p><strong>Mundo · Cozinha:</strong> um pedaço de 20 × 20 cm de bancada, o habitat da mosca-da-fruta, na escala dela. As frutas têm açúcar para comer; os cheiros ligam os glomérulos que respondem a eles em moscas reais (fermentação e vinagre: DM1 e VA2; ésteres de fruta: DM2 e DM3; mofo, a geosmina: DA2; casca de laranja: DC1). Pisando em açúcar, os neurônios de gosto das patas ligam os da probóscide, e ela come; a fome regula esse gosto. A atração inata pelos cheiros de fruta e a aversão ao mofo são regras nossas, tiradas da literatura. A laranja mofada é amarga: provar liga a dopamina de punição.</p>
         <p>O visual de Matrix é para quem assiste. Ela sente esse mundo pelos mesmos canais da página: o cheiro de cada elemento, os olhos (LC10a) e o gosto nas patas.</p>
         <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. As plataformas são blocos sólidos, e quando as seis patas perdem o apoio (passou da beira), ela começa a voar: é o reflexo tarsal das moscas reais. No ar ela ainda usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
@@ -557,6 +558,7 @@ const EYES_OFF = /[?&]olhos=0\b/.test(location.search);
 // ?campos=0: no sandbox com olhos reais, volta a dar a mesma taxa a todos os LC10a de um olho (sem campo receptivo)
 const CAMPOS_OFF = /[?&]campos=0\b/.test(location.search);
 let HAS_EYES = false;
+let HAS_VOO = false;   // o voo pelos motores das asas: liga se os dados trazem os grupos do voo
 // alcance do cheiro de cada elemento (px, desvio da gaussiana); ?cheiro=60 muda, para comparar
 const ODOR_SIGMA = +(location.search.match(/[?&]cheiro=(\d+)/)?.[1] || 32);
 const fmt1 = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -708,6 +710,9 @@ const PREF_AT = 0.25;   // saldo aprendido acima disto: conta como botão prefer
 const LV_SCALE = 5000;  // valor aprendido perto de um botão recompensado uma vez (força sináptica por segundo)
 const ATTR_TURN = 4.5;  // quanto a atração vira a mosca para o lado de cheiro mais forte (igual ao desvio)
 const VIS_RATE = 100;      // Hz nos LC de um olho cheio de coisas novas
+const VOO_GIRO = 0.05;     // rad/s de giro por Hz de diferença entre as asas (amplitude esquerda - direita)
+const VOO_V = 900;         // px/s de tempo cerebral em voo reto (~130 mm/s; moscas reais: 300-1000 mm/s em espaço aberto, menos em lugar fechado)
+const VOO_HALTERE = 20;    // Hz a mais num haltere por rad/s de giro do corpo
 const VIS_TURN = 4;        // quanto a diferença E−D dos DNa01-03 vira a mosca
 const EYE_FRONT = 0.2;     // rad: cada olho enxerga um pouco além da frente (sobreposição)
 const EYE_BACK = 2.7;      // rad: ponto cego atrás
@@ -936,10 +941,34 @@ function stepBody(dt, counts) {
     let d = toC - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
     turn += 5 * Math.sign(d);
   }
+  // voo comandado pelos motores das asas (scripts/voo_mapa.py): a amplitude de cada asa vem dos motores de direção
+  // daquele lado (b1, b2, b3 aumentam; i1, i2, iii1, iii3 diminuem) e a força, dos motores DLM e DVM. A asa esquerda
+  // batendo mais gira a mosca para a direita. Uma média lenta tira a assimetria de base do mapa, como no andar
+  if (SB.on && f.flying && HAS_VOO) {
+    const amp = s => hz('asa_mais_' + s) / groupSize['asa_mais_' + s] - 0.5 * hz('asa_menos_' + s) / groupSize['asa_menos_' + s];
+    f.ampL = ema(f.ampL ?? 0, amp('L'), dt, 0.06);
+    f.ampR = ema(f.ampR ?? 0, amp('R'), dt, 0.06);
+    f.ampBase = ema(f.ampBase ?? 0, f.ampL - f.ampR, dt, 3);
+    f.forca = ema(f.forca ?? 0, hz('asa_forca') / groupSize.asa_forca, dt, 0.08);
+    f.cabeca = ema(f.cabeca ?? 0, hz('cabeca_L') - hz('cabeca_R'), dt, 0.1);
+    const dA = f.ampL - f.ampR - f.ampBase;
+    let alvo = VOO_GIRO * dA;
+    // sacada (fuga ou desvio em voo): curva rápida até o rumo que o cérebro indicou, em ~0,1 s
+    if (f.sacadaT > 0) {
+      let d = f.sacadaAlvo - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
+      alvo = clamp(d / Math.max(f.sacadaT, 0.03), -25, 25);
+      f.sacadaT -= dt;
+    }
+    f.omega = (f.omega ?? 0) + (alvo - (f.omega ?? 0)) * (1 - Math.exp(-dt / 0.05));
+    f.th += f.omega * dt;
+    // em voo ela também sobe o gradiente de cheiro, como no chão (a mesma regra, mais fraca)
+    if (!f.pouso) f.th += 0.6 * chemo * dt;
+    // velocidade pela força das asas (em voo reto, ~8 Hz nos motores DLM/DVM; numa fuga, ~200 Hz)
+    f.vVoo = VOO_V * clamp(0.6 + 0.4 * f.forca / 8, 0.5, 2.5);
+  } else if (SB.on && SB.fisico && !f.flying) f.turnCmd = clamp(turn, -6, 6);
   // com o corpo físico no chão, quem gira a mosca são as patas: o cérebro só manda o comando de virada.
   // No ar (ou sem o corpo físico), a virada vai direto para o rumo
-  if (SB.on && SB.fisico && !f.flying) f.turnCmd = clamp(turn, -6, 6);
-  else f.th += clamp(turn, -6, 6) * dt;
+  else { f.th += clamp(turn, -6, 6) * dt; f.omega = 0; }
 
   // andar de ré (moonwalker)
   if (counts.moonwalker > 0 && f.back <= 0) { f.back = 0.6; logEvent('O neurônio moonwalker (MDN) disparou: andou de ré.'); }
@@ -1003,7 +1032,16 @@ function stepBody(dt, counts) {
   rates = {
     // (no mundo natural, a fome regula a sensibilidade ao açúcar, como nas moscas reais: saciada, ela não estende a probóscide)
     doce: Math.max(160 * onNew * (APP.mundo ? f.hunger : 1), f.sweet > 0 ? 200 : 0),
-    ameaca: Math.max(f.threat > 0 ? 200 : 0, f.loom || 0),
+    ameaca: Math.max(f.threat > 0 ? 200 : 0, f.loom || 0, f.loomObst || 0),
+    // em voo: os halteres batem (~150 Hz) e o giro do corpo muda a direita e a esquerda. O sentido dessa transdução é
+    // nosso, escolhido para estabilizar (o papel conhecido do haltere); a força do reflexo vem do mapa. Vento nas
+    // antenas (órgão de Johnston) e o fluxo óptico do giro nas células HS (girando para a direita, o mundo corre de
+    // frente para trás no olho esquerdo)
+    ...(SB.on && f.flying && HAS_VOO ? {
+      haltere_L: clamp(150 - VOO_HALTERE * (f.omega || 0), 20, 300), haltere_R: clamp(150 + VOO_HALTERE * (f.omega || 0), 20, 300),
+      gravidade_C: 40, gravidade_E: 40,
+      hs_L: 30 + 50 * Math.max(0, f.omega || 0), hs_R: 30 + 50 * Math.max(0, -(f.omega || 0)),
+    } : {}),
     dor: f.pain > 0 ? 200 : 0,
     recompensa: f.reward > 0 ? 200 : 0,
     // tato: com o corpo físico no chão, a força de cada pata liga as cerdas daquela pata (nervos ProLN, MesoLN, MetaLN)
@@ -1057,6 +1095,7 @@ function ameacaDirecao(f) {
     a = Math.atan2(Math.sin(a), Math.cos(a));
     return { az: -a * 180 / Math.PI, el: Math.atan2(A.z - (f.z || 0) - 6, dh) * 180 / Math.PI, raio: Math.atan(A.r / d) * 180 / Math.PI };
   }
+  if ((f.loomObst || 0) > (f.loom || 0)) return { az: 0, el: 0, raio: 20 };   // obstáculo à frente, em voo
   if (f.threat > 0) return { az: 0, el: -15, raio: 25 };
   return null;
 }
@@ -1760,6 +1799,7 @@ worker.onmessage = ({ data: m }) => {
   } else if (m.type === 'ready') {
     groupSize = m.sizes || {};
     HAS_EYES = !EYES_OFF && !!(groupSize.olho_L && groupSize.dirige_L);
+    HAS_VOO = !!(groupSize.asa_mais_L && groupSize.asa_mais_R && groupSize.haltere_L && groupSize.asa_forca);
     ODOR_POOL = m.odorPool || [];
     GLOM_IX = Object.fromEntries(ODOR_POOL.map((gName, i) => [gName, i]));
     $('#loader').hidden = true;

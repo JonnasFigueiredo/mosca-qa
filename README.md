@@ -87,7 +87,7 @@ O simulador (`web/sim-worker.js`) só calcula os neurônios fora do repouso e s�
 
 - No modo **Sandbox 3D** o sistema vira um mundo de plataformas, uma por grupo de elementos da mesma função, em alturas diferentes. Ela anda por cima delas e voa entre elas.
 - **Decolagem:** de fuga, quando a fibra gigante (DNp01) dispara. Um bug que estoura cresce na frente dela e liga os detectores de ameaça (LPLC2, LC4). Também decola por uma regra do corpo, na beira de uma plataforma ou diante de uma mais alta, se houver algo novo para ver.
-- **No ar:** a direção vem dos DNa01–03, como no chão. É uma simplificação: numa mosca real, o voo usa outros descendentes também. A altura e o pouso (perto de algo que ela ainda não provou) são regras do corpo.
+- **No ar:** o voo é comandado pelos neurônios motores das asas (ver "Voo pelos motores das asas"). A altura e o pouso (perto de algo que ela ainda não provou) são regras do corpo.
 - O visual (grade neon, chuva de código, glitches vermelhos) é só para quem assiste. Os sentidos dela são os mesmos da página, agora com altura: cheiro, olhos e gosto nas patas.
 - A tela mostra o mundo (câmera de espectador, olhos compostos e mapa) ao lado do cérebro, com os neurônios acendendo.
 
@@ -188,6 +188,28 @@ python -m venv .venv
 ```
 
 Depois, no Sandbox 3D, clique em "Corpo físico". O servidor grava a malha em `web/data/corpo_malha.*` na primeira vez. Os scripts `corpo/andar_teste.py` e `scripts/corpo_teste.py` medem a passada e a velocidade da física.
+
+### Voo pelos motores das asas
+
+O mapa tem o sistema de voo inteiro: os 67 neurônios motores das asas (os de força, DLM e DVM, e os de direção, b1–b3, i1–i2, iii1, iii3, hg1–4, ps, tp), os halteres (205 sensoriais), as células que sentem o mundo girando (HS, VS) e os descendentes de voo.
+
+- **Triagem** (`scripts/voo_mapa.py`, `docs/medicoes/voo-mapa.json`), com o tônus de base da página:
+  - parada, nenhum motor de asa dispara; com os halteres batendo (150 Hz) e vento nas antenas, os de força disparam a 5–12 Hz (como em moscas reais em voo) e os de direção b1, b2 e b3 a ~50–80 Hz;
+  - o haltere de um lado mais forte (a mosca girando) sobe os motores que aumentam o batimento daquele lado: b1 +62 Hz, b3 +42, b2 +30. É o reflexo giroscópico dos halteres, e vem forte das conexões;
+  - fluxo óptico de um lado (células HS) mexe pouco nas asas (+5 Hz), mas liga o DNp15 (+30 Hz), que move o pescoço: a resposta optomotora da cabeça;
+  - algo crescendo na frente dispara a fibra gigante e o programa de fuga (o motor do salto, TTMn, e os de força a ~200 Hz). Os neurônios de pouso (DNp07, DNp10) não responderam nem em voo: na mosca real, a mudança de estado que os libera vem de neuromodulação, que o modelo não tem;
+  - um objeto de um lado (LC10a) vira pouco as asas (+8 Hz no hg1).
+- **Na página** (Sandbox 3D), em voo:
+  - entram os halteres (150 Hz, mais ou menos conforme o giro do corpo), o vento nas antenas e o fluxo óptico do giro nas células HS;
+  - a amplitude de cada asa sai dos motores de direção daquele lado (b1–b3 aumentam, i1, i2, iii1, iii3 diminuem); a asa esquerda batendo mais gira a mosca para a direita; uma média lenta tira a assimetria de base do mapa; a velocidade sai dos motores de força;
+  - o giro volta aos halteres: é esse circuito que estabiliza o voo. O sentido da transdução (qual haltere dispara mais num giro) é nosso, escolhido para estabilizar, o papel conhecido do haltere; a força do reflexo é do mapa. Motores de direção pelo lado do corpo celular: o haltere esquerdo liga o b1 esquerdo, como nas moscas reais (haltere e b1 do mesmo lado);
+  - uma parede ou coisa mais alta à frente cresce na visão e liga os detectores de ameaça; se a fibra gigante disparar em rajada, ela faz uma **sacada**, uma curva de ~0,1 s para o lado que os neurônios da direção da fuga indicam;
+  - **voos curtos com alvo**, como os de uma mosca numa cozinha: em voo ela sobe o gradiente de cheiro (a mesma regra do chão, mais fraca), mira uma coisa atraente à frente (cheiro bom com fome, o que aprendeu, o que ainda não provou), freia e pousa em cima dela; sem nada que atraia, pousa em 1,5 s onde estiver. Depois de pousar, anda uns segundos antes de voar de novo;
+  - regras: a escolha do alvo, a aproximação, a altura e o pouso (os neurônios de pouso do mapa não responderam no modelo).
+- **Comportamento** (Cozinha, corpo simples, 74 s de cérebro, sem forçar nada): 5 voos de 1,7 a 2,0 s, cada um pousando numa fruta (morango, banana, morango, banana); comeu açúcar, morango e banana até ficar saciada; ~20% do tempo no ar. Antes das regras de alvo e pouso, ela voava sem parar de parede em parede.
+- **Teste** (Cozinha, corpo simples, 9 s de voo): 7 sacadas, todas diante de paredes, com giros de 600–1000°/s (a faixa das sacadas reais); 77–163 mm/s conforme a força das asas; entre sacadas, voo quase reto; a cabeça gira pelo DNp15. Moscas reais voam a 300–1000 mm/s em espaço aberto; aqui, 130 mm/s de base.
+- **A animação:** o corpo real da NeuroMechFly posto pela página (`corpo/poses.py` grava as poses de pé e de voo em `web/data/corpo_poses.json`; as patas recolhem como em moscas voando, achadas por busca). Cada asa bate com a amplitude que os motores daquele lado mandam, com um leque translúcido mostrando o envelope (a batida real é de ~200 Hz; aqui, 16 Hz), os halteres oscilam em contrafase, o corpo empina ~20° e inclina nas curvas, e a cabeça gira pelo DNp15. No chão, sem o servidor de física, as patas andam em trípode.
+- **Limite:** nos motores reais, a fase de cada disparo dentro da batida importa; o modelo lê taxas.
 
 ### Voo físico (em andamento)
 

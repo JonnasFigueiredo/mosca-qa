@@ -68,9 +68,113 @@ function sbSurface(x, y) {
   return z;
 }
 
+/* ───────────── o corpo real animado (sem o servidor de física) ───────────── */
+// A malha da NeuroMechFly posta pela própria página, com as poses de corpo/poses.py (de pé e com as patas recolhidas
+// para o voo). Em voo, cada asa bate com a amplitude que os motores daquele lado mandam (um leque translúcido mostra o
+// envelope da batida; a batida real é de ~200 Hz, aqui desenhada a 16 Hz), os halteres oscilam em contrafase, o corpo
+// empina e inclina nas curvas, e a cabeça gira pelo DNp15. No chão, as patas andam em trípode
+const ANIM = { poses: null, recolhe: 0, fase: 0, faseAsa: 0, leques: [], cabeca: 0, pecas: null };
+async function animCarregar() {
+  if (ANIM.poses) return;
+  try {
+    await corpoCarregarMalha();
+    const P = await fetch('data/corpo_poses.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('sem poses'); return r.json(); });
+    const q = arr => arr.map(v => { const m = new THREE.Matrix4().set(v[3], v[4], v[5], 0, v[6], v[7], v[8], 0, v[9], v[10], v[11], 0, 0, 0, 0, 1); return new THREE.Quaternion().setFromRotationMatrix(m); });
+    const p = arr => arr.map(v => new THREE.Vector3(v[0], v[1], v[2]));
+    ANIM.qPe = q(P.pe); ANIM.qVoo = q(P.voo); ANIM.pPe = p(P.pe); ANIM.pVoo = p(P.voo);
+    const nomes = CORPO.malha.meshes.map((_, i) => i);
+    ANIM.perna = {}; for (const [perna, info] of Object.entries(P.pernas)) for (const i of info.pecas) ANIM.perna[i] = perna;
+    ANIM.cabecaPecas = new Set();
+    // cabeça: tudo que não é tórax, abdômen, asa, haltere ou pata
+    const info = await fetch('data/corpo_malha.json', { cache: 'no-cache' }).then(r => r.json());
+    info.pecas.forEach((pc, i) => { if (/c_head|_eye|pedicel|funiculus|arista|rostrum|haustellum/.test(pc.nome)) ANIM.cabecaPecas.add(i); });
+    ANIM.pescoco = new THREE.Vector3(0.55, 0, 0.25);   // mm à frente e acima do centro do tórax
+    for (const lado of ['l', 'r']) {
+      const a = P.asas[lado];
+      a.base = new THREE.Vector3(...a.base); a.env = new THREE.Vector3(...a.envergadura);
+      a.comp = a.env.length() * 2;
+      a.ang0 = Math.atan2(a.env.y, a.env.x);
+      const h = P.halteres[lado]; h.base = new THREE.Vector3(...h.base);
+      const leque = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: '#cfe6ff', transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide }));
+      leque.matrixAutoUpdate = false; leque.visible = false; SBR.scene.add(leque); ANIM.leques.push(leque);
+    }
+    ANIM.poses = P;
+  } catch (e) { ANIM.poses = null; }
+}
+// matriz de cena a partir de uma matriz na física (mm; x frente, y esquerda, z cima), como em corpoPose
+const _cena = new THREE.Matrix4();
+function animParaCena(M, mesh) {
+  const e = M.elements, S = CORPO.S, ox = -SB.W / 2, oz = -SB.H / 2;
+  // e é coluna-major: linha r, coluna c = e[c * 4 + r]
+  mesh.matrix.set(S * e[0], S * e[4], S * e[8], ox + S * e[12],
+    S * e[2], S * e[6], S * e[10], S * e[14],
+    -S * e[1], -S * e[5], -S * e[9], oz - S * e[13],
+    0, 0, 0, 1);
+  mesh.matrixWorldNeedsUpdate = true;
+}
+const _q = new THREE.Quaternion(), _p = new THREE.Vector3(), _M = new THREE.Matrix4(), _R = new THREE.Matrix4(), _T = new THREE.Matrix4(), _Ti = new THREE.Matrix4(), _um = new THREE.Vector3(1, 1, 1);
+const _z = new THREE.Vector3(0, 0, 1), _y = new THREE.Vector3(0, 1, 0), _x = new THREE.Vector3(1, 0, 0);
+// gira em torno de um ponto (na física): T(p) · R · T(-p) · M
+function emTorno(M, ponto, R) { _T.makeTranslation(ponto.x, ponto.y, ponto.z); _Ti.makeTranslation(-ponto.x, -ponto.y, -ponto.z); return M.premultiply(_Ti).premultiply(R).premultiply(_T); }
+function animPose(f, dtw) {
+  const P = ANIM.poses, S = CORPO.S, voando = f.flying || f.jumping;
+  ANIM.recolhe += ((voando ? 1 : 0) - ANIM.recolhe) * Math.min(1, dtw / 0.12);
+  const rc = ANIM.recolhe;
+  const andando = !voando && !f.presa && (f.speed || 0) > 5;
+  ANIM.fase += dtw * 2 * Math.PI * 9 * (andando ? Math.min(1.5, (f.speed || 0) / WALK) : 0);
+  ANIM.faseAsa += dtw * 2 * Math.PI * 16 * rc;
+  ANIM.cabeca += (clamp((f.cabeca || 0) * 0.004, -0.35, 0.35) * rc - ANIM.cabeca) * Math.min(1, dtw / 0.15);
+  // o corpo: posição, rumo, empinar em voo (~20°) e inclinar nas curvas
+  const giro = f.flying ? (f.omega || 0) : 0;
+  const Mc = new THREE.Matrix4().makeTranslation(f.x / S, -f.y / S, (f.z || 0) / S + P.altura)
+    .multiply(_R.makeRotationAxis(_z, Math.PI / 2 - f.th))
+    .multiply(new THREE.Matrix4().makeRotationAxis(_y, -0.35 * rc))
+    .multiply(new THREE.Matrix4().makeRotationAxis(_x, clamp(0.12 * giro, -0.7, 0.7)));
+  const amp = f.flying ? clamp(0.008 * ((f.ampL || 0) - (f.ampR || 0) - (f.ampBase || 0)), -0.6, 0.6) : 0;
+  const forca = 0.85 + 0.15 * clamp((f.forca || 0) / 8, 0, 2);
+  const A = { l: (2.44 + amp / 2) * forca, r: (2.44 - amp / 2) * forca };
+  const cosF = Math.cos(ANIM.faseAsa), flip = 0.6 * Math.tanh(3 * Math.sin(ANIM.faseAsa));
+  CORPO.malha.meshes.forEach((mesh, i) => {
+    _q.copy(ANIM.qPe[i]).slerp(ANIM.qVoo[i], rc);
+    _p.copy(ANIM.pPe[i]).lerp(ANIM.pVoo[i], rc);
+    _M.compose(_p, _q, _um);
+    const perna = ANIM.perna[i];
+    if (perna && andando && rc < 0.5) {
+      // trípode: esquerda-frente, direita-meio, esquerda-trás juntas; as outras três em contrafase
+      const grupo = (perna === 'lf' || perna === 'rm' || perna === 'lh') ? 0 : Math.PI, th = ANIM.fase + grupo;
+      const base = new THREE.Vector3(...P.pernas[perna].base);
+      emTorno(_M, base, _R.makeRotationAxis(_z, 0.3 * Math.sin(th)));
+      emTorno(_M, base, _R.makeRotationAxis(_x, (perna[0] === 'l' ? -1 : 1) * 0.25 * Math.max(0, Math.cos(th))));
+    }
+    for (const lado of ['l', 'r']) {
+      const a = P.asas[lado], h = P.halteres[lado], sg = lado === 'l' ? 1 : -1;
+      if (i === a.peca && rc > 0.01) {
+        // abre (de dobrada para trás até a lateral) e bate para frente e para trás; a asa vira na troca de sentido
+        const psi = rc * (-sg * 1.85 + sg * (A[lado] / 2) * cosF);
+        emTorno(_M, a.base, _R.makeRotationAxis(a.env.clone().normalize(), rc * sg * flip));
+        emTorno(_M, a.base, _R.makeRotationAxis(_z, psi));
+      }
+      if (i === h.peca && rc > 0.01) emTorno(_M, h.base, _R.makeRotationAxis(_y, rc * 1.1 * -cosF));
+    }
+    if (ANIM.cabecaPecas.has(i) && ANIM.cabeca) emTorno(_M, ANIM.pescoco, _R.makeRotationAxis(_z, ANIM.cabeca));
+    animParaCena(_M.premultiply(Mc), mesh);
+  });
+  // leques: o envelope da batida de cada asa, no plano do tórax
+  ['l', 'r'].forEach((lado, k) => {
+    const a = P.asas[lado], sg = lado === 'l' ? 1 : -1, leque = ANIM.leques[k];
+    leque.visible = rc > 0.6 && f.flying;
+    if (!leque.visible) return;
+    const meio = a.ang0 - sg * 1.85;
+    leque.geometry.dispose();
+    leque.geometry = new THREE.CircleGeometry(a.comp * 1.05, 20, meio - A[lado] / 2, A[lado]);
+    animParaCena(new THREE.Matrix4().makeTranslation(a.base.x, a.base.y, a.base.z).premultiply(Mc), leque);
+  });
+}
+
 /* ───────────── andar e voar ───────────── */
 function sbMove(f, dt, v) {
   predStep(f, dt);
+  f.voarCd = (f.voarCd || 0) - dt;
   if (f.presa) return;   // presa nas patas do louva-a-deus
   if (SB.fisico && !f.flying) { f.startle = (f.startle || 0) - dt; return; }
   if (f.flying) return sbFly(f, dt);
@@ -78,24 +182,30 @@ function sbMove(f, dt, v) {
   const ny = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * v * dt));
   const s = sbSurface(nx, ny);
   if (Math.abs(s - f.z) <= SB_STEP) { f.x = nx; f.y = ny; f.z = s; return; }
-  // beira de uma plataforma, ou parede de outra mais alta
-  if (sbWantsFly(f)) sbTakeoff(f, s > f.z ? 'subir' : 'beira');
+  // beira de uma plataforma, ou parede de outra mais alta (logo depois de pousar, ela anda antes de voar de novo)
+  if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) sbTakeoff(f, s > f.z ? 'subir' : 'beira');
   else f.th += Math.PI * (0.55 + 0.4 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
 }
 // regra do corpo: decola quando há coisa nova em outro nível, mais ainda com fome de bug
 function sbWantsFly(f) {
   const novel = rects.some(r => !r.disabled && Math.abs(r.z - f.z) > SB_STEP && el(r.id).novelty > 0.5);
-  return Math.random() < (novel ? 0.3 + 0.6 * f.hunger : 0.12);
+  // (moscas perto de comida andam muito e voam pouco)
+  return Math.random() < (novel ? 0.15 + 0.35 * f.hunger : 0.05);
 }
 function sbTakeoff(f, why) {
   if (f.presa) { if (why === 'fuga') predTranco(f); return; }
   const noAr = f.flying;
   if (noAr && why !== 'fuga') return;
   // no ar, a fibra gigante vira uma guinada de fuga; no chão, decolagem
-  if (!noAr) { f.flying = true; f.flyT = 0; f.naParede = null; }
+  if (!noAr) { f.flying = true; f.flyT = 0; f.naParede = null; f.pouso = null; f.alvoT = 0; }
   f.vz = why === 'fuga' ? (noAr ? 120 : 150) : 70;
-  // a direção da fuga vem do cérebro (fugaRumo, na página); sem sinal claro, sorteada
-  if (why === 'fuga') { const r = fugaRumo(f); f.th = r ?? f.th + Math.PI * (0.6 + 0.8 * Math.random()) * (Math.random() < 0.5 ? -1 : 1); }
+  // a direção da fuga vem do cérebro (fugaRumo, na página); sem sinal claro, sorteada. No ar, vira uma sacada:
+  // uma curva rápida até esse rumo (~0,1 s), feita pelo voo; no chão, é a direção do pulo
+  if (why === 'fuga') {
+    const r = fugaRumo(f) ?? f.th + Math.PI * (0.6 + 0.8 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
+    if (noAr && HAS_VOO) { f.sacadaAlvo = r; f.sacadaT = 0.1; labEvent('sacada', {}); }
+    else f.th = r;
+  }
   // fuga que conta: o louva-a-deus por perto, e não é o voo de quando ela acabou de escapar das patas
   if (why === 'fuga' && PRED.on && PRED.cd <= 0 && Math.hypot(PRED.x - f.x, PRED.y - f.y, PRED.z - f.z) < 180) {
     PRED.escapes++;
@@ -115,22 +225,89 @@ function sbTakeoff(f, why) {
     : why === 'subir' ? 'Deu de cara com uma plataforma mais alta e decolou para ver o que tem lá.'
       : 'Chegou na beira da plataforma e decolou.', why === 'fuga' ? '' : 's');
 }
+// Voos curtos, como os de uma mosca numa cozinha: decola, sobe o gradiente de cheiro (na página), mira uma coisa
+// atraente à frente e pousa nela quando chega perto; sem nada que atraia, pousa em ~3 s onde estiver.
+// Do cérebro: o bater das asas, a estabilização pelos halteres e as sacadas de desvio. Regras nossas: a escolha do
+// alvo, a aproximação e o pouso (os neurônios de pouso do mapa, DNp07 e DNp10, não responderam no modelo)
+const VOO_MAX = 1.5; // s de tempo cerebral sem alvo antes de pousar onde estiver (moscas em lugar fechado: voos de 1-2 s)
+// o quanto uma coisa atrai em voo: o cheiro (valência inata, com fome), o que ela aprendeu e o que ainda não provou
+function sbAtrativo(f, r) {
+  const st = el(r.id);
+  if (!APP.mundo) return st.novelty;
+  let val = 0;
+  const o = APP.objetos[r.id];
+  for (const [g, w] of Object.entries(o.cheiro)) { const iv = INATA['ORN_' + g] || 0; val += iv > 0 ? iv * w * f.hunger : iv * w; }
+  const m = memo[r.id];
+  if (m) val += 1.5 * (m.keep - (m.keepR ?? 1));
+  return val + 0.25 * st.novelty;
+}
+function sbEscolheAlvo(f) {
+  let melhor = null, mv = 0.2;
+  for (const r of rects) {
+    if (r.disabled) continue;
+    const cx = r.x + r.w / 2, cy = r.y + r.h / 2, d = Math.hypot(cx - f.x, cy - f.y);
+    if (d < 50 || d > 650) continue;
+    let a = Math.atan2(cx - f.x, -(cy - f.y)) - f.th;
+    a = Math.atan2(Math.sin(a), Math.cos(a));
+    if (Math.abs(a) > 1.3) continue;   // só o que está à frente
+    const v = sbAtrativo(f, r) / (1 + d / 400);
+    if (v > mv) { mv = v; melhor = r; }
+  }
+  return melhor;
+}
 function sbFly(f, dt) {
   f.flyT += dt;
-  f.x = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * SB_FLY_SPEED * dt));
-  f.y = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * SB_FLY_SPEED * dt));
+  // alvo: depois do arranque, procura uma coisa atraente à frente; sem nada em VOO_MAX s, pousa onde estiver
+  if (!f.pouso && f.flyT > 0.15 && (f.alvoT = (f.alvoT || 0) - dt) <= 0) {
+    f.alvoT = 0.25;
+    const r = sbEscolheAlvo(f);
+    if (r) { f.pouso = { id: r.id, x: r.x + r.w / 2, y: r.y + r.h / 2, z: r.z || 0, r }; labEvent('alvoVoo', { id: r.id, t: +f.flyT.toFixed(2) }); }
+    else if (f.flyT > VOO_MAX || f.flyT > 6) {
+      const px = f.x + Math.sin(f.th) * 40, py = f.y - Math.cos(f.th) * 40;
+      f.pouso = { id: null, x: Math.min(SB.W - 20, Math.max(20, px)), y: Math.min(SB.H - 20, Math.max(20, py)), z: sbSurface(px, py) };
+    }
+  }
+  if (f.flyT > 6 && f.pouso && f.pouso.id) f.pouso = null;   // não chegou em 6 s: pousa onde estiver (abaixo)
+  const P = f.pouso;
+  let dist = Infinity;
+  if (P) {
+    dist = Math.hypot(P.x - f.x, P.y - f.y);
+    // aproximação: vira para o ponto de pouso (regra)
+    let a = Math.atan2(P.x - f.x, -(P.y - f.y)) - f.th;
+    a = Math.atan2(Math.sin(a), Math.cos(a));
+    if (Math.abs(a) > 2.2 && dist > 60) f.pouso = null;   // passou do alvo: escolhe de novo
+    else f.th += clamp(a * 6, -8, 8) * dt;
+  }
+  f.landing = !!P;
+  // velocidade: a força das asas (motores DLM e DVM, na página); chegando perto do pouso, freia
+  // (freia até quase parar: com velocidade mínima alta, o raio de curva fica maior que o alvo e ela orbita)
+  const v = (f.vVoo || SB_FLY_SPEED) * (P ? clamp(dist / 120, 0.06, 1) : 1);
+  f.x = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * Math.min(v * dt, P ? dist : Infinity)));
+  f.y = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * Math.min(v * dt, P ? dist : Infinity)));
+  // o que cresce à frente em voo: a parede do mundo ou uma coisa mais alta que ela, na direção do voo. O crescimento
+  // do tamanho aparente liga os detectores de ameaça (LPLC2, LC4); se a fibra gigante disparar, ela faz uma sacada.
+  // (Não conta o alvo do pouso: é para ele que ela vai)
+  let dObst = Infinity;
+  for (let d = 15; d <= 420; d += 15) {
+    const px = f.x + Math.sin(f.th) * d, py = f.y - Math.cos(f.th) * d;
+    const fora = px < 0 || px > SB.W || py < 0 || py > SB.H;
+    if (fora || (sbSurface(px, py) > f.z - 4 && !(P && Math.hypot(px - P.x, py - P.y) < 60))) { dObst = d; break; }
+  }
+  const R = 45;
+  f.loomObst = dObst < Infinity ? Math.min(200, PRED_LOOM * 2 * R * v / (dObst * dObst + R * R)) : 0;
   const below = sbSurface(f.x, f.y);
   const ahead = sbSurface(f.x + Math.sin(f.th) * 90, f.y - Math.cos(f.th) * 90);
-  // pousa quando passa por cima de algo que ainda não provou (ou depois de voar bastante)
-  f.landing = f.flyT > 1.2 && (sbNovelBelow(f, below) || f.flyT > 9);
-  const target = f.landing ? below : Math.max(below, ahead) + SB_CRUISE;
-  f.vz += ((target - f.z) * 2.2 - f.vz) * Math.min(1, dt * 4);
+  // altura: cruzeiro acima do que está embaixo e à frente; na aproximação, desce planando até o alvo
+  const target = P ? Math.max(below, P.z + clamp(dist * 0.3, 0, SB_CRUISE)) : Math.max(below, ahead) + SB_CRUISE;
+  f.vz += ((target - f.z) * 3 - f.vz) * Math.min(1, dt * 5);
   f.z = Math.max(below, f.z + f.vz * dt);
-  if (f.landing && f.z - below < 1.5 && f.flyT > 0.6) {
-    f.flying = false; f.z = below; f.vz = 0;
+  // pousa ao chegar em cima do alvo (a área do objeto, ou 20 px do ponto escolhido) e perto da altura dele
+  const emCima = P && (P.r ? f.x >= P.r.x && f.x <= P.r.x + P.r.w && f.y >= P.r.y && f.y <= P.r.y + P.r.h : dist < 20);
+  if (emCima && f.z - below < 6) {
+    f.flying = false; f.z = below; f.vz = 0; f.pouso = null; f.voarCd = 5;
     if (SB.fisico) corpoTeleporte(f);   // o corpo físico recomeça onde ela pousou
-    labEvent('pouso', { z: Math.round(below) });
-    logEvent(below > 0 ? `Pousou numa plataforma a ${Math.round(below)} px de altura.` : 'Pousou no chão.');
+    labEvent('pouso', { z: Math.round(below), id: P.id, t: +f.flyT.toFixed(2) });
+    logEvent(P.id ? `Voou até "${label(P.id)}" e pousou (${f.flyT.toFixed(1)} s de voo).` : below > 0 ? `Pousou numa plataforma a ${Math.round(below)} px de altura.` : 'Pousou no chão.');
   }
 }
 function sbNovelBelow(f, below) {
@@ -527,14 +704,17 @@ function corpoPose() {
     mesh.matrixWorldNeedsUpdate = true;
   });
 }
+async function corpoCarregarMalha() {
+  if (CORPO.malha) return;
+  // a malha é gravada pelo servidor do corpo em web/data/ e vem do mesmo servidor dos dados do cérebro
+  const [info, bin] = await Promise.all([fetch('data/corpo_malha.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error('sem malha'); return r.json(); }),
+    fetch('data/corpo_malha.bin', { cache: 'no-cache' }).then(r => r.arrayBuffer())]);
+  CORPO.malha = corpoMeshes(info, bin);
+  CORPO.malha.group.visible = false;
+  SBR.scene.add(CORPO.malha.group);
+}
 async function corpoPreparar() {
-  if (!CORPO.malha) {
-    // a malha é gravada pelo servidor do corpo em web/data/ e vem do mesmo servidor dos dados do cérebro
-    const [info, bin] = await Promise.all([fetch('data/corpo_malha.json', { cache: 'no-cache' }).then(r => r.json()),
-      fetch('data/corpo_malha.bin', { cache: 'no-cache' }).then(r => r.arrayBuffer())]);
-    CORPO.malha = corpoMeshes(info, bin);
-    SBR.scene.add(CORPO.malha.group);
-  }
+  await corpoCarregarMalha();
   const r = await fetch(CORPO.url + '/ping', { cache: 'no-store' });
   if (!r.ok) throw new Error('ping respondeu ' + r.status);
 }
@@ -629,7 +809,7 @@ function olhoAmostrar(f) {
   const M = OLHO.mapa, R = SBR.r;
   olhoPoses(f);
   // o próprio corpo não aparece para os olhos (o flygym esconde cabeça, olhos, antenas e tórax)
-  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance].filter(Boolean);
+  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance, ...ANIM.leques].filter(Boolean);
   const vis = esconde.map(o => o.visible);
   esconde.forEach(o => { o.visible = false; });
   const feats = [];
@@ -1042,9 +1222,12 @@ function sbUpdate(dtw, now) {
   // a mosca
   const [x, z] = sbTo3(f.x, f.y);
   const fisicoNoChao = SB.fisico && CORPO.malha && CORPO.pose && !f.flying && !f.presa;
-  SBR.fly.visible = !fisicoNoChao;
-  if (CORPO.malha) CORPO.malha.group.visible = !!fisicoNoChao;
+  const animado = !fisicoNoChao && !!ANIM.poses && !!CORPO.malha;
+  SBR.fly.visible = !fisicoNoChao && !animado;
+  if (CORPO.malha) CORPO.malha.group.visible = !!(fisicoNoChao || animado);
   if (fisicoNoChao) corpoPose();
+  else if (animado) animPose(f, dtw);
+  if (!animado) for (const l of ANIM.leques) l.visible = false;
   SBR.fly.position.set(x, f.z, z);
   SBR.fly.rotation.set(f.flying ? -0.12 : 0, -f.th, 0, 'YXZ');
   for (const w of SBR.fly.userData.wings) {
@@ -1201,7 +1384,7 @@ function sbRenderMap(vx, vy, vw, vh) {
   const fog = SBR.scene.fog; SBR.scene.fog = null;
   SBR.rain.mesh.visible = false; SBR.marker.visible = true; SBR.predMarker.visible = PRED.on;
   SBR.r.render(SBR.scene, SBR.top);
-  SBR.rain.mesh.visible = true; SBR.marker.visible = false; SBR.predMarker.visible = false; SBR.scene.fog = fog;
+  SBR.rain.mesh.visible = !SBR.temaNatural; SBR.marker.visible = false; SBR.predMarker.visible = false; SBR.scene.fog = fog;
 }
 
 function sbFrame(dtw) {
@@ -1228,14 +1411,18 @@ function sbFrame(dtw) {
       const [px, pz] = sbTo3(P.x, P.y);
       if (!SBR.camReady) { SBR.camX = px; SBR.camZ = pz; SBR.camY = P.z; SBR.camTh = P.th; }
       const k = tau => 1 - Math.exp(-dtw / tau);
-      SBR.camX += (px - SBR.camX) * k(0.3); SBR.camZ += (pz - SBR.camZ) * k(0.3); SBR.camY += (P.z - SBR.camY) * k(0.4);
+      // em voo o movimento é liso e rápido (~900 px/s): a câmera segue de perto, sem atraso
+      const tp = P.flying ? 0.05 : 0.3;
+      SBR.camX += (px - SBR.camX) * k(tp); SBR.camZ += (pz - SBR.camZ) * k(tp); SBR.camY += (P.z - SBR.camY) * k(P.flying ? 0.08 : 0.4);
       SBR.camTh += Math.atan2(Math.sin(P.th - SBR.camTh), Math.cos(P.th - SBR.camTh)) * k(SB.fisico && !P.flying ? 1.2 : 0.4);
       const x = SBR.camX, z = SBR.camZ, th = SBR.camTh, pzAlt = SBR.camY;
-      const back = SBR.mode === 'pred' ? 130 : P.flying ? 190 : 170, up = SBR.mode === 'pred' ? 55 : P.flying ? 70 : 95;
+      // com o corpo real (tamanho verdadeiro, ~18 px), a câmera chega mais perto
+      const perto = SBR.mode !== 'pred' && ANIM.poses ? 0.36 : 1;
+      const back = (SBR.mode === 'pred' ? 130 : P.flying ? 190 : 170) * perto, up = (SBR.mode === 'pred' ? 55 : P.flying ? 70 : 95) * perto;
       const cx = x - Math.sin(th) * back, cz = z + Math.cos(th) * back;
       // a câmera nunca fica dentro de uma plataforma
       const want = new THREE.Vector3(cx, Math.max(pzAlt + up, sbSurface(cx + SB.W / 2, cz + SB.H / 2) + 55), cz);
-      SBR.cam.position.lerp(want, SBR.camReady ? 1 - Math.exp(-dtw / 0.4) : 1);
+      SBR.cam.position.lerp(want, SBR.camReady ? 1 - Math.exp(-dtw / (P.flying ? 0.12 : 0.4)) : 1);
       SBR.camReady = true;
       SBR.cam.aspect = w / h; SBR.cam.updateProjectionMatrix();
       SBR.cam.lookAt(x + Math.sin(th) * 70, pzAlt + 10, z - Math.cos(th) * 70);
@@ -1272,7 +1459,7 @@ function sbSet(on) {
   if (!on && SB.fisico) corpoSet(false);
   if (on) corpoPing();
   SB.on = on;
-  if (on) olhoCarregar();
+  if (on) { olhoCarregar(); animCarregar(); }
   else if (fly) fly.olhoReal = null;
   document.body.classList.toggle('sandbox', on);
   $('#worldBox').hidden = !on;

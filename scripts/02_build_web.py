@@ -178,6 +178,18 @@ for _perna, _n in (("f", "ProLN"), ("m", "MesoLN"), ("h", "MetaLN")):
 _grav = ann.subclass.fillna("").to_numpy().astype(str) == "wind_gravity"
 groups["gravidade_C"] = np.flatnonzero(_grav & np.char.startswith(typ.astype(str), "JO-C")).tolist()
 groups["gravidade_E"] = np.flatnonzero(_grav & np.char.startswith(typ.astype(str), "JO-E")).tolist()
+# voo (scripts/voo_mapa.py): halteres (os giroscópios), células HS (fluxo óptico horizontal) e os motores das asas.
+# Motores de direção pelo lado do corpo celular: o haltere de um lado liga o b1 do mesmo lado, como nas moscas reais
+_sup = ann.superclass.fillna("").to_numpy().astype(str)
+_soma = ann.somaSide.fillna("").to_numpy().astype(str)
+_hal = (np.char.find(_sub, "haltere") >= 0) & (np.char.find(_sup, "sensory") >= 0)
+for _lado in "LR":
+    groups[f"haltere_{_lado}"] = np.flatnonzero(_hal & (_root == _lado)).tolist()
+    groups[f"hs_{_lado}"] = by_type(["HSN", "HSE", "HSS"], _lado)
+    groups[f"asa_mais_{_lado}"] = np.flatnonzero(np.isin(typ.astype(str), ["b1 MN", "b2 MN", "b3 MN"]) & (_soma == _lado)).tolist()
+    groups[f"asa_menos_{_lado}"] = np.flatnonzero(np.isin(typ.astype(str), ["i1 MN", "i2 MN", "iii1 MN", "iii3 MN"]) & (_soma == _lado)).tolist()
+    groups[f"cabeca_{_lado}"] = by_type(["DNp15"], _lado)
+groups["asa_forca"] = np.flatnonzero(np.char.startswith(typ.astype(str), "DLMn") | np.char.startswith(typ.astype(str), "DVMn")).tolist()
 # um grupo por glomérulo e por antena: cada botão da loja ganha um cheiro com 6 deles
 ODOR_POOL = odor_pool(typ.astype(str), cls_all)
 # o mundo da Cozinha usa cheiros reais: vinagre e fermentação (DM1), geosmina, o cheiro de mofo (DA2), e CO2 (V).
