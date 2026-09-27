@@ -108,6 +108,149 @@
     "clique": 1,
     "comeu": 1
    }
+  },
+  {
+   "rotulo": "sentidos-olhos-reais",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 100,
+   "cerebro_s": 32,
+   "amostras": 3203,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.526,
+    "parada": 0.229,
+    "comendo": 0.23,
+    "virando": 0.012
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 4.152,
+    "p10": 3.341,
+    "p90": 4.93
+   },
+   "trecho_andando_s": {
+    "n": 17,
+    "media": 1.014,
+    "mediana": 1.11
+   },
+   "paradas_s": {
+    "n": 16,
+    "media": 0.918,
+    "mediana": 0.52,
+    "frac_menos_0_3s": 0.19,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 16,
+    "mediana": 7.611,
+    "p90": 20.041
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 0.41,
+    "duracao_ms_mediana": 60,
+    "amplitude_graus_mediana": 12
+   },
+   "eventos": {
+    "clique": 9,
+    "comeu": 8,
+    "decepcao": 1
+   }
+  },
+  {
+   "rotulo": "sentidos-olhos-reais",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 100,
+   "cerebro_s": 29.3,
+   "amostras": 2933,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.601,
+    "parada": 0.131,
+    "voando": 0.245,
+    "virando": 0.019
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 5.859,
+    "p10": 4.197,
+    "p90": 5.999
+   },
+   "trecho_andando_s": {
+    "n": 17,
+    "media": 1.069,
+    "mediana": 0.57
+   },
+   "paradas_s": {
+    "n": 13,
+    "media": 0.296,
+    "mediana": 0.34,
+    "frac_menos_0_3s": 0.38,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 13,
+    "mediana": 8.994,
+    "p90": 19.797
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 0.28,
+    "duracao_ms_mediana": 90,
+    "amplitude_graus_mediana": 16
+   },
+   "eventos": {
+    "voo": 4,
+    "fugaDirecao": 6,
+    "sacada": 4,
+    "pouso": 3
+   }
+  },
+  {
+   "rotulo": "walk-105-simples",
+   "data": "2026-09-27",
+   "janela_ms": 100,
+   "relogio_s": 90,
+   "cerebro_s": 25.4,
+   "amostras": 2543,
+   "fracoes_do_tempo": {
+    "andando_reto": 0.372,
+    "parada": 0.034,
+    "comendo": 0.089,
+    "virando": 0.336,
+    "voando": 0.165
+   },
+   "velocidade_andando_mm_s": {
+    "mediana": 9.094,
+    "p10": 8.155,
+    "p90": 14.473
+   },
+   "trecho_andando_s": {
+    "n": 9,
+    "media": 1.996,
+    "mediana": 0.71
+   },
+   "paradas_s": {
+    "n": 6,
+    "media": 0.53,
+    "mediana": 0.02,
+    "frac_menos_0_3s": 0.67,
+    "frac_mais_5s": 0
+   },
+   "reorientacao_depois_de_parar_graus": {
+    "n": 6,
+    "mediana": 7.912,
+    "p90": 30.453
+   },
+   "viradas_rapidas": {
+    "por_s_andando": 1.39,
+    "duracao_ms_mediana": 140,
+    "amplitude_graus_mediana": 48
+   },
+   "eventos": {
+    "mofo": 2,
+    "voo": 2,
+    "fugaDirecao": 3,
+    "sacada": 2,
+    "pouso": 2,
+    "alvoVoo": 1
+   }
   }
  ]
 }

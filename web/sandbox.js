@@ -407,6 +407,30 @@ function sbEscolheAlvo(f) {
   }
   return melhor;
 }
+// A coisa que mais aparece à frente. Com os olhos reais (sandbox desenhado): a maior mancha de "objeto" (omatídeos mais
+// claros que o resto do olho, OLHO.obj) entre 60° abaixo e 15° acima do horizonte, até 80° para cada lado; sem esse
+// limite, a janela clara ganha sempre. Sem os olhos reais: a aproximação da página (f.seen, de see()).
+// Devolve a direção relativa ao rumo (rad, negativo = esquerda) e um tamanho
+function sbAlvoVisual(f) {
+  if (OLHO.mapa && OLHO.obj && f.olhoReal && performance.now() - f.olhoReal.t < 600) {
+    const D = OLHO.mapa.direcao, dentro = (az, el) => Math.abs(az) < 80 && el < 15 && el > -60;
+    let pico = null;
+    for (let i = 0; i < 2; i++) for (let o = 0; o < OLHO.obj[i].length; o++) {
+      const v = OLHO.obj[i][o], [az, el] = D[i][o];
+      if (v > 0 && dentro(az, el) && (!pico || v > pico.v)) pico = { v, az, el };
+    }
+    if (!pico) return null;
+    let sa = 0, sw = 0;   // média das direções em volta do pico (~20°), pesada pelo quanto cada omatídeo destoa
+    for (let i = 0; i < 2; i++) for (let o = 0; o < OLHO.obj[i].length; o++) {
+      const v = OLHO.obj[i][o], [az, el] = D[i][o];
+      if (v > 0.3 * pico.v && Math.hypot(az - pico.az, el - pico.el) < 20) { sa += v * az; sw += v; }
+    }
+    return { a: -(sa / sw) * Math.PI / 180, tam: sw, olhos: true };
+  }
+  let melhor = null;
+  for (const [, sl, sr, a, tam] of f.seen || []) if (Math.abs(a) < 1.3 && (!melhor || tam > melhor.tam)) melhor = { a, tam };
+  return melhor;
+}
 function sbFly(f, dt) {
   f.flyT += dt;
   // alvo: depois do arranque, procura uma coisa atraente à frente; sem nada em VOO_MAX s, pousa onde estiver
@@ -431,9 +455,8 @@ function sbFly(f, dt) {
   if (!P && soSentidos()) {
     // só sentidos: vira para a coisa que mais aparece à frente nos olhos (servo visual, regra nossa); o cheiro soma a
     // virada entre as antenas, em stepBody
-    let melhor = null;
-    for (const [, sl, sr, a, tam] of f.seen || []) if (Math.abs(a) < 1.3 && (!melhor || tam > melhor.tam)) melhor = { a, tam };
-    if (melhor) f.th += clamp(melhor.a * 3, -4, 4) * dt;
+    const alvo = sbAlvoVisual(f);
+    if (alvo) f.th += clamp(alvo.a * 3, -4, 4) * dt;
   }
   if (P) {
     dist = Math.hypot(P.x - f.x, P.y - f.y);

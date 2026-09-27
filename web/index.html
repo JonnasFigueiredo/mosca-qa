@@ -714,7 +714,11 @@ const W = 560, H = 640;
 // sandbox 3D (sandbox.js): um mundo maior, com plataformas; z é a altura dos pés dela
 const SB = { on: false, fisico: false, W: 1400, H: 1400, app: null, start: [700, 760] };
 const bw = () => (SB.on ? SB.W : W), bh = () => (SB.on ? SB.H : H);
-const WALK = 42;   // px por segundo de tempo cerebral
+// px por segundo de tempo cerebral. Na Cozinha 3D (7 px por mm), 42 px/s seriam 6 mm/s, e ela andava a ~5 mm/s
+// medidos; moscas andam a ~11-15 mm/s (Valente et al. 2007). A página 2D da Cozinha (2,8 px por mm) já dava 15 mm/s.
+// Por isso, no 3D do mundo natural, a mesma velocidade em mm/s: 42 x 7 / 2,8 = 105 px/s (stepBody escolhe)
+const WALK_PAGINA = 42, WALK_COZINHA_3D = 105;
+let WALK = WALK_PAGINA;
 let brainClock = 0;
 let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memory = 0, memoryR = 0;
 let kcDrive = 0, kcBase = 0, kcDriveR = 0, kcBaseR = 0, kcLossA = 0, kcLossR = 0;
@@ -934,6 +938,7 @@ function stepBody(dt, counts) {
     marcha = CorpoNatural.marcha(f, dt, !!f.patasEl && f.bocaQuer);
   }
   // desacelera perto do que o cheiro aprendido lembra (busca local); a atração inata, que vem de longe, não
+  WALK = SB.on && APP.mundo ? WALK_COZINHA_3D : WALK_PAGINA;
   f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida);
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído

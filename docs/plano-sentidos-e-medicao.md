@@ -22,7 +22,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
 - [x] P1.4 Sem "novidade" escondida na Cozinha
 - [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
-- [ ] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura
+- [~] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (velocidade feita; faltam pausas e viradas)
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
 
@@ -67,13 +67,32 @@ Leitura:
   sentidos (com a inclinação), 0–2 voos e fruta comida em 1 de 3 (uvas); nas outras ela ficou no açúcar, perto de onde
   começa.
 
+**P1.2 com os olhos reais e P2.2 (velocidade) (27/09/2026).**
+- `sbAlvoVisual(f)` em `web/sandbox.js`: com os olhos reais, a maior mancha de `OLHO.obj` entre −60° e +15° de
+  elevação e ±80° de azimute (sem o limite, a janela clara ganha sempre); sem eles, `f.seen`. Duas rodadas de 100 s
+  com os olhos desenhados (`andar_medida.mjs --sentidos`, rótulo `sentidos-olhos-reais`): o cérebro anda só ~0,3× com
+  o desenho (29–32 s de cérebro); numa comeu 8 vezes (açúcar) sem voar; na outra voou 4 vezes e pousou 3, sem achar
+  fruta. Pouco para concluir: rodar mais longo (300 s ou mais).
+- `WALK` na Cozinha 3D: 105 px/s (`WALK_COZINHA_3D`, escolhido em `stepBody`), a mesma velocidade em mm/s da página 2D
+  da Cozinha. Medido (rótulo `walk-105-simples`): mediana 9,1 mm/s (p10 8,2, p90 14,5), antes 4,9. O corpo físico não
+  muda (o sinal é `f.speed / WALK`). `realismo_sandbox_teste.mjs` passa.
+- Ainda fora do alvo (mesma medida): parada 3% do tempo (moscas: muito mais; 63% numa arena sem comida) e virando 34%
+  (viradas de ~140 ms e ~48°; moscas: sacadas de ~90 ms e ~15°, rumo quase parado entre elas).
+
 Próximos passos, nesta ordem:
-1. P1.2 com os olhos reais: no sandbox desenhado, trocar `f.seen` pela maior mancha de `OLHO.obj` (direção pelos
+1. P2.2, pausas: em `CorpoNatural.marcha` (`web/corpo-natural.js`), durações exponenciais (andar com média ~1,5–2 s;
+   parada com a maioria < 0,3 s e cauda longa, algumas > 5 s) e a pausa não ser desligada por qualquer aversão
+   (`f.aversion > 0.3` desliga hoje; perto da laranja mofada ela nunca para). Ajustar o teste
+   `scripts/corpo_natural_teste.mjs` se a regra mudar.
+2. P2.2, viradas: em `stepBody` (`web/index.html`, `let turn = ...`), juntar a virada pedida (visão/cérebro, cheiro,
+   ruído) e soltá-la em sacadas de ~90 ms acima de 200°/s, com o rumo quase parado entre elas; o sentido e o total
+   continuam os do cérebro. O ruído de hoje (`(Math.random() - 0.5) * 2.2`) é grande: medir sem ele.
+3. P1.2 com os olhos reais: no sandbox desenhado, trocar `f.seen` pela maior mancha de `OLHO.obj` (direção pelos
    omatídeos, `OLHO.mapa.direcao`). `f.seen` continua como reserva (página 2D, `?headless=1`, `?olhos=0`).
-2. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
+4. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
    `--sem-olhos`, gravar em `docs/medicoes/sentidos-comparacao.json`. Se o modo só sentidos comer fruta e pousar em
    comida com frequência razoável, virar o padrão (e `?sentidos=0` volta aos atalhos). Atualizar README e página.
-3. P2.2: calibrar `WALK`, pausas e viradas (ver a leitura da linha de base acima).
+
 
 ## Os atalhos de hoje (o que a mosca sabe sem ter percebido)
 
