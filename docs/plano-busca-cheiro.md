@@ -127,7 +127,9 @@ rodadas, logo depois de pousar no pêssego vem `fugaDirecao` + `voo` em 0–0,3 
 ela mesma contava como obstáculo que cresce à frente (`f.loomObst`), que liga LPLC2/LC4 e a fibra gigante; e o valor não
 era zerado ao pousar. Correções em `sbFly`: `f.loomObst = 0` ao pousar (vale nos dois modos); e, só com `soSentidos()`,
 na aproximação sobre uma coisa, os primeiros 60 px à frente não contam como obstáculo (Tammero e Dickinson 2002:
-expansão centrada leva ao pouso, lateral a uma guinada). Série `longa-sentidos-d-1..5` a seguir.
+expansão centrada leva ao pouso, lateral a uma guinada). Série `longa-sentidos-d-1..5` a seguir. Atenção: zerar `f.loomObst` ao pousar também vale no modo com
+atalhos, então a série de referência `longa-simples` foi medida com o defeito; para comparar de forma justa no fim,
+repetir 5 rodadas com atalhos (`longa-simples-b-N`, e ajustar `serie('simples')` no resumo).
 
 ## O que as moscas fazem (base da regra)
 
