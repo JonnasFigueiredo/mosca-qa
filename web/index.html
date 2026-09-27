@@ -498,6 +498,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <p>No modo <strong>Sandbox 3D</strong>, o sistema vira um mundo: cada grupo de elementos da mesma função fica numa plataforma, em alturas diferentes, e ela anda por cima delas e <strong>voa</strong> entre elas.</p>
         <p>Ela decola sozinha quando chega na beira de uma plataforma, ou dá de cara com uma mais alta, e há algo novo para ver. E decola de susto quando a <strong>fibra gigante</strong> dispara: quando um bug estoura, o glitch cresce na frente dela e liga os detectores de ameaça (LPLC2 e LC4). </p>
         <p><strong>O voo é do cérebro:</strong> em voo, os halteres batem e o vento chega às antenas, e isso liga, no mapa, os neurônios motores das asas. A amplitude de cada asa vem dos motores de direção daquele lado (b1, b2 e b3 aumentam; i1 e iii3 diminuem) e a força, dos motores DLM e DVM. Quando o corpo gira, os halteres mandam o giro de volta, e o mapa corrige: é o reflexo que estabiliza o voo das moscas. Uma parede à frente cresce na visão e dispara a fibra gigante, e ela faz uma sacada, uma curva rápida para o lado que os neurônios da fuga indicam. Os voos são curtos, como os de uma mosca numa cozinha: ela sobe o cheiro, mira uma fruta à frente e pousa nela, em 1 a 2 s. A escolha do alvo, a altura e o pouso são regras (os neurônios de pouso do mapa não responderam no modelo).</p>
+        <p><strong>Fuga do cheiro no corpo simples:</strong> regra nossa: ao sentir aversão, gira cerca de 100°. Se a concentração ruim nas antenas diminui, segue sem novos giros de fuga; se não diminui, tenta outro giro após 1 s. Durante a saída, não sorteia pausas, não reduz a velocidade por aversão e dá menos peso às outras viradas. Não consulta a posição da laranja para fugir.</p>
         <p><strong>Mundo · Cozinha:</strong> um pedaço de 20 × 20 cm de bancada, o habitat da mosca-da-fruta, na escala dela. As frutas têm açúcar para comer; os cheiros ligam os glomérulos que respondem a eles em moscas reais (fermentação e vinagre: DM1 e VA2; ésteres de fruta: DM2 e DM3; mofo, a geosmina: DA2; casca de laranja: DC1). Pisando em açúcar, os neurônios de gosto das patas ligam os da probóscide, e ela come; a fome regula esse gosto. A atração inata pelos cheiros de fruta e a aversão ao mofo são regras nossas, tiradas da literatura. A laranja mofada é amarga: provar liga a dopamina de punição.</p>
         <p>O visual de Matrix é para quem assiste. Ela sente esse mundo pelos mesmos canais da página: o cheiro de cada elemento, os olhos (LC10a) e o gosto nas patas.</p>
         <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. As plataformas são blocos sólidos, e quando as seis patas perdem o apoio (passou da beira), ela começa a voar: é o reflexo tarsal das moscas reais. No ar ela ainda usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
@@ -938,10 +939,13 @@ function stepBody(dt, counts) {
   if (SB.on && APP.mundo) {
     sbContatoNatural(f, dt);
     marcha = CorpoNatural.marcha(f, dt, !!f.patasEl && f.bocaQuer);
+    // Regra sensorial de fuga no corpo simples: não interromper a saída do cheiro com pausas sorteadas.
+    if (!SB.fisico && !f.flying && f.fleeDir && f.aversion > 0.05) marcha = { andar: 1, girar: 1 };
   }
   // desacelera perto do que o cheiro aprendido lembra (busca local); a atração inata, que vem de longe, não
   WALK = SB.on && APP.mundo ? WALK_COZINHA_3D : WALK_PAGINA;
-  f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida);
+  const fugindoCheiro = SB.on && APP.mundo && !SB.fisico && !f.flying && f.fleeDir;
+  f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (fugindoCheiro ? 1 : 1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida);
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
   const dnDiff = outRate.dn_L - outRate.dn_R;
@@ -959,13 +963,18 @@ function stepBody(dt, counts) {
   const [dAv, dAt, sAt] = ina ? [ina.vL - ina.vR, ina.aL - ina.aR, ina.aL + ina.aR] : [tL - tR, tL - tR, tL + tR];
   if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(dAv) > 0.03 ? Math.sign(dAv) : (Math.random() < 0.5 ? -1 : 1);
   if (f.aversion < 0.05) f.fleeDir = 0;
-  // no corpo simples da Cozinha 3D, as viradas saem em sacadas (abaixo) e a fuga do cheiro ruim é um giro de ~100°
-  // para o lado escolhido, seguido de reta (outro se ainda sentir o cheiro 1 s depois); no resto, giro contínuo
+  // Regra do corpo, sem consultar objetos: se o cheiro ruim diminui, seguir a saída encontrada.
+  // Usar a concentração nas antenas antes da saturação da aversão, que pode ficar em 1 enquanto ela se afasta.
   const sacadas = SB.on && APP.mundo && !SB.fisico && !f.flying;
+  const avAtual = ina ? (ina.vL + ina.vR) / 2 : f.aversion;
+  f.dAvFuga = ema(f.dAvFuga || 0, (avAtual - (f.avFugaAnt ?? avAtual)) / dt, dt, 0.25);
+  f.avFugaAnt = avAtual;
   const away = sacadas ? 0 : (f.fleeDir || 0) * 4.5;
   if (sacadas && f.fleeDir) {
     f.fugaGiroT = (f.fugaGiroT ?? 0) - dt;
-    if (f.fugaGiroT <= 0) { f.giroAcum = (f.giroAcum || 0) + f.fleeDir * 1.75; f.fugaGiroT = 1; }
+    if (f.fugaGiroT <= 0 && f.dAvFuga >= -0.005 && f.aversion > 0.3) {
+      f.giroAcum = (f.giroAcum || 0) + f.fleeDir * 1.75; f.fugaGiroT = 1;
+    }
   } else f.fugaGiroT = 0;
   // atração: as sinapses dizem que o cheiro é bom; a diferença entre as antenas diz de que lado
   // ele está (a mesma leitura do desvio, com o sinal trocado)
@@ -1016,7 +1025,7 @@ function stepBody(dt, counts) {
     // O sentido e o total são os pedidos; o formato é regra do corpo
     // fugindo do cheiro ruim, o resto da virada (a visão puxa para a coisa grande e clara que cheira mal) perde peso;
     // parada, a virada acumulada se desfaz (depois de parar, moscas seguem no mesmo rumo: Valente et al. 2007)
-    const peso = f.fleeDir ? 1 - 0.8 * f.aversion : 1;
+    const peso = f.fleeDir ? 0.1 : 1;
     if (marcha.andar === 0 && marcha.girar === 0) f.giroAcum = 0;
     else f.giroAcum = clamp((f.giroAcum || 0) + clamp(turn * peso, -6, 6) * dt, -2, 2);
     if (!f.sacadaSentido && Math.abs(f.giroAcum) > SACADA_MIN) f.sacadaSentido = Math.sign(f.giroAcum);

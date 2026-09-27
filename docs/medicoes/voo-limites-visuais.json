@@ -1,0 +1,197 @@
+{
+  "metodo": "Função sbAlvoVisual do sandbox avaliada isoladamente com intensidades e direções sintéticas de omatídeos. Verifica aplicação dos limites angulares também à média da mancha. Não testa a rede, a frequência de voo nem o sucesso de pouso.",
+  "medidas": [
+    {
+      "fase": "antes",
+      "data": "2026-09-27T12:08:03.186Z",
+      "resultados": [
+        {
+          "nome": "frente",
+          "direcoes": [
+            [
+              0,
+              0
+            ]
+          ],
+          "valores": [
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": 0,
+          "passou": true
+        },
+        {
+          "nome": "brilho acima de 15 graus não entra na média",
+          "direcoes": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              16
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": -9.090909090909092,
+          "passou": false
+        },
+        {
+          "nome": "brilho lateral além de 80 graus não entra na média",
+          "direcoes": [
+            [
+              79,
+              0
+            ],
+            [
+              90,
+              0
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": -79,
+          "observado_graus": -89,
+          "passou": false
+        },
+        {
+          "nome": "brilho abaixo de menos 60 graus não entra na média",
+          "direcoes": [
+            [
+              0,
+              -59
+            ],
+            [
+              10,
+              -65
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": -9.090909090909092,
+          "passou": false
+        },
+        {
+          "nome": "sem mancha nos olhos reais não consulta objetos da aproximação",
+          "direcoes": [
+            [
+              0,
+              0
+            ]
+          ],
+          "valores": [
+            0
+          ],
+          "esperado_graus": null,
+          "observado_graus": null,
+          "passou": true
+        }
+      ]
+    },
+    {
+      "fase": "depois",
+      "data": "2026-09-27T12:15:24.104Z",
+      "resultados": [
+        {
+          "nome": "frente",
+          "direcoes": [
+            [
+              0,
+              0
+            ]
+          ],
+          "valores": [
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": 0,
+          "passou": true
+        },
+        {
+          "nome": "brilho acima de 15 graus não entra na média",
+          "direcoes": [
+            [
+              0,
+              0
+            ],
+            [
+              10,
+              16
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": 0,
+          "passou": true
+        },
+        {
+          "nome": "brilho lateral além de 80 graus não entra na média",
+          "direcoes": [
+            [
+              79,
+              0
+            ],
+            [
+              90,
+              0
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": -79,
+          "observado_graus": -79,
+          "passou": true
+        },
+        {
+          "nome": "brilho abaixo de menos 60 graus não entra na média",
+          "direcoes": [
+            [
+              0,
+              -59
+            ],
+            [
+              10,
+              -65
+            ]
+          ],
+          "valores": [
+            0.1,
+            1
+          ],
+          "esperado_graus": 0,
+          "observado_graus": 0,
+          "passou": true
+        },
+        {
+          "nome": "sem mancha nos olhos reais não consulta objetos da aproximação",
+          "direcoes": [
+            [
+              0,
+              0
+            ]
+          ],
+          "valores": [
+            0
+          ],
+          "esperado_graus": null,
+          "observado_graus": null,
+          "passou": true
+        }
+      ]
+    }
+  ]
+}

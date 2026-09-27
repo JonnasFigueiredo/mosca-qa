@@ -21,7 +21,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [~] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos (feito, com os olhos reais e com a aproximação; falta validar em rodadas longas)
 - [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
 - [x] P1.4 Sem "novidade" escondida na Cozinha
-- [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
+- [x] P1.5 Validação dos dois modos: 5 rodadas de 300 s cada, olhos reais. **Negativo:** "só sentidos" não achou fruta; continua como opção, o padrão fica com os atalhos
 - [x] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (corpo simples; no físico, só pausas e velocidade)
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
@@ -104,17 +104,69 @@ antes girava 1500–1800° e se aproximava (a visão puxa para a coisa grande e 
 cheiro em 1 de 3 (noutra, meio caminho). Limites da medida: com janela de 100 ms, sacadas de ~45 ms aparecem menores
 (mediana 6°) e paradas curtas (< 0,15 s) somem; com pouca amostra (11 paradas), as frações variam muito.
 
+**Retomada: fuga por tendência (27/09/2026, passo a concluído).** Git limpo na entrada; servidores existentes nas portas 8765/8766 reutilizados. Cópia anterior congelada em `_tmp/_antes_fuga_retoma`, servida na 8767. Linha de base livre de 90 s: 39,2 s cerebrais, velocidade mediana 11,74 mm/s, 16,2% parada, 4,7% virando, oito refeições (`fuga-antes-retomada`). Sonda versionada `scripts/mofo_sonda.js`, acionada pelo medidor com `--sonda-mofo --segundos 0`, três largadas de 12 s cerebrais, olhos reais, sem voo espontâneo. Antes: distância final 27,2/35,2/34,0 mm, aversão 1,00/0,60/0,64; depois: 69,1/83,3/76,1 mm, aversão 0,0068/0,0005/0,0020. Largadas compartilham o cérebro; métricas gerais de andar da sonda incluem teleportes e não devem entrar nas distribuições livres.
+
+Regra nova só no corpo simples da Cozinha 3D: usar a tendência do cheiro ruim nas antenas antes de saturar; se diminui, seguir andando; repetir o giro somente se não diminui. Durante a fuga, não sortear pausas, não descontar velocidade por aversão, outras viradas a 10%. README e página declaram a regra. `corpo_natural_teste.mjs` e `realismo_sandbox_teste.mjs` passaram, incluindo alimentação física. Rodada livre posterior de 90 s: 32,8 s cerebrais, mediana 10,30 mm/s, 23,9% parada, 4,0% virando, sete refeições (`fuga-depois-retomada`). Essas duas rodadas livres não isolam o efeito do ajuste; a evidência específica é a sonda. O medidor agora preserva eventos com IDs/tempo, fome final e uso efetivo dos olhos reais para a comparação seguinte. Nenhum parâmetro cerebral alterado.
+
+**Passo b, corpo simples concluído (27/09/2026); físico em execução.** Cinco sessões de 300 s de relógio (`longa-simples-1..5`), 101,4–177,0 s cerebrais, olhos reais disponíveis em 100% dos tiques. Mediana entre rodadas: velocidade 10,984 mm/s (faixa 7,706–11,288), média dos trechos andando 1,477 s (0,982–1,902), 60% das pausas menores que 0,3 s (55–69%), parada 21,6% (18,3–30,8%), virando 6,2% (5,7–7,9%). Frutas comidas e pousos em frutas em 3/5; duas sessões só comeram açúcar, e três terminaram com fome 1. Resultados individuais preservados, inclusive negativos. Sem mudança de comportamento durante a série; os dois testes de regressão já passaram nessa versão.
+
+A série física usa janela de 200 ms. O medidor agora separa escalada explícita (`naParede`) de repouso e a exclui dos trechos no chão; as medidas físicas antigas não faziam essa separação. O corpo simples não usa esse estado. Também verifica se a física permaneceu ligada e registra disponibilidade dos olhos, eventos completos e hashes dos arquivos web. A execução sequencial está em `_rodadas_longas.py andar`, logs em `_tmp/_longa-*.log`: conferir se ainda está ativa antes de iniciar outro navegador. `scripts/resumir_sentidos.mjs` resume as cinco rodadas de cada série e, ao completar os dois modos, acrescenta um recorte de igual duração cerebral.
+
 Próximos passos, nesta ordem:
-1. Fuga do cheiro ruim mais decidida (numa de 3 largadas ela ainda fica perto da laranja): por exemplo, andar mais
-   rápido enquanto foge (hoje a aversão *reduz* a velocidade: `(1 - 0.45 * f.aversion)` em `f.speed`) e não parar
-   (`CorpoNatural.marcha` já não para acima de 0,6 de aversão).
-2. Rodadas mais longas (300 s) e várias (5) do medidor para ter distribuições estáveis, no corpo simples e no físico.
-3. P1.2: validar o voo pelos olhos reais (`sbAlvoVisual`, já feito) em rodadas longas (300 s ou mais) e ajustar os
-   limites de elevação e o limiar de pouso.
-4. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
+1. [x] Fuga do cheiro ruim: revisão por tendência medida antes/depois, descrita acima.
+2. [x] Cinco rodadas de 300 s por corpo, olhos reais (`longa-simples-1..5`, `longa-fisico-1..5`); resumo em
+   `docs/medicoes/andar-longas-resumo.json` (`node scripts/resumir_sentidos.mjs`). Físico (mediana entre rodadas):
+   91 s cerebrais por rodada; andando 47%, parada 22%, virando 9,6%, comendo 14%, escalando 4%; fruta comida em 4/5,
+   pouso em fruta em 2/5; 8 refeições por rodada (1–11). Simples: ver o parágrafo do passo b acima.
+3. [~] P1.2: validar o voo pelos olhos reais em rodadas longas. Feito: `scripts/visao_voo_teste.mjs` (omatídeos
+   sintéticos) mostrou que a média em volta do pico ignorava os limites (a janela acima de 15° e o que passa de 80°
+   puxavam a direção: 3 de 5 casos falhavam); corrigido em `sbAlvoVisual` (`dentro(az, el)` também na média), 5/5
+   passam (`docs/medicoes/voo-limites-visuais.json`, fases `antes` e `depois`). Falta: ver nas rodadas `longa-sentidos`
+   se os voos vão para frutas e se o limiar de pouso precisa de ajuste.
+4. [x] P1.5: série `longa-sentidos-1..5` concluída e comparada (resultado abaixo). Série iniciada (27/09/2026, `_rodadas_longas.py sentidos`, log em
+   `_tmp/_serie_sentidos.log`), com a correção de `sbAlvoVisual` acima. Critério escrito **antes** de ver o resultado:
+   "só sentidos" vira o padrão se, nas 5 rodadas, comer fruta em pelo menos 3, pousar em fruta em pelo menos 2 e fizer
+   pelo menos metade das refeições do modo com atalhos (`longa-simples`) na mesma janela cerebral
+   (`janela_cerebral_comum` de `sentidos-comparacao.json`). Se não passar, fica como opção e o negativo vai para o
+   README. Texto original do passo:
+   5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
    `--sem-olhos`, gravar em `docs/medicoes/sentidos-comparacao.json`. Se o modo só sentidos comer fruta e pousar em
    comida com frequência razoável, virar o padrão (e `?sentidos=0` volta aos atalhos). Atualizar README e página.
 
+
+**P1.5 concluído, resultado negativo (27/09/2026).** Cinco rodadas de 300 s por modo, olhos reais, corpo simples
+(`sentidos-comparacao.json` → `rodadas_longas`; `node scripts/resumir_sentidos.mjs`):
+
+| | Com atalhos (`longa-simples`) | Só sentidos (`longa-sentidos`) |
+|---|---|---|
+| Rodadas em que comeu fruta | 3/5 (pêssego, uvas) | 0/5 |
+| Rodadas com pouso em fruta | 3/5 (pêssego, uvas, morango) | 0/5 (2 pousos, ambos no balcão) |
+| Voos por rodada | 0, 0, 3, 5, 6 | 0, 0, 0, 1, 2 |
+| Refeições nos primeiros 101 s cerebrais | 15, 8, 9, 14, 8 | 5, 7, 8, 8, 8 (só açúcar) |
+| Fome no fim | mediana 1 (mín. 0,37) | 1 em todas |
+
+Critério (escrito antes): fruta ≥ 3/5, pouso em fruta ≥ 2/5, refeições ≥ metade. Passou só o das refeições. O
+padrão continua com os atalhos; `?sentidos=1` fica como opção. O servo visual funcionou (165 e 204 chamadas com os
+olhos reais nas rodadas com voo). O que falhou, pela ordem:
+1. **Quase não decola:** 3 de 5 rodadas sem voo. Ela fica em volta do açúcar (perto do ponto de partida), come as 8
+   porções e continua ali com fome.
+2. **O pouso não acha a fruta:** os 2 pousos foram no balcão, por tempo (`VOO_MAX`), sem que o cheiro bom passasse do
+   limiar em cima de uma fruta (a nuvem de cheiro é centrada na fruta e cai com a altura; no cruzeiro, 60 px acima,
+   o cheiro fica fraco).
+3. **Andando, o cheiro não a leva à fruta:** com as antenas a 0,28 mm, a diferença entre elas é ~16 vezes menor que
+   antes, e a busca pelo cheiro na Cozinha é só essa comparação. Com os atalhos, quem a leva às frutas é a escolha do
+   alvo do voo pela lista.
+
+Próximos passos sugeridos (não começados; decidir com o usuário):
+1. **Busca pelo cheiro no tempo (klinotaxia), sem a lista:** moscas andando comparam a concentração ao longo do
+   tempo, não só entre as antenas; ao perder o cheiro, viram; enquanto ele cresce, seguem reto (Álvarez-Salvado et al.
+   2018, eLife; Demir et al. 2020, eLife). Hoje há algo parecido só para o cheiro aprendido (`f.tumbleT` em
+   `stepBody`); estender ao cheiro inato de fruta (regra), medir com o medidor e com largadas a 20–35 mm das frutas.
+2. **Pouso:** descer quando os olhos veem uma coisa embaixo e o cheiro bom está presente e crescendo, em vez de exigir
+   que passe de 0,35 na altura do voo; ou medir o cheiro na altura em que ela desceria.
+3. **Decolar para procurar:** com fome e sem cheiro bom crescendo por um tempo (a comida por perto acabou), a chance de
+   decolar aumenta (hoje ela fica presa no açúcar vazio).
+4. Depois, repetir as 5 rodadas de cada modo e o mesmo critério.
 
 ## Os atalhos de hoje (o que a mosca sabe sem ter percebido)
 
@@ -189,6 +241,8 @@ isso é resultado (o mapa não resolve) e a solução vira regra declarada.
 ## Parte 2: medir o andar contra moscas reais
 
 ### Alvos da literatura (conferidos em 27/09/2026)
+
+**Ressalva confirmada na retomada:** Valente et al. apresenta uma única mosca durante duas horas e declara que os resultados não generalizam o comportamento da espécie. Usar seus números como referências exploratórias. Fonte: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0001083. Geurten et al. analisou 103 moscas e usou agrupamento das velocidades para o orçamento de tempo; nosso medidor por limiares não é metodologicamente idêntico. Mendes et al. selecionou 71 vídeos de trajetos retos sem pausas; a faixa de velocidade descreve médias por vídeo, não todo comportamento natural (https://pmc.ncbi.nlm.nih.gov/articles/PMC3545443/).
 
 As condições mudam os números (arena, luz, fome, sexo). O alvo é cair **dentro da faixa** relatada, não acertar um
 número. Cite a fonte no README quando usar.

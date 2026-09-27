@@ -9,16 +9,23 @@
 // --sentidos: passa ?sentidos=1 (parte 1 do plano). --sem-olhos: ?headless=1 (sem desenhar; os olhos reais não
 // funcionam e a visão usa a aproximação da página).
 import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve, relative, isAbsolute } from 'node:path';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const tem = k => process.argv.includes('--' + k);
 const segundos = +arg('segundos', 90), porta = +arg('porta', 8765), janelaMs = +arg('janela', 100), fisico = tem('fisico'), sentidos = tem('sentidos'), semOlhos = tem('sem-olhos');
+if (fisico && tem('sonda-mofo')) throw new Error('a sonda do mofo reinicia apenas o corpo simples; não usar com --fisico');
 const rotulo = arg('rotulo', `${fisico ? 'fisico' : 'simples'}${sentidos ? '-sentidos' : ''}${semOlhos ? '-sem-olhos' : ''}`);
 const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const RAIZ = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const TMP = join(RAIZ, '_tmp'); mkdirSync(TMP, { recursive: true });
+const versao = Object.fromEntries(await Promise.all(['index.html', 'sandbox.js', 'corpo-natural.js', 'sim-worker.js'].map(async f => {
+  const resposta = await fetch(`http://localhost:${porta}/${f}`);
+  if (!resposta.ok) throw new Error(`não foi possível identificar a versão servida de ${f}`);
+  return [f, createHash('sha256').update(Buffer.from(await resposta.arrayBuffer())).digest('hex')];
+})));
 const perfil = mkdtempSync(join(TMP, 'mosca-andar-'));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const cdp = 9300 + Math.floor(Math.random() * 600);
@@ -26,6 +33,7 @@ const busca = [semOlhos ? 'headless=1' : '', sentidos ? 'sentidos=1' : '', `r=${
 
 // alvos da literatura (docs/plano-sentidos-e-medicao.md)
 const ALVOS = {
+  escopo: 'Valente 2007: uma única mosca por duas horas, sem generalização para a espécie. Geurten 2014: estados por agrupamento de velocidades, não pelo mesmo classificador deste script. Referências exploratórias, não critérios de equivalência biológica.',
   velocidade_andando_mm_s: 'picos em ~11,4 (junto à parede) e ~14,8 (centro); faixa 7,2-44,7 [Valente 2007; Mendes 2013]',
   trecho_andando_s: 'exponencial, constante ~1,37 (parede) a ~2,1 (centro) [Valente 2007]',
   paradas: '~76% < 0,3 s (parede); no centro algumas > 5 s [Valente 2007]',
@@ -68,13 +76,33 @@ try {
     LAB.busy = true; LAB.events = [];
     ${fisico ? "if (!(await corpoPing())) return 'sem servidor do corpo'; await corpoSet(true);" : ''}
     window.__reg = [];
+    // Alguns eventos usam t para duração do voo; guardar o relógio absoluto em campo distinto.
+    const registrar0 = labEvent;
+    labEvent = (tipo, dados) => { registrar0(tipo, dados);
+      if (LAB.busy && LAB.events.length) LAB.events[LAB.events.length - 1].relogio_cerebral_s = brainClock / 1000; };
+    window.__visao = { tempo_s: 0, olhos_reais_s: 0, corpo_fisico_s: 0, alvo_real: 0, alvo_aproximado: 0, sem_alvo: 0 };
+    const visual0 = sbAlvoVisual;
+    sbAlvoVisual = f => { const a = visual0(f); __visao[a ? (a.olhos ? 'alvo_real' : 'alvo_aproximado') : 'sem_alvo']++; return a; };
     const sb0 = stepBody;
-    stepBody = (dt, c) => { sb0(dt, c); const f = fly; window.__reg.push([dt, f.x, f.y, f.z || 0, f.th, f.flying ? 1 : 0, f.naParede ? 1 : 0, f.boca || 0, f.hunger, f.presa ? 1 : 0]); };
+    stepBody = (dt, c) => { sb0(dt, c); const f = fly;
+      __visao.tempo_s += dt;
+      if (SB.fisico) __visao.corpo_fisico_s += dt;
+      if (f.olhoReal && performance.now() - f.olhoReal.t < 600) __visao.olhos_reais_s += dt;
+      window.__reg.push([dt, f.x, f.y, f.z || 0, f.th, f.flying ? 1 : 0, f.naParede ? 1 : 0, f.boca || 0, f.hunger, f.presa ? 1 : 0]); };
     return 'ok';
   })()`);
   if (prep !== 'ok') throw new Error(prep);
-  await sleep(segundos * 1000);
-  const [reg, eventos, cerebro] = await ev(`(() => { const r = window.__reg; window.__reg = []; return [r, LAB.events.map(e => e.type), brainT / 1000]; })()`);
+  const inicio = await ev('brainClock / 1000');
+  const mofo = tem('sonda-mofo') ? await ev(readFileSync(join(RAIZ, 'scripts/mofo_sonda.js'), 'utf8')) : null;
+  const prazo = Date.now() + segundos * 1000;
+  while (Date.now() < prazo) {
+    await sleep(Math.min(50000, prazo - Date.now()));
+    console.log('progresso:', JSON.stringify(await ev(`({ cerebro_s: brainClock / 1000 - ${inicio},
+      eventos: LAB.events.length, voando: !!fly.flying, fisico: !!SB.fisico })`)));
+  }
+  const [reg, detalhes, cerebro, fim] = await ev(`(() => { const r = window.__reg; window.__reg = []; return [r, LAB.events, brainT / 1000,
+    { fome: fly.hunger, visao: __visao, olhos_reais_recentes: !!fly.olhoReal && performance.now() - fly.olhoReal.t < 600 }]; })()`);
+  const eventos = detalhes.map(e => e.type);
   if (fisico) await ev('corpoSet(false).then(() => 1)');
   if (erros.length) console.log('erros na página:', erros);
 
@@ -90,7 +118,7 @@ try {
     let d = b[4] - a[4]; d = Math.atan2(Math.sin(d), Math.cos(d));
     gir[i] = Math.abs(d) / T * 180 / Math.PI;
   }
-  const noChao = i => !reg[i][5] && !reg[i][9];
+  const noChao = i => !reg[i][5] && !reg[i][9] && !reg[i][6];
   // andando/parada com folga (passa a andar acima de 2,5 mm/s e a parar abaixo de 1,5), para o ruído não picar trechos
   const est = new Array(n).fill('fora');
   for (let i = J, ult = 'parada'; i < n; i++) {
@@ -103,6 +131,7 @@ try {
   for (let i = J; i < n; i++) {
     if (reg[i][5]) soma('voando', dt[i]);
     else if (reg[i][9]) soma('presa', dt[i]);
+    else if (reg[i][6]) soma('escalando', dt[i]);
     else if (reg[i][7] > 0.9) soma('comendo', dt[i]);
     else if (gir[i] > 200) soma('virando', dt[i]);
     else if (est[i] === 'andando') soma('andando_reto', dt[i]);
@@ -137,7 +166,10 @@ try {
   let tAndando = 0; for (let i = J; i < n; i++) if (estado(i) === 'andando') tAndando += dt[i];
   const vAnd = []; for (let i = J; i < n; i++) if (estado(i) === 'andando') vAnd.push(vel[i]);
   const resultado = {
-    rotulo, data: new Date().toISOString().slice(0, 10), janela_ms: J * 10, relogio_s: segundos, cerebro_s: +tTot.toFixed(1), amostras: n,
+    rotulo, data: new Date().toISOString(), versao, configuracao: { porta, fisico, sentidos, semOlhos, sonda_mofo: !!mofo },
+    metodo_da_rodada: 'Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.',
+    inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo,
+    janela_ms: J * 10, relogio_s: segundos, cerebro_s: +tTot.toFixed(1), amostras: n,
     fracoes_do_tempo: frac,
     velocidade_andando_mm_s: { mediana: q(vAnd, 0.5), p10: q(vAnd, 0.1), p90: q(vAnd, 0.9) },
     trecho_andando_s: { n: trechos.andando.length, media: media(trechos.andando), mediana: q(trechos.andando, 0.5) },
@@ -155,6 +187,8 @@ try {
   antigo.alvos = ALVOS; antigo.medidas.push(resultado);
   writeFileSync(arq, JSON.stringify(antigo, null, 1) + '\n');
   console.log('gravado em docs/medicoes/andar-vs-moscas.json');
+  if (erros.length) throw new Error('medição registrada com erros da página; não usar como validação');
+  if (fisico && fim.visao.corpo_fisico_s < tTot * 0.99) throw new Error('corpo físico desligou durante a medição; não usar como validação');
 } catch (e) {
   console.log('falhou:', e.message);
   process.exitCode = 1;
@@ -162,5 +196,7 @@ try {
   ws?.close();
   proc.kill();
   await sleep(1500);
+  const relativo = relative(resolve(TMP), resolve(perfil));
+  if (!relativo || relativo.startsWith('..') || isAbsolute(relativo)) throw new Error('perfil fora de _tmp; limpeza recusada');
   for (let i = 0; i < 10; i++) { try { rmSync(perfil, { recursive: true, force: true }); break; } catch { await sleep(700); } }
 }

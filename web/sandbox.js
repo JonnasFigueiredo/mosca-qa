@@ -423,7 +423,8 @@ function sbAlvoVisual(f) {
     let sa = 0, sw = 0;   // média das direções em volta do pico (~20°), pesada pelo quanto cada omatídeo destoa
     for (let i = 0; i < 2; i++) for (let o = 0; o < OLHO.obj[i].length; o++) {
       const v = OLHO.obj[i][o], [az, el] = D[i][o];
-      if (v > 0.3 * pico.v && Math.hypot(az - pico.az, el - pico.el) < 20) { sa += v * az; sw += v; }
+      // (os mesmos limites do pico: sem isso, a janela clara logo acima de 15° ou algo além de 80° puxava a média)
+      if (v > 0.3 * pico.v && dentro(az, el) && Math.hypot(az - pico.az, el - pico.el) < 20) { sa += v * az; sw += v; }
     }
     return { a: -(sa / sw) * Math.PI / 180, tam: sw, olhos: true };
   }
