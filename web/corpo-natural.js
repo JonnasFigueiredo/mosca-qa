@@ -73,5 +73,39 @@ const CorpoNatural = (() => {
     f.marcha = estado;
     return {andar:estado === 'andar' ? 1 : 0, girar:estado === 'andar' || estado === 'girar' ? 1 : 0};
   }
-  return {escala, altura, antenas, raizBoca, dobraBoca, pontaBoca, mistura, ponto, contato, impedida, boca, bocaPontos, marcha};
+  // Busca pelo cheiro ao longo do tempo (docs/plano-busca-cheiro.md). Regra do corpo, com base em comportamento medido:
+  // moscas andando aceleram enquanto sentem o cheiro e, ao perdê-lo, desaceleram e viram mais (Álvarez-Salvado et al.
+  // 2018); param menos com o cheiro presente (Demir et al. 2020); as viradas respondem à perda, não ao tempo dentro
+  // (Jayaram et al. 2023). Sem vento, não há a orientação contra o vento. c = cheiro bom em cada antena (antes da fome)
+  // (v2: com queda de 15%/s e giros repetidos a cada 0,4-0,8 s ela rodopiava: 27% do tempo 'perdeu', 0 de 8 chegadas na
+  // sonda; agora uma perda dá um giro, e outro só se o cheiro continuar caindo depois dele)
+  const BUSCA = { LIMIAR: 0.2, TAU_C: 0.2, TAU_D: 0.3, QUEDA: -0.3, PERDEU_S: 1, FORA_S: 3,
+    VEL_DENTRO: 1.3, VEL_PERDEU: 0.6, RUIDO_DENTRO: 0.3, GIRO_MIN: 0.8, GIRO_MAX: 2.1, GIRO_T_MIN: 0.4, GIRO_T_MAX: 0.8, LADO_MIN: 0.02 };
+  function buscaCheiro(e, dt, cL, cR, aleatorio = Math.random) {
+    const c = (cL + cR) / 2, k = x => 1 - Math.exp(-dt / x);
+    const antes = e.c ?? c;
+    e.c = antes + (c - antes) * k(BUSCA.TAU_C);
+    e.dc = (e.dc ?? 0) + ((e.c - antes) / Math.max(dt, 1e-6) - (e.dc ?? 0)) * k(BUSCA.TAU_D);
+    const relativa = e.dc / Math.max(e.c, BUSCA.LIMIAR);   // queda relativa por segundo
+    e.modo = e.modo || 'fora'; e.t = (e.t || 0) + dt;
+    const muda = m => { e.modo = m; e.t = 0; e.giroT = 0; e.girou = false; };
+    if (e.modo === 'fora' && e.c >= BUSCA.LIMIAR && relativa >= BUSCA.QUEDA) muda('dentro');
+    else if (e.modo === 'dentro' && (e.c < BUSCA.LIMIAR || relativa < BUSCA.QUEDA)) muda('perdeu');
+    else if (e.modo === 'perdeu' && e.t > BUSCA.PERDEU_S) muda(e.c >= BUSCA.LIMIAR && relativa >= 0 ? 'dentro' : 'fora');
+    if (e.modo === 'dentro') return { modo: 'dentro', velocidade: BUSCA.VEL_DENTRO, semPausa: true, ruido: BUSCA.RUIDO_DENTRO, giro: 0 };
+    if (e.modo === 'perdeu') {
+      let giro = 0;
+      e.giroT = (e.giroT ?? 0) - dt;
+      if (e.giroT <= 0 && (!e.girou || relativa < BUSCA.QUEDA)) {
+        // para o lado da antena com mais cheiro, se a diferença for mensurável; senão, sorteado (negativo = esquerda)
+        const dif = (cL - cR) / Math.max(c, BUSCA.LIMIAR);
+        const lado = Math.abs(dif) > BUSCA.LADO_MIN ? -Math.sign(dif) : (aleatorio() < 0.5 ? -1 : 1);
+        giro = lado * (BUSCA.GIRO_MIN + (BUSCA.GIRO_MAX - BUSCA.GIRO_MIN) * aleatorio());
+        e.giroT = BUSCA.GIRO_T_MIN + (BUSCA.GIRO_T_MAX - BUSCA.GIRO_T_MIN) * aleatorio(); e.girou = true;
+      }
+      return { modo: 'perdeu', velocidade: BUSCA.VEL_PERDEU, semPausa: true, ruido: 1, giro };
+    }
+    return { modo: 'fora', velocidade: 1, semPausa: false, ruido: 1, giro: 0 };
+  }
+  return {escala, altura, antenas, raizBoca, dobraBoca, pontaBoca, mistura, ponto, contato, impedida, boca, bocaPontos, marcha, buscaCheiro, BUSCA};
 })();

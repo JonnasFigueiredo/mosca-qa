@@ -89,7 +89,7 @@ try {
       __visao.tempo_s += dt;
       if (SB.fisico) __visao.corpo_fisico_s += dt;
       if (f.olhoReal && performance.now() - f.olhoReal.t < 600) __visao.olhos_reais_s += dt;
-      window.__reg.push([dt, f.x, f.y, f.z || 0, f.th, f.flying ? 1 : 0, f.naParede ? 1 : 0, f.boca || 0, f.hunger, f.presa ? 1 : 0]); };
+      window.__reg.push([dt, f.x, f.y, f.z || 0, f.th, f.flying ? 1 : 0, f.naParede ? 1 : 0, f.boca || 0, f.hunger, f.presa ? 1 : 0, f.buscaR ? ({ dentro: 1, perdeu: 2 }[f.buscaR.modo] || 0) : 0]); };
     return 'ok';
   })()`);
   if (prep !== 'ok') throw new Error(prep);
@@ -175,6 +175,8 @@ try {
     inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo, cheiro,
     janela_ms: J * 10, relogio_s: segundos, cerebro_s: +tTot.toFixed(1), amostras: n,
     fracoes_do_tempo: frac,
+    busca_pelo_cheiro: (() => { let d = 0, p = 0; for (let i = 0; i < n; i++) { if (reg[i][10] === 1) d += dt[i]; if (reg[i][10] === 2) p += dt[i]; }
+      return { dentro: +(d / tTot).toFixed(3), perdeu: +(p / tTot).toFixed(3) }; })(),
     velocidade_andando_mm_s: { mediana: q(vAnd, 0.5), p10: q(vAnd, 0.1), p90: q(vAnd, 0.9) },
     trecho_andando_s: { n: trechos.andando.length, media: media(trechos.andando), mediana: q(trechos.andando, 0.5) },
     paradas_s: { n: trechos.parada.length, media: media(trechos.parada), mediana: q(trechos.parada, 0.5),

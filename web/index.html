@@ -942,10 +942,19 @@ function stepBody(dt, counts) {
     // Regra sensorial de fuga no corpo simples: não interromper a saída do cheiro com pausas sorteadas.
     if (!SB.fisico && !f.flying && f.fleeDir && f.aversion > 0.05) marcha = { andar: 1, girar: 1 };
   }
+  // busca pelo cheiro ao longo do tempo (regra do corpo, docs/plano-busca-cheiro.md): acelera e não para no cheiro bom,
+  // desacelera e dá giros de busca ao perdê-lo. Só no corpo simples da Cozinha 3D, com ?sentidos=1, sem a fuga do mofo
+  f.buscaR = null;
+  if (SB.on && APP.mundo && soSentidos() && !SB.fisico && !f.flying && !f.fleeDir && f.inata) {
+    f.busca = f.busca || {};
+    f.buscaR = CorpoNatural.buscaCheiro(f.busca, dt, f.inata.aL, f.inata.aR);
+    if (f.buscaR.semPausa && f.marcha !== 'provar') marcha = { andar: 1, girar: 1 };
+  } else f.busca = null;
   // desacelera perto do que o cheiro aprendido lembra (busca local); a atração inata, que vem de longe, não
   WALK = SB.on && APP.mundo ? WALK_COZINHA_3D : WALK_PAGINA;
   const fugindoCheiro = SB.on && APP.mundo && !SB.fisico && !f.flying && f.fleeDir;
-  f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (fugindoCheiro ? 1 : 1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida);
+  f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (fugindoCheiro ? 1 : 1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida)
+    * (f.buscaR ? f.buscaR.velocidade : 1);
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
   const dnDiff = outRate.dn_L - outRate.dn_R;
@@ -976,12 +985,13 @@ function stepBody(dt, counts) {
       f.giroAcum = (f.giroAcum || 0) + f.fleeDir * 1.75; f.fugaGiroT = 1;
     }
   } else f.fugaGiroT = 0;
+  if (sacadas && f.buscaR && f.buscaR.giro) f.giroAcum = (f.giroAcum || 0) + f.buscaR.giro;   // giro de busca, sai em sacada
   // atração: as sinapses dizem que o cheiro é bom; a diferença entre as antenas diz de que lado
   // ele está (a mesma leitura do desvio, com o sinal trocado)
   const toward = -ATTR_TURN * dAt / (sAt + 0.05);
   const chemo = (1 - f.aversion) * ((1 - f.attraction) * curiosity + f.attraction * toward) + f.aversion * away;
   const tumble = f.tumbleT > 0 ? f.tumbleDir * 3.5 * f.hunger : 0;
-  let turn = (HAS_EYES ? visionTurn : brainTurn) + chemo + tumble + (Math.random() - 0.5) * (f.steady ? 0.6 : 2.2);
+  let turn = (HAS_EYES ? visionTurn : brainTurn) + chemo + tumble + (Math.random() - 0.5) * (f.steady ? 0.6 : 2.2) * (f.buscaR ? f.buscaR.ruido : 1);
   // paredes
   const ax = f.x + Math.sin(f.th) * 22, ay = f.y - Math.cos(f.th) * 22;
   if (ax < 12 || ax > bw() - 12 || ay < 12 || ay > bh() - 12) {

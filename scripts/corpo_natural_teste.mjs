@@ -38,4 +38,19 @@ f.marcha='pausa'; f.marchaT=10; f.threat=1;
 assert.equal(C.marcha(f,.01,false).andar,1,'ameaça interrompe pausa');
 f.threat=0; f.naParede={}; assert.equal(C.marcha(f,.01,true).andar,1,'não parar na parede');
 f.naParede=null; assert.equal(C.marcha(f,.01,true).andar,0,'parar para provar');
-console.log('Antenas, contato (plano e redondo), extensão, inércia da boca, pausa, fuga e escalada: verificações passaram.');
+// busca pelo cheiro (docs/plano-busca-cheiro.md): sem cheiro neutra; subindo acelera e não para; perdendo vira
+{
+  const B=C.buscaCheiro, fixo=()=>0.7;
+  let e={}, r;
+  for(let i=0;i<200;i++) r=B(e,.01,0,0,fixo);
+  assert.equal(r.modo,'fora','sem cheiro, fora'); assert.equal(r.velocidade,1); assert.equal(r.semPausa,false);
+  for(let i=0;i<100;i++) r=B(e,.01,.3+i*.005,.3+i*.005,fixo);
+  assert.equal(r.modo,'dentro','cheiro subindo, dentro'); assert.ok(r.velocidade>1); assert.equal(r.semPausa,true); assert.ok(r.ruido<1);
+  let giros=0;
+  for(let i=0;i<100;i++){ r=B(e,.01,.8-i*.005,.8-i*.005,fixo); if(r.giro) giros++; }
+  assert.equal(e.modo,'perdeu','cheiro caindo, perdeu'); assert.ok(giros>=1,'gira ao perder'); assert.ok(r.velocidade<1,'desacelera ao perder');
+  e={modo:'perdeu',c:.5,dc:-.5,t:0}; let lado=0;
+  for(let i=0;i<10&&!lado;i++){ r=B(e,.01,.55,.45,fixo); if(r.giro) lado=Math.sign(r.giro); }
+  assert.equal(lado,-1,'vira para a antena com mais cheiro (esquerda)');
+}
+console.log('Antenas, contato (plano e redondo), extensão, inércia da boca, pausa, fuga, escalada e busca pelo cheiro: verificações passaram.');

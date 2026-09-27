@@ -1,6 +1,10 @@
 // Resume as séries longa-simples-1..5, longa-fisico-1..5 e longa-sentidos-1..5.
 // Usa apenas medições livres completas, preservando os resultados preliminares antigos.
+// Outra série do modo só sentidos: node scripts/resumir_sentidos.mjs --serie sentidos-b --chave rodadas_longas_b
+// (compara longa-sentidos-b-1..5 com longa-simples-1..5 e grava em sentidos-comparacao.json na chave indicada)
 import { readFileSync, writeFileSync } from 'node:fs';
+const opcao = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
+const SERIE_SENTIDOS = opcao('serie', 'sentidos'), CHAVE = opcao('chave', 'rodadas_longas');
 const raiz = new URL('../docs/medicoes/', import.meta.url);
 const ler = nome => JSON.parse(readFileSync(new URL(nome, raiz), 'utf8'));
 const gravar = (nome, valor) => writeFileSync(new URL(nome, raiz), JSON.stringify(valor, null, 2) + '\n');
@@ -44,7 +48,7 @@ function serie(nome) {
     refeicoes_por_rodada: faixa(rodadas.map(r => r.refeicoes)),
     fome_final: faixa(rodadas.map(r => r.fome_final)) };
 }
-const simples = serie('simples'), fisico = serie('fisico'), sentidos = serie('sentidos');
+const simples = serie('simples'), fisico = serie('fisico'), sentidos = serie(SERIE_SENTIDOS);
 const metodo = 'Cinco sessões independentes de navegador por condição, 300 s de relógio após preparação, mesmo ponto inicial padrão, olhos reais ativos; sem sementes pareadas. Tempo cerebral e eventos preservados. Faixas e medianas são entre rodadas, não agrupamento das amostras. Janela de movimento 100 ms no simples e 200 ms no físico; comendo significa boca estendida, refeições são eventos comeu. Frutas: banana, uvas, pêssego e morango; açúcar contado separadamente. Poucas réplicas, sem inferência estatística ou validação biológica.';
 if (simples && fisico) gravar('andar-longas-resumo.json', { metodo, simples, fisico });
 if (simples && sentidos) {
@@ -60,7 +64,7 @@ if (simples && sentidos) {
       pousos_em_fruta: pousosComRelogio ? eventos.filter(e => e.type === 'pouso' && frutas.has(e.id)).length : null,
       voos: eventos.filter(e => e.type === 'voo').length };
   });
-  comparacao.rodadas_longas = { metodo, atalhos: simples, sentidos,
+  comparacao[CHAVE] = { serie: 'longa-' + SERIE_SENTIDOS, metodo, atalhos: simples, sentidos,
     janela_cerebral_comum: { segundos: janela, metodo: 'Eventos restritos à mesma duração cerebral inicial em todas as dez rodadas; evita comparar exposição maior apenas porque uma sessão rodou mais rápido. Eventos antigos de pouso usam t como duração de voo, não relógio: nesses casos o pouso no recorte é null (indisponível), nunca zero. Contagens de pouso na sessão inteira continuam válidas.', atalhos: recortar(simples), sentidos: recortar(sentidos) } };
   gravar('sentidos-comparacao.json', comparacao);
 }

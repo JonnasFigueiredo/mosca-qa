@@ -12,10 +12,10 @@ fazem.
 
 `[x]` feito e medido; `[~]` começado; `[ ]` não começado.
 
-- [~] B1 Sonda de busca pelo cheiro (`scripts/cheiro_sonda.js`, via `andar_medida.mjs --sonda-cheiro`) e linha de base (sonda pronta; linha de base rodando)
-- [~] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes (rascunho testado em `_tmp/`, falta mover)
-- [ ] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
-- [ ] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério
+- [x] B1 Sonda de busca pelo cheiro (`scripts/cheiro_sonda.js`, via `andar_medida.mjs --sonda-cheiro`) e linha de base
+- [x] B2 A regra como função pura em `web/corpo-natural.js` (`CorpoNatural.buscaCheiro`) com testes
+- [x] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
+- [~] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério (sonda depois rodando)
 - [ ] B5 (depois) Pouso e decolagem pelos sentidos (passos 2 e 3 do resultado negativo)
 - [ ] B6 README, texto da página, `AGENTS.md`, commit
 
@@ -37,6 +37,38 @@ Notas de cada passo, em ordem (a mais recente é a última):
   para o git: o código do rascunho e dos testes está no apêndice no fim deste arquivo. Próximo: escolher `BUSCA.LIMIAR` pelos números
   da linha de base, mover a função para `web/corpo-natural.js` (exportar `buscaCheiro` e `BUSCA` no objeto
   `CorpoNatural`), mover os testes para `scripts/corpo_natural_teste.mjs`, e seguir para B3.
+
+**B1 linha de base, B2 e B3 feitos (27/09/2026).**
+- Linha de base (`cheiro-base-atalhos`, `cheiro-base-sentidos` em `andar-vs-moscas.json`, campo `cheiro`): chegou à
+  fruta em **2 de 8** largadas nos dois modos (tempos medianos 17,7 e 18,5 s); nas outras, a distância mínima ficou em
+  11–34 mm (muitas vezes nem se aproximou).
+- Achado: na Cozinha o cheiro bom está em toda parte. A 20 e a 35 mm das frutas, a média de `inata(aL, aR)` fica quase
+  sempre entre ~0,2 e ~3 (as nuvens das frutas e do vinagre se sobrepõem numa bancada de 20 cm). "Estar no cheiro" não
+  distingue nada; o que importa é a tendência. Por isso: `LIMIAR` 0,2 (só para "fora" em cantos sem cheiro) e `QUEDA`
+  −0,15/s (queda relativa por segundo que conta como "perdeu"; uma nuvem de σ ~30 mm, a 10 mm/s, dá quedas de ~0,1 a
+  0,3/s andando para longe). Ajustar pelos números de B4.
+- B2: `CorpoNatural.buscaCheiro` e `CorpoNatural.BUSCA` em `web/corpo-natural.js`; testes em
+  `scripts/corpo_natural_teste.mjs` (passam).
+- B3: em `stepBody` (`web/index.html`), só com `soSentidos()`, corpo simples, sem voo e sem fuga do mofo: `f.buscaR`
+  (velocidade × fator, pausas suspensas salvo provando, ruído de virada × fator, giro somado a `f.giroAcum`). O
+  medidor registra a fração do tempo `dentro`/`perdeu` (`busca_pelo_cheiro`).
+- Próximo (B4): sonda depois (`cheiro-b3-sentidos`, rodando; log `_tmp/_cheiro_b3_sentidos.log`), comparar com
+  `cheiro-base-sentidos`; depois andar livre 90 s com `--sentidos` e a série `longa-sentidos-b-1..5` (rótulos novos; o
+  `resumir_sentidos.mjs` procura `longa-sentidos-N`: ajustar para aceitar o sufixo da série).
+
+**B4, sonda antes e depois (27/09/2026).** Mesmas 8 largadas, modo só sentidos, olhos reais
+(`andar-vs-moscas.json`, campo `cheiro`):
+
+| Versão | Chegadas | Tempo mediano | Tempo em `dentro` / `perdeu` | Virando |
+|---|---|---|---|---|
+| Sem a regra (`cheiro-base-sentidos`) | 2/8 (banana 20 e 35 mm) | 18,5 s | – | 11% |
+| v1: queda 15%/s, giros repetidos a cada 0,4–0,8 s (`cheiro-b3-sentidos`) | 0/8 | – | 67% / 27% | 25% |
+| v2: queda 30%/s, um giro por perda e outro só se continuar caindo, 1 s em `perdeu` (`cheiro-b3v2-sentidos`) | 3/8 (banana 20 e 35, pêssego 35; uvas 35 a 1,3 mm) | 5,4 s | 85% / 13% | 18% |
+
+A v1 rodopiava (2000–3000° de giro a cada 20 s). A v2 é a que está no código (`BUSCA` em `web/corpo-natural.js`).
+Ganho modesto e com uma sonda só (o cérebro é o mesmo em todas as largadas): a série de 5 rodadas decide. Próximo:
+andar livre 90 s com `--sentidos` (conferir virando/pausas) e a série `longa-sentidos-b-1..5`, depois
+`node scripts/resumir_sentidos.mjs --serie sentidos-b --chave rodadas_longas_b`.
 
 ## O que as moscas fazem (base da regra)
 
