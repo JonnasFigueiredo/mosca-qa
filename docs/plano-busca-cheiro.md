@@ -70,6 +70,23 @@ Ganho modesto e com uma sonda só (o cérebro é o mesmo em todas as largadas): 
 andar livre 90 s com `--sentidos` (conferir virando/pausas) e a série `longa-sentidos-b-1..5`, depois
 `node scripts/resumir_sentidos.mjs --serie sentidos-b --chave rodadas_longas_b`.
 
+**B4, v3 e a série (27/09/2026).**
+- Andar livre 90 s com a v2 (`livre-busca-sentidos`): `dentro` 93% do tempo e parada só 2,6% (antes ~20–30%), virando
+  15%. Causa: na Cozinha o cheiro bom está em toda parte, e "dentro" suspendia as pausas. **v3** (a que está no código):
+  acelerar (× 1,3), andar reto e não parar só com o cheiro **subindo** (queda/subida relativa > `SUBIDA` = +0,1/s),
+  o equivalente a um encontro com o cheiro; presente e parado não muda nada. Andar livre 90 s com a v3
+  (`livre-busca-v3-sentidos`): parada 10,7%, virando 4,7%, velocidade mediana 15 mm/s; essa rodada teve 39% do tempo
+  voando (8 decolagens de fuga), sem relação com a regra, que só age no chão.
+- Sonda com a v3 (`cheiro-b3v3-sentidos`): 1/8. **A sonda de 8 largadas não separa efeitos pequenos:** sem a regra 2/8,
+  v1 0/8, v2 3/8, v3 1/8, e o cérebro é o mesmo em todas as largadas. Para comparar versões da regra, repetir cada
+  sonda 3 vezes ou mais, ou aumentar as largadas.
+- Série `longa-sentidos-b-1..5` com a v3 lançada (logs `_tmp/_longa-sentidos-b-*.log`; resumo automático no fim com
+  `node scripts/resumir_sentidos.mjs --serie sentidos-b --chave rodadas_longas_b`, gravado em
+  `sentidos-comparacao.json` na chave `rodadas_longas_b`). **Se a série não estiver completa em `andar-vs-moscas.json`,
+  rodar de novo as rodadas que faltam** (`node scripts/andar_medida.mjs --segundos 300 --sentidos --rotulo
+  longa-sentidos-b-N`, uma por vez) e o resumo. Aplicar o mesmo critério de antes (fruta ≥ 3/5, pouso em fruta ≥ 2/5,
+  refeições ≥ metade do modo com atalhos).
+
 ## O que as moscas fazem (base da regra)
 
 | O que | Referência | Uso aqui |

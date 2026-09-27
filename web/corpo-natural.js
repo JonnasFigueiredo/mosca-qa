@@ -79,7 +79,9 @@ const CorpoNatural = (() => {
   // (Jayaram et al. 2023). Sem vento, não há a orientação contra o vento. c = cheiro bom em cada antena (antes da fome)
   // (v2: com queda de 15%/s e giros repetidos a cada 0,4-0,8 s ela rodopiava: 27% do tempo 'perdeu', 0 de 8 chegadas na
   // sonda; agora uma perda dá um giro, e outro só se o cheiro continuar caindo depois dele)
-  const BUSCA = { LIMIAR: 0.2, TAU_C: 0.2, TAU_D: 0.3, QUEDA: -0.3, PERDEU_S: 1, FORA_S: 3,
+  // (v3: na Cozinha o cheiro bom está em toda parte, e só "estar dentro" a fazia nunca parar: 2,6% do tempo parada.
+  // O efeito de acelerar, andar reto e não parar vale só com o cheiro subindo, o equivalente a um encontro com o cheiro)
+  const BUSCA = { LIMIAR: 0.2, TAU_C: 0.2, TAU_D: 0.3, QUEDA: -0.3, SUBIDA: 0.1, PERDEU_S: 1, FORA_S: 3,
     VEL_DENTRO: 1.3, VEL_PERDEU: 0.6, RUIDO_DENTRO: 0.3, GIRO_MIN: 0.8, GIRO_MAX: 2.1, GIRO_T_MIN: 0.4, GIRO_T_MAX: 0.8, LADO_MIN: 0.02 };
   function buscaCheiro(e, dt, cL, cR, aleatorio = Math.random) {
     const c = (cL + cR) / 2, k = x => 1 - Math.exp(-dt / x);
@@ -92,7 +94,8 @@ const CorpoNatural = (() => {
     if (e.modo === 'fora' && e.c >= BUSCA.LIMIAR && relativa >= BUSCA.QUEDA) muda('dentro');
     else if (e.modo === 'dentro' && (e.c < BUSCA.LIMIAR || relativa < BUSCA.QUEDA)) muda('perdeu');
     else if (e.modo === 'perdeu' && e.t > BUSCA.PERDEU_S) muda(e.c >= BUSCA.LIMIAR && relativa >= 0 ? 'dentro' : 'fora');
-    if (e.modo === 'dentro') return { modo: 'dentro', velocidade: BUSCA.VEL_DENTRO, semPausa: true, ruido: BUSCA.RUIDO_DENTRO, giro: 0 };
+    if (e.modo === 'dentro') return relativa > BUSCA.SUBIDA ? { modo: 'dentro', velocidade: BUSCA.VEL_DENTRO, semPausa: true, ruido: BUSCA.RUIDO_DENTRO, giro: 0 }
+      : { modo: 'dentro', velocidade: 1, semPausa: false, ruido: 1, giro: 0 };
     if (e.modo === 'perdeu') {
       let giro = 0;
       e.giroT = (e.giroT ?? 0) - dt;
