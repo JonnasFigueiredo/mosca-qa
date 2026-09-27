@@ -608,7 +608,9 @@ const corpoDaTela = f => ({ x: f.x / CORPO.S, y: -f.y / CORPO.S, rumo: Math.PI /
 // as plataformas do sandbox viram blocos sólidos na física (mm)
 async function corpoMundo() {
   const S = CORPO.S;
-  const plats = SB.platforms.map(p => [(p.x + p.w / 2) / S, -(p.y + p.h / 2) / S, p.w / 2 / S, p.h / 2 / S, p.z / 2 / S]);
+  // o que tem menos de 1 mm de altura (açúcar, água, folhas) fica fora da física: é chão para as patas. Como blocos
+  // de 0,4 mm, as patas encostavam no bloco e no chão ao mesmo tempo e a física ficava 12 vezes mais lenta
+  const plats = SB.platforms.filter(p => p.z >= S).map(p => [(p.x + p.w / 2) / S, -(p.y + p.h / 2) / S, p.w / 2 / S, p.h / 2 / S, p.z / 2 / S]);
   await fetch(CORPO.url + '/mundo', { method: 'POST', body: JSON.stringify({ plataformas: plats }) });
   CORPO.mundo = SB.app;
 }
@@ -666,7 +668,9 @@ function corpoMeshes(info, bin) {
 function corpoSinal(f) {
   if (f.startle > 0) return [1.5 * f.startleDir, -1.5 * f.startleDir];
   let v = (f.back > 0 ? -0.8 : 1) * Math.min(1.2, (f.speed || 0) / WALK);
-  if (f.naParede) v = Math.max(v, 0.9);   // regra do corpo: na parede ela não para (parada, a passada solta as patas e ela escorrega)
+  // regra do corpo: na parede ela não para (parada, a passada solta as patas e ela escorrega) e sobe com a passada mais
+  // forte: com 0,9 ela empacava a ~4 mm do chão; com 1,2 sobe a ~6,5 mm/s (a banana, de 18 mm, em ~2,5 s)
+  if (f.naParede) v = Math.max(v, 1.2);
   let u = Math.max(-0.9, Math.min(0.9, 0.15 * (f.turnCmd || 0)));
   const P = CORPO.pose;
   if (f.naParede && P && P.frente) {
@@ -786,8 +790,13 @@ async function corpoTick() {
         else { fly.startle = 0.35; fly.startleDir = Math.random() < 0.5 ? -1 : 1; }
       }
     }
-    // se o corpo ficar muito para trás, o cérebro espera (com folga, para não ficar liga-desliga)
+    // o cérebro anda no ritmo que a física consegue (câmera lenta contínua); se ainda assim o corpo ficar muito para
+    // trás, o cérebro espera (com folga, para não ficar liga-desliga)
     const atraso = tb - p.t;
+    if (p.capacidade) {
+      const r = Math.max(0.1, Math.min(1, 0.9 * p.capacidade * (atraso > 0.3 ? 0.7 : 1)));
+      if (Math.abs(r - (CORPO.ritmo || 1)) > 0.03) { CORPO.ritmo = r; worker.postMessage({ type: 'ritmo', v: r }); }
+    }
     if (atraso > 0.5 && !CORPO.pausado) { worker.postMessage({ type: 'run', on: false }); CORPO.pausado = true; }
     else if (atraso < 0.15 && CORPO.pausado) { worker.postMessage({ type: 'run', on: running }); CORPO.pausado = false; }
   } catch (e) {
@@ -865,6 +874,7 @@ async function corpoSet(on) {
     CORPO.gen = (CORPO.gen || 0) + 1;   // descarta respostas físicas ainda em trânsito
     SB.fisico = false;
     fly.toque = null;
+    CORPO.ritmo = 1; worker.postMessage({ type: 'ritmo', v: 1 });
     SBR.fly.scale.setScalar(1.7);
     if (CORPO.pausado) { worker.postMessage({ type: 'run', on: running }); CORPO.pausado = false; }
     if (CORPO.malha) CORPO.malha.group.visible = false;
@@ -1530,7 +1540,8 @@ function sbFrame(dtw) {
   R.setViewport(0, 0, w, h); R.setScissor(0, 0, w, h);
   R.setClearColor(SBR.bg, 1); R.clear();
   const [eL, eR] = f.eyes || [0, 0];
-  const estado = f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.z > 0 ? `andando numa plataforma a ${Math.round(f.z)} px` : 'andando no chão';
+  const estado = (f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.z > 0 ? `andando numa plataforma a ${Math.round(f.z)} px` : 'andando no chão')
+    + (SB.fisico && CORPO.ritmo < 0.97 ? ` · câmera lenta: a física do corpo roda a ${CORPO.ritmo.toFixed(1).replace('.', ',')}× do tempo real` : '');
   if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred' || SBR.mode === 'fantasma') {
     if (SBR.mode === 'fantasma') {
       fantMover(dtw);

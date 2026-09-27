@@ -1,0 +1,24 @@
+{
+  "data": "2026-09-27",
+  "metodo": "Servidor do corpo (flygym 2.1, MuJoCo 3.9, passo de 0,2 ms, controlador a 500 Hz) medido sozinho em Python e ligado à página (Chrome sem janela, headless=1, Cozinha 3D, 60 s de relógio). Uma realização de cada.",
+  "servidores_duplicados": "Havia dois servidores do corpo na porta 8766 (um de 26/09 com código antigo) e dois da página na 8765: no Windows, com a reutilização de endereço padrão do Python, o segundo abre sem erro e os pedidos se dividem. A página alternava entre duas físicas. Agora os servidores recusam uma porta ocupada.",
+  "fisica_sozinha": {
+    "chao_parada": "0,81x o tempo real, 18 contatos",
+    "chao_andando": "0,50x; controlador 1,83 ms e MuJoCo 2,07 ms por passo de 2 ms",
+    "chao_andando_com_cache": "0,66x; controlador 0,66 ms (resultado idêntico bit a bit em 400 passos)",
+    "acucar_bloco_0_4mm_andando": "0,04x, 103 contatos em média (patas no bloco e no chão ao mesmo tempo)",
+    "topo_da_banana_andando": "0,29x, 30 contatos (5 por pata no bloco, contra 3 no chão)",
+    "sem_multiccd_topo_da_banana": "0,66x, mas na parede do bloco ela cai em 0,3 s: os contatos múltiplos ficam",
+    "ajustes_testados_sem_ganho": "tolerância 1e-6 (idêntico), noslip 0 ou 2 (+17% no máximo, muda o andar), passo de 0,3 ms (mais lento), 0,4 ms (instável)"
+  },
+  "escalada_bloco_18mm": {
+    "impulso_0_9": "empaca a 4-6 mm do chão em 3 s",
+    "impulso_1_2": "sobe a ~6,5 mm/s, chega a 17 mm em 2,3 s",
+    "pagina_4_frutas": { "banana": "topo em 2,4 s", "morango": "2,5 s", "pessego": "4 s", "laranja": "12,9 s (4 reagarrões)" }
+  },
+  "pagina_60s": {
+    "antes": { "cerebro_s": 5.7, "frac_cerebro_pausado": 0.72, "pausas_ms": [7288, 11632, 8709, 15618], "atraso_mediano_s": 0.33, "tropecos": 532, "nota": "com os dois servidores e parada em cima do açúcar" },
+    "um_servidor": { "cerebro_s": 17.6, "frac_cerebro_pausado": 0.24, "pausas_ms": [2465, 1649, 1117, 1542, 2051, 2592, 827, 1043, 1021], "atraso_mediano_s": 0.3 },
+    "depois": { "cerebro_s": 18.2, "frac_cerebro_pausado": 0, "pausas_ms": [], "atraso_mediano_s": 0.03, "intervalo_pose_ms": 40, "comeu": 5, "nota": "cache no controlador, açúcar/água/folhas fora da física, cérebro no ritmo da física" }
+  }
+}

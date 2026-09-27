@@ -132,7 +132,12 @@ Implementação em `web/corpo-natural.js`, integrada à página e à sandbox. O 
 
 - **O corpo:** a NeuroMechFly (flygym 2.1, EPFL), que vem de um micro-CT de uma mosca real, roda no MuJoCo com 42 articulações nas patas. No sandbox, a malha real anda por cima das plataformas, na escala de 7 px por mm (~18 px de mosca).
 - **As patas:** o controlador híbrido do exemplo oficial do flygym. Ele junta um gerador de ritmo trípode, passadas **gravadas de moscas reais** (vídeo 3D com DeepFly3D) e reflexos de tropeço e de pata no vazio.
-- **Cérebro e corpo:** o cérebro manda o sinal descendente `[esquerda, direita]`, que é a virada dos DNa01–03 e a velocidade que ela quer. A física avança até o tempo do cérebro; se o corpo atrasar, o cérebro espera.
+- **Cérebro e corpo:** o cérebro manda o sinal descendente `[esquerda, direita]`, que é a virada dos DNa01–03 e a velocidade que ela quer. A física avança até o tempo do cérebro. O servidor mede quanto de física consegue por segundo de relógio, e a página põe o cérebro nesse ritmo: tudo anda em câmera lenta contínua (a legenda do sandbox avisa), em vez de o cérebro parar por segundos esperando o corpo. Se ainda assim o corpo ficar 0,5 s para trás, o cérebro espera.
+- **Velocidade** (`docs/medicoes/corpo-velocidade.json`): a física anda a ~0,66× o tempo real no chão, neste PC. Três coisas a deixavam muito mais lenta:
+  - o controlador das patas remontava a lista de juntas a cada passo (2/3 do tempo dele). Agora guarda o resultado (`corpo/terceiros/.../common.py`), com os mesmos ângulos, bit a bit;
+  - açúcar, água e folhas eram blocos de 0,4 mm: as patas encostavam no bloco e no chão ao mesmo tempo (100 a 150 contatos) e a física caía a 0,04×. Objetos com menos de 1 mm ficam fora da física;
+  - dois servidores do corpo na mesma porta (um com código antigo): a página alternava entre duas físicas e a mosca pulava. Agora o servidor recusa uma porta ocupada.
+  - Em cima de um bloco, a física ainda fica ~2× mais lenta que no chão (5 contatos por pata no bloco, contra 3 no chão). Desligar esses contatos múltiplos a deixaria igual ao chão, mas então ela cai das paredes.
 - **Medido neste PC:**
   - 13,5 mm/s em linha reta (moscas reais: por volta de 10–20 mm/s);
   - ~150°/s nas curvas;
@@ -189,7 +194,7 @@ O modo predador: você controla uma ninfa de louva-a-deus (~15 mm), predador de 
   - **Resultado:** no chão, 13,8 mm/s (igual antes); rampa de 45°, 7,8 mm/s; **parede vertical, 5,3 a 6,0 mm/s** em três sementes, sem descolar. A 135° e no teto ela ainda cai: as passadas foram gravadas de moscas no chão.
 - **No sandbox, com o corpo físico:** andando contra uma plataforma, as patas da frente grudam na face e o corpo empina. Daí em diante a subida é física. As regras nossas:
   - o **agarrão**: ao começar a subir, por 0,2 s uma força a aperta contra a parede. Faz o papel das garras e do agarrar, que as passadas de chão não têm. Sem ele, ela sobe 3 a 5 mm e cai de volta;
-  - **na parede ela não para** (parada, a passada solta as patas e ela escorrega) e **vira para cima** (geotaxia negativa);
+  - **na parede ela não para** (parada, a passada solta as patas e ela escorrega), **sobe com a passada mais forte** (sinal 1,2: com 0,9 ela empacava a 4–6 mm do chão; com 1,2 sobe um bloco de 18 mm em ~2,5 s) e **vira para cima** (geotaxia negativa). Na página, de frente para cada fruta, ela chegou ao topo da banana em 2,4 s, do morango em 2,5 s, do pêssego em 4 s e da laranja em 12,9 s;
   - o **reagarrão**: se escorrega mais de 1 mm em meio segundo, o mesmo agarrão de novo (no máximo um por segundo);
   - a **passagem para o topo** da plataforma, quando as patas da frente alcançam a beira (o tórax a 2 mm dela), como a de baixo. Na física pura, na quina de cima ela cai;
   - se empurra a parede sem conseguir empinar, a virada para a parede também é regra (teleporte de barriga para a face).

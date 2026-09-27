@@ -32,4 +32,11 @@ if __name__ == "__main__":
     # a página pede vários arquivos ao mesmo tempo ao entrar no 3D; com a fila padrão (5), o Windows recusava
     # alguns e o navegador dava "Failed to fetch"
     ThreadingHTTPServer.request_queue_size = 64
-    ThreadingHTTPServer(("", PORTA), partial(SemCache, directory=str(WEB))).serve_forever()
+    # no Windows, com a reutilização de endereço (o padrão do Python), um segundo servidor abre na mesma porta sem
+    # erro e os pedidos se dividem entre os dois
+    ThreadingHTTPServer.allow_reuse_address = sys.platform != "win32"
+    try:
+        servidor = ThreadingHTTPServer(("", PORTA), partial(SemCache, directory=str(WEB)))
+    except OSError:
+        sys.exit(f"a porta {PORTA} já está em uso: a página já está sendo servida? Pare o outro servidor antes.")
+    servidor.serve_forever()

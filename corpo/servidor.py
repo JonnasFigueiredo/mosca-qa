@@ -121,6 +121,9 @@ class Corpo:
         self.sinal = np.zeros(2)
         self.g = self.m.opt.gravity.copy()
         self.assenta_ate = -1.0
+        # quantos segundos de física por segundo de relógio a máquina consegue (média dos passos em que trabalhou);
+        # a página usa para o cérebro andar no mesmo ritmo, sem ficar parando e esperando o corpo
+        self.capacidade = 0.5
         self.reset()
         threading.Thread(target=self._laco, daemon=True).start()
 
@@ -156,6 +159,7 @@ class Corpo:
                         self.m.opt.gravity[:] = self.g   # agarrou a parede: a gravidade volta ao normal
                         self.assenta_ate = -1.0
                 lento = time.perf_counter() - t0
+                self.capacidade += 0.02 * (dt / max(lento, 1e-6) - self.capacidade)
                 if lento > 0.3:
                     print(f"passo lento: {lento:.2f} s em t = {self.t:.3f} s, {self.sim.mj_data.ncon} contatos", flush=True)
             else:
@@ -187,7 +191,7 @@ class Corpo:
         # ficam na horizontal)
         frente = [1 - 2 * (y * y + z * z), 2 * (x * y + w * z), 2 * (x * z - w * y)]
         costas = [2 * (x * z + w * y), 2 * (y * z - w * x), 1 - 2 * (x * x + y * y)]
-        return {"t": round(self.t, 4), "torax": [round(float(v), 4) for v in p], "rumo": round(rumo, 4), "toque": toque, "olhos": olhos,
+        return {"t": round(self.t, 4), "capacidade": round(self.capacidade, 3), "torax": [round(float(v), 4) for v in p], "rumo": round(rumo, 4), "toque": toque, "olhos": olhos,
                 "frente": [round(float(v), 3) for v in frente], "costas": [round(float(v), 3) for v in costas],
                 "tropeco": tropeco, "junta": junta,
                 "geoms": np.concatenate([pos, mat], axis=1).ravel().tolist()}
@@ -314,7 +318,17 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 
+class Servidor(ThreadingHTTPServer):
+    # no Windows, com a reutilização de endereço ligada (o padrão do Python), um segundo servidor abre na mesma porta
+    # sem erro e os pedidos se dividem entre os dois: duas físicas diferentes, e a mosca pula de uma para a outra
+    allow_reuse_address = sys.platform != "win32"
+
+
 if __name__ == "__main__":
+    try:
+        servidor = Servidor(("127.0.0.1", PORTA), Handler)
+    except OSError:
+        sys.exit(f"a porta {PORTA} já está em uso: o servidor do corpo já está rodando? Pare o outro antes.")
     corpo = Corpo()
     MALHA_INFO, MALHA_BIN = corpo.malha()
     dados = Path(__file__).resolve().parent.parent / "web" / "data"
@@ -322,4 +336,4 @@ if __name__ == "__main__":
     (dados / "corpo_malha.bin").write_bytes(MALHA_BIN)
     print(f"corpo físico pronto: {len(MALHA_INFO['pecas'])} peças, {MALHA_INFO['nv']} vértices, {MALHA_INFO['nf']} triângulos; "
           f"http://localhost:{PORTA}", flush=True)
-    ThreadingHTTPServer(("127.0.0.1", PORTA), Handler).serve_forever()
+    servidor.serve_forever()

@@ -56,6 +56,8 @@ let vetor = null;
 let t = 0, running = false;
 let spikeBuf, spikeCount = 0;
 let lastWall = 0, simSinceWall = 0;
+// ritmo: o cérebro corre no máximo esta fração do tempo real (com o corpo físico, a página baixa para a velocidade da física)
+let ritmo = 1;
 // medidor opcional (mensagem 'perf'): tempo em cada parte do passo, para achar o gargalo
 let perfOn = false;
 const PERF = { prop: 0, entrada: 0, integra: 0, aprende: 0, espera: 0, passos: 0, arestas: 0, ativos: 0, blocos: 0, fimBloco: 0 };
@@ -431,7 +433,7 @@ function loop() {
   if (perfOn && PERF.fimBloco) PERF.espera += wall0 - PERF.fimBloco;
   // não deixa o cérebro correr mais rápido que o tempo real
   const now = wall0;
-  if (lastWall) simSinceWall -= (now - lastWall);
+  if (lastWall) simSinceWall -= (now - lastWall) * ritmo;
   lastWall = now;
   if (simSinceWall > 50) { setTimeout(loop, 4); return; }
 
@@ -469,6 +471,8 @@ onmessage = async ({ data }) => {
     if (data.floor != null) W_FLOOR = data.floor;
     if (data.tauF != null) TAU_F = data.tauF;
     if (data.forgetting != null) forgetting = !!data.forgetting;
+  } else if (data.type === 'ritmo') {
+    ritmo = Math.max(0.05, Math.min(1, +data.v || 1));
   } else if (data.type === 'perf') {
     if (data.on != null) { perfOn = !!data.on; for (const k in PERF) PERF[k] = 0; }
     postMessage({ type: 'perf', perf: { ...PERF } });

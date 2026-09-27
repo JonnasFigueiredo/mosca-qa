@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 
 import numpy as np
 
@@ -26,6 +27,9 @@ class LocomotionAction:
     adhesion_onoff: np.ndarray | None = None
 
 
+# mosca-qa: as duas funções abaixo guardam o resultado (lru_cache). O controlador as chamava a cada passo e elas
+# remontavam o esqueleto inteiro: dois terços do tempo do controlador. O resultado é o mesmo (não altere as listas).
+@lru_cache(maxsize=None)
 def get_default_locomotion_dof_order() -> list[JointDOF]:
     """Return the default active leg DOFs used by the locomotion examples."""
     skeleton = Skeleton(
@@ -35,6 +39,7 @@ def get_default_locomotion_dof_order() -> list[JointDOF]:
     return skeleton.get_actuated_dofs_from_preset(ActuatedDOFPreset.LEGS_ACTIVE_ONLY)
 
 
+@lru_cache(maxsize=None)
 def dof_spec_to_jointdof(leg: str, dof_spec: tuple[str, str, str]) -> JointDOF:
     parent_link, child_link, axis = dof_spec
     if parent_link == "thorax":
