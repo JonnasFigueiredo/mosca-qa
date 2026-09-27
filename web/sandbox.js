@@ -87,6 +87,10 @@ function sbAlturaForma(f, x, y) {
   const u = (dx / f.a) ** 2 + (dy / f.b) ** 2;   // esfera e elipsoide (na esfera, b = c = a)
   return u <= 1 ? f.z + f.c * Math.sqrt(1 - u) : -Infinity;
 }
+// quanto a superfície inclina ali (altura por distância): 0 no plano, ~0,58 a 30°, 1 a 45°
+function sbInclinacao(x, y, h = 3) {
+  return Math.hypot(sbSurface(x + h, y) - sbSurface(x - h, y), sbSurface(x, y + h) - sbSurface(x, y - h)) / (2 * h);
+}
 function sbAlturaObjeto(id, x, y) {
   let z = -Infinity;
   for (const f of SB.formas || []) if (f.id === id) z = Math.max(z, sbAlturaForma(f, x, y));
@@ -328,6 +332,14 @@ function sbMove(f, dt, v) {
 }
 // regra do corpo: decola quando há coisa nova em outro nível, mais ainda com fome de bug
 function sbWantsFly(f) {
+  if (soSentidos()) {
+    // só sentidos (regra nossa): decola mais quando vê uma coisa grande acima do piso dela, com fome, ou quando sente
+    // um cheiro bom que não fica mais forte enquanto anda (não está chegando à fonte)
+    let alto = 0;
+    for (const [r, sl, sr] of f.seen || []) if ((r.z || 0) > (f.z || 0) + SB_STEP) alto = Math.max(alto, sl + sr);
+    const cheiroParado = (f.atrInata || 0) > 0.2 && (f.dCheiro || 0) <= 0;
+    return Math.random() < 0.05 + 0.3 * Math.min(1, 3 * alto) * f.hunger + (cheiroParado ? 0.1 * f.hunger : 0);
+  }
   const novel = rects.some(r => !r.disabled && Math.abs(r.z - f.z) > SB_STEP && el(r.id).novelty > 0.5);
   // (moscas perto de comida andam muito e voam pouco)
   return Math.random() < (novel ? 0.15 + 0.35 * f.hunger : 0.05);
@@ -400,8 +412,14 @@ function sbFly(f, dt) {
   // alvo: depois do arranque, procura uma coisa atraente à frente; sem nada em VOO_MAX s, pousa onde estiver
   if (!f.pouso && f.flyT > 0.15 && (f.alvoT = (f.alvoT || 0) - dt) <= 0) {
     f.alvoT = 0.25;
-    const r = sbEscolheAlvo(f);
+    // só sentidos: não há alvo tirado da lista; ela pousa quando há uma coisa embaixo e o cheiro bom está forte ou parou
+    // de crescer (chegou perto da fonte). A altura embaixo conta como o que a parte de baixo dos olhos vê
+    const r = soSentidos() ? null : sbEscolheAlvo(f), embaixo = sbSurface(f.x, f.y);
     if (r) { f.pouso = { id: r.id, x: r.x + r.w / 2, y: r.y + r.h / 2, z: r.z || 0, r }; labEvent('alvoVoo', { id: r.id, t: +f.flyT.toFixed(2) }); }
+    else if (soSentidos() && embaixo > SB_STEP && sbInclinacao(f.x, f.y) < 0.5 && ((f.atrInata || 0) > 0.35 || ((f.atrInata || 0) > 0.1 && (f.dCheiro || 0) <= 0))) {
+      f.pouso = { id: null, x: f.x + Math.sin(f.th) * 8, y: f.y - Math.cos(f.th) * 8, z: embaixo };
+      labEvent('alvoVoo', { id: 'sentidos', t: +f.flyT.toFixed(2) });
+    }
     else if (f.flyT > VOO_MAX || f.flyT > 6) {
       const px = f.x + Math.sin(f.th) * 40, py = f.y - Math.cos(f.th) * 40;
       f.pouso = { id: null, x: Math.min(SB.W - 20, Math.max(20, px)), y: Math.min(SB.H - 20, Math.max(20, py)), z: sbSurface(px, py) };
@@ -410,6 +428,13 @@ function sbFly(f, dt) {
   if (f.flyT > 6 && f.pouso && f.pouso.id) f.pouso = null;   // não chegou em 6 s: pousa onde estiver (abaixo)
   const P = f.pouso;
   let dist = Infinity;
+  if (!P && soSentidos()) {
+    // só sentidos: vira para a coisa que mais aparece à frente nos olhos (servo visual, regra nossa); o cheiro soma a
+    // virada entre as antenas, em stepBody
+    let melhor = null;
+    for (const [, sl, sr, a, tam] of f.seen || []) if (Math.abs(a) < 1.3 && (!melhor || tam > melhor.tam)) melhor = { a, tam };
+    if (melhor) f.th += clamp(melhor.a * 3, -4, 4) * dt;
+  }
   if (P) {
     dist = Math.hypot(P.x - f.x, P.y - f.y);
     // aproximação: vira para o ponto de pouso (regra)
@@ -446,8 +471,10 @@ function sbFly(f, dt) {
   if (emCima && f.z - below < 6) {
     f.flying = false; f.z = below; f.vz = 0; f.pouso = null; f.voarCd = 5;
     if (SB.fisico) corpoTeleporte(f);   // o corpo físico recomeça onde ela pousou
-    labEvent('pouso', { z: Math.round(below), id: P.id, t: +f.flyT.toFixed(2) });
-    logEvent(P.id ? `Voou até "${label(P.id)}" e pousou (${f.flyT.toFixed(1)} s de voo).` : below > 0 ? `Pousou numa plataforma a ${Math.round(below)} px de altura.` : 'Pousou no chão.');
+    // (só sentidos: o pouso não tem alvo; registra o que ficou embaixo, só para medir)
+    const debaixo = P.id || (SB.formas ? rects.find(q => sbAlturaObjeto(q.id, f.x, f.y) > -Infinity)?.id : null) || null;
+    labEvent('pouso', { z: Math.round(below), id: debaixo, t: +f.flyT.toFixed(2) });
+    logEvent(debaixo ? `Voou até "${label(debaixo)}" e pousou (${f.flyT.toFixed(1)} s de voo).` : below > 0 ? `Pousou numa plataforma a ${Math.round(below)} px de altura.` : 'Pousou no chão.');
   }
 }
 function sbNovelBelow(f, below) {

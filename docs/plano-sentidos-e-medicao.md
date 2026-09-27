@@ -17,11 +17,11 @@ números medidos, o que falta). Quem continuar começa por ela.
 Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado.
 
 - [x] P2.1 Medidor do andar (`scripts/andar_medida.mjs`) e linha de base, antes de mudar qualquer coisa
-- [ ] P1.1 Chave "só sentidos" (`?sentidos=1`), sem mudar o comportamento padrão
-- [ ] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos
-- [ ] P1.3 Decolagem pelos sentidos
-- [ ] P1.4 Sem "novidade" escondida na Cozinha
-- [ ] P1.5 Validação dos dois modos (várias rodadas) e troca do padrão, se aprovado
+- [x] P1.1 Chave "só sentidos" (`?sentidos=1`), sem mudar o comportamento padrão
+- [~] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos (feito com a visão aproximada; falta usar os olhos reais)
+- [~] P1.3 Decolagem pelos sentidos (feito; voa menos que com atalhos, calibrar)
+- [x] P1.4 Sem "novidade" escondida na Cozinha
+- [~] P1.5 Validação dos dois modos (preliminar: 2 e 3 rodadas; falta rodar 5 por modo, com os olhos reais, e decidir o padrão)
 - [ ] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura
 - [ ] P2.3 (opcional) Busca local depois de comer
 - [ ] Final: README, texto da página, `AGENTS.md`, commit
@@ -53,7 +53,27 @@ Leitura:
   `f.speed` é 0: o servidor congela a passada, o que deveria contar como parada).
 - O "63% parada" é de uma arena sem comida; com comida e fome, moscas andam mais. Usar como teto, não como alvo.
 
-Próximo: P1.1 (a chave) ou P2.2 (calibrar). O P2.2 começa por `WALK` e pela forma das pausas e viradas.
+**P1.1–P1.4 feitos, P1.5 preliminar (27/09/2026).** O que mudou, tudo só com `?sentidos=1` e `APP.mundo`
+(`soSentidos()` em `web/index.html`):
+- `see()`: a novidade não pesa mais (tudo conta 1); `f.seen` agora guarda `[r, sl, sr, a, tamanho]` (a = direção
+  relativa ao rumo).
+- `stepBody`: `f.dCheiro`, a tendência do cheiro bom (`f.atrInata`) por segundo, suavizada.
+- `sbWantsFly`: chance 0,05 + 0,3 · (coisa grande vista acima do piso) · fome + 0,1 · fome se o cheiro bom não cresce.
+- `sbFly`: sem alvo da lista. Vira para a coisa maior à frente em `f.seen` (servo visual, 3·a rad/s, até 4); pousa
+  quando há algo embaixo (`sbSurface` > `SB_STEP`), a superfície ali é suave (`sbInclinacao` < 0,5, ~27°) e o cheiro
+  bom está forte (`f.atrInata` > 0,35) ou parou de crescer (> 0,1 e `f.dCheiro` ≤ 0). Sem a inclinação, pousava nas
+  encostas e não comia. O evento `pouso` registra o que ficou embaixo, só para medir.
+- Números em `docs/medicoes/sentidos-comparacao.json`: com atalhos, 1–3 voos e fruta comida nas 2 rodadas; só
+  sentidos (com a inclinação), 0–2 voos e fruta comida em 1 de 3 (uvas); nas outras ela ficou no açúcar, perto de onde
+  começa.
+
+Próximos passos, nesta ordem:
+1. P1.2 com os olhos reais: no sandbox desenhado, trocar `f.seen` pela maior mancha de `OLHO.obj` (direção pelos
+   omatídeos, `OLHO.mapa.direcao`). `f.seen` continua como reserva (página 2D, `?headless=1`, `?olhos=0`).
+2. P1.5: 5 rodadas por modo com `scripts/andar_medida.mjs --sentidos` (ele conta `comeu`/`pouso` em `eventos`) e sem
+   `--sem-olhos`, gravar em `docs/medicoes/sentidos-comparacao.json`. Se o modo só sentidos comer fruta e pousar em
+   comida com frequência razoável, virar o padrão (e `?sentidos=0` volta aos atalhos). Atualizar README e página.
+3. P2.2: calibrar `WALK`, pausas e viradas (ver a leitura da linha de base acima).
 
 ## Os atalhos de hoje (o que a mosca sabe sem ter percebido)
 

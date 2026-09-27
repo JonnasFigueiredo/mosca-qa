@@ -568,6 +568,10 @@ const HEADLESS = /[?&]headless=1\b/.test(location.search);
 const EYES_OFF = /[?&]olhos=0\b/.test(location.search);
 // ?campos=0: no sandbox com olhos reais, volta a dar a mesma taxa a todos os LC10a de um olho (sem campo receptivo)
 const CAMPOS_OFF = /[?&]campos=0\b/.test(location.search);
+// ?sentidos=1: no mundo natural, ela decide só com o que percebe (docs/plano-sentidos-e-medicao.md): sem a "novidade"
+// escondida de cada coisa e sem consultar a lista de objetos para escolher onde voar e quando decolar
+const SENTIDOS = /[?&]sentidos=1\b/.test(location.search);
+const soSentidos = () => SENTIDOS && !!APP.mundo;
 let HAS_EYES = false;
 let HAS_VOO = false;   // o voo pelos motores das asas: liga se os dados trazem os grupos do voo
 // alcance do cheiro de cada elemento (px, desvio da gaussiana); ?cheiro=60 muda, para comparar
@@ -813,10 +817,11 @@ function see(f) {
     let a = Math.atan2(dx, -dy) - f.th;              // 0 = na frente, negativo = à esquerda
     a = Math.atan2(Math.sin(a), Math.cos(a));
     const size = Math.min(1, 2 * Math.atan(Math.max(r.w, r.h) / 2 / d) / EYE_SAT) ** 2;   // o que está perto pesa mais
-    const s = size * (0.2 + 0.8 * el(r.id).novelty);
+    // (só sentidos: o que ela já provou não fica mais apagado por uma nota escondida; quem lembra é o cérebro)
+    const s = size * (0.2 + 0.8 * (soSentidos() ? 1 : el(r.id).novelty));
     const sl = a > -EYE_BACK && a < EYE_FRONT ? s : 0, sr = a < EYE_BACK && a > -EYE_FRONT ? s : 0;
     L += sl; R += sr;
-    if (sl || sr) seen.push([r, sl, sr]);
+    if (sl || sr) seen.push([r, sl, sr, a, size]);
   }
   if (SB.on && typeof predView === 'function') { const [pl, pr] = predView(f); L += pl; R += pr; }
   f.seen = seen;
@@ -878,6 +883,9 @@ function stepBody(dt, counts) {
   if (ina) {
     f.atrInata = clamp((ina.aL + ina.aR) / 2 / 0.6, 0, 1) * f.hunger;
     f.avInata = clamp((ina.vL + ina.vR) / 2 / 0.5, 0, 1);
+    // o cheiro bom está ficando mais forte? (por segundo, suavizado; só sentidos: decolar e pousar usam isso)
+    f.dCheiro = ema(f.dCheiro || 0, (f.atrInata - (f.atrAnt ?? f.atrInata)) / dt, dt, 0.5);
+    f.atrAnt = f.atrInata;
     f.aversion = Math.max(f.aversion, f.avInata);
     f.attraction = Math.max(f.attraction, f.atrInata);
     if (f.avInata > 0.5 && brainT / 1000 - (f.avisoMofo ?? -99) > 8) {
