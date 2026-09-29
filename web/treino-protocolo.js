@@ -2,7 +2,9 @@
 globalThis.ProtocoloMemoria = {
   gerador(semente){let s=semente>>>0;return ()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};},
   cheiros:{A:['VA2','DM4'],B:['DP1l','DM2']},
-  fases({segundos=15,repeticoes=3,alvo='A'}={}) {
+  // retencao: segundos cerebrais sem odor e sem recompensa entre o treino e o teste seguinte (corpo parado), para
+  // medir quanto da memória sobra depois do esquecimento do worker (docs/plano-treino-robusto.md, T2)
+  fases({segundos=15,repeticoes=3,alvo='A',retencao=0}={}) {
     const fases=[],outro=alvo==='A'?'B':'A';
     const prova=(nome,troca=false)=>fases.push({nome,tipo:'teste',duracao:segundos,troca});
     const treino=(nome,recompensado)=>{
@@ -12,7 +14,9 @@ globalThis.ProtocoloMemoria = {
         fases.push({nome:'Intervalo sem odor',tipo:'intervalo',duracao:1,troca:false});
       }
     };
-    prova('Antes do treino');treino('Treino',alvo);prova('Depois do treino');
+    prova('Antes do treino');treino('Treino',alvo);
+    if(retencao>0)fases.push({nome:`Retenção: ${retencao} s sem odor`,tipo:'intervalo',duracao:retencao,troca:false});
+    prova('Depois do treino');
     prova('Teste com lados trocados',true);treino('Reversão',outro);prova('Depois da reversão');
     return fases;
   },

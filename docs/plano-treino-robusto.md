@@ -1,0 +1,84 @@
+# Plano: esquema de treino robusto, com memória
+
+Pedido do usuário (29/09/2026): um esquema robusto para rodar as simulações e treinar a mosca, com memória. Leia
+antes o `AGENTS.md`, a seção "Treinamento da memória em 3D" do README e `docs/plano-treinamento-bugs-3d.md` (etapas
+A a E do Codex). **Atualize "Onde parei" a cada passo.**
+
+## O que já existe (Codex, 28–29/09)
+
+- Aba **Treinamento** (`web/treino-protocolo.js`, `web/treino-memoria.js`): pistas A (VA2+DM4) e B (DP1l+DM2),
+  teste antes, pareamento com PAM, teste depois, lados trocados, reversão, teste final (96 s cerebrais). Controle
+  com pesos congelados (`plasticidade` no worker). Memória do treino guardada à parte.
+- **Gerenciador de campanhas** (`scripts/experimentos.mjs`, porta 8770, `iniciar-experimentos.cmd`,
+  `web/experimentos.html`): cada semente roda A e B, ativa e congelada; sementes separadas de cérebro, corpo e
+  mundo; retoma após queda; cópia congelada da pasta `web/` por lote; diferença pareada ativa − congelada por
+  semente e bootstrap de 2000 reamostragens (`scripts/experimentos/core.mjs`). Testado (`experimentos_teste.mjs`):
+  a mesma semente dá a mesma sessão.
+- **Falta:** nenhuma campanha real rodou (só testes de infraestrutura com 1 semente). O critério da etapa A segue
+  sem resposta.
+
+## Etapas
+
+### T1 Piloto da etapa A (a primeira medida causal)
+
+Lote: sementes 101, 202, 303, 404, 505; variante `padrao` (3 repetições, testes de 15 s); 2 simultâneas.
+= 20 sessões (5 sementes × A/B × ativa/congelada).
+
+**Critério escrito antes de medir:** a diferença pareada média do ganho (ativa − congelada) é positiva e o
+intervalo de 95% não inclui 0; e menos de 30% dos testes "depois do treino" ficam sem escolha. Se passar: ampliar
+para 20 sementes (T4). Se não passar: registrar como negativo e investigar a ponte memória → movimento antes de
+seguir (o plano do Codex, etapa A).
+
+### T2 Memória que dura: retenção e consolidação
+
+Hoje o teste vem logo depois do treino. O worker tem esquecimento (`TAU_F` 90 s: a sinapse volta ao valor
+original) e consolidação (cada episódio de dopamina deixa a mudança mais estável, até 10× mais lenta). Medir:
+- **Retenção:** novo parâmetro `retencao` (s cerebrais sem odor entre o fim do treino e o teste "depois"): 0, 60,
+  180 s. Esperado pelo modelo: o ganho cai com o intervalo.
+- **Consolidação:** `repeticoes` 1, 3 e 6 com `retencao` 180 s. Esperado pelo modelo: mais repetições, mais retenção.
+Precisa de: fase `intervalo` longa em `ProtocoloMemoria.fases` (sem odor, sem recompensa, corpo parado ou livre, a
+decidir e declarar), o campo no `validar` de `core.mjs` e a variante no gerenciador. Critério por variante, escrito
+antes: o mesmo de T1.
+
+### T3 Memória entre sessões
+
+Treinar numa sessão, guardar a memória, e testar numa sessão nova que carrega essa memória (o "dia seguinte"),
+contra uma sessão nova sem ela. Usa o formato de salvamento que já existe (`guardarMemoria`). Mede se o que foi
+aprendido sobrevive ao recomeço do corpo e do mundo.
+
+### T4 Ampliar
+
+Com efeito em T1: 20 sementes na variante que funcionou; relatar diferença pareada, intervalo e sessões sem escolha.
+
+### Depois
+
+Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedidos), com o mesmo gerenciador.
+
+## Como rodar
+
+- Servidores: `python scripts/servir.py` (8765) não é usado pelo gerenciador, que serve a própria cópia em 8770.
+- Pela interface: `iniciar-experimentos.cmd` e abrir http://127.0.0.1:8770.
+- Pela linha de comando: `node scripts/campanha.mjs --nome X --sementes 101,202,303,404,505 --variante padrao
+  [--repeticoes 3] [--segundos 15] [--paralelas 2]`: sobe o gerenciador (se não estiver no ar), cria o lote, inicia,
+  mostra o progresso e, no fim, o resumo pareado. Resultados em `docs/medicoes/lotes/<id>/` (resumo.json,
+  resultados.csv, eventos.ndjson). Cópias do código ficam em `data/experimentos/` (fora do git).
+- Um Chrome por sessão (1,5–2 GB cada): no máximo 2 simultâneas.
+
+## Onde parei
+
+- [ ] T1 piloto
+- [ ] T2 retenção e consolidação
+- [ ] T3 memória entre sessões
+- [ ] T4 ampliar
+
+Notas (a mais recente por último):
+
+**29/09, T1 lançado e T2 preparado.** `scripts/campanha.mjs` criado (cria o lote pela API do gerenciador, inicia,
+acompanha e imprime o resumo pareado). Piloto T1 rodando: lote `2026-09-29T22-25-18-608Z-a560c5` (o primeiro, `...17de4c`, ficou parado esperando
+RAM e foi cancelado sem sessões), uma sessão por vez e `--memoria 2` (o computador tem ~2,5 GB livres com os
+aplicativos do usuário abertos), log em `_tmp/_piloto_A.log`. Para T2: `retencao` em `ProtocoloMemoria.fases` (fase `intervalo`
+sem odor nem recompensa, corpo parado como nos outros intervalos, entre o treino e o teste "depois"), em
+`validar` do `core.mjs` (0–600 s) e em `campanha.mjs --retencao`; teste em `treino_protocolo_teste.mjs`. O gerenciador foi reiniciado depois da mudança, então já aceita `retencao`. **Sempre que `core.mjs` mudar, parar o
+processo `node scripts/experimentos.mjs` antes de lançar outro lote** (ele recusa uma segunda instância na mesma pasta; a trava é `docs/medicoes/lotes/_gerenciador.lock`).
+Se o piloto ainda estiver pela metade quando alguém retomar: abrir http://127.0.0.1:8770 (ou `iniciar-experimentos.cmd`)
+e clicar em Retomar no lote; o resumo sai em `docs/medicoes/lotes/<id>/resumo.json`.

@@ -18,7 +18,8 @@ export function validar(c){
     if(!/^[a-z0-9_-]{1,32}$/.test(v.nome||''))throw Error('Nome de variante: letras minúsculas, números, hífen ou sublinhado');
     return {nome:v.nome,repeticoes:numero(v.repeticoes??3,1,10,'repetições',true),
       segundos:numero(v.segundos??15,.1,120,'segundos'),odorHz:numero(v.odorHz??100,10,150,'odorHz'),
-      recompensaHz:numero(v.recompensaHz??100,10,150,'recompensaHz'),tauF:numero(v.tauF??90000,10000,600000,'tauF')};
+      recompensaHz:numero(v.recompensaHz??100,10,150,'recompensaHz'),tauF:numero(v.tauF??90000,10000,600000,'tauF'),
+      retencao:numero(v.retencao??0,0,600,'retencao')};
   });
   if(new Set(normalizadas.map(v=>v.nome)).size!==normalizadas.length)throw Error('Nomes de variantes repetidos');
   if(normalizadas.length*sementes.length*4>1200)throw Error('Limite de 1200 sessões por lote');

@@ -20,4 +20,11 @@ for(const alvo of ['A','B']) {
   assert(pareamentos.slice(6).every(f=>f.recompensa===(f.pista!==alvo)));
   assert.equal(fases.filter(f=>f.tipo==='teste'&&f.troca).length,1);
 }
-console.log('Protocolo: duração, exposição, ausência de recompensa no teste e reversão passaram.');
+// retenção: um intervalo sem odor nem recompensa entre o treino e o teste "depois", só quando pedido
+{
+  const f=ProtocoloMemoria.fases({alvo:'A',retencao:120}), i=f.findIndex(x=>x.nome==='Depois do treino');
+  assert.equal(f.reduce((n,x)=>n+x.duracao,0),96+120);
+  assert.equal(f[i-1].tipo,'intervalo'); assert.equal(f[i-1].duracao,120); assert.deepEqual(ProtocoloMemoria.taxas(f[i-1],60),{});
+  assert.equal(ProtocoloMemoria.fases({alvo:'A'}).some(x=>x.nome.startsWith('Retenção')),false);
+}
+console.log('Protocolo: duração, exposição, ausência de recompensa no teste, reversão e retenção passaram.');
