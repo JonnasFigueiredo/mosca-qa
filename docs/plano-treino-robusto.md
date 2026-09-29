@@ -64,6 +64,26 @@ aprendido sobrevive ao recomeço do corpo e do mundo.
 
 Com efeito em T1: 20 sementes na variante que funcionou; relatar diferença pareada, intervalo e sessões sem escolha.
 
+### B-abstrata: achar bugs só com o cérebro (sem corpo), antes da arena 3D
+
+Objetivo final do usuário: a mosca achar bugs. Primeiro no nível abstrato (sem custo de andar; o plano do Codex
+prevê os dois níveis), no Node, com o worker real e sem Chrome (rápido):
+- `web/qa/pedidos.js`: sistema de Pedidos em memória (estoque, carrinho, finalizar, pagar, cancelar, cupom), versões
+  com defeitos injetados e contratos verificáveis (estoque ≥ 0 e ≤ inicial, uma cobrança por pedido, total finito e
+  ≥ 0, desconto ≤ limite). O verificador só olha o estado; não sabe onde está o defeito.
+- Cada ação tem características (família: carrinho, estoque, pagamento, cancelamento, cupom; entrada: normal, zero,
+  limite, negativa, repetida). Cada característica é um par de glomérulos neutros; o cheiro da ação é a união.
+- A cada passo, 4 ações visíveis (sorteadas): a mosca sente o cheiro de cada uma por 0,3 s e escolhe pela valência das
+  saídas do corpo cogumelar (softmax; **regra nossa**). Bug novo confirmado: o cheiro daquela ação por 2 s com PAM nos
+  últimos 0,5 s (o mesmo pareamento do protocolo de treino). Sem punição por ação sem bug.
+- Treino em versões com defeitos de "repetição" em pagamento e cancelamento; teste em versões reservadas com defeitos
+  de repetição em outras famílias (cupom, estoque). Hipótese: a característica "repetida" ganha valência e a mosca a
+  prioriza no sistema novo.
+- Comparação no teste, mesmas versões e orçamento de ações: memória treinada, pesos congelados (mesma exposição),
+  cérebro ingênuo, escolha aleatória, explorador por novidade (ação menos tentada). Métricas: bugs distintos por
+  orçamento e ações até o primeiro bug. Critério escrito antes de medir: a treinada acha o primeiro bug de teste em
+  menos ações que a congelada, com intervalo de 95% da diferença pareada abaixo de 0 (5 sementes).
+
 ### Depois
 
 Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedidos), com o mesmo gerenciador.
