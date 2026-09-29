@@ -19,7 +19,8 @@ export function validar(c){
     return {nome:v.nome,repeticoes:numero(v.repeticoes??3,1,10,'repetições',true),
       segundos:numero(v.segundos??15,.1,120,'segundos'),odorHz:numero(v.odorHz??100,10,150,'odorHz'),
       recompensaHz:numero(v.recompensaHz??100,10,150,'recompensaHz'),tauF:numero(v.tauF??90000,10000,600000,'tauF'),
-      retencao:numero(v.retencao??0,0,600,'retencao')};
+      retencao:numero(v.retencao??0,0,600,'retencao'),
+      ponte:(()=>{const p=v.ponte??'sinapses';if(!['sinapses','mbon'].includes(p))throw Error('ponte: sinapses ou mbon');return p;})()};
   });
   if(new Set(normalizadas.map(v=>v.nome)).size!==normalizadas.length)throw Error('Nomes de variantes repetidos');
   if(normalizadas.length*sementes.length*4>1200)throw Error('Limite de 1200 sessões por lote');

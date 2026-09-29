@@ -742,6 +742,13 @@ let fly, rates = {}, outRate = {}, outMax = {}, brainT = 0, groupSize = {}, memo
 let kcDrive = 0, kcBase = 0, kcDriveR = 0, kcBaseR = 0, kcLossA = 0, kcLossR = 0;
 const KC_MIN = 50;      // spikes/s de Kenyon: abaixo disso ela não está sentindo cheiro de verdade
 const KEEP_TH = 0.6;    // se o cheiro atual passa menos de 60% da força original, ela desvia
+// Ponte memória -> movimento (docs/plano-treino-robusto.md). 'sinapses' (padrão): uma regra lê o peso atual das
+// sinapses KC -> saídas. 'mbon': o corpo lê a atividade das saídas do corpo cogumelar para o cheiro que sente agora,
+// valência = aproximar - evitar (Hz por neurônio), como nas moscas reais. Sem cheiro, as saídas ficam em silêncio
+// (valência 0); A vale ~0,7 e B ~0,25 de nascença, e o treino leva a pista recompensada a ~1,45 (t0-cerebro.json).
+// ?ponte=mbon liga; nas campanhas, a variante escolhe (config.ponte)
+let PONTE = /[?&]ponte=mbon\b/.test(location.search) ? 'mbon' : 'sinapses';
+const VALENCIA_MAX = 1.5;   // Hz por neurônio de valência que dá atração (ou aversão) máxima
 const PREF_AV = -0.4;   // saldo aprendido abaixo disto: desvia
 const PREF_AT = 0.25;   // saldo aprendido acima disto: conta como botão preferido (no cartão de memória)
 const LV_SCALE = 5000;  // valor aprendido perto de um botão recompensado uma vez (força sináptica por segundo)
@@ -900,6 +907,14 @@ function stepBody(dt, counts, destino = worker) {
   // original. Zero para cheiro nunca provado; cresce quando ela se aproxima de onde comeu
   f.lv = ema(f.lv || 0, (kcLossR - kcLossA) / dt / LV_SCALE, dt, 0.25);
   f.attraction = f.lv > 0.1 ? clamp((f.lv - 0.1) / 0.5, 0, 1) * f.hunger : 0;
+  // valência pelas saídas do corpo cogumelar (sempre calculada, para medir; só age com PONTE === 'mbon')
+  const hzN = k => hz(k) / (groupSize[k] || 1);
+  f.valencia = ema(f.valencia || 0, hzN('mbon_aprox') - (hzN('mbon_evitar') + hzN('mbon_evitar_rec')) / 2, dt, 0.5);
+  if (PONTE === 'mbon') {
+    f.attraction = smelling ? clamp(f.valencia / VALENCIA_MAX, 0, 1) * f.hunger : 0;
+    f.aversion = smelling ? clamp(-f.valencia / VALENCIA_MAX, 0, 1) : 0;
+    f.lv = f.valencia;   // a busca local (tumble) segue a mesma leitura
+  }
   f.atrAprendida = f.attraction;
   // mundo natural: atração e aversão inatas pelos cheiros (regra nossa, da literatura), somadas às aprendidas.
   // Com fome, cheiro de fruta e de fermentação puxa; geosmina (mofo) afasta mesmo de barriga cheia

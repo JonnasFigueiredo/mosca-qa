@@ -53,10 +53,11 @@ async function roda(s, rates) {
 }
 async function sonda() {
   const r = { A: [], B: [] };
-  for (let k = 0; k < REPS_SONDA; k++) for (const p of ['A', 'B']) { r[p].push(await roda(SONDA_S, odor(p))); await roda(PAUSA_S, {}); }
+  r.nada = [];
+  for (let k = 0; k < REPS_SONDA; k++) { for (const p of ['A', 'B']) { r[p].push(await roda(SONDA_S, odor(p))); await roda(PAUSA_S, {}); } r.nada.push(await roda(SONDA_S, {})); }
   const junta = p => ({ hz: Object.fromEntries(GRUPOS.map(g => [g, r[p].reduce((a, x) => a + x.hz[g], 0) / REPS_SONDA])),
     kcs: new Set(r[p].flatMap(x => [...x.kcs])), kcsPorApresentacao: r[p].map(x => x.kcs.size) });
-  return { A: junta('A'), B: junta('B') };
+  return { A: junta('A'), B: junta('B'), nada: junta('nada') };
 }
 const jaccard = (a, b) => { let i = 0; for (const x of a) if (b.has(x)) i++; return i / (a.size + b.size - i || 1); };
 const arred = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, +v.toFixed(3)]));
@@ -78,7 +79,7 @@ for (const semente of sementes) for (const ativa of [true, false]) {
     kcs: { A: antes.A.kcs.size, B: antes.B.kcs.size, fracaoA: +(antes.A.kcs.size / G.kc.length).toFixed(4), fracaoB: +(antes.B.kcs.size / G.kc.length).toFixed(4),
       porApresentacao: { A: antes.A.kcsPorApresentacao, B: antes.B.kcsPorApresentacao }, jaccardAB: +jaccard(antes.A.kcs, antes.B.kcs).toFixed(4),
       jaccardA_antesDepois: +jaccard(antes.A.kcs, depois.A.kcs).toFixed(4) },
-    hz_antes: { A: arred(antes.A.hz), B: arred(antes.B.hz) }, hz_depois: { A: arred(depois.A.hz), B: arred(depois.B.hz) },
+    hz_antes: { A: arred(antes.A.hz), B: arred(antes.B.hz), nada: arred(antes.nada.hz) }, hz_depois: { A: arred(depois.A.hz), B: arred(depois.B.hz), nada: arred(depois.nada.hz) },
     delta: { A: delta('A'), B: delta('B') },
   };
   resultados.push(r);

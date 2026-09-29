@@ -89,6 +89,7 @@ window.Treino={
         plasticidade:$('#treinoCond').value==='ativa',continuacao:!!guardada,...opcoes};
       this.config.segundos=clamp(this.config.segundos,.1,120);this.config.repeticoes=clamp(Math.round(this.config.repeticoes),1,10);
       this.config.retencao=clamp(+this.config.retencao||0,0,600);
+      if(this.config.ponte)PONTE=this.config.ponte==='mbon'?'mbon':'sinapses';
       this.manual=!!this.config.manual;this.blocos=0;this.amostra=-1;
       this.acasoCorpo=this.config.sementes?ProtocoloMemoria.gerador(this.config.sementes.corpo):null;
       worker.postMessage({type:'semente',valor:this.config.sementes?.cerebro??null});

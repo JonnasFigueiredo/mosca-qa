@@ -4,7 +4,7 @@
 //   node scripts/campanha.mjs --nome piloto-A --sementes 101,202,303,404,505 --variante padrao
 //        [--repeticoes 3] [--segundos 15] [--retencao 0] [--paralelas 2] [--limite 20] [--memoria 3] [--porta 8770]
 //   --retencoes 60,180: um lote com uma variante por intervalo de retenção (ret60, ret180), além de --variante
-//   (T2 de docs/plano-treino-robusto.md). --repeticoes-lista 1,6: idem, uma variante por número de repetições (rep1, rep6)
+//   (T2 de docs/plano-treino-robusto.md). --ponte mbon: a ponte memória -> movimento pelas saídas do corpo cogumelar. --repeticoes-lista 1,6: idem, uma variante por número de repetições (rep1, rep6)
 //
 // Os resultados ficam em docs/medicoes/lotes/<id>/ (resumo.json, resultados.csv, eventos.ndjson).
 // Interromper este script não para o gerenciador: o lote continua, e a interface em http://127.0.0.1:8770 mostra.
@@ -17,7 +17,7 @@ const config = {
   nome: arg('nome', 'Campanha'),
   sementes: arg('sementes', '101,202,303,404,505').split(',').map(Number),
   variantes: (() => {
-    const base = { repeticoes: +arg('repeticoes', 3), segundos: +arg('segundos', 15), retencao: +arg('retencao', 0) };
+    const base = { repeticoes: +arg('repeticoes', 3), segundos: +arg('segundos', 15), retencao: +arg('retencao', 0), ponte: arg('ponte', 'sinapses') };
     const lista = (k, campo, prefixo) => (arg(k, '') ? arg(k).split(',').map(v => ({ ...base, nome: prefixo + v, [campo]: +v })) : null);
     return lista('retencoes', 'retencao', 'ret') || lista('repeticoes-lista', 'repeticoes', 'rep') || [{ ...base, nome: arg('variante', 'padrao') }];
   })(),
