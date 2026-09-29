@@ -1,0 +1,58 @@
+{
+  "metodo": "Chrome sem janela, worker real, Cozinha 3D no modo padrão só sentidos. LAB.freeze mantém a posição num ponto sem comida; intervalo antecipado para iniciar numa pausa. Sequência avança pelo relógio cerebral. Ameaça, voo, captura, ré e escalada injetados para testar interrupção. Depois posicionada no açúcar durante a limpeza para verificar prioridade da alimentação. Imagens: mesma malha animada, isolada numa cena de conferência com iluminação neutra. Não mede frequência espontânea nem valida realismo biológico. Corpo físico não ligado.",
+  "etapas": [
+    "cabeca",
+    "patas",
+    "antenas"
+  ],
+  "fim": {
+    "ativa": false,
+    "espera": 25.224703888371618,
+    "eventos": [
+      {
+        "t": 1.72,
+        "type": "limpeza",
+        "estado": "inicio",
+        "origem": "regra do corpo"
+      },
+      {
+        "t": 4.83,
+        "type": "limpeza",
+        "estado": "fim",
+        "origem": "regra do corpo"
+      }
+    ]
+  },
+  "interrupcoes": [
+    {
+      "chave": "threat",
+      "ativa": false
+    },
+    {
+      "chave": "flying",
+      "ativa": false
+    },
+    {
+      "chave": "presa",
+      "ativa": false
+    },
+    {
+      "chave": "back",
+      "ativa": false
+    },
+    {
+      "chave": "naParede",
+      "ativa": false
+    }
+  ],
+  "alimentacao": {
+    "limpando": false,
+    "mordidas": 2
+  },
+  "erros": [],
+  "fotos": [
+    "_limpeza-cabeca.png",
+    "_limpeza-patas.png",
+    "_limpeza-antenas.png"
+  ]
+}

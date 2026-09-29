@@ -1,20 +1,20 @@
 {
   "metodo": "Chrome sem janela com headless=1 (sem renderização contínua dos olhos), worker real, Cozinha 3D; corpo mantido nas posições indicadas com LAB.freeze para testar alimentação, altura, captura e estados de caminhada. Uma realização, sem validação biológica. Pausas contadas a cada 100 ms cerebrais. Imagem final: extensão comandada manualmente apenas para conferir geometria; não usada para contar alimentação.",
   "alimentacao": {
-    "tempo_ms": 2500,
-    "prob": 10.367895952203167,
-    "boca": 9.357612977668642e-14,
+    "tempo_ms": 2520,
+    "prob": 1.199414108478398,
+    "boca": 3.2758473188887825e-12,
     "patas": "k-acucar",
-    "mordidas": 1,
+    "mordidas": 2,
     "antenas": [
       {
-        "x": 703.6470664444136,
-        "y": 630.0914624897575,
+        "x": 698.6643745817105,
+        "y": 626.6050679271863,
         "z": 11.406429999999999
       },
       {
-        "x": 703.0569128687191,
-        "y": 631.9911661784139,
+        "x": 700.6439553545127,
+        "y": 626.4090696834394,
         "z": 11.406429999999999
       }
     ],
@@ -33,9 +33,9 @@
   "semComida": {
     "mordidas": 0,
     "estados": {
-      "andar": 58,
-      "pausa": 14,
-      "girar": 2
+      "andar": 70,
+      "girar": 4,
+      "pausa": 1
     }
   },
   "fisico": {
@@ -44,19 +44,19 @@
     "mordidas": 1,
     "antenas": [
       {
-        "x": 671.4484,
-        "y": 591.3628,
-        "z": 8.517600000000002
+        "x": 672.7224,
+        "y": 620.7621,
+        "z": 9.3324
       },
       {
-        "x": 672.105,
-        "y": 589.4987,
-        "z": 8.743
+        "x": 671.3399,
+        "y": 619.3502,
+        "z": 9.1077
       }
     ],
     "patas": "k-acucar",
-    "boca": 0.00005669651976562959,
+    "boca": 0.8262260575834234,
     "contato": null
   },
-  "bocaFinal": 0.9792457896428153
+  "bocaFinal": 0.998829120386175
 }

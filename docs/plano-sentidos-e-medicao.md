@@ -16,6 +16,9 @@ números medidos, o que falta). Quem continuar começa por ela.
 
 Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado.
 
+**Prioridade atual — correção da subida (pedido do usuário, 27/09/2026):** a comparação sensorial posterior está em `docs/plano-busca-cheiro.md` (só sentidos já virou padrão). Agora investigando quedas no sandbox físico. Linha de base `subida-antes`, com `andar_medida.mjs --fisico --sentidos --segundos 0 --sonda-subida`: 12 s cerebrais diante de banana/pêssego/uvas, olhos reais. Maiores descidas entre poses: 1,72 / 3,72 / 1,42 mm; alternâncias parede: 4 / 16 / 2. Detectado falso evento de topo com costas para baixo. Em validação: filtro de postura por tempo físico, rumo físico na curva e remoção do teleporte de parede nas frutas. Triagem separada da adesão em `corpo/subida_teste.py`. Assistência experimental de postura (torque externo) melhorou o ensaio isolado, mas a validação livre no navegador ficou inconsistente: pêssego caiu de 3,72 para 0,76 mm, enquanto uvas subiu de 1,42 para 4,48 mm e teve seis alternâncias; descartada e removida do servidor. Nenhum parâmetro neural alterado; falta medir depois e executar a regressão integrada.
+
+
 - [x] P2.1 Medidor do andar (`scripts/andar_medida.mjs`) e linha de base, antes de mudar qualquer coisa
 - [x] P1.1 Chave "só sentidos" (`?sentidos=1`), sem mudar o comportamento padrão
 - [~] P1.2 Alvo do voo pelos olhos e pelo cheiro, sem a lista de objetos (feito, com os olhos reais e com a aproximação; falta validar em rodadas longas)
@@ -299,3 +302,4 @@ Seria regra (o circuito não é conhecido no nível de ligação); só fazer se 
 - Um cérebro no Chrome sem janela leva ~20 s para carregar e usa 1,5–2 GB: rode um teste de navegador por vez.
 - Scripts temporários começam com `_` (fora do git). Exemplos úteis na raiz, se ainda existirem: `_livre.mjs` (solta
   na Cozinha e conta refeições e voos), `_sonda2.mjs` + `_sonda_*.js` (roda um trecho de JS na página já aberta).
+

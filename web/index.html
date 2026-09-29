@@ -219,6 +219,10 @@ body.sandbox .brain-labels { color: #3fae6e; }
 .sb-help.fant-help { top: 28px; bottom: auto; right: auto; max-width: 52%; text-align: left; color: #cfe6ff; text-shadow: 0 0 6px #0b2a4a, 0 0 2px #000; }
 .sb-modes .tam-btn { color: #d6e8dc; border-color: #2c4a3a; }
 .sb-modes .tam-btn.on { color: #fff; border-color: #9fe0bb; }
+.colonia-painel { display: none; padding: 10px 0; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+body.sandbox .colonia-painel { display: flex; }
+.colonia-painel small { flex-basis: 100%; color: var(--muted); }
+body.treinamento .colonia-painel { display: none; }
 .ev-ui { position: absolute; inset: 0; pointer-events: none; }
 .ev-cap { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--muted); }
 .ev-cap b { font-weight: 600; }
@@ -505,10 +509,11 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
         <p><strong>Corpo físico:</strong> com o servidor local ligado (<code>corpo/servidor.py</code>), ela ganha o corpo da NeuroMechFly, tirado de um micro-CT de uma mosca real, com física de verdade. As patas seguem passadas gravadas de moscas reais, e o cérebro manda virar e andar. As plataformas são blocos sólidos, e quando as seis patas perdem o apoio (passou da beira), ela começa a voar: é o reflexo tarsal das moscas reais. No ar ela ainda usa o modelo simples, e ao pousar o corpo físico recomeça ali.</p>
         <p><strong>O que as patas e as antenas sentem:</strong> cada pisada liga as cerdas do tarso daquela pata; um tropeço liga todas as cerdas da pata; o apoio liga os sensores de carga, e o movimento da junta, o órgão cordotonal. Tudo entra no cordão nervoso pelo nervo de cada pata. As antenas sentem a gravidade (órgão de Johnston): de cabeça para cima, as duas pendem para trás. No mapa, o toque na pata da frente não chega a nenhum neurônio descendente, e o das outras patas quase não vira a mosca. A reação a um tropeço é um reflexo local da pata, e aqui ela está no controlador do corpo.</p>
         <p><strong>Você: louva-a-deus.</strong> Você controla uma ninfa de louva-a-deus (~15 mm), predador de emboscada que caça moscas-da-fruta. A mosca não sabe o que ele é: vê um objeto e, quando algo cresce rápido na frente dela, os detectores de ameaça (LPLC2, LC4) disparam a fibra gigante e ela foge. Rastejar devagar (Shift) ou chegar pelo ponto cego atrás dela quase não faz nada crescer. O bote das patas da frente leva 90 ms. Presa, ela sente as patas agarradas e a dor; a cada mordida a cabeça do louva-a-deus cresce na frente dela, e cada rajada da fibra gigante é um tranco que afrouxa o seu aperto. A luta dela vem do cérebro.</p>
-        <p><strong>Escalada:</strong> com as almofadinhas adesivas, ela sobe as paredes das plataformas com física de verdade, a uns 5 mm/s. Andando contra uma parede, as patas da frente grudam e o corpo empina. São regras nossas: o agarrão ao começar (0,2 s de força contra a parede, no papel das garras), a preferência por subir e a passagem da parede para o topo. No teto ela ainda cai. Na Cozinha, as frutas têm na física a mesma forma do desenho (meias-cúpulas apoiadas no balcão), e ela sobe por elas com a pegada, outra regra nossa: a força que a segura aponta para dentro da superfície em que ela está. Com a gravidade de sempre, as passadas gravadas no chão escorregavam na curva.</p>
+        <p><strong>Escalada:</strong> com as almofadinhas adesivas, ela sobe as paredes das plataformas com física de verdade, a uns 5 mm/s. Andando contra uma parede, as patas da frente grudam e o corpo empina. São regras nossas: o agarrão ao começar (0,2 s de força contra a parede, no papel das garras), a preferência por subir e a passagem da parede para o topo. No teto ela ainda cai. Na Cozinha, as frutas têm na física a mesma forma do desenho (meias-cúpulas apoiadas no balcão), e ela sobe por elas com a pegada, outra regra nossa: a força que a segura aponta para dentro da superfície em que ela está. Com a gravidade de sempre, as passadas gravadas no chão escorregavam na curva. Nas frutas, o rumo acompanha o corpo físico e não há teleporte para agarrar a encosta. A troca de postura espera 180 ms físicos; chegar em cima exige estar ereta e apoiada. O voo por perda de apoio espera 60 ms físicos. São filtros e regras do corpo, não saídas novas do conectoma. A escalada curva ainda pode falhar.</p>
       </div>
       <div class="wide">
         <h3>O que é cérebro e o que é corpo</h3>
+        <p><strong>Limpeza na Cozinha 3D:</strong> nas pausas seguras, ela limpa a cabeça e as antenas, alternando com esfregar as patas da frente. Ameaça, voo, captura, escalada e contato para comer interrompem o gesto. A sequência e os tempos são regras do corpo. A triagem das cerdas ativou descendentes de limpeza no mapa, mas não demonstrou a sequência coordenada; por isso não dizemos que essa animação vem do cérebro. Com o corpo físico, o gesto é uma sobreposição visual, sem forças de limpeza nas patas.</p>
         <p><strong>Vem do cérebro simulado:</strong> para onde ela vira ao ver os elementos da tela, parar para provar um elemento (o clique), o pulo ou a decolagem de fuga e para que lado fugir, andar de ré e o quanto cada cheiro atrai depois de um bug.</p>
         <p><strong>Para que lado fugir:</strong> cada detector de ameaça (LPLC2, LC4) olha para um pedaço do mundo, tirado das sinapses. No mapa, a fibra gigante dispara igual venha a ameaça de onde vier; quem diz de onde veio são outros descendentes: o DNp04 dispara do lado da ameaça, o DNp02 quando ela vem da frente e o DNp11 quando vem de trás. Ela pula para o lado oposto (essa leitura é regra nossa). Testando com um predador atacando de vários lados, a direção lida errou 4° na mediana. Por trás ela não vê: é o ponto cego.</p>
         <p><strong>Contato e pausas na Cozinha 3D:</strong> o açúcar entra pelas patas que alcançam uma superfície; a saída neural da probóscide comanda a extensão da boca. Para comer, a ponta precisa alcançar o alimento e manter contato por 0,12 s de tempo cerebral. A trajetória e o alongamento das duas peças da boca, o tateamento desenhado e as pausas entre caminhadas são regras do corpo, não músculos nem circuitos simulados. Ameaça e captura interrompem a alimentação. O cheiro é amostrado na escala das antenas (cerca de 0,28 mm entre elas), usando a pose física quando disponível. As superfícies de contato ainda são os topos planos das plataformas.</p>
@@ -561,6 +566,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="sistemas.js"></script>
 <script src="corpo-natural.js"></script>
+<script src="limpeza.js"></script>
 <script>
 'use strict';
 const $ = s => document.querySelector(s);
@@ -608,6 +614,8 @@ function renderShop() {
 }
 // troca de sistema: a tela e o que ela viu nela recomeçam; o cérebro (e o que ele aprendeu) continua
 function switchApp(id) {
+  if(id!=='treino')window.Treino?.sair();
+  window.Colonia?.desligar();
   APP = APPS[id]; appState = APP.estado();
   for (const k in elState) delete elState[k];
   for (const k in restos) delete restos[k];
@@ -634,7 +642,7 @@ function measure() {
 
 /* ───────────── Relatório e diário ───────────── */
 const foundBugs = new Map();
-const memo = {};   // por botão: saldo do corpo cogumelar quando ela sentia aquele cheiro
+let memo = {};   // por botão: saldo do corpo cogumelar quando ela sentia aquele cheiro
 function renderMemory() {
   const prefOf = m => m.keep - (m.keepR ?? 1);
   const rows = Object.entries(memo).filter(([, m]) => m.seen > 0.3).sort((a, b) => prefOf(a[1]) - prefOf(b[1]));
@@ -649,6 +657,10 @@ function renderMemory() {
 }
 function renderBugs() {
   const ul = $('#bugs');
+  if(APP.id==='treino'){
+    $('#bugCount').textContent='—';$('#bugSum').textContent='Treino de associação; esta etapa ainda não caça bugs.';
+    ul.innerHTML='<li class="empty">Escolhas e duração nas pistas aparecem no painel de treinamento.</li>';return;
+  }
   if (APP.mundo) {
     // mundo natural: em vez de bugs, o que ela comeu
     const por = {};
@@ -675,7 +687,7 @@ function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;
 function logEvent(text, cls = '') {
   const li = document.createElement('li');
   if (cls) li.className = cls;
-  li.innerHTML = `<span class="mono">${fmt1(brainT / 1000)} s</span><span>${text}</span>`;
+  li.innerHTML = `<span class="mono">${fmt1(brainT / 1000)} s</span><span>${window.Colonia?.ativa ? 'Mosca '+(fly.numero||1)+': ' : ''}${text}</span>`;
   const ul = $('#log');
   ul.prepend(li);
   while (ul.children.length > 40) ul.lastChild.remove();
@@ -783,6 +795,7 @@ const odorName = id => ODOR_PESO[id] ? (ODORS[id].join(' + ') || 'sem cheiro') :
 // (Stensmyr et al. 2012; Suh et al. 2004)
 const INATA = { ORN_DM1: 1, ORN_VA2: 1, ORN_DM2: 0.6, ORN_DM3: 0.6, ORN_DM4: 0.6, ORN_DP1m: 0.4, ORN_DA2: -2, ORN_V: -1.5 };
 function inata(glom) {
+  if(APP.id==='treino')return [0,0]; // sem a preferência inata por frutas da Cozinha nesta sonda
   let a = 0, v = 0;
   for (const [nome, w] of Object.entries(INATA)) {
     const gi = GLOM_IX[nome];
@@ -836,7 +849,7 @@ function see(f) {
   if (SB.on && typeof predView === 'function') { const [pl, pr] = predView(f); L += pl; R += pr; }
   f.seen = seen;
   // olhos reais (sandbox.js): o que o LC10a de cada olho recebe vem dos 721 omatídeos de cada olho
-  if (SB.on && f.olhoReal && performance.now() - f.olhoReal.t < 600) return [f.olhoReal.L, f.olhoReal.R];
+  if (SB.on && f.olhoReal && (window.Treino?.manual || performance.now() - f.olhoReal.t < 600)) return [f.olhoReal.L, f.olhoReal.R];
   // os dois olhos se inibem (normalização): numa tela cheia, o que conta é quanto um vê a mais que o outro
   return [L / (L + R + EYE_GAIN), R / (L + R + EYE_GAIN)];
 }
@@ -856,7 +869,8 @@ function elementAt(px, py) {
   return null;
 }
 
-function stepBody(dt, counts) {
+function stepBody(dt, counts, destino = worker) {
+  window.Treino?.antesPasso();
   const f = fly;
   const hz = k => (counts[k] || 0) / dt;
   for (const k of ['proboscide', 'fibra_gigante', 'moonwalker', 'dn_L', 'dn_R'])
@@ -953,6 +967,25 @@ function stepBody(dt, counts) {
     f.buscaR = CorpoNatural.buscaCheiro(f.busca, dt, f.inata.aL, f.inata.aR);
     if (f.buscaR.semPausa && f.marcha !== 'provar') marcha = { andar: 1, girar: 1 };
   } else f.busca = null;
+  // Limpeza: sequência do corpo em pausas seguras, sem estimular artificialmente o cérebro.
+  const limpaAntes = f.limpeza?.ativa;
+  const limpeza = LimpezaMosca.passo(f, dt, {
+    habilitada: SB.on && !!APP.mundo,
+    perigo: CorpoNatural.impedida(f) || f.aversion > 0.3 || !!f.fleeDir || counts.moonwalker > 0 || f.startle > 0,
+    provando: !!f.patasEl || f.boca > 0.05 || f.sweet > 0,
+    apoiada: SB.on && (SB.fisico ? !!CORPO.pose && !CORPO.teleportando && CORPO.pose.costas?.[2] > 0.9
+      && ['lm','lh','rm','rh'].every(p => CORPO.pose.toque?.[p] > 0.05)
+      : Math.abs(f.z - sbSurface(f.x, f.y)) < 2 && sbInclinacao(f.x, f.y) < 0.25),
+    pausa: f.marcha === 'pausa' && marcha.andar === 0 && marcha.girar === 0,
+  });
+  if (limpeza?.evento) {
+    labEvent('limpeza', {estado: limpeza.evento, origem: 'regra do corpo'});
+    if (limpeza.evento === 'inicio') logEvent('Parou para limpar a cabeça, as antenas e esfregar as patas (sequência do corpo).');
+  }
+  if (limpeza?.ativa) {
+    marcha = {andar: 0, girar: 0}; f.marcha = 'limpar'; f.marchaT = 0.2;
+    f.giroAcum = 0; f.sacadaSentido = 0; f.turnCmd = 0;
+  } else if (limpaAntes && f.marcha === 'limpar') { f.marcha = 'pausa'; f.marchaT = 0.2; }
   // desacelera perto do que o cheiro aprendido lembra (busca local); a atração inata, que vem de longe, não
   WALK = SB.on && APP.mundo ? WALK_COZINHA_3D : WALK_PAGINA;
   const fugindoCheiro = SB.on && APP.mundo && !SB.fisico && !f.flying && f.fleeDir;
@@ -1151,6 +1184,8 @@ function stepBody(dt, counts) {
     rates[ODOR_POOL[gi] + '_L'] = 150 * Math.min(1, L.glom[gi]);
     rates[ODOR_POOL[gi] + '_R'] = 150 * Math.min(1, R.glom[gi]);
   }
+  // Contato geométrico entre moscas: transdução escolhida, sem feromônio ou atração social artificial.
+  if (f.toqueMosca) for (const p of ['lf', 'rf']) rates['tato_' + p] = Math.max(rates['tato_' + p] || 0, 20);
   // a ameaça liga cada detector (LPLC2, LC4) conforme ela cai no campo receptivo dele, quando se sabe de onde ela vem
   const am = ameacaCelulas(f, rates.ameaca || 0);
   f.ameacaR = rates.ameaca || 0;
@@ -1161,7 +1196,8 @@ function stepBody(dt, counts) {
   if (lc && am) vetor = { ids: Int32Array.from([...OLHO.rf.ids, ...AMEACA_RF.ids]), taxas: Float32Array.from([...lc, ...am]) };
   else if (lc) vetor = { ids: OLHO.rf.ids, taxas: lc };
   else if (am) vetor = { ids: AMEACA_RF.ids, taxas: am };
-  worker.postMessage({ type: 'rates', rates, vetor });
+  if(window.Treino?.ativa) ({rates,vetor}=Treino.entradas(rates,vetor));
+  destino.postMessage({ type: 'rates', rates, vetor });
 }
 // campo receptivo de cada detector de ameaça (LPLC2 e LC4), em graus no corpo (scripts/lc_omatidios.py)
 let AMEACA_RF = null;
@@ -1212,7 +1248,7 @@ function fugaRumo(f) {
 // olhos reais no sandbox: cada LC10a recebe a própria taxa, a do seu campo receptivo (sandbox.js, lcTaxas)
 function lcCelulas(f) {
   if (!HAS_EYES || CAMPOS_OFF || !SB.on || !f.olhoReal || !f.olhoReal.celulas) return null;
-  return performance.now() - f.olhoReal.t < 600 ? f.olhoReal.celulas : null;
+  return window.Treino?.manual || performance.now() - f.olhoReal.t < 600 ? f.olhoReal.celulas : null;
 }
 
 function press(r) {
@@ -1227,7 +1263,7 @@ function press(r) {
   if (APP.mundo) {
     labEvent('clique', { id: r.id, bug: null, arriscado: false });
     const expect = clamp((fly.lv - 0.1) / 0.5, 0, 1);
-    if (expect > 0) fly.omission = { id: r.id, w: performance.now(), n: refeicoes.length, expect };
+    if (expect > 0) fly.omission = { id: r.id, w: performance.now(), n: refeicoes.filter(m => (m.mosca||1)===(fly.numero||1)).length, expect };
     comer(r.id);
     return;
   }
@@ -1250,7 +1286,7 @@ function comer(id) {
   const o = APP.objetos[id], sobra = restoDe(id);
   if (o.gosto === 'doce' && sobra > 0) {
     restos[id] = sobra - 1;
-    refeicoes.push({ id, t: brainT / 1000 });
+    refeicoes.push({ id, t: brainT / 1000, mosca: fly.numero || 1 });
     fly.sweet = 0.4; fly.reward = LAB.blockPAM ? 0 : 0.5;
     fly.hunger = Math.max(0, fly.hunger - MORDIDA);
     labEvent('comeu', { id });
@@ -1278,7 +1314,7 @@ function checkOmission() {
   const o = fly.omission;
   if (!o || performance.now() - o.w < 1100) return;
   fly.omission = null;
-  if ((APP.mundo ? refeicoes.length : foundBugs.size) !== o.n) return;
+  if ((APP.mundo ? refeicoes.filter(m => (m.mosca||1)===(fly.numero||1)).length : foundBugs.size) !== o.n) return;
   fly.pain = 0.3 * o.expect;
   fly.lastPain = brainT / 1000;
   labEvent('decepcao', { id: o.id, expect: +o.expect.toFixed(2) });
@@ -1628,6 +1664,7 @@ function fromB64(str) {
 }
 function setMemStatus(text) { $('#memStatus').textContent = text; }
 function scheduleSave() {
+  if(window.Treino?.sessao)return;
   if (!keepMemory || saveTimer || LAB.busy) return;
   saveTimer = setTimeout(() => { saveTimer = null; worker.postMessage({ type: 'getMemory' }); }, 800);
 }
@@ -1828,6 +1865,8 @@ function renderLab() {
 }
 
 async function labRun(kind) {
+  if(window.Treino?.sessao)return;
+  if(window.Colonia?.ativa)return;
   if (LAB.busy || !brainReady) return;
   if (SB.on) sbSet(false);
   const back = APP.id;
@@ -1875,6 +1914,8 @@ const worker = new Worker('sim-worker.js');
 let running = false, wallPrev = 0, speedRatio = 0, activeSm = 0;
 const inSm = {};
 worker.onmessage = ({ data: m }) => {
+  if(window.Treino?.receber(m))return;
+  if (window.Colonia?.receber(0, m)) return;
   if (m.type === 'progress') {
     $('#ldStage').textContent = m.stage;
     $('#ldBar').style.width = (100 * clamp(m.loaded / m.total, 0, 1)).toFixed(0) + '%';
@@ -1895,7 +1936,7 @@ worker.onmessage = ({ data: m }) => {
     brainReady = true;
     logEvent(`Cérebro montado: ${fmtInt(m.neurons)} neurônios, ${fmtInt(m.edges)} conexões. A mosca começou a andar.`);
     if (keepMemory) restoreMemory();
-    setRunning(true);
+    setRunning(!/[?&]lote=1\b/.test(location.search));
   } else if (m.type === 'perf') {
     window.__perf = m.perf;   // medidor do worker (worker.postMessage({ type: 'perf', on: true }))
   } else if (m.type === 'memoryDump') {
@@ -1933,7 +1974,9 @@ worker.onmessage = ({ data: m }) => {
       }
       if (m.spikes.length) lastAttr.needsUpdate = true;
     }
-    stepBody(dt, m.counts);
+    if(window.Treino?.ativa)Treino.executarCorpo(dt,m.counts);
+    else stepBody(dt, m.counts);
+    window.Treino?.passo(dt,m);
     checkPending();
     checkOmission();
     const now = performance.now();
@@ -1978,7 +2021,9 @@ function updateReadouts(dt) {
 }
 function setRunning(on) {
   running = on;
-  worker.postMessage({ type: 'run', on });
+  if (window.Treino?.manual) worker.postMessage({type:'run',on:false});
+  else if (window.Colonia?.ativa) Colonia.executar(on);
+  else worker.postMessage({ type: 'run', on });
   $('#btnRun').textContent = on ? 'Pausar' : 'Continuar';
   wallPrev = 0;
 }
@@ -1993,6 +2038,7 @@ $('#btnReset').addEventListener('click', () => {
     : 'Tudo reiniciado: tela nova, bugs escondidos de novo, e a mosca esqueceu o que aprendeu.');
 });
 function reset() {
+  window.Colonia?.reiniciar();
   appState = APP.estado();
   for (const k in elState) delete elState[k];
   foundBugs.clear();
@@ -2022,3 +2068,6 @@ else $('#ldText').textContent = 'A biblioteca 3D não carregou. Recarregue a pá
 </script>
 <script src="olhos3d.js"></script>
 <script src="sandbox.js"></script>
+<script src="colonia.js"></script>
+<script src="treino-protocolo.js"></script>
+<script src="treino-memoria.js"></script>

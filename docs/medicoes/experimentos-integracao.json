@@ -1,0 +1,294 @@
+{
+  "metodo": "Teste de infraestrutura: uma semente cruzada A/B e ativa/congelada; não mede eficácia. Chrome real com relógio cerebral manual e olhos compostos. Verifica resultados, controles, persistência, pausa, queda do gerenciador, retomada e repetição determinística. Configuração registrada abaixo.",
+  "config": {
+    "nome": "Experimento de memória",
+    "sementes": [
+      19
+    ],
+    "variantes": [
+      {
+        "nome": "curto",
+        "repeticoes": 1,
+        "segundos": 1,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000
+      }
+    ],
+    "paralelas": 1,
+    "limiteMinutos": 5,
+    "tentativas": 1,
+    "memoriaMinGB": 2,
+    "guardarMemoria": true
+  },
+  "raiz": "D:\\Projetos\\mosca-qa\\_tmp\\_campanha-teste-1790720012800",
+  "jobs": [
+    {
+      "id": "2872d84bc9ff3f64",
+      "variante": "curto",
+      "semente": 19,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "curto",
+        "repeticoes": 1,
+        "segundos": 1,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 19,
+          "corpo": 2447445430,
+          "mundo": 2709393959
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:13:33.950Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 15.999999999999703,
+        "fase": "Concluída",
+        "indice": 12,
+        "pid": 18228,
+        "tempoRealS": 23.628
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "semEscolha": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "ocupacao": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "memoriaFinal": 0.021261155682861466
+      },
+      "tempoRealS": 23.642,
+      "fim": "2026-09-29T22:13:58.753Z"
+    },
+    {
+      "id": "79b0e4977a7e4ddb",
+      "variante": "curto",
+      "semente": 19,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "curto",
+        "repeticoes": 1,
+        "segundos": 1,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 19,
+          "corpo": 2447445430,
+          "mundo": 2709393959
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:13:59.116Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 15.999999999999703,
+        "fase": "Concluída",
+        "indice": 12,
+        "pid": 8980,
+        "tempoRealS": 23.069
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          null,
+          1,
+          null
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          null,
+          "B",
+          null
+        ],
+        "semEscolha": [
+          true,
+          true,
+          false,
+          true
+        ],
+        "ocupacao": [
+          0,
+          0,
+          0.1999999999999999,
+          0
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 23.085,
+      "fim": "2026-09-29T22:14:23.263Z"
+    },
+    {
+      "id": "6ac6b9289d1afa8b",
+      "variante": "curto",
+      "semente": 19,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "curto",
+        "repeticoes": 1,
+        "segundos": 1,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 19,
+          "corpo": 2447445430,
+          "mundo": 2709393959
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:14:23.321Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 15.999999999999703,
+        "fase": "Concluída",
+        "indice": 12,
+        "pid": 9616,
+        "tempoRealS": 22.958
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "semEscolha": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "ocupacao": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 22.971,
+      "fim": "2026-09-29T22:14:47.037Z"
+    },
+    {
+      "id": "50f76277a99710db",
+      "variante": "curto",
+      "semente": 19,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "curto",
+        "repeticoes": 1,
+        "segundos": 1,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 19,
+          "corpo": 2447445430,
+          "mundo": 2709393959
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:14:47.526Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 15.999999999999703,
+        "fase": "Concluída",
+        "indice": 12,
+        "pid": 30284,
+        "tempoRealS": 20.723
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "semEscolha": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "ocupacao": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "memoriaFinal": 0.020225634284129934
+      },
+      "tempoRealS": 20.739,
+      "fim": "2026-09-29T22:15:09.011Z"
+    }
+  ],
+  "hash": "20aab029790af1e7ee37e6f40572564552824a63b6fa345396bb7913a4580cbe",
+  "maxAtivos": 1,
+  "pausaPreservouAtivas": true,
+  "quedaFechouChrome": true,
+  "retomadaPreservouConcluidas": true,
+  "repeticaoExata": true,
+  "data": "2026-09-29T22:16:45.125Z"
+}

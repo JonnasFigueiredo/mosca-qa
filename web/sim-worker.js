@@ -37,6 +37,8 @@ let TAU_F = 90000;               // ms: constante de esquecimento; um erro isola
 const CONS_PER_SPIKE_NEURON = 0.0035;
 const EXT_RATE = 0.15;           // por segundo, para células de Kenyon bem ativas agora
 let forgetting = true;
+let plasticidade = true; // controle do treino: congela pesos, incluindo esquecimento/extinção
+let aleatorio = () => Math.random();
 let bias, isKC, kcIds, kcTrace, setA, setR, memory = 0, memoryR = 0;
 
 let N, indptr, idx, w, sign;
@@ -239,6 +241,7 @@ function learn(dor, acucar) {
   // cada disparo soma 1/3 (no máximo 1): só fica bem marcada quem disparou várias vezes,
   // ou seja, quem sentia o cheiro forte; o cheiro fraco de um botão vizinho quase não conta
   for (let s = 0; s < spikeCount; s++) { const i = spikeBuf[s]; if (isKC[i]) kcTrace[i] = Math.min(1, kcTrace[i] + 0.34); }
+  if (!plasticidade) return false;
   let changed = false;
   if (dor) changed = depress(setA, dor, groups.dor.length) || changed;
   if (acucar) changed = depress(setR, acucar, groups.recompensa.length) || changed;
@@ -306,12 +309,12 @@ function poisson(mean) {
   if (mean <= 0) return 0;
   if (mean > 30) return Math.max(0, Math.round(mean + Math.sqrt(mean) * gauss()));
   const L = Math.exp(-mean);
-  let k = 0, p = Math.random();
-  while (p > L) { k++; p *= Math.random(); }
+  let k = 0, p = aleatorio();
+  while (p > L) { k++; p *= aleatorio(); }
   return k;
 }
 function gauss() {
-  return Math.sqrt(-2 * Math.log(Math.random() || 1e-12)) * Math.cos(2 * Math.PI * Math.random());
+  return Math.sqrt(-2 * Math.log(aleatorio() || 1e-12)) * Math.cos(2 * Math.PI * aleatorio());
 }
 
 function touch(i) {
@@ -344,14 +347,14 @@ function step() {
     if (!(r > 0)) continue;
     const ids = groups[k];
     const n = poisson(ids.length * r * DT / 1000);
-    for (let s = 0; s < n; s++) { const i = ids[(Math.random() * ids.length) | 0]; S[i * F + O_G] += W_EXT; touch(i); }
+    for (let s = 0; s < n; s++) { const i = ids[(aleatorio() * ids.length) | 0]; S[i * F + O_G] += W_EXT; touch(i); }
   }
   // mesma ideia com taxa própria por neurônio: sorteia quantos spikes no total e, para cada um, qual neurônio
   // (proporcional à taxa dele, por busca binária na soma acumulada)
   if (vetor) {
     const n = poisson(vetor.total * DT / 1000), c = vetor.cum;
     for (let s = 0; s < n; s++) {
-      const u = Math.random() * vetor.total;
+      const u = aleatorio() * vetor.total;
       let lo = 0, hi = c.length - 1;
       while (lo < hi) { const m = (lo + hi) >> 1; if (c[m] < u) lo = m + 1; else hi = m; }
       const i = vetor.ids[lo]; S[i * F + O_G] += W_EXT; touch(i);
@@ -437,6 +440,15 @@ function loop() {
   lastWall = now;
   if (simSinceWall > 50) { setTimeout(loop, 4); return; }
 
+  bloco();
+  simSinceWall += REPORT_MS;
+  proximo.port2.postMessage(0);
+}
+
+// Um bloco idêntico para o relógio automático e para a barreira entre duas moscas.
+function bloco(passoDuplo) {
+  const wall0 = performance.now();
+
   const tStart = t;
   const counts = {};
   const steps = Math.round(REPORT_MS / DT);
@@ -454,15 +466,16 @@ function loop() {
   spikeCount = 0;
   const wallMs = performance.now() - wall0;
   if (perfOn) { PERF.aprende += performance.now() - pa; PERF.blocos++; PERF.fimBloco = performance.now(); }
-  simSinceWall += REPORT_MS;
-  postMessage({ type: 'tick', t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, memoryR, learned, kcDrive, kcBase, kcDriveR, kcBaseR }, [spikes.buffer]);
-  proximo.port2.postMessage(0);
+  postMessage({ type: 'tick', passoDuplo, t, dtSim: t - tStart, wallMs, nActive, counts, spikes, memory, memoryR, learned, kcDrive, kcBase, kcDriveR, kcBaseR }, [spikes.buffer]);
 }
 
 onmessage = async ({ data }) => {
   if (data.type === 'load') {
     try { await load(); buildOutIndex(); }
     catch (err) { postMessage({ type: 'error', message: String(err && err.message || err) }); }
+  } else if (data.type === 'semente') {
+    if(data.valor==null)aleatorio=()=>Math.random();
+    else {let s=data.valor>>>0;aleatorio=()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/4294967296;};}
   } else if (data.type === 'params') {
     if (data.gain != null) setGain(data.gain);
     if (data.aInc != null) A_INC = data.aInc;
@@ -471,6 +484,7 @@ onmessage = async ({ data }) => {
     if (data.floor != null) W_FLOOR = data.floor;
     if (data.tauF != null) TAU_F = data.tauF;
     if (data.forgetting != null) forgetting = !!data.forgetting;
+    if (data.plasticidade != null) plasticidade = !!data.plasticidade;
   } else if (data.type === 'ritmo') {
     ritmo = Math.max(0.05, Math.min(1, +data.v || 1));
   } else if (data.type === 'perf') {
@@ -485,6 +499,9 @@ onmessage = async ({ data }) => {
       for (let k = 0; k < ids.length; k++) { s += taxas[k] > 0 ? taxas[k] : 0; cum[k] = s; }
       if (s > 0) vetor = { ids, cum, total: s };
     }
+  } else if (data.type === 'passoDuplo') {
+    running = false;
+    if (setA) bloco(data.passo);
   } else if (data.type === 'run') {
     if (!running && data.on) { running = true; lastWall = 0; simSinceWall = 0; loop(); }
     running = data.on;

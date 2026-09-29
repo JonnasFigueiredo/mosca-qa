@@ -139,6 +139,31 @@ Implementação em `web/corpo-natural.js`, integrada à página e à sandbox. O 
 - **Solta na Cozinha** (uma rodada de cada, `docs/medicoes/realismo-livre.json`): antes do pacote, 13 refeições em 57 s de cérebro; sem a inércia da boca, 7 em 63 s; com ela, 10 em 31 s, quase saciada. Com as antenas na escala real, a diferença de cheiro entre elas cai ~16 vezes, mas ela chega às frutas andando tanto quanto antes (5 de 12 largadas, contra 4 de 12): quem guia a aproximação é a visão (LC10a), não a comparação entre as antenas.
 - **Verificação:** `node scripts/corpo_natural_teste.mjs` confere orientação/separação das antenas, contato por altura e borda, extensão e prioridade de ameaça/escalada. `node scripts/realismo_sandbox_teste.mjs` usa o cérebro real no Chrome com perfil em `_tmp/` e grava `docs/medicoes/realismo-sandbox.json`; a imagem de conferência fica em `_realismo_boca.png`.
 
+### Limpeza das patas, antenas e cabeça
+
+Na Cozinha 3D, durante uma pausa com apoio estável e sem alimento em contato, ela varre a cabeça, esfrega as patas anteriores, varre as antenas e volta a esfregar as patas. A sequência dura 3,1 s cerebrais. A primeira oportunidade vem após 6–12 s elegíveis; depois há um intervalo de 16–30 s. Ameaça, captura, voo, ré, escalada, aversão e contato para comer interrompem a limpeza. O relógio cerebral comanda também a animação: pausar a simulação pausa o gesto.
+
+- **Regra declarada:** os intervalos, a ordem, a duração e as poses são nossos (`web/limpeza.js`). A alternância entre varrer uma região e esfregar as patas se inspira em [Seeds et al. 2014](https://elifesciences.org/articles/02951); não reproduz uma distribuição medida nem uma hierarquia neural simulada. Não há poeira simulada, estímulos artificiais de limpeza ou alteração de sinapses durante esse gesto.
+- **Triagem no próprio worker:** `python -X utf8 scripts/limpeza_grupos.py` e `node scripts/limpeza_triagem.mjs`, dados em `docs/medicoes/limpeza-triagem.json`. Três sementes, 1 s por condição, 100 Hz por neurônio sensorial, reset entre condições, sem tônus extra. As anotações identificam `DNg62` como aDN1 e `DNge078` como aDN2 (dois neurônios de cada). Cerdas das antenas (69 BM do nervo AN) produziram **103,5–123 Hz em aDN1 e 91,5–102 Hz em aDN2**; cerdas interomatidiais (745 BM_InOm), **107,5–117,5 e 55–62 Hz**. Repouso e JO-FV/JO-FD1 classificados como grooming (64 células) deram **zero nos dois descendentes**, nessas condições. É uma triagem com estimulação simultânea forte, não uma medida de atividade natural. Resposta dos descendentes não demonstra coordenação das patas: por isso a sequência na página permanece regra, sem conexão artificial desses sinais à animação.
+- **Geometria:** `corpo/limpeza_poses.py` resolve as juntas das patas anteriores da NeuroMechFly para alvos aproximados e grava `web/data/limpeza_poses.json`. As poses preservam segmentos; a interpolação visual entre poses ainda é aproximada. Cabeça e antenas não se articulam durante a limpeza. Sem a malha, há uma versão simplificada com linhas.
+- **Corpo físico:** o MuJoCo mantém o apoio e a postura; as patas anteriores recebem apenas uma sobreposição visual. O gesto não aplica forças, não simula a remoção de sujeira nem realimenta tato/propriocepção da limpeza. Só começa com as quatro outras patas apoiadas e o corpo ereto.
+- **Verificar:** `node scripts/limpeza_teste.mjs` testa a sequência e prioridades; `node scripts/limpeza_sandbox_teste.mjs` verifica a integração e gera `docs/medicoes/limpeza-sandbox.json` e capturas `_limpeza-*.png`. A sonda antecipa o intervalo e mantém a posição sem comida para isolar o gesto; não valida a frequência espontânea.
+
+### Duas moscas na mesma cozinha
+
+No **Sandbox 3D**, clique em **Adicionar uma mosca** (entra na Cozinha). A câmera **Ver dupla** acompanha as duas; o anel azul identifica a mosca 1 e o laranja a 2. **Aproximar moscas** reposiciona a segunda perto da primeira: é uma intervenção do observador, não aproximação espontânea. O contador registra entradas numa distância inferior a 5 mm e o tempo acumulado nessa faixa; não classifica isso como sociabilidade. **Voltar a uma mosca** encerra o segundo worker e remove seu desenho.
+
+- Cada mosca tem uma cópia completa do mesmo conectoma **macho**, em seu próprio worker, com atividade, plasticidade, memória olfativa, fome e estado do corpo separados. Os dois avançam juntos em blocos de 10 ms; o mais lento limita o relógio compartilhado. Pausar e reiniciar abrangem as duas. Só a memória da primeira é guardada entre visitas; ao remover a segunda, sua memória é descartada. Os painéis e olhos continuam mostrando a primeira.
+- As duas malhas participam da mesma cena dos olhos compostos. Cada olho esconde apenas seu próprio corpo e as anotações da interface. O sinal passa pelos campos receptivos LC10a já existentes, sem destacar a outra mosca artificialmente. Continua valendo a limitação de transdução do modelo: **claro = objeto**, não um detector validado de outra mosca.
+- Compartilham as porções de comida: uma mordida diminui a quantidade para ambas. A ordem dos passos alterna para não favorecer sempre a mesma na disputa pela última porção. **Regra geométrica:** raio de exclusão equivalente a 1 mm por corpo; passos que aproximariam os centros abaixo de 2 mm são barrados. A menos de 15 px, o contato alimenta as cerdas anteriores bilaterais a 20 Hz. Distância, taxa e distribuição desse tato foram escolhidas, não inferidas do mapa. Não há forças de colisão, cVA, namoro, agressão ou atração social programada.
+- Nesta versão os dois corpos são **cinemáticos**; o servidor físico continua sendo de uma única mosca. Corpo físico, louva-a-deus e laboratório ficam indisponíveis durante a dupla. Limite de duas cópias completas para conter memória e custo de processamento. As regras de andar, cheiro, voo, pouso e limpeza são as mesmas do modo individual.
+
+Código em `web/colonia.js`. `scripts/colonia_cerebro_teste.mjs` compara 100 blocos de 10 ms em relógio automático e em barreira, com semente 28 e quatro condições: repouso, tato anterior bilateral a 20 Hz, visão esquerda a 100 Hz e açúcar a 160 Hz. **Disparos, contagens, tempos e memória idênticos nas quatro condições**, registrados em `docs/medicoes/colonia-cerebro.json`. Resultado negativo: o tato leve não produziu disparos de fibra gigante, DNa esquerdo ou probóscide nesse segundo de triagem. A visão produziu 171 disparos no grupo `dirige_L`; açúcar, 442 no grupo `proboscide`. Isso testa as entradas e a equivalência do relógio, não comprova comportamento social.
+
+Integração em `scripts/colonia_sandbox_teste.mjs`, registro em `docs/medicoes/colonia-sandbox.json`: dois workers reais, isolamento de sentidos/estados, última porção compartilhada, visão de uma malha pela outra, pausa, reinício e encerramento do segundo worker. Inclui uma rodada livre curta, com posições iniciais escolhidas. **Não mede interação social espontânea nem estabilidade em sessão longa.**
+
+Na rodada registrada, 5,01 s simulados levaram 24,58 s reais (~0,20×) no Chrome sem janela com renderização de teste. As duas mudaram de posição, mantiveram estados finitos e houve uma entrada na faixa de 5 mm após a aproximação manual. O custo da dupla é significativo; esse número não é um benchmark da interface visível nem prova de aproximação espontânea.
+
 ### Corpo físico (opcional)
 
 - **O corpo:** a NeuroMechFly (flygym 2.1, EPFL), que vem de um micro-CT de uma mosca real, roda no MuJoCo com 42 articulações nas patas. No sandbox, a malha real anda por cima das plataformas, na escala de 7 px por mm (~18 px de mosca).
@@ -208,8 +233,11 @@ O modo predador: você controla uma ninfa de louva-a-deus (~15 mm), predador de 
   - **na parede ela não para** (parada, a passada solta as patas e ela escorrega), **sobe com a passada mais forte** (sinal 1,2: com 0,9 ela empacava a 4–6 mm do chão; com 1,2 sobe um bloco de 18 mm em ~2,5 s) e **vira para cima** (geotaxia negativa). Na página, de frente para cada fruta, ela chegou ao topo da banana em 2,4 s, do morango em 2,5 s, do pêssego em 4 s e da laranja em 12,9 s;
   - o **reagarrão**: se escorrega mais de 1 mm em meio segundo, o mesmo agarrão de novo (no máximo um por segundo);
   - a **passagem para o topo** da plataforma, quando as patas da frente alcançam a beira (o tórax a 2 mm dela), como a de baixo. Na física pura, na quina de cima ela cai;
-  - **nas frutas redondas, a pegada** (`corpo/servidor.py`, `_pegada`): a força que a segura aponta para dentro da superfície mais perto do tórax, a fruta ou o balcão, e passa de uma para a outra aos poucos (em ~1 mm) enquanto ela empina. Faz o papel das garras e da adesão das patas. Com a gravidade de sempre, ela subia 3 a 11 mm de uma meia-cúpula e escorregava: as passadas gravadas no chão aguentam parede reta (um bloco de 18 mm ou um cilindro), mas não a curva que vai de vertical a horizontal. Com a pegada não há agarrão, reagarrão nem passagem para o topo por regra: ela sobe pela curva até ficar de pé em cima, e desce do outro lado sem cair. Na página, de frente para cada coisa, chegou em cima da laranja em 0,8 s, do vinagre em 0,9 s, do pêssego em 2 s, do morango em 2,3 s, das uvas em 3,8 s e da banana em 4,9 s, e comeu no pêssego e nas uvas;
-  - se empurra a parede sem conseguir empinar, a virada para a parede também é regra (teleporte de barriga para a face).
+  - **nas frutas redondas, a pegada** (`corpo/servidor.py`, `_pegada`): a força que a segura aponta para dentro da superfície mais perto do tórax, a fruta ou o balcão, e passa de uma para a outra aos poucos (em ~1 mm) enquanto ela empina. Faz o papel das garras e da adesão das patas. Com a gravidade de sempre, ela subia 3 a 11 mm de uma meia-cúpula e escorregava: as passadas gravadas no chão aguentam parede reta (um bloco de 18 mm ou um cilindro), mas não a curva que vai de vertical a horizontal. Com a pegada não há agarrão, reagarrão nem passagem para o topo por regra: a intenção é subir pela curva até ficar de pé em cima. **Limite observado na revisão de 27/09:** ainda há tombos; os antigos eventos de "topo" abaixo aceitavam inclinação momentânea e não provam subida completa. Na página, de frente para cada coisa, chegou em cima da laranja em 0,8 s, do vinagre em 0,9 s, do pêssego em 2 s, do morango em 2,3 s, das uvas em 3,8 s e da banana em 4,9 s, e comeu no pêssego e nas uvas;
+  - se empurra uma plataforma plana sem conseguir empinar, a virada para a parede também é regra (teleporte de barriga para a face). **Nas frutas curvas esse teleporte foi removido:** reposicionava o corpo na borda inferior mesmo quando ele já estava sobre a encosta.
+  - **Transições nas frutas (regras do corpo):** entra em subida com a cabeça inclinada acima de 0,4; só sai após 180 ms físicos de postura ereta, perda da fruta ou tombamento persistente. "Topo" exige costas para cima, patas apoiadas e superfície elevada, não apenas altura do tórax. O rumo acompanha a pose física; não é forçado para o centro da fruta. Perda de apoio por 60 ms físicos aciona o voo; duas consultas da mesma pose não bastam. Teleportes de pouso reiniciam esse histórico. Pesos, tônus e adaptação do cérebro não mudam.
+  - **Triagem negativa:** diminuir a adesão de 200 para 40 aumentou a fração tombada da banana de 20,8% para 84% e do pêssego de 3,6% para 23,6%. Reduzir o passo da física de 0,2 para 0,1 ms também não resolveu: banana/pêssego ficaram tombados em 77,2%/90% das amostras. Ambos rejeitados; arquivos `subida-adesao.json` e `subida-passo.json` em `docs/medicoes/`. Projetar a altura das patas na normal da superfície também foi rejeitado: reduziu o tombamento na banana para 1,2%, mas ela só alcançou 3,36 mm; nas uvas o tombamento aumentou de 3,6% para 41,2% (`subida-referencial.json`). Usar o eixo das costas como referencial também não completou as subidas: alturas máximas do tórax de 3,12 / 3,50 / 3,35 mm em banana/pêssego/uva (`subida-referencial-corpo.json`). O servidor físico permanece igual. Ensaios dirigidos isolados, cinco segundos físicos por objeto, sem cérebro; não são medidas de realismo biológico.
+  - **Revisão no navegador (27/09/2026):** `andar_medida.mjs --fisico --sentidos --segundos 0 --sonda-subida`, três largadas de 12 s cerebrais (banana/pêssego/uvas), olhos reais. Em `subida-antes` → `subida-depois`, alternâncias parede/chão: **4/16/2 → 2/3/0**; maior descida entre poses sem voo: **1,72/3,72/1,42 → 1,77/2,36/0,63 mm**. O resultado **não comprova eliminação das quedas**: banana e uvas não completaram a subida; no pêssego houve voo/pouso antes de comer, e a fração tombada aumentou de 8,3% para 14,4%. Uma rodada por versão, trajetórias não pareadas; menos alternância não significa melhor capacidade de escalar. Os falsos eventos de topo foram corrigidos. Dados brutos em `andar-vs-moscas.json`, resumo/método em `subida-sandbox.json`; reproduzir resumo com `node scripts/resumir_subida.mjs`. As métricas gerais de andar dessas sondas incluem teleportes e não servem para calibrar a marcha.
   - Se ela cai da parede, as patas perdem o apoio e o reflexo tarsal a faz voar, como numa mosca real.
 - **A gravidade nas antenas** (`scripts/gravidade_teste.py`, `docs/medicoes/gravidade-antenas.json`): a mosca sente a gravidade pelo órgão de Johnston. Empurrar a arista para trás liga a zona E, para a frente liga a zona C (Kamikouchi et al. 2009). No mapa, a zona E dos dois lados acende vários descendentes (DNbe001 +89 Hz, DNp18 +58 Hz). A zona C de um lado com a E do outro, como numa mosca de lado na parede, vira a mosca para o lado da zona E (DNa01 −8 Hz, DNa02 −2,5 Hz).
   - **O que não dá para afirmar:** se isso a vira para cima ou para baixo. Depende de como a gravidade deflete cada antena com a mosca de lado, que é mecânica da antena, fora do mapa; com suposições diferentes, o sentido se inverte. Por isso a preferência por subir é regra, e a gravidade entra no cérebro só pela parte robusta: de cabeça para cima as duas antenas pendem para trás (zona E); para baixo, zona C.
@@ -278,6 +306,60 @@ O FlyBody (Janelia/DeepMind), que vem no flygym 2.1, tem asas articuladas. Os te
 A memória está nas sinapses da simulação; a ponte entre memória e movimento é simplificada.
 
 Tentamos tirar a ponte do cheiro (`scripts/fase3_teste_direcao.py`, resultados em `docs/medicoes/fase3-direcao.json`). Os caminhos existem no mapa: as saídas do corpo cogumelar chegam em 1 ou 2 passos a DNa02, DNa03 e MDN. Mas, mesmo zerando as sinapses de um cheiro, a direção muda menos de 1 Hz (o próprio cheiro produz 7 Hz), e o MDN não muda nas condições da página. Cada antena projeta para os dois lados, então o corpo cogumelar informa valência, quase nada de direção. A visão, que sabe onde as coisas estão, vira a mosca pelo próprio mapa.
+
+### Treinamento da memória em 3D
+
+A aba **Treinamento** abre uma bancada com duas pistas olfativas de mesma aparência. Esta é a primeira etapa de
+preparação para treinar a caça a bugs em Pedidos; ainda não executa operações de carrinho, estoque ou pagamento.
+Clique em **Iniciar do zero**, escolha a pista recompensada primeiro (A ou B) e a duração dos testes (15, 30 ou 60 s
+cerebrais). **Pausar/Continuar** controla o relógio inteiro, inclusive os pareamentos.
+
+O protocolo padrão dura **96 s cerebrais**: teste inicial de 15 s; três apresentações de cada pista; teste de 15 s;
+outro teste com os lados trocados; três apresentações de cada pista com a recompensa invertida; teste final de 15 s.
+Cada apresentação dura 2 s, seguida de 1 s sem odor. A ordem A/B alterna entre repetições. Nos testes livres não há
+açúcar, punição ou pulso de recompensa. O painel registra primeira escolha, tempo em cada região de 8 mm e índice
+de preferência `(tempoA-tempoB)/(tempoA+tempoB)`; se não visitar nenhuma pista, mostra “Nenhuma” e índice indefinido.
+
+**O que é intervenção experimental:** A = VA2 + DM4; B = DP1l + DM2. No pareamento, o corpo fica numa posição fixa;
+os ORNs recebem 100 Hz bilateral e a pista recompensada recebe estimulação de PAM a 100 Hz nos últimos 500 ms.
+Não é açúcar encontrado espontaneamente no mundo. Nas escolhas, os odores vêm da posição das antenas e os olhos
+usam a cena normal. A fome fica em 1, o voo é desabilitado e uma parede virtual limita a área; o corpo recomeça
+na mesma posição a cada fase. A atração inata por frutas da Cozinha fica desligada, mas diferenças de resposta
+neural entre A/B continuam possíveis. A ponte entre a memória sináptica e o movimento permanece uma regra do corpo.
+
+**Controle sem aprendizado** congela os pesos, incluindo esquecimento e extinção, mantendo os mesmos pulsos
+sensoriais e de recompensa. Uma comparação válida exige várias sessões, posições/pistas contrabalançadas e controle
+do ruído; a interface não semeia a aleatoriedade nem calcula significância. Uma sinapse alterada não prova uma
+escolha melhor. Este protocolo mede associação e comportamento, não uma memória de sequências de operações.
+
+**Persistência separada:** o início tira uma cópia da memória anterior, usando o mesmo formato quantizado do
+salvamento normal. **Guardar memória do treino**, disponível ao concluir, grava em uma chave separada no navegador;
+**Treinar memória guardada** inicia outra sessão com essas sinapses. O salvamento normal fica suspenso durante a
+sessão. Encerrar ou trocar de sistema restaura a cópia anterior; a segunda mosca, física e laboratório ficam
+indisponíveis durante o treino. **Exportar resultados** baixa um JSON com configuração, fases, escolhas e trajetória;
+esse relatório não contém os pesos necessários para restaurar a memória.
+
+Arquivos: `web/treino-protocolo.js` (fases e estímulos), `web/treino-memoria.js` (arena, interface e memória separada).
+O parâmetro `plasticidade` em `web/sim-worker.js` implementa o controle; o padrão continua ligado.
+
+Verificações:
+
+- `node scripts/treino_memoria_triagem.mjs`: worker real em thread Node, semente 29, duas repetições por pista no
+  treino e na reversão. O enfraquecimento médio das sinapses KC → saídas evitar chegou a **0,02666** com plasticidade
+  e **0** no controle; a medida das saídas aproximar ficou em 0. Dados em `docs/medicoes/treino-memoria-triagem.json`.
+  Isso verifica alteração de pesos, não aprendizado comportamental nem equivalência das duas pistas.
+- `node scripts/treino_memoria_interface.mjs`: protocolo curto no Chrome com worker real, pausa, quatro testes
+  sem recompensa, controle congelado, memória guardada, continuação e saída por troca de aplicativo. Registro em
+  `docs/medicoes/treino-memoria-interface.json`. Nos testes de 1 s da condição ativa registrada não houve escolha;
+  isso não é falha do coletor nem prova de falta de memória, mas uma observação do ensaio curto.
+- `node scripts/treino_memoria_interface.mjs --completo`: sessão padrão com renderização e olhos compostos;
+  registro separado em `docs/medicoes/treino-memoria-sessao.json`. Uma sessão é descritiva, sem inferência causal.
+
+Na sessão completa registrada, os tempos próximos de A/B foram: antes do treino **0 / 1,25 s**; depois do treino
+de A **11,13 / 0 s**; com lados trocados **10,24 / 0 s**; depois de recompensar B na reversão **1,04 / 7,18 s**.
+A primeira escolha após a reversão ainda foi A. Houve preferência de permanência compatível com o pareamento,
+mas **não há demonstração causal de aprendizado comportamental**: falta uma série contrabalançada com controle,
+sementes e variabilidade. Essa sessão não mede caça a bugs nem generalização para Pedidos.
 
 ### Laboratório
 

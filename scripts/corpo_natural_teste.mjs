@@ -53,4 +53,20 @@ f.naParede=null; assert.equal(C.marcha(f,.01,true).andar,0,'parar para provar');
   for(let i=0;i<10&&!lado;i++){ r=B(e,.01,.55,.45,fixo); if(r.giro) lado=Math.sign(r.giro); }
   assert.equal(lado,-1,'vira para a antena com mais cheiro (esquerda)');
 }
-console.log('Antenas, contato (plano e redondo), extensão, inércia da boca, pausa, fuga, escalada e busca pelo cheiro: verificações passaram.');
+// Uma passada inclina a cabeça sem ter chegado ao topo; poses repetidas não contam como tempo.
+{
+  const e={}, p={t:0,na_forma:true,frente:[0,.8,.6],costas:[0,-.6,.8],toque:{lf:1}};
+  assert.equal(C.subida(e,p).ativa,true);
+  p.t=.02; p.frente=[0,1,.1];
+  for(let i=0;i<100;i++) C.subida(e,p);
+  assert.equal(e.ativa,true,'HTTP repetido não encerra escalada');
+  p.t=.06; p.frente=[0,.8,.6]; C.subida(e,p);
+  p.t=.1; p.frente=[0,1,0]; p.costas=[0,0,-1]; C.subida(e,p);
+  p.t=.5; C.subida(e,p); assert.equal(e.topo,false,'tombada não é topo');
+  p.t=.6; p.costas=[0,0,1]; C.subida(e,p);
+  p.t=.8; C.subida(e,p); assert.equal(e.ativa,false); assert.equal(e.topo,true);
+  p.t=1; p.frente=[0,.8,.6]; C.subida(e,p);
+  p.t=1.1; p.na_forma=false; C.subida(e,p);
+  p.t=1.3; C.subida(e,p); assert.equal(e.ativa,false); assert.equal(e.topo,false,'perder a fruta não é topo');
+}
+console.log('Antenas, contato, boca, pausa, fuga, escalada (incluindo transições) e busca pelo cheiro: verificações passaram.');

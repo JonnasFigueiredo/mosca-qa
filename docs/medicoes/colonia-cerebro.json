@@ -1,0 +1,137 @@
+{
+  "metodo": "Worker real em VM Node, semente 28 reiniciada, 1 s por condição e modo. Comparação exata de tempo, contagens, IDs de disparos e memória. Estímulos constantes: repouso, tato anterior bilateral 20 Hz, visão esquerda 100 Hz e açúcar 160 Hz. Não é evidência de sociabilidade; só triagem das entradas e equivalência dos relógios.",
+  "worker_sha256": "9baa1451034447925f1d4d13755e8a238cf8ac6134dbcc5f5b58b0404eb4ca71",
+  "resultados": [
+    {
+      "condicao": "repouso",
+      "rates": {},
+      "modos": [
+        {
+          "modo": "automatico",
+          "blocos": 100,
+          "hash": "634f78c49d6998e5f6e51d23435113fcc560e64b2770cc17c73b79e8ce968fb0",
+          "somas": {}
+        },
+        {
+          "modo": "barreira",
+          "blocos": 100,
+          "hash": "634f78c49d6998e5f6e51d23435113fcc560e64b2770cc17c73b79e8ce968fb0",
+          "somas": {}
+        }
+      ]
+    },
+    {
+      "condicao": "contato",
+      "rates": {
+        "tato_lf": 20,
+        "tato_rf": 20
+      },
+      "modos": [
+        {
+          "modo": "automatico",
+          "blocos": 100,
+          "hash": "e0ffc0b73a0fe0d983cee0bb00cd9653ec9d88808c9857568d4147ca51d97fd3",
+          "somas": {
+            "tato_lf": 459,
+            "tropeco_lf": 459,
+            "tato_rf": 336,
+            "tropeco_rf": 336
+          }
+        },
+        {
+          "modo": "barreira",
+          "blocos": 100,
+          "hash": "e0ffc0b73a0fe0d983cee0bb00cd9653ec9d88808c9857568d4147ca51d97fd3",
+          "somas": {
+            "tato_lf": 459,
+            "tropeco_lf": 459,
+            "tato_rf": 336,
+            "tropeco_rf": 336
+          }
+        }
+      ]
+    },
+    {
+      "condicao": "visao",
+      "rates": {
+        "olho_L": 100
+      },
+      "modos": [
+        {
+          "modo": "automatico",
+          "blocos": 100,
+          "hash": "1527b969c794e773db2a927cd97c620b65eedfbc94e7140a57b65daecb9efc3a",
+          "somas": {
+            "olho_L": 7435,
+            "dn_R": 396,
+            "dirige_R": 1,
+            "dn_L": 1242,
+            "dirige_L": 171,
+            "mbon_evitar": 29,
+            "mbon_evitar_rec": 29,
+            "mbon_aprox": 104,
+            "asa_forca": 15,
+            "asa_mais_L": 4
+          }
+        },
+        {
+          "modo": "barreira",
+          "blocos": 100,
+          "hash": "1527b969c794e773db2a927cd97c620b65eedfbc94e7140a57b65daecb9efc3a",
+          "somas": {
+            "olho_L": 7435,
+            "dn_R": 396,
+            "dirige_R": 1,
+            "dn_L": 1242,
+            "dirige_L": 171,
+            "mbon_evitar": 29,
+            "mbon_evitar_rec": 29,
+            "mbon_aprox": 104,
+            "asa_forca": 15,
+            "asa_mais_L": 4
+          }
+        }
+      ]
+    },
+    {
+      "condicao": "acucar",
+      "rates": {
+        "doce": 160
+      },
+      "modos": [
+        {
+          "modo": "automatico",
+          "blocos": 100,
+          "hash": "4b0789cd0b967c87904a348d0d7768c904a09817bdef2399b8f4172b8f2a6bcb",
+          "somas": {
+            "doce": 1783,
+            "proboscide": 442,
+            "dn_R": 547,
+            "dn_L": 382,
+            "dirige_R": 9,
+            "dirige_L": 7,
+            "mbon_aprox": 15,
+            "mbon_evitar": 1,
+            "mbon_evitar_rec": 1
+          }
+        },
+        {
+          "modo": "barreira",
+          "blocos": 100,
+          "hash": "4b0789cd0b967c87904a348d0d7768c904a09817bdef2399b8f4172b8f2a6bcb",
+          "somas": {
+            "doce": 1783,
+            "proboscide": 442,
+            "dn_R": 547,
+            "dn_L": 382,
+            "dirige_R": 9,
+            "dirige_L": 7,
+            "mbon_aprox": 15,
+            "mbon_evitar": 1,
+            "mbon_evitar_rec": 1
+          }
+        }
+      ]
+    }
+  ]
+}

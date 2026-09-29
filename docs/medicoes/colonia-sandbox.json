@@ -1,0 +1,64 @@
+{
+  "metodo": "Chrome sem janela, uma página com dois workers reais. Corpo congelado apenas nas sondas para isolar sentidos: mosca 1 no açúcar e 2 longe por 2,5 s cerebrais; contato a 14 px; diferença na entrada LC10a com/sem a outra malha em ambas as direções. Última porção exercitada diretamente no controlador alimentar. Pausa, reinício dos dois, 5 s livres e retorno a um worker. Figura isola as duas malhas animadas para conferência. Não valida interação social espontânea nem desempenho em sessão longa. A rodada livre tem posições iniciais escolhidas e aleatoriedade não semeada.",
+  "inicial": {
+    "tempo": 2.5099999999999905,
+    "h1": 0.786400000000002,
+    "h2": 0.4301200000000023,
+    "refeicoes": [
+      {
+        "id": "k-acucar",
+        "t": 0.39,
+        "mosca": 1
+      },
+      {
+        "id": "k-acucar",
+        "t": 2.59,
+        "mosca": 1
+      }
+    ],
+    "r1": 200,
+    "r2": 0,
+    "estadosSeparados": true,
+    "olhosSeparados": true,
+    "malhas": true,
+    "erros": "Duas moscas • 0 encontros a menos de 5 mm • 0.0 s próximas • distância 99.5 mm • fome: 91% / 43%."
+  },
+  "contato": {
+    "t1": 20,
+    "t2": 20,
+    "encontros": 1,
+    "barreira": true,
+    "afastar": true
+  },
+  "visao": [
+    {
+      "somaDiferencas": 3656.339081292972
+    },
+    {
+      "somaDiferencas": 573.8829159680754
+    }
+  ],
+  "comida": {
+    "resto": 0,
+    "mordidas": 1
+  },
+  "reinicio": {
+    "zerou": true,
+    "t1": 210,
+    "t2": 210
+  },
+  "livre": {
+    "duracao": 5.009999999999933,
+    "tempo_real_s": 24.578099999964238,
+    "deslocamentos": [
+      564.5158103932208,
+      460.2012691478298
+    ],
+    "finitos": true,
+    "encontros": 1,
+    "botaoAcessivel": true
+  },
+  "desligou": true,
+  "erros": [],
+  "figura": "_colonia-duas-moscas.png"
+}

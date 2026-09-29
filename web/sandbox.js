@@ -151,7 +151,7 @@ function sbContatoNatural(f, dt) {
 // para o voo). Em voo, cada asa bate com a amplitude que os motores daquele lado mandam (um leque translúcido mostra o
 // envelope da batida; a batida real é de ~200 Hz, aqui desenhada a 16 Hz), os halteres oscilam em contrafase, o corpo
 // empina e inclina nas curvas, e a cabeça gira pelo DNp15. No chão, as patas andam em trípode
-const ANIM = { poses: null, recolhe: 0, fase: 0, faseAsa: 0, leques: [], cabeca: 0, pecas: null };
+let ANIM = { poses: null, recolhe: 0, fase: 0, faseAsa: 0, leques: [], cabeca: 0, pecas: null };
 async function animCarregar() {
   if (ANIM.poses) return;
   if (ANIM.carregando) return ANIM.carregando;
@@ -173,6 +173,13 @@ async function animMontar() {
     info.pecas.forEach((pc, i) => { if (/c_head|_eye|pedicel|funiculus|arista|rostrum|haustellum/.test(pc.nome)) ANIM.cabecaPecas.add(i); });
     ANIM.antenas = ['l','r'].map(l => info.pecas.findIndex(pc => pc.nome === 'nmf/'+l+'_funiculus'));
     ANIM.bocaPecas = ['rostrum','haustellum'].map(n => info.pecas.findIndex(pc => pc.nome === 'nmf/c_'+n));
+    // Poses de limpeza geradas com as juntas da NeuroMechFly; erro/falta do arquivo não impede o corpo normal.
+    try {
+      const L = await buscar('data/limpeza_poses.json');
+      ANIM.limpeza = {indices: L.pecas.map(n => info.pecas.findIndex(pc => pc.nome === n)),
+        poses: Object.fromEntries(Object.entries(L.poses).map(([n, v]) => [n, {p: p(v), q: q(v)}]))};
+      if (ANIM.limpeza.indices.some(i => i < 0)) throw new Error('peças de limpeza incompatíveis com a malha');
+    } catch (e) { ANIM.limpeza = null; ANIM.erroLimpeza = e.message; }
     ANIM.tarsos = [];
     info.pecas.forEach((pc,i) => {
       const m=pc.nome.match(/nmf\/([lr][fmh])_tarsus5$/);
@@ -298,6 +305,72 @@ function animBoca(f) {
   });
 }
 
+// Sobreposição cinemática: no corpo físico a postura de apoio continua vindo do MuJoCo.
+// As duas patas anteriores são desenhadas limpando; não aplicam forças nem novos estímulos táteis.
+function animLimpeza(f) {
+  const e = f.limpeza;
+  if (!e?.ativa || !(e.peso > 0) || CorpoNatural.impedida(f)) return;
+  if (!ANIM.poses || !CORPO.malha || !ANIM.limpeza) return;
+  const L = ANIM.limpeza, pose = sbPoseNatural(f);
+  const frente = pose?.frente || [Math.sin(f.th), Math.cos(f.th), 0], costas = pose?.costas || [0, 0, 1];
+  const F = new THREE.Vector3(...frente), B = new THREE.Vector3(...costas), E = new THREE.Vector3().crossVectors(B, F).normalize();
+  const Mc = new THREE.Matrix4().makeBasis(F, E, B);
+  Mc.setPosition(...(pose?.torax || [f.x / CORPO.S, -f.y / CORPO.S, f.z / CORPO.S + ANIM.poses.altura]));
+  const inv = Mc.clone().invert(), q = new THREE.Quaternion(), p = new THREE.Vector3(), escala = new THREE.Vector3();
+  for (let j = 0; j < L.indices.length; j++) {
+    const i = L.indices[j], mesh = CORPO.malha.meshes[i];
+    // Esfregar alterna as patas; varrer cabeça/antenas é bilateral. Frequência escolhida para animação.
+    const lado = ANIM.perna[i][0] === 'l' ? 0 : Math.PI;
+    const pega = etapa => {
+      const u = (1 - Math.cos(e.t * 2 * Math.PI * 3.5 + (etapa === 'patas' ? lado : 0))) / 2;
+      const a = L.poses[etapa + '_a'], b = L.poses[etapa + '_b'];
+      return {p: a.p[j].clone().lerp(b.p[j], u), q: a.q[j].clone().slerp(b.q[j], u)};
+    };
+    const atual = pega(e.etapa), anterior = pega(e.anterior);
+    anterior.p.lerp(atual.p, e.mistura); anterior.q.slerp(atual.q, e.mistura);
+    if (pose) {
+      const v = pose.geoms.slice(i * 12, i * 12 + 12);
+      _M.set(v[3],v[4],v[5],v[0], v[6],v[7],v[8],v[1], v[9],v[10],v[11],v[2], 0,0,0,1).premultiply(inv);
+      _M.decompose(p, q, escala);
+    } else {p.copy(ANIM.pPe[i]); q.copy(ANIM.qPe[i]);}
+    p.lerp(anterior.p, e.peso); q.slerp(anterior.q, e.peso);
+    _M.compose(p, q, _um).premultiply(Mc);
+    animParaCena(_M, mesh);
+  }
+}
+
+// Sem a malha real, a mosca simplificada também mostra a limpeza com duas patas articuladas em linhas.
+function animLimpezaSimples(f, visivel) {
+  const U = SBR.fly.userData;
+  if (!U.limpeza) {
+    const originais = SBR.fly.children.find(m => m.isLineSegments);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(24), 3));
+    const linhas = new THREE.LineSegments(geo, new THREE.LineBasicMaterial({color: '#3A2A18'}));
+    linhas.frustumCulled = false; SBR.fly.add(linhas);
+    U.limpeza = {originais, linhas, pontos: originais.geometry.attributes.position.array.slice()};
+  }
+  const e = f.limpeza, L = U.limpeza, ativo = visivel && e?.ativa && e.peso > 0 && !CorpoNatural.impedida(f);
+  L.linhas.visible = !!ativo;
+  const base = L.originais.geometry.attributes.position;
+  base.array.set(L.pontos);
+  if (ativo) {
+    const a = L.linhas.geometry.attributes.position;
+    [-1, 1].forEach((s, j) => {
+      const u = Math.sin(e.t * Math.PI * 7 + (e.etapa === 'patas' ? j * Math.PI : 0));
+      const alvo = e.etapa === 'patas' ? [s * .35, 2.5 + .5*u, -7] : e.etapa === 'antenas' ? [s, 4 + .5*u, -7.5] : [s * 2, 5 + .8*u, -5.8];
+      const raiz = [s*2.5, 2.2, -3], joelho = [s*4, 3, -5.5];
+      const repouso = [s*7, 0, -5];
+      const fim = repouso.map((v,k) => v + (alvo[k]-v) * e.peso);
+      // Esconde apenas a linha antiga da pata anterior desse lado.
+      base.setXYZ(j * 6 + 1, ...raiz);
+      a.setXYZ(j*4, ...raiz); a.setXYZ(j*4+1, ...joelho); a.setXYZ(j*4+2, ...joelho); a.setXYZ(j*4+3, ...fim);
+    });
+    a.needsUpdate = true;
+  }
+  base.needsUpdate = true;
+}
+
 // Sem os arquivos locais da malha, o modelo simples também mostra a extensão.
 function animBocaSimples(f, mostrar) {
   if (!ANIM.bocaSimples && mostrar) {
@@ -324,6 +397,7 @@ function sbMove(f, dt, v) {
   const nx = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * v * dt));
   const ny = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * v * dt));
   const s = sbSurface(nx, ny);
+  if(window.Colonia && !Colonia.permitePasso(f,nx,ny,s))return;
   // vence um degrau de SB_STEP e rampas de até ~55° (o topo redondo das frutas); paredes, não
   if (Math.abs(s - f.z) <= SB_STEP + 1.5 * Math.hypot(nx - f.x, ny - f.y)) { f.x = nx; f.y = ny; f.z = s; return; }
   // beira de uma plataforma, ou parede de outra mais alta (logo depois de pousar, ela anda antes de voar de novo)
@@ -345,6 +419,7 @@ function sbWantsFly(f) {
   return Math.random() < (novel ? 0.15 + 0.35 * f.hunger : 0.05);
 }
 function sbTakeoff(f, why) {
+  if(APP.id==='treino')return; // arena de escolha no chão, condição experimental declarada
   if (f.presa) { if (why === 'fuga') predTranco(f); return; }
   const noAr = f.flying;
   if (noAr && why !== 'fuga') return;
@@ -668,6 +743,8 @@ function predCome(f) {
   if (SB.fisico) corpoTeleporte(f);
 }
 function predSet(on) {
+  if(on&&window.Treino?.sessao)return;
+  if(on && window.Colonia?.ativa)return;
   PRED.on = on;
   if (on) predSpawn();
   else { if (PRED.presa && fly) predSolta(fly, 'soltou'); fly && (fly.loom = 0); }
@@ -720,6 +797,7 @@ async function corpoTeleporte(f) {
   CORPO.gen = (CORPO.gen || 0) + 1; CORPO.teleportando = true;
   try { await fetch(CORPO.url + '/teleporte', { method: 'POST', body: JSON.stringify(corpoDaTela(f)) }); } catch { /* o próximo passo avisa */ }
   CORPO.teleportando = false; CORPO.gen++; CORPO.prev = null; CORPO.pose = null;
+  CORPO.subida = {}; CORPO.semApoio = 0; CORPO.semApoioDesde = null; CORPO.parada = 0; CORPO.ult = null;
 }
 // a face de plataforma mais perto (px) e a normal dela, para fora; só plataformas mais altas que o piso onde ela está
 function sbParede(f, alcance, piso = sbSurface(f.x, f.y)) {
@@ -764,7 +842,7 @@ async function corpoParede(f, w) {
 }
 async function corpoPing() {
   try { CORPO.ok = (await fetch(CORPO.url + '/ping', { cache: 'no-store' })).ok; } catch { CORPO.ok = false; }
-  $('#corpoBtn').disabled = !CORPO.ok;
+  $('#corpoBtn').disabled = !CORPO.ok || !!window.Colonia?.ativa || !!window.Treino?.sessao;
   return CORPO.ok;
 }
 function corpoMeshes(info, bin) {
@@ -852,11 +930,12 @@ async function corpoTick() {
       fly.z = Math.max(0, (p.torax[2] - 1.15) * CORPO.S);
       const empe = p.frente && p.frente[2] > 0.6, deitada = !p.frente || (p.frente[2] < 0.35 && p.costas[2] > 0.7);
       // nas formas redondas, a subida começa assim que ela empina sobre a fruta (a pegada do servidor já a segura)
-      const naForma = SB.formas && p.na_forma && p.frente && p.frente[2] > 0.3;
+      const subida = SB.formas && CorpoNatural.subida(CORPO.subida || (CORPO.subida = {}), p);
+      const naForma = subida && subida.ativa;
       if (!fly.naParede) {
         fly.th = Math.PI / 2 - p.rumo;
         // subiu a parede andando: as patas da frente grudaram na face e o corpo empinou
-        const w = (empe || naForma) && sbParede(fly, 40, CORPO.piso ?? sbSurface(fly.x, fly.y));
+        const w = (SB.formas ? naForma : empe) && sbParede(fly, 40, CORPO.piso ?? sbSurface(fly.x, fly.y));
         if (w) {
           fly.naParede = w; labEvent('parede', { como: 'andando' });
           // (nas encostas das frutas ela entra e sai da "parede" várias vezes; a mensagem sai no máximo a cada 4 s)
@@ -874,7 +953,9 @@ async function corpoTick() {
       if (fly.naParede) {
         const w = sbParede(fly, 40, fly.naParede.piso) || fly.naParede;
         fly.naParede = w;
-        fly.th = Math.atan2(-w.n[0], w.n[1]);   // de frente para a parede
+        // Na fruta o rumo vem do corpo real, não de uma direção inventada para o centro.
+        if (!w.natural) fly.th = Math.atan2(-w.n[0], w.n[1]);
+        else if (Math.hypot(p.frente[0], p.frente[1]) > 0.15) fly.th = Math.PI / 2 - p.rumo;
         if (!w.natural && p.torax[2] >= w.p.z / CORPO.S - 2) {
           // as patas da frente alcançaram a beira de cima (o tórax a 2 mm dela; a cabeça fica ~1,2 mm à frente):
           // a passagem da parede para o topo é regra nossa, como a de baixo
@@ -893,11 +974,11 @@ async function corpoTick() {
           labEvent('reagarrar', {});
         }
         // voltou a ficar de pé: saiu da parede. Nas frutas redondas é assim que ela chega em cima, sem passagem por regra
-        // (com folga: entra na parede com o corpo a mais de 0,3 de inclinação e sai abaixo de 0,2)
-        const dePe = w.natural ? !p.na_forma || !p.frente || p.frente[2] < 0.2 : deitada;
+        // Nas frutas, a postura precisa persistir 180 ms físicos; perder a aderência não conta como topo.
+        const dePe = w.natural ? !subida.ativa : deitada;
         if (dePe) {
           fly.naParede = null; CORPO.piso = sbSurface(fly.x, fly.y);
-          const emCima = w.natural && fly.z > 7;
+          const emCima = w.natural && subida.topo && sbSurface(fly.x, fly.y) > 7;
           labEvent(emCima ? 'topo' : 'saiuDaParede', {});
           if (emCima && performance.now() > (CORPO.topoLog || 0)) { CORPO.topoLog = performance.now() + 4000; logEvent('Subiu pela fruta e chegou em cima.', 's'); }
         }
@@ -905,7 +986,11 @@ async function corpoTick() {
       // reflexo tarsal: quando as seis patas perdem o apoio (passou da beira, caiu da parede), a mosca começa a voar
       const apoio = Object.values(p.toque || {}).reduce((a, b) => a + b, 0);
       CORPO.semApoio = apoio < 0.05 && performance.now() > (CORPO.graca || 0) ? (CORPO.semApoio || 0) + 1 : 0;
-      if (CORPO.semApoio >= 2) { CORPO.semApoio = 0; fly.naParede = null; labEvent('reflexoTarsal', {}); sbTakeoff(fly, 'tarsal'); }
+      // Na Cozinha, 60 ms físicos sem apoio: consultar duas vezes a mesma pose não provoca voo.
+      if (CORPO.semApoio) CORPO.semApoioDesde ??= p.t;
+      else CORPO.semApoioDesde = null;
+      const perdeuApoio = SB.formas ? CORPO.semApoioDesde != null && p.t - CORPO.semApoioDesde >= 0.06 : CORPO.semApoio >= 2;
+      if (perdeuApoio) { CORPO.semApoio = 0; CORPO.semApoioDesde = null; fly.naParede = null; labEvent('reflexoTarsal', {}); sbTakeoff(fly, 'tarsal'); }
       // de cara com uma plataforma mais alta: se pede para andar e não sai do lugar, sobe a parede (se estiver de
       // frente para ela); se não, vira ou decola (regras do corpo)
       const avanco = Math.hypot(fly.x - (CORPO.ult ? CORPO.ult[0] : fly.x), fly.y - (CORPO.ult ? CORPO.ult[1] : fly.y));
@@ -915,7 +1000,7 @@ async function corpoTick() {
         CORPO.parada = 0;
         const w = sbParede(fly, 40);
         const deFrente = w && Math.sin(fly.th) * -w.n[0] + -Math.cos(fly.th) * -w.n[1] > 0.5;
-        if (deFrente && !sbWantsFly(fly)) {
+        if (deFrente && !w.natural && !sbWantsFly(fly)) {
           fly.naParede = w; labEvent('parede', { como: 'virada' });
           logEvent('Parou de cara com uma plataforma e começou a subir pela parede.', 's');
           await corpoParede(fly, w);
@@ -985,6 +1070,8 @@ async function corpoPreparar() {
   if (!r.ok) throw new Error('ping respondeu ' + r.status);
 }
 async function corpoSet(on) {
+  if(on&&window.Treino?.sessao)return;
+  if(on && window.Colonia?.ativa)return;
   if (on === SB.fisico) return;
   if (on) {
     let erro = null;
@@ -1079,7 +1166,10 @@ function olhoAmostrar(f) {
   const M = OLHO.mapa, R = SBR.r;
   olhoPoses(f);
   // o próprio corpo não aparece para os olhos (o flygym esconde cabeça, olhos, antenas e tórax)
-  const esconde = [SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, CORPO.malha && CORPO.malha.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance, ANIM.bocaSimples, ...ANIM.leques].filter(Boolean);
+  const segunda = window.Colonia?.pronta && f === Colonia.segundo.fly;
+  const esconde = [!segunda && SBR.fly, SBR.fields, SBR.rays, SBR.trailLine, SBR.ring, SBR.shadow, SBR.marker, SBR.predMarker, !segunda && CORPO.malha?.group, SBR.temaNatural && SBR.rotulos, SBR.predAlcance, ANIM.bocaSimples, ...ANIM.leques, ...(window.Colonia?.esconderDosOlhos(f) || [])].filter(Boolean);
+  // A mesma decoração pode aparecer nas duas listas. Esconder/restaurar cada objeto uma vez.
+  esconde.splice(0,esconde.length,...new Set(esconde));
   const vis = esconde.map(o => o.visible);
   esconde.forEach(o => { o.visible = false; });
   const feats = [];
@@ -1110,7 +1200,7 @@ function olhoAmostrar(f) {
   R.setRenderTarget(null);
   esconde.forEach((o, k) => { o.visible = vis[k]; });
   const [L, Rr] = feats, g = 4;
-  f.olhoReal = { L: L / (L + Rr + g), R: Rr / (L + Rr + g), bruto: feats, t: performance.now(), celulas: lcTaxas() };
+  f.olhoReal = { L: L / (L + Rr + g), R: Rr / (L + Rr + g), bruto: feats, t: performance.now(), celulas: lcTaxas()?.slice() };
   // imagem de cada olho para o HUD: cada pixel pinta a cor do seu omatídeo como ela vê (sem vermelho: o verde dela
   // aparece amarelo, o azul, azul); em vermelho, onde os LC10a estão vendo algo (vermelho ela não vê, então não confunde)
   for (let i = 0; i < 2; i++) {
@@ -1372,6 +1462,9 @@ function sbObjeto(o) {
     // o vinagre enche a tampa até a borda (é nele que ela pisa, na física)
     const liquido = new THREE.Mesh(new THREE.CircleGeometry(r - 0.5, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
     liquido.rotation.x = -Math.PI / 2; liquido.position.y = alt - 0.3; g.add(liquido);
+  } else if (o.forma === 'pista') {
+    const base=new THREE.Mesh(new THREE.CircleGeometry(W/2,32),sbMat('#eeeece'));
+    base.rotation.x=-Math.PI/2;base.scale.y=D/W;base.position.y=.6;g.add(base);
   } else if (o.forma === 'acucar') {
     const base = new THREE.Mesh(new THREE.CircleGeometry(W / 2, 24), sbMat('#f7f5ee'));
     base.rotation.x = -Math.PI / 2; base.scale.y = D / W; base.position.y = 0.5; g.add(base);
@@ -1505,6 +1598,8 @@ function sbUpdate(dtw, now) {
   if (fisicoNoChao) corpoPose();
   else if (animado) animPose(f, dtw);
   if (APP.mundo && (fisicoNoChao || animado)) animBoca(f);
+  if (APP.mundo && (fisicoNoChao || animado)) animLimpeza(f);
+  animLimpezaSimples(f, APP.mundo && !fisicoNoChao && !animado);
   animBocaSimples(f, APP.mundo && !fisicoNoChao && !animado);
   if (!animado) for (const l of ANIM.leques) l.visible = false;
   SBR.fly.position.set(x, f.z, z);
@@ -1560,6 +1655,7 @@ function sbUpdate(dtw, now) {
   }
   SBR.rainT += dtw;
   if (SBR.rainT > 0.07) { SBR.rainT = 0; SBR.rain.step(); }
+  window.Colonia?.desenhar(running ? dtw : 0);
 }
 
 // o modelo do louva-a-deus (px; a frente é -z, 1 mm = 7 px): abdômen, tórax, protórax longo, cabeça triangular com
@@ -1674,16 +1770,27 @@ function sbFrame(dtw) {
   if (canvas.width !== Math.round(w * pr) || canvas.height !== Math.round(h * pr)) SBR.r.setSize(w, h, false);
   const now = performance.now();
   sbUpdate(dtw, now);
-  if (OLHO.mapa && (OLHO.conta++ & 1) === 0) olhoAmostrar(fly);
+  if (OLHO.mapa && !window.Colonia?.ativa && (OLHO.conta++ & 1) === 0) olhoAmostrar(fly);
   const f = fly, R = SBR.r;
   R.setScissorTest(true);
   R.setViewport(0, 0, w, h); R.setScissor(0, 0, w, h);
   R.setClearColor(SBR.bg, 1); R.clear();
   const [eL, eR] = f.eyes || [0, 0];
   const mm = v => (v / CORPO.S).toFixed(0);
-  const estado = (f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.naParede ? 'subindo' : f.z > 3 ? (APP.mundo ? `em cima, a ${mm(f.z)} mm do balcão` : `andando numa plataforma a ${Math.round(f.z)} px`) : APP.mundo ? 'no balcão' : 'andando no chão')
+  const estado = (f.flying ? `voando · ${Math.round(f.z)} px de altura` : f.naParede ? 'subindo' : f.limpeza?.ativa ? LimpezaMosca.nomes[f.limpeza.etapa] : f.z > 3 ? (APP.mundo ? `em cima, a ${mm(f.z)} mm do balcão` : `andando numa plataforma a ${Math.round(f.z)} px`) : APP.mundo ? 'no balcão' : 'andando no chão')
     + (SB.fisico && CORPO.ritmo < 0.97 ? ` · câmera lenta ${CORPO.ritmo.toFixed(1).replace('.', ',')}×` : '');
-  if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred' || SBR.mode === 'fantasma') {
+  if (SBR.mode === 'dupla' && window.Colonia?.pronta) {
+    const b=Colonia.segundo.fly;
+    const centro=new THREE.Vector3((f.x+b.x)/2-SB.W/2,(f.z+b.z)/2+6,(f.y+b.y)/2-SB.H/2);
+    const distancia=Math.hypot(f.x-b.x,f.y-b.y,(f.z||0)-(b.z||0));
+    const recuo=Math.max(65,(distancia+35)/Math.max(.3,Math.min(1,w/h)));
+    SBR.cam.position.copy(centro).add(new THREE.Vector3(0,recuo*.85,recuo));
+    SBR.cam.position.y=Math.max(SBR.cam.position.y,sbSurface(centro.x+SB.W/2,centro.z+recuo+SB.H/2)+25);
+    SBR.cam.near=.2;SBR.cam.aspect=w/h;SBR.cam.updateProjectionMatrix();SBR.cam.lookAt(centro);
+    R.render(SBR.scene,SBR.cam);
+    $('#sbCap').textContent='Duas moscas • azul: 1 • laranja: 2 • posição e memória próprias';
+    SBR.camReady=false;
+  } else if (SBR.mode === 'spec' || SBR.mode === 'olhos' || SBR.mode === 'pred' || SBR.mode === 'fantasma') {
     if (SBR.mode === 'fantasma') {
       fantMover(dtw);
       const cp = Math.cos(FANT.pitch);
@@ -1833,6 +1940,8 @@ try { if (localStorage.getItem('mosca-sb-grande') === '1') sbAmpliar(true); } ca
 /* ───────────── ligar e desligar ───────────── */
 function sbSet(on) {
   if (on === SB.on) return;
+  if(!on)window.Treino?.sair();
+  window.Colonia?.desligar();
   if (on && !SBR.r) {
     try { sbInitRender(); } catch (e) { console.error(e); logEvent('Não deu para abrir o sandbox 3D neste navegador.'); return; }
   }

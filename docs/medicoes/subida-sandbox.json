@@ -1,0 +1,304 @@
+{
+  "metodo": "scripts/andar_medida.mjs --fisico --sentidos --segundos 0 --sonda-subida. Três largadas de 12 s cerebrais por rodada, decisões livres, olhos reais, um cérebro entre casos. Queda máxima é diferença entre poses recebidas, sem voo: inclui descida intencional e depende da frequência de amostragem. Tombada = costas apontando para baixo, ponderada pelo tempo físico. Ereta apoiada = superfície >1 mm, costas.z >0,7, |frente.z| <0,2 e apoio >0,05; não equivale a alcançar o cume. Exclui intervalos >100 ms e voos. Rodadas livres não pareadas por semente; comparação exploratória, sem afirmar eliminação das quedas ou equivalência biológica. Dados brutos em andar-vs-moscas.json, campo subida.",
+  "rodadas": [
+    {
+      "rotulo": "subida-antes",
+      "data": "2026-09-27T22:18:21.533Z",
+      "versao": {
+        "index.html": "3570455c125e9914a30610d6b1f8c09ba798524367e6e643cc075e6bd984295f",
+        "sandbox.js": "0fd02e40fb75bfc811a5f5bacf9fcecf6cc1d6bc07cf4827b160a5006347e2b2",
+        "corpo-natural.js": "1d97ad2c8f19c72616f49b889e75ef7a76e833af836d1153dc7640729f0fe5c3",
+        "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+      },
+      "erros": [],
+      "olhos_reais": {
+        "tempo_s": 36.08000000000139,
+        "olhos_reais_s": 36.08000000000139,
+        "corpo_fisico_s": 36.08000000000139,
+        "alvo_real": 274,
+        "alvo_aproximado": 0,
+        "sem_alvo": 0
+      },
+      "objetos": [
+        {
+          "objeto": "k-banana",
+          "alternancias_parede": 4,
+          "salto_maximo_sinal": 1.9811024712378655,
+          "queda_entre_poses_mm": 1.7205000000000004,
+          "altura_maxima_torax_mm": 7.0885,
+          "eventos": {
+            "parede": 2,
+            "tropeco": 1,
+            "topo": 1,
+            "saiuDaParede": 1,
+            "clique": 2,
+            "comeu": 2
+          },
+          "tempo_fisico_observado_sem_voo_s": 11.988,
+          "fracao_tombada": 0.018,
+          "ereta_apoiada_sobre_superficie_s": 0
+        },
+        {
+          "objeto": "k-pessego",
+          "alternancias_parede": 16,
+          "salto_maximo_sinal": 2.6572266383180883,
+          "queda_entre_poses_mm": 3.7190999999999996,
+          "altura_maxima_torax_mm": 8.3749,
+          "eventos": {
+            "parede": 9,
+            "topo": 7,
+            "reflexoTarsal": 1,
+            "voo": 1,
+            "fugaDirecao": 2,
+            "sacada": 2,
+            "alvoVoo": 1,
+            "pouso": 1,
+            "tropeco": 30,
+            "saiuDaParede": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 8.41,
+          "fracao_tombada": 0.083,
+          "ereta_apoiada_sobre_superficie_s": 0.768
+        },
+        {
+          "objeto": "k-uvas",
+          "alternancias_parede": 2,
+          "salto_maximo_sinal": 1.4857900119731962,
+          "queda_entre_poses_mm": 1.4190999999999998,
+          "altura_maxima_torax_mm": 3.6182,
+          "eventos": {
+            "parede": 2,
+            "topo": 2,
+            "tropeco": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 12,
+          "fracao_tombada": 0.006,
+          "ereta_apoiada_sobre_superficie_s": 0
+        }
+      ]
+    },
+    {
+      "rotulo": "subida-transicao",
+      "data": "2026-09-27T22:25:30.706Z",
+      "versao": {
+        "index.html": "3570455c125e9914a30610d6b1f8c09ba798524367e6e643cc075e6bd984295f",
+        "sandbox.js": "3db0e74fb284fbc88cd4bd32b59bb91eac4252d80107bfbbd6b8fd204aad858d",
+        "corpo-natural.js": "d0d863dca294a36cbd74b61b434f32cc669738d027aab8337137567b3e3f16e3",
+        "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+      },
+      "erros": [],
+      "olhos_reais": {
+        "tempo_s": 36.08000000000139,
+        "olhos_reais_s": 36.08000000000139,
+        "corpo_fisico_s": 36.08000000000139,
+        "alvo_real": 795,
+        "alvo_aproximado": 0,
+        "sem_alvo": 0
+      },
+      "objetos": [
+        {
+          "objeto": "k-banana",
+          "alternancias_parede": 2,
+          "salto_maximo_sinal": 2.6570255190084833,
+          "queda_entre_poses_mm": 0.6781999999999999,
+          "altura_maxima_torax_mm": 3.1036,
+          "eventos": {
+            "parede": 1,
+            "reflexoTarsal": 1,
+            "voo": 1,
+            "sacada": 2,
+            "fugaDirecao": 1,
+            "pouso": 1,
+            "tropeco": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 8.126,
+          "fracao_tombada": 0.002,
+          "ereta_apoiada_sobre_superficie_s": 0
+        },
+        {
+          "objeto": "k-pessego",
+          "alternancias_parede": 4,
+          "salto_maximo_sinal": 3.007285830284827,
+          "queda_entre_poses_mm": 1.3975,
+          "altura_maxima_torax_mm": 10.8724,
+          "eventos": {
+            "parede": 2,
+            "reflexoTarsal": 2,
+            "voo": 2,
+            "sacada": 3,
+            "alvoVoo": 1,
+            "pouso": 2,
+            "tropeco": 1,
+            "fugaDirecao": 2
+          },
+          "tempo_fisico_observado_sem_voo_s": 5.63,
+          "fracao_tombada": 0.03,
+          "ereta_apoiada_sobre_superficie_s": 0.572
+        },
+        {
+          "objeto": "k-uvas",
+          "alternancias_parede": 4,
+          "salto_maximo_sinal": 1.6676551513321605,
+          "queda_entre_poses_mm": 1.6414999999999997,
+          "altura_maxima_torax_mm": 10.8146,
+          "eventos": {
+            "parede": 2,
+            "tropeco": 4,
+            "reflexoTarsal": 1,
+            "voo": 1,
+            "fugaDirecao": 1,
+            "sacada": 1,
+            "alvoVoo": 1,
+            "pouso": 1,
+            "saiuDaParede": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 11.75,
+          "fracao_tombada": 0.008,
+          "ereta_apoiada_sobre_superficie_s": 1.952
+        }
+      ]
+    },
+    {
+      "rotulo": "subida-depois",
+      "data": "2026-09-27T22:34:10.013Z",
+      "versao": {
+        "index.html": "98e89251ea75eda5495856d7ec6d0c926a5eedbca0bbd20956852859b545f7b9",
+        "sandbox.js": "9c42819301a58e5241fb9b3c61e62049149ebcc5edfc73ff4113d30a3410db98",
+        "corpo-natural.js": "501179ac659061fad9f8e8eef9a778613697c252c5ea27f3dd78a94e421ee55f",
+        "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+      },
+      "erros": [],
+      "olhos_reais": {
+        "tempo_s": 36.07000000000139,
+        "olhos_reais_s": 36.07000000000139,
+        "corpo_fisico_s": 36.07000000000139,
+        "alvo_real": 15,
+        "alvo_aproximado": 0,
+        "sem_alvo": 0
+      },
+      "objetos": [
+        {
+          "objeto": "k-banana",
+          "alternancias_parede": 2,
+          "salto_maximo_sinal": 2.477511998402133,
+          "queda_entre_poses_mm": 1.7729000000000001,
+          "altura_maxima_torax_mm": 2.9744,
+          "eventos": {
+            "parede": 1,
+            "tropeco": 1,
+            "saiuDaParede": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 11.948,
+          "fracao_tombada": 0,
+          "ereta_apoiada_sobre_superficie_s": 0
+        },
+        {
+          "objeto": "k-pessego",
+          "alternancias_parede": 3,
+          "salto_maximo_sinal": 1.799995520705755,
+          "queda_entre_poses_mm": 2.3552999999999997,
+          "altura_maxima_torax_mm": 18.4568,
+          "eventos": {
+            "parede": 2,
+            "tropeco": 3,
+            "saiuDaParede": 1,
+            "reflexoTarsal": 1,
+            "voo": 1,
+            "alvoVoo": 1,
+            "fugaDirecao": 1,
+            "sacada": 1,
+            "pouso": 1,
+            "clique": 2,
+            "comeu": 2,
+            "atracao": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 9.592,
+          "fracao_tombada": 0.144,
+          "ereta_apoiada_sobre_superficie_s": 3.49
+        },
+        {
+          "objeto": "k-uvas",
+          "alternancias_parede": 0,
+          "salto_maximo_sinal": 1.4767031487947941,
+          "queda_entre_poses_mm": 0.6325,
+          "altura_maxima_torax_mm": 1.8083,
+          "eventos": {
+            "tropeco": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 11.99,
+          "fracao_tombada": 0,
+          "ereta_apoiada_sobre_superficie_s": 0
+        }
+      ]
+    },
+    {
+      "rotulo": "subida-postura",
+      "data": "2026-09-27T22:44:26.888Z",
+      "versao": {
+        "index.html": "98e89251ea75eda5495856d7ec6d0c926a5eedbca0bbd20956852859b545f7b9",
+        "sandbox.js": "33ed464b03d6096ad5b809288a3c4cb00c63644b87b1637b1e7362722e8a6094",
+        "corpo-natural.js": "501179ac659061fad9f8e8eef9a778613697c252c5ea27f3dd78a94e421ee55f",
+        "sim-worker.js": "49e0cfa166bd0a8e0f4ddbeab967ec79229dee25c1100e102cb0c531964edce6"
+      },
+      "erros": [],
+      "olhos_reais": {
+        "tempo_s": 36.08000000000139,
+        "olhos_reais_s": 36.08000000000139,
+        "corpo_fisico_s": 36.08000000000139,
+        "alvo_real": 0,
+        "alvo_aproximado": 0,
+        "sem_alvo": 0
+      },
+      "objetos": [
+        {
+          "objeto": "k-banana",
+          "alternancias_parede": 5,
+          "salto_maximo_sinal": 2.7690723966566395,
+          "queda_entre_poses_mm": 1.5393999999999997,
+          "altura_maxima_torax_mm": 20.1728,
+          "eventos": {
+            "parede": 3,
+            "topo": 1,
+            "tropeco": 7,
+            "saiuDaParede": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 11.958,
+          "fracao_tombada": 0.029,
+          "ereta_apoiada_sobre_superficie_s": 3.68
+        },
+        {
+          "objeto": "k-pessego",
+          "alternancias_parede": 0,
+          "salto_maximo_sinal": 1.4915927593373846,
+          "queda_entre_poses_mm": 0.7626,
+          "altura_maxima_torax_mm": 2.2774,
+          "eventos": {
+            "clique": 1,
+            "comeu": 1,
+            "tropeco": 2
+          },
+          "tempo_fisico_observado_sem_voo_s": 12.024,
+          "fracao_tombada": 0,
+          "ereta_apoiada_sobre_superficie_s": 0
+        },
+        {
+          "objeto": "k-uvas",
+          "alternancias_parede": 6,
+          "salto_maximo_sinal": 1.6240135641438802,
+          "queda_entre_poses_mm": 4.4837,
+          "altura_maxima_torax_mm": 11.0425,
+          "eventos": {
+            "parede": 3,
+            "tropeco": 8,
+            "atracao": 1,
+            "topo": 2,
+            "saiuDaParede": 1
+          },
+          "tempo_fisico_observado_sem_voo_s": 12.012,
+          "fracao_tombada": 0.011,
+          "ereta_apoiada_sobre_superficie_s": 3.898
+        }
+      ]
+    }
+  ]
+}

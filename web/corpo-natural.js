@@ -112,5 +112,26 @@ const CorpoNatural = (() => {
     }
     return { modo: 'fora', velocidade: 1, semPausa: false, ruido: 1, giro: 0 };
   }
-  return {escala, altura, antenas, raizBoca, dobraBoca, pontaBoca, mistura, ponto, contato, impedida, boca, bocaPontos, marcha, buscaCheiro, BUSCA};
+  // Regra de postura, no relógio físico: o balanço de uma passada não encerra a escalada.
+  // Sair por perda de aderência não é chegar ao topo; exige costas para cima e apoio.
+  function subida(e, p) {
+    if (e.t === p.t) return e;
+    if (e.t == null || p.t < e.t) { e.ativa = false; e.desde = null; }
+    e.t = p.t;
+    const apoio = Object.values(p.toque || {}).reduce((a, b) => a + b, 0);
+    const ereta = p.costas?.[2] > 0.7 && Math.abs(p.frente?.[2] || 0) < 0.2;
+    if (!e.ativa) {
+      if (p.na_forma && p.frente?.[2] > 0.4) { e.ativa = true; e.desde = null; }
+    } else {
+      const saiu = !p.na_forma || ereta || p.costas?.[2] < -0.3;
+      if (!saiu) e.desde = null;
+      else {
+        e.desde ??= p.t;
+        if (p.t - e.desde >= 0.18) { e.ativa = false; e.desde = null; }
+      }
+    }
+    e.topo = !e.ativa && !!p.na_forma && ereta && apoio > 0.05;
+    return e;
+  }
+  return {escala, altura, antenas, raizBoca, dobraBoca, pontaBoca, mistura, ponto, contato, impedida, boca, bocaPontos, marcha, buscaCheiro, BUSCA, subida};
 })();

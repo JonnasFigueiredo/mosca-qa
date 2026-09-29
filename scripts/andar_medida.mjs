@@ -19,6 +19,7 @@ const tem = k => process.argv.includes('--' + k);
 const segundos = +arg('segundos', 90), porta = +arg('porta', 8765), janelaMs = +arg('janela', 100), fisico = tem('fisico'), sentidos = tem('sentidos'), semOlhos = tem('sem-olhos');
 if (fisico && tem('sonda-mofo')) throw new Error('a sonda do mofo reinicia apenas o corpo simples; não usar com --fisico');
 if (fisico && tem('sonda-cheiro')) throw new Error('a sonda do cheiro reinicia apenas o corpo simples; não usar com --fisico');
+if (!fisico && tem('sonda-subida')) throw new Error('a sonda de subida exige --fisico');
 const rotulo = arg('rotulo', `${fisico ? 'fisico' : 'simples'}${sentidos ? '-sentidos' : ''}${semOlhos ? '-sem-olhos' : ''}`);
 const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const RAIZ = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
@@ -95,6 +96,7 @@ try {
   })()`);
   if (prep !== 'ok') throw new Error(prep);
   const inicio = await ev('brainClock / 1000');
+  const subida = tem('sonda-subida') ? await ev(readFileSync(join(RAIZ, 'scripts/subida_sonda.js'), 'utf8')) : null;
   const mofo = tem('sonda-mofo') ? await ev(readFileSync(join(RAIZ, 'scripts/mofo_sonda.js'), 'utf8')) : null;
   // sonda de busca pelo cheiro (docs/plano-busca-cheiro.md, B1)
   const cheiro = tem('sonda-cheiro') ? await ev(readFileSync(join(RAIZ, 'scripts/cheiro_sonda.js'), 'utf8')) : null;
@@ -173,7 +175,7 @@ try {
   const resultado = {
     rotulo, data: new Date().toISOString(), versao, configuracao: { porta, fisico, sentidos, semOlhos, sonda_mofo: !!mofo, sonda_cheiro: !!cheiro },
     metodo_da_rodada: 'Janela de movimento informada abaixo; escalada explícita separada de repouso e excluída de trechos/velocidade no chão. Comendo significa boca estendida, não ingestão confirmada; ingestão usa eventos comeu.',
-    inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo, cheiro,
+    inicio_cerebro_s: inicio, fim, detalhes_eventos: detalhes, erros, mofo, cheiro, subida,
     janela_ms: J * 10, relogio_s: segundos, cerebro_s: +tTot.toFixed(1), amostras: n,
     fracoes_do_tempo: frac,
     busca_pelo_cheiro: (() => { let d = 0, p = 0; for (let i = 0; i < n; i++) { if (reg[i][10] === 1) d += dt[i]; if (reg[i][10] === 2) p += dt[i]; }
