@@ -19,6 +19,20 @@ A a E do Codex). **Atualize "Onde parei" a cada passo.**
 
 ## Etapas
 
+### T0 Antes de treinar (pedido do usuário, 29/09)
+
+Garantir que um resultado de treino, positivo ou negativo, signifique alguma coisa:
+1. **A memória muda o cérebro?** No worker, sem corpo: atividade das saídas do corpo cogumelar (MBONs) para A e B
+   antes e depois do pareamento, com plasticidade ligada e congelada. Se não mudar, nenhum treino comportamental
+   mostra efeito e o gargalo não é o protocolo.
+2. **A e B são equivalentes?** Quantas células de Kenyon cada pista ativa, a sobreposição entre os padrões (nas
+   moscas, cada cheiro liga ~5–10% das KCs e os padrões pouco se sobrepõem) e a preferência de nascença (teste
+   "antes do treino" do piloto).
+3. Mesmo modelo no Python e no navegador (limite de 255 sinapses, transmissão rápida da dopamina).
+4. Regra de aprendizado mais próxima da biologia: compartimentos, ordem cheiro → recompensa, tempos de esquecimento.
+5. Sessão mais barata: tarefa de cheiro sem desenhar os olhos (validar a visão só no fim).
+6. Ruído sem treino: quantas sementes são necessárias para ver um efeito.
+
 ### T1 Piloto da etapa A (a primeira medida causal)
 
 Lote: sementes 101, 202, 303, 404, 505; variante `padrao` (3 repetições, testes de 15 s); 2 simultâneas.
@@ -66,7 +80,8 @@ Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedi
 
 ## Onde parei
 
-- [ ] T1 piloto
+- [~] T0 antes de treinar (1 e 2 feitos; 3 a 6 abertos)
+- [~] T1 piloto
 - [ ] T2 retenção e consolidação
 - [ ] T3 memória entre sessões
 - [ ] T4 ampliar
@@ -82,3 +97,16 @@ sem odor nem recompensa, corpo parado como nos outros intervalos, entre o treino
 processo `node scripts/experimentos.mjs` antes de lançar outro lote** (ele recusa uma segunda instância na mesma pasta; a trava é `docs/medicoes/lotes/_gerenciador.lock`).
 Se o piloto ainda estiver pela metade quando alguém retomar: abrir http://127.0.0.1:8770 (ou `iniciar-experimentos.cmd`)
 e clicar em Retomar no lote; o resumo sai em `docs/medicoes/lotes/<id>/resumo.json`.
+
+**29/09, T0 itens 1 e 2 (`node scripts/t0_cerebro.mjs 29,101,202`, `docs/medicoes/t0-cerebro.json`).** Worker real,
+sem corpo; sondas de 2 s de cada pista, 2 vezes, antes e depois das fases de "Treino" do protocolo (A recompensado).
+1. **O treino muda o cérebro, de forma específica.** Resposta de `mbon_evitar_rec` a A com plasticidade: −0,91 /
+   −1,11 / −1,00 Hz (de ~1,4 para ~0,5 Hz, −65%); a B: −0,04 / +0,03 / −0,02. Congelado: A +0,03 / −0,18 / +0,03,
+   B −0,14 / −0,05 / −0,02 (ruído). Se o comportamento não mostrar efeito, o gargalo é a ponte memória → movimento
+   (regra do corpo que lê as sinapses), não o aprendizado.
+2. **A e B não são equivalentes.** KCs ativadas: A 126–132 (3,1–3,2%), B 97–101 (2,4–2,5%); sobreposição (Jaccard)
+   0,009, quase nula (bom para distinguir). Mais esparso que nas moscas (~5–10% por cheiro). A liga ~30% mais KCs, e
+   B dispara mais as saídas de evitar antes do treino (`mbon_evitar_rec` 1,85 contra 1,39 Hz): viés inato no modelo.
+   O desenho recíproco cancela na média; próximo passo: intensidade por pista (`odorHzA`/`odorHzB` na variante) até
+   igualar KCs e respostas das MBONs, antes do T4.
+
