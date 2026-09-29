@@ -19,9 +19,11 @@ const Q = createRequire(import.meta.url)('../web/qa/pedidos.js');
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const SEMENTES = arg('sementes', '1,2,3').split(',').map(Number);
-const ORCAMENTO = +arg('orcamento', 40), TREINOS = +arg('treinos', 4), VISIVEIS = 4, T_SOFTMAX = 0.15;
-const CONDICOES = arg('condicoes', 'ativa,congelada,ingenua,aleatoria,novidade').split(',');
-const SENTIR_S = 0.3, PAUSA_S = 0.2;
+const ORCAMENTO = +arg('orcamento', 30), ORC_TREINO = +arg('orcamento-treino', 60), TREINOS = +arg('treinos', 3), VISIVEIS = +arg('visiveis', 3), T_SOFTMAX = 0.15;
+const CONDICOES = arg('condicoes', 'ativa,congelada,aleatoria,novidade').split(',');
+// 1 s por cheiro: com 0,3 s o ruído da valência (desvio 0,38, até 1,0) era do tamanho do efeito do aprendizado
+// (~0,75); com 1 s, 0,15 (qa-calibracao.json)
+let SENTIR_S = +arg('sentir', 1.0), PAUSA_S = 0.2;
 const meta = JSON.parse(readFileSync('web/data/meta.json', 'utf8')), G = meta.groups;
 
 // ── worker real (mesma ponte de t0_cerebro.mjs) ──
@@ -61,9 +63,9 @@ function visiveis(semente, n) {
 }
 // um episódio: devolve o passo de cada bug distinto achado
 let BASE = {};   // valência de nascença de cada ação (a parte inata, descontada na decisão)
-async function episodio(defeitos, vistas, politica, rnd, comCerebro) {
+async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO) {
   const sis = Q.criar(defeitos), achados = new Set(), bugs = [], tentadas = {};
-  for (let p = 0; p < ORCAMENTO; p++) {
+  for (let p = 0; p < orcamento; p++) {
     const opcoes = vistas[p];
     let escolha;
     if (politica === 'aleatoria') escolha = opcoes[Math.floor(rnd() * opcoes.length)];
@@ -84,28 +86,50 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro) {
   }
   return bugs;
 }
-async function valencias() { const r = {}; for (const a of Q.ACOES) r[a.id] = +(await sentir(a)).toFixed(3); return r; }
+async function valencias(passadas = 1) { const r = {}; for (let k = 0; k < passadas; k++) for (const a of Q.ACOES) r[a.id] = (r[a.id] || 0) + (await sentir(a)) / passadas; for (const k in r) r[k] = +r[k].toFixed(3); return r; }
 
 const arquivo = 'docs/medicoes/qa-abstrato.json';
 const dados = existsSync(arquivo) ? JSON.parse(readFileSync(arquivo, 'utf8')) : {
   metodo: `Worker real em thread Node. Sistema de Pedidos em memória (web/qa/pedidos.js), contratos no estado. ${VISIVEIS} ações visíveis por passo (sequência pré-sorteada por semente, igual entre condições); cheiro de cada ação = 4 glomérulos a 100 Hz bilateral por ${SENTIR_S} s, ${PAUSA_S} s sem odor; escolha por softmax da valência (mbon_aprox - média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) menos a valência de nascença da ação (medida logo depois do reset), T = ${T_SOFTMAX}. Bug novo (contrato violado pela primeira vez no episódio): cheiro da ação por 2 s, PAM a 100 Hz nos últimos 0,5 s. Treino nas versões de treino (defeitos de repetição em pagamento e cancelamento), teste nas reservadas (repetição em cupom e estoque, quantidade negativa). A escolha por softmax e o pareamento são regras nossas; a valência e a plasticidade são do worker.`,
   rodadas: [] };
 await abreWorker();
+// --calibrar: com os pesos congelados, mede o ruído da valência de cada ação (3 passadas em ordem sorteada) para
+// durações de amostra diferentes, depois de um aquecimento com cheiros aleatórios
+if (process.argv.includes('--calibrar')) {
+  const res = {};
+  w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: false }); w.postMessage({ type: 'semente', valor: 5 });
+  const r = gerador(99);
+  for (let i = 0; i < 20; i++) { SENTIR_S = 0.5; await sentir(Q.ACOES[Math.floor(r() * Q.ACOES.length)]); }   // aquecimento
+  for (const dur of [0.3, 0.6, 1.0]) {
+    SENTIR_S = dur; const med = {};
+    for (let pass = 0; pass < 3; pass++) {
+      const ord = [...Q.ACOES].sort(() => r() - 0.5);
+      for (const a of ord) (med[a.id] ||= []).push(await sentir(a));
+    }
+    const dp = Object.values(med).map(v => { const m = v.reduce((a, b) => a + b, 0) / v.length; return Math.sqrt(v.reduce((a, b) => a + (b - m) ** 2, 0) / (v.length - 1)); });
+    res[dur] = { desvio_medio: +(dp.reduce((a, b) => a + b, 0) / dp.length).toFixed(3), desvio_max: +Math.max(...dp).toFixed(3),
+      medias: Object.fromEntries(Object.entries(med).map(([k, v]) => [k, +(v.reduce((a, b) => a + b, 0) / v.length).toFixed(2)])) };
+    console.log(dur, 's: desvio médio', res[dur].desvio_medio, 'máx', res[dur].desvio_max);
+  }
+  writeFileSync('docs/medicoes/qa-calibracao.json', JSON.stringify({ metodo: 'Pesos congelados, semente 5, aquecimento de 20 cheiros aleatórios de 0,5 s; depois, para cada duração de amostra, 3 passadas pelas 15 ações em ordem sorteada; desvio-padrão da valência de cada ação entre passadas. Comparar com o efeito do aprendizado no T0 (~+0,75 Hz por neurônio com sondas de 2 s).', res }, null, 1) + '\n');
+  await w.terminate(); process.exit(0);
+}
 for (const semente of SEMENTES) {
   const rMundo = gerador(semente * 7919 + 1);
-  const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: Q.VERSOES.treino[i % Q.VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORCAMENTO) }));
+  const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: Q.VERSOES.treino[i % Q.VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));
   const testes = Q.VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i, ORCAMENTO) }));
   for (const cond of CONDICOES) {
     const comCerebro = ['ativa', 'congelada', 'ingenua'].includes(cond);
     const rnd = gerador(semente * 31 + 17);
-    const r = { semente, condicao: cond, orcamento: ORCAMENTO, treino: [], teste: [] };
+    const r = { semente, condicao: cond, orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, treino: [], teste: [] };
     if (comCerebro) {
       w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: cond !== 'congelada' }); w.postMessage({ type: 'semente', valor: semente });
       await roda(1, {});
-      r.valencia_antes = await valencias(); BASE = r.valencia_antes;
+      { const ra = gerador(semente + 5); for (let i = 0; i < 15; i++) await sentir(Q.ACOES[Math.floor(ra() * Q.ACOES.length)]); }   // aquecimento
+      r.valencia_antes = await valencias(2); BASE = r.valencia_antes;
     }
-    if (cond !== 'ingenua') for (const t of treinos) r.treino.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro));
-    if (comCerebro) r.valencia_depois_do_treino = await valencias();
+    if (cond !== 'ingenua') for (const t of treinos) r.treino.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORC_TREINO));
+    if (comCerebro) r.valencia_depois_do_treino = await valencias(2);
     for (const t of testes) r.teste.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro));
     const primeiro = r.teste.map(b => (b.length ? b[0].passo : ORCAMENTO + 1));
     r.resumo = { primeiro_bug_teste_media: +(primeiro.reduce((a, b) => a + b, 0) / primeiro.length).toFixed(2), bugs_teste: r.teste.reduce((a, b) => a + b.length, 0), bugs_treino: r.treino.reduce((a, b) => a + b.length, 0) };
