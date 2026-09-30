@@ -1,0 +1,585 @@
+{
+ "metodo": "Worker real em thread Node. Sistema de Pedidos em memória (web/qa/pedidos.js), contratos no estado. 3 ações visíveis por passo (sequência pré-sorteada por semente, igual entre condições); cheiro de cada ação = 4 glomérulos a 100 Hz bilateral por 1 s, 0.2 s sem odor; escolha por softmax da valência (mbon_aprox - média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) menos a valência de nascença da ação (medida logo depois do reset), T = 0.15. Bug novo (contrato violado pela primeira vez no episódio): cheiro da ação por 2 s, PAM a 100 Hz nos últimos 0,5 s. Treino nas versões de treino (defeitos de repetição em pagamento e cancelamento), teste nas reservadas (repetição em cupom e estoque, quantidade negativa). A escolha por softmax e o pareamento são regras nossas; a valência e a plasticidade são do worker.",
+ "rodadas": [
+  {
+   "data": "2026-09-30T06:18:25.436Z",
+   "semente": 13,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [],
+    [
+     {
+      "passo": 28,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 28,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 17,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 6,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.028,
+    "carrinho:zero": -0.377,
+    "carrinho:negativa": -0.318,
+    "carrinho:limite": 0.514,
+    "estoque:normal": 0.397,
+    "estoque:limite": 0.435,
+    "estoque:repetida": 0.023,
+    "pagamento:normal": 0.017,
+    "pagamento:zero": -0.188,
+    "pagamento:repetida": 0.259,
+    "cancelamento:normal": -0.105,
+    "cancelamento:repetida": 0.355,
+    "cupom:normal": -0.136,
+    "cupom:limite": 0.443,
+    "cupom:repetida": -0.128
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": -0.028,
+    "carrinho:zero": -0.214,
+    "carrinho:negativa": -0.31,
+    "carrinho:limite": 0.632,
+    "estoque:normal": 0.188,
+    "estoque:limite": 0.427,
+    "estoque:repetida": 0.053,
+    "pagamento:normal": 0.034,
+    "pagamento:zero": 0.083,
+    "pagamento:repetida": 0.253,
+    "cancelamento:normal": -0.138,
+    "cancelamento:repetida": 0.199,
+    "cupom:normal": 0,
+    "cupom:limite": 0.517,
+    "cupom:repetida": -0.039
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 22.67,
+    "bugs_teste": 1,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T06:51:36.133Z",
+   "semente": 13,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [],
+    [
+     {
+      "passo": 28,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 28,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    []
+   ],
+   "teste": [
+    [
+     {
+      "passo": 6,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.098,
+    "carrinho:zero": -0.202,
+    "carrinho:negativa": -0.231,
+    "carrinho:limite": 0.826,
+    "estoque:normal": 0.302,
+    "estoque:limite": 0.265,
+    "estoque:repetida": 0.046,
+    "pagamento:normal": -0.139,
+    "pagamento:zero": -0.036,
+    "pagamento:repetida": 0.297,
+    "cancelamento:normal": 0.017,
+    "cancelamento:repetida": 0.086,
+    "cupom:normal": -0.187,
+    "cupom:limite": 0.415,
+    "cupom:repetida": -0.099
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.015,
+    "carrinho:zero": -0.088,
+    "carrinho:negativa": -0.212,
+    "carrinho:limite": 0.608,
+    "estoque:normal": 0.189,
+    "estoque:limite": 0.525,
+    "estoque:repetida": -0.07,
+    "pagamento:normal": 0.087,
+    "pagamento:zero": 0.022,
+    "pagamento:repetida": 0.142,
+    "cancelamento:normal": 0.005,
+    "cancelamento:repetida": 0.184,
+    "cupom:normal": -0.075,
+    "cupom:limite": 0.329,
+    "cupom:repetida": -0.233
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 22.67,
+    "bugs_teste": 1,
+    "bugs_treino": 2
+   }
+  },
+  {
+   "data": "2026-09-30T06:51:36.136Z",
+   "semente": 13,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [],
+    [
+     {
+      "passo": 28,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 28,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 37,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 37,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 41,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 18,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 20,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 20,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 23,
+    "bugs_teste": 3,
+    "bugs_treino": 5
+   }
+  },
+  {
+   "data": "2026-09-30T06:51:36.140Z",
+   "semente": 13,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [
+     {
+      "passo": 42,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 28,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 28,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 26,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 26,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 25,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 26,
+      "contrato": "estoque-inconsistente",
+      "acao": "estoque:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 13,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 13,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 18,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 21.33,
+    "bugs_teste": 5,
+    "bugs_treino": 5
+   }
+  },
+  {
+   "data": "2026-09-30T07:25:33.194Z",
+   "semente": 14,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [
+     {
+      "passo": 57,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [],
+    []
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 16,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.33,
+    "carrinho:zero": -0.287,
+    "carrinho:negativa": -0.158,
+    "carrinho:limite": 0.298,
+    "estoque:normal": 0.051,
+    "estoque:limite": 0.615,
+    "estoque:repetida": -0.149,
+    "pagamento:normal": 0.153,
+    "pagamento:zero": -0.227,
+    "pagamento:repetida": 0.299,
+    "cancelamento:normal": 0.028,
+    "cancelamento:repetida": 0.225,
+    "cupom:normal": -0.266,
+    "cupom:limite": 0.425,
+    "cupom:repetida": 0.045
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": -0.023,
+    "carrinho:zero": -0.348,
+    "carrinho:negativa": -0.179,
+    "carrinho:limite": 0.678,
+    "estoque:normal": 0.136,
+    "estoque:limite": 0.41,
+    "estoque:repetida": -0.122,
+    "pagamento:normal": -0.084,
+    "pagamento:zero": -0.167,
+    "pagamento:repetida": 0.47,
+    "cancelamento:normal": -0.208,
+    "cancelamento:repetida": 0.2,
+    "cupom:normal": -0.218,
+    "cupom:limite": 0.289,
+    "cupom:repetida": 0.03
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 26,
+    "bugs_teste": 1,
+    "bugs_treino": 1
+   }
+  },
+  {
+   "data": "2026-09-30T07:57:31.539Z",
+   "semente": 14,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [
+     {
+      "passo": 30,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 15,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 15,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    []
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 10,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     },
+     {
+      "passo": 12,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 12,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.229,
+    "carrinho:zero": -0.393,
+    "carrinho:negativa": -0.269,
+    "carrinho:limite": 0.663,
+    "estoque:normal": 0.284,
+    "estoque:limite": 0.371,
+    "estoque:repetida": 0.06,
+    "pagamento:normal": 0.059,
+    "pagamento:zero": 0.06,
+    "pagamento:repetida": 0.252,
+    "cancelamento:normal": 0.035,
+    "cancelamento:repetida": 0.074,
+    "cupom:normal": -0.091,
+    "cupom:limite": 0.282,
+    "cupom:repetida": 0.144
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": -0.178,
+    "carrinho:zero": -0.191,
+    "carrinho:negativa": -0.093,
+    "carrinho:limite": 0.445,
+    "estoque:normal": -0.021,
+    "estoque:limite": 0.585,
+    "estoque:repetida": -0.049,
+    "pagamento:normal": 0.049,
+    "pagamento:zero": 0.174,
+    "pagamento:repetida": 0.1,
+    "cancelamento:normal": 0.036,
+    "cancelamento:repetida": 0.316,
+    "cupom:normal": -0.183,
+    "cupom:limite": 0.453,
+    "cupom:repetida": -0.189
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 24,
+    "bugs_teste": 3,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T07:57:31.542Z",
+   "semente": 14,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [],
+    [],
+    [
+     {
+      "passo": 60,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 19,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 21,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 23.67,
+    "bugs_teste": 2,
+    "bugs_treino": 1
+   }
+  },
+  {
+   "data": "2026-09-30T07:57:31.544Z",
+   "semente": 14,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "desconto": false,
+   "cheiros": "docs/medicoes/qa-cheiros-fortes.json",
+   "treino": [
+    [
+     {
+      "passo": 23,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 25,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 47,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    []
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 10,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 10,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 21,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 24,
+    "bugs_teste": 3,
+    "bugs_treino": 3
+   }
+  }
+ ]
+}

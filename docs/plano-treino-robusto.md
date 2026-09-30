@@ -212,3 +212,5 @@ de teste, IC95 < 0). Resumo: `node scripts/qa_resumo.mjs --prefixo qa-fortes`.
 `qa-fortes-espacado`: 6 treinos de 20 ações, sementes 31–38. Critério igual em todas. Se uma passar, replica com
 sementes 41–48 antes de contar como achado; replicou, para. Cada degrau anota aqui e commita as medições. São até 3
 comparações: um "passou" sem replicação não vale como resultado. Log: `_tmp/_madrugada.log`.
+
+**2026-09-30, madrugada: qa-fortes (cheiros fortes, treino padrão (3 × 60 ações)): negativo.** Sementes 11, 12, 13, 14, 15, 16, 17, 18. Primeiro bug de teste: treinada 23,5, congelada 23,67, aleatória 19,67, novidade 22,92. Treinada − congelada -0,17, IC95 [-2.46,2.08]. Valência depois do treino (treinada): repetidas 0,265, outras -0,002. `docs/medicoes/qa-fortes-resumo.json`.
