@@ -1,0 +1,1619 @@
+{
+  "id": "2026-09-29T22-25-18-608Z-a560c5",
+  "nome": "piloto-A",
+  "config": {
+    "nome": "piloto-A",
+    "sementes": [
+      101,
+      202,
+      303,
+      404,
+      505
+    ],
+    "variantes": [
+      {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0
+      }
+    ],
+    "paralelas": 1,
+    "limiteMinutos": 20,
+    "tentativas": 2,
+    "memoriaMinGB": 2,
+    "guardarMemoria": true
+  },
+  "status": "concluido",
+  "criado": "2026-09-29T22:25:18.746Z",
+  "hash": "223d46c2bf7b3a76d7d03ca562675c15466c2cd018a1d26eb5e2bee4d723efff",
+  "jobs": [
+    {
+      "id": "f5f3189f673dfb58",
+      "variante": "padrao",
+      "semente": 505,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:25:19.170Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 15240,
+        "tempoRealS": 135.426
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          0.7818181818181821,
+          -1,
+          0.5359628770301594
+        ],
+        "ganho": -0.21818181818181792,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.06933333333333465,
+          0.07333333333333472,
+          0.2426666666666689,
+          0.2873333333333369
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 135.442,
+      "fim": "2026-09-29T22:27:35.494Z"
+    },
+    {
+      "id": "85da35293312154c",
+      "variante": "padrao",
+      "semente": 303,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:27:36.297Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 27152,
+        "tempoRealS": 129.643
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          -0.033613445378151266,
+          0.32503888024882915,
+          -0.002237136465324341
+        ],
+        "ganho": 0.9663865546218487,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.05866666666666778,
+          0.1586666666666697,
+          0.4286666666666713,
+          0.298000000000005
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 129.663,
+      "fim": "2026-09-29T22:29:46.642Z"
+    },
+    {
+      "id": "f4c657e449c0f5d8",
+      "variante": "padrao",
+      "semente": 404,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:29:47.392Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 6560,
+        "tempoRealS": 169.031
+      },
+      "metricas": {
+        "preferencias": [
+          -0.7557603686635923,
+          -0.758314855875828,
+          1,
+          1
+        ],
+        "ganho": -0.002554487212235723,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.28933333333333616,
+          0.601333333333336,
+          0.5600000000000013,
+          0.6833333333333342
+        ],
+        "memoriaFinal": 0.01050142587113867
+      },
+      "tempoRealS": 169.049,
+      "fim": "2026-09-29T22:32:37.146Z"
+    },
+    {
+      "id": "bdd3703cdda180e4",
+      "variante": "padrao",
+      "semente": 202,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T22:32:37.917Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 792,
+        "tempoRealS": 173.259
+      },
+      "metricas": {
+        "preferencias": [
+          0.09649122807017357,
+          1,
+          -1,
+          -1
+        ],
+        "ganho": 0.9035087719298265,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.304000000000005,
+          0.27266666666666883,
+          0.7533333333333341,
+          0.7720000000000007
+        ],
+        "memoriaFinal": 0.018846718895058623
+      },
+      "tempoRealS": 173.278,
+      "fim": "2026-09-29T22:35:31.884Z"
+    },
+    {
+      "id": "eeb3f2499fc68fda",
+      "variante": "padrao",
+      "semente": 404,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-29T23:04:32.955Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 21232,
+        "tempoRealS": 191.273
+      },
+      "fim": "2026-09-29T23:07:45.211Z",
+      "metricas": {
+        "preferencias": [
+          0.7557603686635923,
+          1,
+          0.3963963963963912,
+          1
+        ],
+        "ganho": 0.2442396313364077,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.28933333333333616,
+          0.8273333333333338,
+          0.4440000000000046,
+          0.6266666666666678
+        ],
+        "memoriaFinal": 0.011793474565096496
+      },
+      "tempoRealS": 191.288
+    },
+    {
+      "id": "c24d697e7559740e",
+      "variante": "padrao",
+      "semente": 101,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:07:45.809Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 14268,
+        "tempoRealS": 161.045
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          0.39380530973450945,
+          0.787234042553189,
+          1
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0,
+          0.6026666666666708,
+          0.3760000000000027,
+          0.437333333333335
+        ],
+        "memoriaFinal": 0.011984495287862162
+      },
+      "tempoRealS": 161.057,
+      "fim": "2026-09-29T23:10:27.707Z"
+    },
+    {
+      "id": "8a484107d93e58b9",
+      "variante": "padrao",
+      "semente": 303,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:10:28.358Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 23512,
+        "tempoRealS": 200.142
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          1,
+          0.9367088607594928,
+          1
+        ],
+        "ganho": 2,
+        "primeira": [
+          "B",
+          "A",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.05866666666666778,
+          0.5180000000000015,
+          0.42133333333333534,
+          0.8946666666666669
+        ],
+        "memoriaFinal": 0.011628141055143537
+      },
+      "tempoRealS": 200.165,
+      "fim": "2026-09-29T23:13:49.319Z"
+    },
+    {
+      "id": "25fe8a38726ebf7f",
+      "variante": "padrao",
+      "semente": 404,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-29T23:14:33.123Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 23820,
+        "tempoRealS": 173.827
+      },
+      "fim": "2026-09-29T23:17:27.726Z",
+      "metricas": {
+        "preferencias": [
+          0.7557603686635923,
+          1,
+          -1,
+          -0.3182608695652127
+        ],
+        "ganho": 0.2442396313364077,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.28933333333333616,
+          0.05866666666666778,
+          0.18666666666666903,
+          0.383333333333338
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 173.845
+    },
+    {
+      "id": "7fb2a9f46a44af6d",
+      "variante": "padrao",
+      "semente": 202,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:17:28.615Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 28956,
+        "tempoRealS": 181.992
+      },
+      "metricas": {
+        "preferencias": [
+          0.09649122807017357,
+          0.00432900432900433,
+          0.4318975552968524,
+          -0.361842105263153
+        ],
+        "ganho": -0.09216222374116924,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.304000000000005,
+          0.1540000000000029,
+          0.5726666666666709,
+          0.40533333333333793
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 182.009,
+      "fim": "2026-09-29T23:20:31.445Z"
+    },
+    {
+      "id": "78e16b4854ded436",
+      "variante": "padrao",
+      "semente": 505,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:20:32.259Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 11804,
+        "tempoRealS": 202.962
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          -1,
+          0.6307311028500574,
+          1
+        ],
+        "ganho": 0,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.06933333333333465,
+          0.17533333333333576,
+          0.5380000000000035,
+          0.5720000000000013
+        ],
+        "memoriaFinal": 0.01307498574344812
+      },
+      "tempoRealS": 202.982,
+      "fim": "2026-09-29T23:23:56.176Z"
+    },
+    {
+      "id": "4220eb37d6e93465",
+      "variante": "padrao",
+      "semente": 101,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:23:56.848Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 28736,
+        "tempoRealS": 213.745
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          1,
+          0.4326797385620865,
+          1
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0,
+          0.43800000000000167,
+          0.5100000000000044,
+          0.5893333333333346
+        ],
+        "memoriaFinal": 0.014215702574507771
+      },
+      "tempoRealS": 213.764,
+      "fim": "2026-09-29T23:27:31.365Z"
+    },
+    {
+      "id": "b649f4b47bf15b5d",
+      "variante": "padrao",
+      "semente": 202,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:27:31.599Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 12248,
+        "tempoRealS": 194.521
+      },
+      "metricas": {
+        "preferencias": [
+          -0.09649122807017357,
+          -1,
+          -0.15151515151515152,
+          -0.14224137931034214
+        ],
+        "ganho": -0.9035087719298265,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.304000000000005,
+          0.044666666666667514,
+          0.19800000000000378,
+          0.3093333333333383
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 194.543,
+      "fim": "2026-09-29T23:30:46.957Z"
+    },
+    {
+      "id": "dba7bceec95c0824",
+      "variante": "padrao",
+      "semente": 505,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:30:47.178Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 11228,
+        "tempoRealS": 178.725
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          -1,
+          -0.6263269639065786,
+          -0.11436950146627567
+        ],
+        "ganho": 0,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.06933333333333465,
+          0.21866666666666895,
+          0.3140000000000033,
+          0.2273333333333377
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 178.746,
+      "fim": "2026-09-29T23:33:46.755Z"
+    },
+    {
+      "id": "174fb78ca8c5ef3e",
+      "variante": "padrao",
+      "semente": 303,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:33:47.650Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 16472,
+        "tempoRealS": 167.598
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          0.2361623616236124,
+          0.21656050955414016,
+          -1
+        ],
+        "ganho": -0.7638376383763876,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.05866666666666778,
+          0.3613333333333381,
+          0.20933333333333734,
+          0.13733333333333586
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 167.61,
+      "fim": "2026-09-29T23:36:36.019Z"
+    },
+    {
+      "id": "da6f2f460fedbd5e",
+      "variante": "padrao",
+      "semente": 303,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:36:36.102Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 2820,
+        "tempoRealS": 183.53
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          1,
+          1,
+          0.3723536737235327
+        ],
+        "ganho": 0,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.05866666666666778,
+          0.3773333333333352,
+          0.4960000000000015,
+          0.5353333333333377
+        ],
+        "memoriaFinal": 0.014048057043764883
+      },
+      "tempoRealS": 183.55,
+      "fim": "2026-09-29T23:39:40.375Z"
+    },
+    {
+      "id": "e4cd186bb3c09e1a",
+      "variante": "padrao",
+      "semente": 101,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:39:40.637Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 26192,
+        "tempoRealS": 159.396
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          -0.1028037383177553,
+          0.6091476091476057,
+          0.830769230769231
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0,
+          0.2853333333333382,
+          0.32066666666667004,
+          0.08666666666666831
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 159.414,
+      "fim": "2026-09-29T23:42:20.863Z"
+    },
+    {
+      "id": "0b7f1c054dd5e87c",
+      "variante": "padrao",
+      "semente": 202,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:42:21.065Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 4232,
+        "tempoRealS": 194.853
+      },
+      "metricas": {
+        "preferencias": [
+          -0.09649122807017357,
+          1,
+          1,
+          1
+        ],
+        "ganho": 1.0964912280701735,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.304000000000005,
+          0.7160000000000009,
+          0.8526666666666671,
+          0.40066666666666845
+        ],
+        "memoriaFinal": 0.01270599822484686
+      },
+      "tempoRealS": 194.882,
+      "fim": "2026-09-29T23:45:36.675Z"
+    },
+    {
+      "id": "852407a20df1cfba",
+      "variante": "padrao",
+      "semente": 404,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:45:36.832Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 31636,
+        "tempoRealS": 200.441
+      },
+      "metricas": {
+        "preferencias": [
+          -0.7557603686635923,
+          null,
+          -0.380042462845007,
+          0.10014513788098565
+        ],
+        "ganho": null,
+        "primeira": [
+          "B",
+          null,
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          true,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.28933333333333616,
+          0,
+          0.31400000000000416,
+          0.4593333333333378
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 200.46,
+      "fim": "2026-09-29T23:48:58.160Z"
+    },
+    {
+      "id": "f54f17a5fe30677c",
+      "variante": "padrao",
+      "semente": 101,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:48:58.457Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 29940,
+        "tempoRealS": 189.929
+      },
+      "metricas": {
+        "preferencias": [
+          null,
+          -0.38411669367908746,
+          -0.4539473684210518,
+          -1
+        ],
+        "ganho": null,
+        "primeira": [
+          null,
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0,
+          0.4113333333333379,
+          0.20266666666667021,
+          0.6673333333333343
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 189.952,
+      "fim": "2026-09-29T23:52:09.149Z"
+    },
+    {
+      "id": "b1489ef4f979b474",
+      "variante": "padrao",
+      "semente": 505,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "padrao",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:52:10.135Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 21372,
+        "tempoRealS": 220.651
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "ganho": 0,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.06933333333333465,
+          0.7220000000000009,
+          0.8926666666666669,
+          0.6340000000000011
+        ],
+        "memoriaFinal": 0.013651933423143747
+      },
+      "tempoRealS": 220.672,
+      "fim": "2026-09-29T23:55:51.648Z"
+    }
+  ],
+  "eventos": [
+    {
+      "data": "2026-09-29T22:25:18.764Z",
+      "tipo": "criado",
+      "sessoes": 20
+    },
+    {
+      "data": "2026-09-29T22:25:18.778Z",
+      "tipo": "retomar"
+    },
+    {
+      "data": "2026-09-29T22:25:19.170Z",
+      "tipo": "iniciou",
+      "job": "f5f3189f673dfb58",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T22:27:35.494Z",
+      "tipo": "concluiu",
+      "job": "f5f3189f673dfb58"
+    },
+    {
+      "data": "2026-09-29T22:27:36.297Z",
+      "tipo": "iniciou",
+      "job": "85da35293312154c",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T22:29:46.642Z",
+      "tipo": "concluiu",
+      "job": "85da35293312154c"
+    },
+    {
+      "data": "2026-09-29T22:29:47.392Z",
+      "tipo": "iniciou",
+      "job": "f4c657e449c0f5d8",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T22:32:37.146Z",
+      "tipo": "concluiu",
+      "job": "f4c657e449c0f5d8"
+    },
+    {
+      "data": "2026-09-29T22:32:37.917Z",
+      "tipo": "iniciou",
+      "job": "bdd3703cdda180e4",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T22:35:31.884Z",
+      "tipo": "concluiu",
+      "job": "bdd3703cdda180e4"
+    },
+    {
+      "data": "2026-09-29T22:39:34.356Z",
+      "tipo": "pausar"
+    },
+    {
+      "data": "2026-09-29T22:44:31.254Z",
+      "tipo": "retomar"
+    },
+    {
+      "data": "2026-09-29T22:44:31.287Z",
+      "tipo": "iniciou",
+      "job": "eeb3f2499fc68fda",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:04:32.298Z",
+      "tipo": "falhou",
+      "job": "eeb3f2499fc68fda",
+      "mensagem": "Tempo máximo da sessão excedido"
+    },
+    {
+      "data": "2026-09-29T23:04:32.955Z",
+      "tipo": "iniciou",
+      "job": "eeb3f2499fc68fda",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-29T23:07:45.211Z",
+      "tipo": "concluiu",
+      "job": "eeb3f2499fc68fda"
+    },
+    {
+      "data": "2026-09-29T23:07:45.809Z",
+      "tipo": "iniciou",
+      "job": "c24d697e7559740e",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:10:27.707Z",
+      "tipo": "concluiu",
+      "job": "c24d697e7559740e"
+    },
+    {
+      "data": "2026-09-29T23:10:28.358Z",
+      "tipo": "iniciou",
+      "job": "8a484107d93e58b9",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:13:49.319Z",
+      "tipo": "concluiu",
+      "job": "8a484107d93e58b9"
+    },
+    {
+      "data": "2026-09-29T23:13:49.787Z",
+      "tipo": "iniciou",
+      "job": "25fe8a38726ebf7f",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:14:33.051Z",
+      "tipo": "falhou",
+      "job": "25fe8a38726ebf7f",
+      "mensagem": "EPERM: operation not permitted, rename 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T22-25-18-608Z-a560c5\\_90c90154-5953-4853-81ca-10348679c753.tmp' -> 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T22-25-18-608Z-a560c5\\estado.json'"
+    },
+    {
+      "data": "2026-09-29T23:14:33.123Z",
+      "tipo": "iniciou",
+      "job": "25fe8a38726ebf7f",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-29T23:17:27.726Z",
+      "tipo": "concluiu",
+      "job": "25fe8a38726ebf7f"
+    },
+    {
+      "data": "2026-09-29T23:17:28.615Z",
+      "tipo": "iniciou",
+      "job": "7fb2a9f46a44af6d",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:20:31.445Z",
+      "tipo": "concluiu",
+      "job": "7fb2a9f46a44af6d"
+    },
+    {
+      "data": "2026-09-29T23:20:32.259Z",
+      "tipo": "iniciou",
+      "job": "78e16b4854ded436",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:23:56.176Z",
+      "tipo": "concluiu",
+      "job": "78e16b4854ded436"
+    },
+    {
+      "data": "2026-09-29T23:23:56.848Z",
+      "tipo": "iniciou",
+      "job": "4220eb37d6e93465",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:27:31.365Z",
+      "tipo": "concluiu",
+      "job": "4220eb37d6e93465"
+    },
+    {
+      "data": "2026-09-29T23:27:31.599Z",
+      "tipo": "iniciou",
+      "job": "b649f4b47bf15b5d",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:30:46.957Z",
+      "tipo": "concluiu",
+      "job": "b649f4b47bf15b5d"
+    },
+    {
+      "data": "2026-09-29T23:30:47.178Z",
+      "tipo": "iniciou",
+      "job": "dba7bceec95c0824",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:33:46.755Z",
+      "tipo": "concluiu",
+      "job": "dba7bceec95c0824"
+    },
+    {
+      "data": "2026-09-29T23:33:47.650Z",
+      "tipo": "iniciou",
+      "job": "174fb78ca8c5ef3e",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:36:36.019Z",
+      "tipo": "concluiu",
+      "job": "174fb78ca8c5ef3e"
+    },
+    {
+      "data": "2026-09-29T23:36:36.102Z",
+      "tipo": "iniciou",
+      "job": "da6f2f460fedbd5e",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:39:40.375Z",
+      "tipo": "concluiu",
+      "job": "da6f2f460fedbd5e"
+    },
+    {
+      "data": "2026-09-29T23:39:40.637Z",
+      "tipo": "iniciou",
+      "job": "e4cd186bb3c09e1a",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:42:20.863Z",
+      "tipo": "concluiu",
+      "job": "e4cd186bb3c09e1a"
+    },
+    {
+      "data": "2026-09-29T23:42:21.065Z",
+      "tipo": "iniciou",
+      "job": "0b7f1c054dd5e87c",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:45:36.675Z",
+      "tipo": "concluiu",
+      "job": "0b7f1c054dd5e87c"
+    },
+    {
+      "data": "2026-09-29T23:45:36.832Z",
+      "tipo": "iniciou",
+      "job": "852407a20df1cfba",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:48:58.160Z",
+      "tipo": "concluiu",
+      "job": "852407a20df1cfba"
+    },
+    {
+      "data": "2026-09-29T23:48:58.457Z",
+      "tipo": "iniciou",
+      "job": "f54f17a5fe30677c",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:52:09.150Z",
+      "tipo": "concluiu",
+      "job": "f54f17a5fe30677c"
+    },
+    {
+      "data": "2026-09-29T23:52:10.135Z",
+      "tipo": "iniciou",
+      "job": "b1489ef4f979b474",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-29T23:55:51.648Z",
+      "tipo": "concluiu",
+      "job": "b1489ef4f979b474"
+    }
+  ],
+  "atualizado": "2026-09-29T23:56:22.216Z"
+}

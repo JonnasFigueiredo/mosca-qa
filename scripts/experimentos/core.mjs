@@ -53,7 +53,10 @@ export function medir(r,alvo){
     if(Math.abs(f.tempoA+f.tempoB+f.fora-f.duracao)>.03)throw Error('Tempos da fase inconsistentes');
     return f.tempoA+f.tempoB>0?sinais[i]*(f.tempoA-f.tempoB)/(f.tempoA+f.tempoB):null;
   });
-  return {preferencias,ganho:preferencias[0]!==null&&preferencias[1]!==null?preferencias[1]-preferencias[0]:null,
+  // depois: média das preferências nos dois testes após o treino (logo depois e com lados trocados); não depende de ter
+  // havido escolha no teste de antes, que em várias sessões fica sem visita e deixa o ganho indefinido
+  const pos=[preferencias[1],preferencias[2]].filter(v=>v!==null);
+  return {preferencias,depois:pos.length?pos.reduce((a,b)=>a+b,0)/pos.length:null,ganho:preferencias[0]!==null&&preferencias[1]!==null?preferencias[1]-preferencias[0]:null,
     primeira:fases.map(f=>f.primeira),semEscolha:fases.map(f=>f.tempoA+f.tempoB===0),
     ocupacao:fases.map(f=>(f.tempoA+f.tempoB)/f.duracao),
     memoriaFinal:r.resultados.at(-1).memoryR_fim};
@@ -76,21 +79,22 @@ export function resumir(jobs){
         ganho:media(ok.map(j=>j.metricas.ganho).filter(v=>v!==null)),
         tempoRealMedio:media(ok.map(j=>j.tempoRealS).filter(Number.isFinite))});
     }
-    const sementes=[...new Set(jobs.filter(j=>j.variante===variante).map(j=>j.semente))],efeitos=[];
-    for(const s of sementes){
-      const difs=[];
-      for(const alvo of ['A','B']){
-        const pega=condicao=>jobs.find(j=>j.variante===variante&&j.semente===s&&j.alvo===alvo&&j.condicao===condicao&&j.status==='concluida');
-        const a=pega('ativa')?.metricas?.ganho,b=pega('congelada')?.metricas?.ganho;
-        if(a!=null&&b!=null)difs.push(a-b);
+    const sementes=[...new Set(jobs.filter(j=>j.variante===variante).map(j=>j.semente))];
+    const pareia=campo=>{const efeitos=[];
+      for(const s of sementes){
+        const difs=[];
+        for(const alvo of ['A','B']){
+          const pega=condicao=>jobs.find(j=>j.variante===variante&&j.semente===s&&j.alvo===alvo&&j.condicao===condicao&&j.status==='concluida');
+          const a=pega('ativa')?.metricas?.[campo],b=pega('congelada')?.metricas?.[campo];
+          if(a!=null&&b!=null)difs.push(a-b);
+        }
+        if(difs.length===2)efeitos.push({semente:s,diferenca:media(difs)});
       }
-      if(difs.length===2)efeitos.push({semente:s,diferenca:media(difs)});
-    }
-    const a=efeitos.map(e=>e.diferenca);
-    pares.push({variante,sementesCompletas:a.length,sementesTotal:sementes.length,diferencaMedia:media(a),
-      intervalo95:intervalo(a),efeitos});
+      const a=efeitos.map(e=>e.diferenca);return {sementesCompletas:a.length,diferencaMedia:media(a),intervalo95:intervalo(a),efeitos};};
+    const g=pareia('ganho'),d=pareia('depois');
+    pares.push({variante,sementesTotal:sementes.length,...g,depois:d});
   }
-  return {metodo:'Ganho = preferência pela pista inicialmente recompensada após treino menos antes. Diferença pareada = ganho ativa menos congelada; média de A/B dentro de cada semente. Intervalo percentil de bootstrap de 2000 reamostragens das sementes, somente com pelo menos 5 sementes completas. Sessões sem visita a pistas têm preferência indefinida e ficam fora da estimativa: consultar ausências, falhas e cobertura. Comparações exploratórias entre variantes não corrigidas para multiplicidade; não provam utilidade em QA.',grupos,pares};
+  return {metodo:'Principal (depois): preferência pela pista recompensada nos dois testes após o treino, ativa menos congelada, média de A/B por semente; não depende do teste de antes. Ganho = preferência pela pista inicialmente recompensada após treino menos antes. Diferença pareada = ganho ativa menos congelada; média de A/B dentro de cada semente. Intervalo percentil de bootstrap de 2000 reamostragens das sementes, somente com pelo menos 5 sementes completas. Sessões sem visita a pistas têm preferência indefinida e ficam fora da estimativa: consultar ausências, falhas e cobertura. Comparações exploratórias entre variantes não corrigidas para multiplicidade; não provam utilidade em QA.',grupos,pares};
 }
 export function csv(jobs){
   const cab=['id','variante','semente','alvo','condicao','status','tentativas','tempoRealS','ganho','antes','depois','troca','reversao','erro'];

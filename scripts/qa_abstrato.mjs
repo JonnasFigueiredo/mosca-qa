@@ -88,7 +88,8 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
 }
 async function valencias(passadas = 1) { const r = {}; for (let k = 0; k < passadas; k++) for (const a of Q.ACOES) r[a.id] = (r[a.id] || 0) + (await sentir(a)) / passadas; for (const k in r) r[k] = +r[k].toFixed(3); return r; }
 
-const arquivo = 'docs/medicoes/qa-abstrato.json';
+// --saida: outro arquivo, para rodar processos em paralelo sem um apagar os resultados do outro (qa_resumo junta todos)
+const arquivo = arg('saida', 'docs/medicoes/qa-abstrato.json');
 const dados = existsSync(arquivo) ? JSON.parse(readFileSync(arquivo, 'utf8')) : {
   metodo: `Worker real em thread Node. Sistema de Pedidos em memória (web/qa/pedidos.js), contratos no estado. ${VISIVEIS} ações visíveis por passo (sequência pré-sorteada por semente, igual entre condições); cheiro de cada ação = 4 glomérulos a 100 Hz bilateral por ${SENTIR_S} s, ${PAUSA_S} s sem odor; escolha por softmax da valência (mbon_aprox - média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) menos a valência de nascença da ação (medida logo depois do reset), T = ${T_SOFTMAX}. Bug novo (contrato violado pela primeira vez no episódio): cheiro da ação por 2 s, PAM a 100 Hz nos últimos 0,5 s. Treino nas versões de treino (defeitos de repetição em pagamento e cancelamento), teste nas reservadas (repetição em cupom e estoque, quantidade negativa). A escolha por softmax e o pareamento são regras nossas; a valência e a plasticidade são do worker.`,
   rodadas: [] };

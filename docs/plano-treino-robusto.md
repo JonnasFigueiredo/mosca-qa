@@ -101,7 +101,7 @@ Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedi
 ## Onde parei
 
 - [~] T0 antes de treinar (1 e 2 feitos; 3 a 6 abertos)
-- [~] T1 piloto
+- [x] T1 piloto (ponte por sinapses): passou; a mesma campanha com a ponte pelas MBONs está rodando
 - [ ] T2 retenção e consolidação
 - [ ] T3 memória entre sessões
 - [ ] T4 ampliar
@@ -138,4 +138,15 @@ treinar A com plasticidade, A 1,41–1,46 e B 0,15–0,29; congelado, A 0,67–0
 valência. Padrão continua `sinapses` até medir. Chave: `?ponte=mbon`; nas campanhas, `ponte` na variante
 (`core.mjs`) e `node scripts/campanha.mjs --ponte mbon`. Próximo: quando o piloto (ponte por sinapses) terminar,
 reiniciar o gerenciador e rodar a mesma campanha com `--ponte mbon`; comparar as diferenças pareadas das duas.
+
+**29/09, T1 concluído: passou (ponte por sinapses).** Lote `2026-09-29T22-25-18-608Z-a560c5`, 20 sessões. Preferência
+pela pista recompensada, ativa / congelada: depois do treino +0,56 / −0,06; lados trocados +0,62 / −0,20; depois da
+reversão (sinal invertido, seguiu a nova pista) +0,74 / −0,15. **A medida do critério (ganho = depois − antes) ficou
+indefinida em 2 das 5 sementes** (nenhuma visita a pistas no teste de antes; `semEscolha` do antes 2 em cada
+condição): 3 sementes, diferença 0,84, sem intervalo. Mudança de medida, decidida por essa indefinição e não pelo
+resultado: principal passa a ser `depois` = média das preferências nos dois testes após o treino, ativa − congelada,
+média de A/B por semente (`core.mjs`); **0,74, IC95 [0,65; 0,82], 5/5 sementes**; sem escolha depois do treino: 0/10
+ativa, 1/10 congelada (< 30%). `node scripts/resumir_lote.mjs <id>` recalcula qualquer lote com a análise atual.
+Paralelo: caça a bugs só com o cérebro em 3 processos (sementes 1–5, 6–7, 8–9; arquivos `qa-abstrato*.json`, juntados
+por `qa_resumo.mjs`).
 

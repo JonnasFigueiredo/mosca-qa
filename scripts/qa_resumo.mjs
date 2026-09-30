@@ -2,9 +2,10 @@
 // até o primeiro bug do teste (menor é melhor) e nos bugs distintos do teste, com intervalo percentil de bootstrap
 // (2000 reamostragens das sementes, só com 5 ou mais). Também a mudança de valência das ações "repetidas" contra as
 // outras, depois do treino. Grava docs/medicoes/qa-abstrato-resumo.json.   uso: node scripts/qa_resumo.mjs
-import { readFileSync, writeFileSync } from 'node:fs';
-const d = JSON.parse(readFileSync('docs/medicoes/qa-abstrato.json', 'utf8'));
-const rod = d.rodadas.filter(r => r.sentir_s === 1 && r.orcamento_treino === 60);   // só a versão calibrada
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+// junta qa-abstrato.json e qa-abstrato-*.json (processos em paralelo), menos o próprio resumo
+const arquivos = readdirSync('docs/medicoes').filter(f => /^qa-abstrato(-p\d+)?\.json$/.test(f));
+const rod = arquivos.flatMap(f => JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).rodadas).filter(r => r.sentir_s === 1 && r.orcamento_treino === 60);   // só a versão calibrada
 const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
 function ic(a) {
   if (a.length < 5) return null;
