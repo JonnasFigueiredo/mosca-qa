@@ -103,7 +103,9 @@
     treino: [['cobranca-dupla'], ['cancelamento-duplo'], ['cobranca-dupla', 'cancelamento-duplo']],
     teste: [['cupom-duplo'], ['reserva-dupla'], ['cupom-duplo', 'quantidade-negativa']],
   };
-  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES };
+  // troca os pares de glomérulos das características (calibração: scripts/qa_abstrato.mjs --calibrar-cheiros)
+  const usarCheiros = mapa => Object.assign(CHEIRO, mapa);
+  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES, usarCheiros };
   if (typeof module !== 'undefined') module.exports = api;
   globalThis.QAPedidos = api;
 })();

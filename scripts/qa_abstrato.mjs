@@ -62,7 +62,11 @@ function visiveis(semente, n) {
   return out;
 }
 // um episódio: devolve o passo de cada bug distinto achado
-let BASE = {};   // valência de nascença de cada ação (a parte inata, descontada na decisão)
+// --desconto: a decisão desconta a valência de nascença de cada ação, medida no início e guardada numa tabela fora do
+// cérebro. É memória externa (atalho); fica só para reproduzir as primeiras rodadas. O caminho honesto é calibrar os
+// cheiros para nascerem com valência parecida (--calibrar-cheiros) e rodar sem desconto (--cheiros arquivo)
+const DESCONTO = process.argv.includes('--desconto');
+let BASE = {};
 async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO) {
   const sis = Q.criar(defeitos), achados = new Set(), bugs = [], tentadas = {};
   for (let p = 0; p < orcamento; p++) {
@@ -71,7 +75,7 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
     if (politica === 'aleatoria') escolha = opcoes[Math.floor(rnd() * opcoes.length)];
     else if (politica === 'novidade') { const min = Math.min(...opcoes.map(a => tentadas[a.id] || 0)); const menos = opcoes.filter(a => (tentadas[a.id] || 0) === min); escolha = menos[Math.floor(rnd() * menos.length)]; }
     else {
-      const v = []; for (const a of opcoes) v.push((await sentir(a)) - (BASE[a.id] ?? 0));
+      const v = []; for (const a of opcoes) v.push((await sentir(a)) - (DESCONTO ? BASE[a.id] ?? 0 : 0));
       const e = v.map(x => Math.exp(x / T_SOFTMAX)), soma = e.reduce((a, b) => a + b, 0);
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
       escolha = opcoes[k];
@@ -93,7 +97,36 @@ const arquivo = arg('saida', 'docs/medicoes/qa-abstrato.json');
 const dados = existsSync(arquivo) ? JSON.parse(readFileSync(arquivo, 'utf8')) : {
   metodo: `Worker real em thread Node. Sistema de Pedidos em memória (web/qa/pedidos.js), contratos no estado. ${VISIVEIS} ações visíveis por passo (sequência pré-sorteada por semente, igual entre condições); cheiro de cada ação = 4 glomérulos a 100 Hz bilateral por ${SENTIR_S} s, ${PAUSA_S} s sem odor; escolha por softmax da valência (mbon_aprox - média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) menos a valência de nascença da ação (medida logo depois do reset), T = ${T_SOFTMAX}. Bug novo (contrato violado pela primeira vez no episódio): cheiro da ação por 2 s, PAM a 100 Hz nos últimos 0,5 s. Treino nas versões de treino (defeitos de repetição em pagamento e cancelamento), teste nas reservadas (repetição em cupom e estoque, quantidade negativa). A escolha por softmax e o pareamento são regras nossas; a valência e a plasticidade são do worker.`,
   rodadas: [] };
+// --cheiros: usa os pares de glomérulos calibrados (o 'melhor' do arquivo)
+if (arg('cheiros', '')) Q.usarCheiros(JSON.parse(readFileSync(arg('cheiros'), 'utf8')).melhor);
 await abreWorker();
+// --calibrar-cheiros: busca local nos pares de glomérulos de cada característica para que as 15 ações nasçam com
+// valência perto de zero (média dos quadrados), pesos congelados, amostra de 1 s, depois de um aquecimento
+if (process.argv.includes('--calibrar-cheiros')) {
+  const INATOS = ['DM1', 'VA2', 'DM2', 'DM3', 'DM4', 'DP1m', 'DA2', 'V', 'DP1l'];   // cheiros da Cozinha e da bancada A/B
+  const POOL = Object.keys(G).filter(k => k.startsWith('ORN_') && k.endsWith('_L')).map(k => k.slice(4, -2))
+    .filter(g => !INATOS.includes(g) && G['ORN_' + g + '_L'].length >= 6);
+  const r = gerador(+arg('semente-cal', 3)), ITER = +arg('iteracoes', 40);
+  w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: false }); w.postMessage({ type: 'semente', valor: 5 });
+  for (let i = 0; i < 15; i++) await sentir(Q.ACOES[Math.floor(r() * Q.ACOES.length)]);
+  const avalia = async () => { const v = await valencias(1); const q = Object.values(v).reduce((a, x) => a + x * x, 0) / Object.keys(v).length; return { custo: q, v }; };
+  let atual = JSON.parse(JSON.stringify(Q.CHEIRO)), melhor = await avalia();
+  const inicial = { mapa: JSON.parse(JSON.stringify(atual)), ...melhor }, historico = [{ iter: 0, custo: +melhor.custo.toFixed(4) }];
+  console.log('inicial', melhor.custo.toFixed(4));
+  for (let it = 1; it <= ITER; it++) {
+    const car = Object.keys(atual)[Math.floor(r() * Object.keys(atual).length)], usados = new Set(Object.values(atual).flat());
+    const livres = POOL.filter(g => !usados.has(g)); if (livres.length < 1) break;
+    const tentativa = JSON.parse(JSON.stringify(atual));
+    tentativa[car][Math.floor(r() * 2)] = livres[Math.floor(r() * livres.length)];
+    Q.usarCheiros(tentativa);
+    const t = await avalia();
+    if (t.custo < melhor.custo) { atual = tentativa; melhor = t; } else Q.usarCheiros(atual);
+    historico.push({ iter: it, custo: +t.custo.toFixed(4), aceito: t === melhor });
+    console.log(it, car, t.custo.toFixed(4), t === melhor ? 'aceito' : '', 'melhor', melhor.custo.toFixed(4));
+    writeFileSync('docs/medicoes/qa-cheiros.json', JSON.stringify({ metodo: 'Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).', inicial: { mapa: inicial.mapa, custo: inicial.custo, valencias: inicial.v }, melhor: atual, custo_melhor: melhor.custo, valencias_melhor: melhor.v, historico }, null, 1) + '\n');
+  }
+  await w.terminate(); process.exit(0);
+}
 // --calibrar: com os pesos congelados, mede o ruído da valência de cada ação (3 passadas em ordem sorteada) para
 // durações de amostra diferentes, depois de um aquecimento com cheiros aleatórios
 if (process.argv.includes('--calibrar')) {
