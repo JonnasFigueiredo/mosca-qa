@@ -12,19 +12,27 @@ const CHEIROS = 'docs/medicoes/qa-cheiros-fortes.json';
 const LOG = '_tmp/_madrugada.log';
 const log = m => { const l = new Date().toISOString().slice(11, 19) + ' ' + m; console.log(l); appendFileSync(LOG, l + '\n'); };
 // escada escrita antes: a série em andamento e duas variantes contra o esquecimento (τ 90 s; o treino padrão dura ~10 min)
-const ESCADA = [
+let ESCADA = [
   { prefixo: 'qa-fortes', args: [], sementes: [11, 12, 13, 14, 15, 16, 17, 18], jaRodando: true, desc: 'cheiros fortes, treino padrão (3 × 60 ações)' },
   { prefixo: 'qa-fortes-curto', args: ['--treinos', '2', '--orcamento-treino', '30'], sementes: [21, 22, 23, 24, 25, 26, 27, 28], desc: 'treino curto (2 × 30 ações): menos tempo para esquecer' },
   { prefixo: 'qa-fortes-espacado', args: ['--treinos', '6', '--orcamento-treino', '20'], sementes: [31, 32, 33, 34, 35, 36, 37, 38], desc: 'treino em 6 episódios de 20 ações: mais episódios, cada um curto' },
 ];
-const REPLICA = [41, 42, 43, 44, 45, 46, 47, 48];
+let REPLICA = [41, 42, 43, 44, 45, 46, 47, 48];
+// --plano b2: bancada 2 (01/10), escrita antes: uma série principal de 16 sementes, replicação com 16 novas
+const B2 = process.argv.includes('b2');
+if (B2) {
+  ESCADA.length = 0;
+  ESCADA.push({ prefixo: 'qa-b2', args: ['--bancada', '2', '--treinos', '6', '--orcamento-treino', '20'], sementes: Array.from({ length: 16 }, (_, i) => 51 + i), desc: 'bancada 2, treino espaçado 6 × 20, teste sem recompensa' });
+  REPLICA = Array.from({ length: 16 }, (_, i) => 71 + i);
+}
 const NCOND = 4;
 
 const linhas = arq => existsSync(arq) ? JSON.parse(readFileSync(arq, 'utf8')).rodadas.length : 0;
 const espera = ms => new Promise(ok => setTimeout(ok, ms));
 
 async function rodaSerie(prefixo, args, sementes, jaRodando) {
-  const partes = [0, 1, 2, 3].map(i => ({ arq: `docs/medicoes/${prefixo}-p${i + 1}.json`, sem: sementes.slice(i * 2, i * 2 + 2) }));
+  const por = Math.ceil(sementes.length / 4);
+  const partes = [0, 1, 2, 3].map(i => ({ arq: `docs/medicoes/${prefixo}-p${i + 1}.json`, sem: sementes.slice(i * por, i * por + por) }));
   if (!jaRodando) {
     for (const p of partes) {
       if (linhas(p.arq) >= p.sem.length * NCOND) continue;   // já feita (retomada)
@@ -35,11 +43,11 @@ async function rodaSerie(prefixo, args, sementes, jaRodando) {
   // cada processo grava uma linha por condição; termina quando todos têm 2 sementes × 4 condições (limite 10 h)
   const inicio = Date.now();
   while (partes.some(p => linhas(p.arq) < p.sem.length * NCOND)) {
-    if (Date.now() - inicio > 10 * 3600e3) { log(`${prefixo}: passou de 10 h, sigo com o que tem`); break; }
+    if (Date.now() - inicio > 14 * 3600e3) { log(`${prefixo}: passou de 10 h, sigo com o que tem`); break; }
     await espera(60e3);
   }
   const out = execSync(`node scripts/qa_resumo.mjs --prefixo ${prefixo}`, { encoding: 'utf8' });
-  const r = JSON.parse(out), pc = r.pares.ativa_menos_congelada.primeiro_bug;
+  const r = JSON.parse(out), pc = B2 ? r.pares.ativa_menos_congelada.transferencia : r.pares.ativa_menos_congelada.primeiro_bug;
   const passou = !!(pc.ic95 && pc.ic95[1] < 0);
   log(`${prefixo}: treinada − congelada ${pc.media} IC95 ${JSON.stringify(pc.ic95)} → ${passou ? 'PASSOU' : 'não passou'}`);
   return { r, pc, passou };
@@ -51,6 +59,7 @@ function registra(prefixo, desc, { r, pc, passou }) {
   const nota = `\n**${new Date().toISOString().slice(0, 10)}, madrugada: ${prefixo} (${desc}): ${passou ? 'PASSOU' : 'negativo'}.** ` +
     `Sementes ${r.sementes.join(', ')}. Primeiro bug de teste: treinada ${f(c.ativa?.primeiro_bug_media)}, congelada ${f(c.congelada?.primeiro_bug_media)}, ` +
     `aleatória ${f(c.aleatoria?.primeiro_bug_media)}, novidade ${f(c.novidade?.primeiro_bug_media)}. Treinada − congelada ${f(pc.media)}, IC95 ${JSON.stringify(pc.ic95)}. ` +
+    (B2 ? `Transferência: treinada ${f(c.ativa?.transferencia_media)}, congelada ${f(c.congelada?.transferencia_media)}, aleatória ${f(c.aleatoria?.transferencia_media)}, novidade ${f(c.novidade?.transferencia_media)}; controle (não deve melhorar): treinada − congelada ${f(r.pares.ativa_menos_congelada.controle.media)} ${JSON.stringify(r.pares.ativa_menos_congelada.controle.ic95)}. ` : '') +
     `Valência depois do treino (treinada): repetidas ${f(v.repetidas)}, outras ${f(v.outras)}. \`docs/medicoes/${prefixo}-resumo.json\`.\n`;
   appendFileSync('docs/plano-treino-robusto.md', nota);
   try {

@@ -1,0 +1,166 @@
+{
+ "bancada": 2,
+ "visiveis": 3,
+ "orcamento": 30,
+ "metodo": "Sem cérebro. memoria_X = softmax (T 0,15) com a valência das repetidas X acima das outras e ruído de desvio 0,15 (a memória medida no cérebro foi +0,17 a +0,55). 4000 episódios por versão de teste e política; 3 de 15 ações visíveis por passo, 30 passos (31 quando não achou). \"prefere_repetida\" = a memória perfeita do treino (escolhe uma repetida visível, senão ao acaso). Uma repetida aparece entre as visíveis em ~0.52 dos passos.",
+ "por_versao": {
+  "cupom-duplo": {
+   "aleatoria": {
+    "primeiro_bug_media": 13.16,
+    "achou": 0.875,
+    "repetidas_por_passo": 0.12,
+    "acao_que_revelou": {
+     "cupom:repetida": 3502
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 6.2,
+    "achou": 0.994,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "cupom:repetida": 3974
+    }
+   },
+   "memoria_0": {
+    "primeiro_bug_media": 13.05,
+    "achou": 0.882,
+    "repetidas_por_passo": 0.12,
+    "acao_que_revelou": {
+     "cupom:repetida": 3529
+    }
+   },
+   "memoria_025": {
+    "primeiro_bug_media": 8.42,
+    "achou": 0.981,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "cupom:repetida": 3924
+    }
+   },
+   "memoria_055": {
+    "primeiro_bug_media": 6.67,
+    "achou": 0.993,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "cupom:repetida": 3973
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 9.11,
+    "achou": 0.994,
+    "repetidas_por_passo": 0.09,
+    "acao_que_revelou": {
+     "cupom:repetida": 3976
+    }
+   }
+  },
+  "reserva-dupla": {
+   "aleatoria": {
+    "primeiro_bug_media": 13.18,
+    "achou": 0.876,
+    "repetidas_por_passo": 0.12,
+    "acao_que_revelou": {
+     "estoque:repetida": 3505
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 6.23,
+    "achou": 0.995,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "estoque:repetida": 3978
+    }
+   },
+   "memoria_0": {
+    "primeiro_bug_media": 13.27,
+    "achou": 0.866,
+    "repetidas_por_passo": 0.12,
+    "acao_que_revelou": {
+     "estoque:repetida": 3463
+    }
+   },
+   "memoria_025": {
+    "primeiro_bug_media": 8.75,
+    "achou": 0.969,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "estoque:repetida": 3876
+    }
+   },
+   "memoria_055": {
+    "primeiro_bug_media": 6.67,
+    "achou": 0.992,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "estoque:repetida": 3968
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 9.09,
+    "achou": 0.995,
+    "repetidas_por_passo": 0.09,
+    "acao_que_revelou": {
+     "estoque:repetida": 3978
+    }
+   }
+  },
+  "quantidade-negativa": {
+   "aleatoria": {
+    "primeiro_bug_media": 14.38,
+    "achou": 0.837,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "carrinho:negativa": 3347
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 20.07,
+    "achou": 0.616,
+    "repetidas_por_passo": 0.42,
+    "acao_que_revelou": {
+     "carrinho:negativa": 2464
+    }
+   },
+   "memoria_0": {
+    "primeiro_bug_media": 14.59,
+    "achou": 0.834,
+    "repetidas_por_passo": 0.13,
+    "acao_que_revelou": {
+     "carrinho:negativa": 3335
+    }
+   },
+   "memoria_025": {
+    "primeiro_bug_media": 17.02,
+    "achou": 0.746,
+    "repetidas_por_passo": 0.25,
+    "acao_que_revelou": {
+     "carrinho:negativa": 2983
+    }
+   },
+   "memoria_055": {
+    "primeiro_bug_media": 19.35,
+    "achou": 0.652,
+    "repetidas_por_passo": 0.37,
+    "acao_que_revelou": {
+     "carrinho:negativa": 2609
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 10.47,
+    "achou": 0.975,
+    "repetidas_por_passo": 0.09,
+    "acao_que_revelou": {
+     "carrinho:negativa": 3898
+    }
+   }
+  }
+ },
+ "media_das_versoes": {
+  "aleatoria": 13.57,
+  "prefere_repetida": 10.83,
+  "memoria_0": 13.64,
+  "memoria_025": 11.4,
+  "memoria_055": 10.9,
+  "novidade": 9.56
+ }
+}

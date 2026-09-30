@@ -67,9 +67,13 @@ function visiveis(semente, n) {
 // cérebro. É memória externa (atalho); fica só para reproduzir as primeiras rodadas. O caminho honesto é calibrar os
 // cheiros para nascerem com valência parecida (--calibrar-cheiros) e rodar sem desconto (--cheiros arquivo)
 const DESCONTO = process.argv.includes('--desconto');
+// --bancada 2 (01/10): repetidas sem pré-condição, teste com 2 versões de transferência (cupom, estoque) e 1 controle
+// (quantidade negativa, que a memória não ajuda); no teste, sem recompensa (como o teste sem açúcar das moscas reais) e
+// o episódio acaba no primeiro bug (menos tempo para esquecer)
+const BANCADA = +arg('bancada', 1), VERSOES = BANCADA === 2 ? Q.VERSOES2 : Q.VERSOES;
 let BASE = {};
-async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO) {
-  const sis = Q.criar(defeitos), achados = new Set(), bugs = [], tentadas = {};
+async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO, teste = false) {
+  const sis = Q.criar(defeitos, { bancada: BANCADA }), achados = new Set(), bugs = [], tentadas = {};
   for (let p = 0; p < orcamento; p++) {
     const opcoes = vistas[p];
     let escolha;
@@ -86,6 +90,7 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
     const novos = Q.verificar(sis).filter(x => !achados.has(x));
     if (novos.length) {
       for (const x of novos) { achados.add(x); bugs.push({ passo: p + 1, contrato: x, acao: escolha.id }); }
+      if (teste && BANCADA === 2) break;
       if (comCerebro) await recompensar(escolha);
     }
   }
@@ -214,8 +219,8 @@ if (process.argv.includes('--dose')) {
 }
 for (const semente of SEMENTES) {
   const rMundo = gerador(semente * 7919 + 1);
-  const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: Q.VERSOES.treino[i % Q.VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));
-  const testes = Q.VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i, ORCAMENTO) }));
+  const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: VERSOES.treino[i % VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));
+  const testes = VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i, ORCAMENTO) }));
   for (const cond of CONDICOES) {
     const comCerebro = ['ativa', 'congelada', 'ingenua'].includes(cond);
     const rnd = gerador(semente * 31 + 17);
@@ -228,8 +233,14 @@ for (const semente of SEMENTES) {
     }
     if (cond !== 'ingenua') for (const t of treinos) r.treino.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORC_TREINO));
     if (comCerebro) r.valencia_depois_do_treino = await valencias(2);
-    for (const t of testes) r.teste.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro));
+    for (const t of testes) r.teste.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORCAMENTO, true));
     const primeiro = r.teste.map(b => (b.length ? b[0].passo : ORCAMENTO + 1));
+    if (BANCADA === 2) {
+      const ctrl = VERSOES.teste.map(d => d.join('+') === VERSOES.controle.join('+'));
+      const tr = primeiro.filter((_, i) => !ctrl[i]), ct = primeiro.filter((_, i) => ctrl[i]);
+      r.bancada = 2; r.teste_versoes = VERSOES.teste.map(d => d.join('+'));
+      r.resumo_b2 = { primeiro_bug_transferencia: +(tr.reduce((a, b) => a + b, 0) / tr.length).toFixed(2), primeiro_bug_controle: +(ct.reduce((a, b) => a + b, 0) / ct.length).toFixed(2) };
+    }
     r.resumo = { primeiro_bug_teste_media: +(primeiro.reduce((a, b) => a + b, 0) / primeiro.length).toFixed(2), bugs_teste: r.teste.reduce((a, b) => a + b.length, 0), bugs_treino: r.treino.reduce((a, b) => a + b.length, 0) };
     dados.rodadas.push({ data: new Date().toISOString(), ...r });
     writeFileSync(arquivo, JSON.stringify(dados, null, 1) + '\n');

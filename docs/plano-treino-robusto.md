@@ -228,3 +228,32 @@ qualquer política (quem revela é carrinho:negativa, que a memória não favore
 medem transferência. O espaçado (−1,8) ficou em ~metade do teto, com 8 sementes, e o erro padrão (~1) não separa isso.
 Conclusão: a bancada de teste tem pouca sensibilidade; o próximo passo é consertar a bancada (versões de teste em que
 a repetida seja o caminho e seja alcançável) e usar mais sementes, com critério e sementes novos escritos antes.
+
+## Bancada 2 (01/10): metodologia escrita antes de rodar
+
+**Por que mudou:** o oráculo mostrou que a bancada 1 media pouca transferência (teto −3,8 ações; reserva-dupla quase
+inalcançável; uma versão revelada por um bug que não é de repetição). A mudança vem de olhar resultados, então vale
+só com sementes novas, critério novo escrito aqui e replicação.
+
+**O cenário (`web/qa/pedidos.js`, `criar(defeitos, {bancada: 2})`):** as 4 ações "repetida" viram cliques duplos
+completos, sem pré-condição (pagar duas vezes, cancelar duas vezes, reservar duas vezes, aplicar o mesmo cupom duas
+vezes); o certo é idempotente, o defeito revela num passo. Estoque 50/20 para não esgotar. Sem falso positivo em
+90.000 ações aleatórias na versão correta; cada defeito revelado pela repetida em 300/300. Treino: cobrança dupla e
+cancelamento duplo (famílias pagamento e cancelamento). Teste: cupom duplo e reserva dupla (famílias NOVAS; só a
+característica "repetida" liga treino e teste) mais um CONTROLE, quantidade negativa, que a memória não deve ajudar
+(deve até atrapalhar: ela prefere repetidas).
+
+**Protocolo:** cheiros fortes (`qa-cheiros-fortes.json`); treino espaçado 6 × 20 ações (a melhor memória da
+madrugada, +0,55); teste sem recompensa (como o teste sem açúcar das moscas reais) e cada episódio acaba no primeiro
+bug (menos tempo para esquecer). Condições pareadas: treinada, congelada, aleatória, novidade; 3 de 15 ações visíveis.
+
+**Validação sem cérebro (`qa-oraculo-b2.json`):** nas versões de transferência, aleatória 13,2; memória perfeita 6,2;
+memória com o ganho medido no cérebro (+0,25, ruído 0,15, softmax) 8,4 a 8,8; novidade 9,1. No controle, a memória
+piora (14,4 → 17–20). Poder (simulação, bootstrap): 16 sementes detectam até o ganho mais fraco medido (+0,17) em 92%
+das vezes. Limite: o oráculo não inclui o esquecimento durante o teste.
+
+**Critério principal (escrito antes):** média das 2 versões de transferência, ações até o primeiro bug; treinada −
+congelada com IC95 da diferença pareada abaixo de 0, sementes 51–66. **Secundários:** no controle, treinada −
+congelada não deve ser negativa (dissociação: a memória é de "repetida", não um "achar tudo mais rápido");
+treinada contra novidade e aleatória relatados sem critério. **Replicação:** se passar, sementes 71–86 com o mesmo
+critério; só conta como achado se replicar. Rotina: `node scripts/madrugada.mjs --plano b2`.

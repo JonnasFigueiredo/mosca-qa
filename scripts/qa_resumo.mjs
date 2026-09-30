@@ -30,6 +30,15 @@ for (const outra of condicoes.filter(c => c !== 'ativa')) {
   pares['ativa_menos_' + outra] = { sementes: dif.length, primeiro_bug: { media: +media(dif)?.toFixed(2), ic95: ic(dif), por_semente: dif.map(v => +v.toFixed(2)) },
     bugs_teste: { media: +media(difBugs)?.toFixed(2), ic95: ic(difBugs) } };
 }
+// bancada 2: critério principal nas versões de transferência; o controle (bug que não é de repetição) à parte
+const b2 = rod.some(r => r.resumo_b2);
+if (b2) for (const outra of condicoes.filter(c => c !== 'ativa')) {
+  const tr = [], ct = [];
+  for (const s of sementes) { const a = pega(s, 'ativa'), b = pega(s, outra); if (a?.resumo_b2 && b?.resumo_b2) { tr.push(a.resumo_b2.primeiro_bug_transferencia - b.resumo_b2.primeiro_bug_transferencia); ct.push(a.resumo_b2.primeiro_bug_controle - b.resumo_b2.primeiro_bug_controle); } }
+  pares['ativa_menos_' + outra].transferencia = { media: +media(tr)?.toFixed(2), ic95: ic(tr), por_semente: tr.map(v => +v.toFixed(2)) };
+  pares['ativa_menos_' + outra].controle = { media: +media(ct)?.toFixed(2), ic95: ic(ct) };
+}
+if (b2) for (const c of condicoes) { const x = sementes.map(s => pega(s, c)?.resumo_b2).filter(Boolean); por[c].transferencia_media = +media(x.map(v => v.primeiro_bug_transferencia)).toFixed(2); por[c].controle_media = +media(x.map(v => v.primeiro_bug_controle)).toFixed(2); }
 const valencia = {};
 for (const c of ['ativa', 'congelada']) {
   const rep = [], outras = [];

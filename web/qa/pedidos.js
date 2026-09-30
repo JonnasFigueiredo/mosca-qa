@@ -23,9 +23,11 @@
 
   // ── o sistema ──
   // defeitos: conjunto de nomes; cada um muda uma regra do sistema (o gabarito, que só o placar consulta)
-  function criar(defeitos = []) {
+  // bancada 2 (01/10, docs/plano-treino-robusto.md): as ações "repetida" não dependem de estado anterior (cada uma é
+  // um clique duplo completo) e revelam o defeito de repetição num só passo; estoque maior para não esgotar
+  function criar(defeitos = [], { bancada = 1 } = {}) {
     const d = new Set(defeitos);
-    const INICIAL = { a: 5, b: 2 }, PRECO = { a: 1000, b: 2500 };   // centavos
+    const INICIAL = bancada === 2 ? { a: 50, b: 20 } : { a: 5, b: 2 }, PRECO = { a: 1000, b: 2500 };   // centavos
     const s = { estoque: { ...INICIAL }, carrinho: {}, pedidos: [], cobrancas: [], cupons: 0, DESCONTO_MAX: 0.3 };
     const pedidoAberto = () => s.pedidos.find(p => p.estado === 'criado');
     const ultimoPago = () => [...s.pedidos].reverse().find(p => p.estado === 'pago');
@@ -50,6 +52,17 @@
       'cupom:limite': () => { s.cupons = Math.min(3, s.cupons + 1); },
       'cupom:repetida': () => { if (d.has('cupom-duplo')) s.cupons += 2; else if (s.cupons < 1) s.cupons++; },
     };
+    if (bancada === 2) {
+      const doCarrinho = () => { s.carrinho = { a: 1 }; return criarPedido(); };   // pedido novo de 1 item (o clique duplo não depende do carrinho)
+      // pagar duas vezes (clique duplo no botão de pagar): o certo cobra uma vez
+      ops['pagamento:repetida'] = () => { const p = pedidoAberto()?.valor > 0 ? pedidoAberto() : doCarrinho(); if (p.valor > 0) { cobrar(p); if (d.has('cobranca-dupla')) s.cobrancas.push({ pedido: p.id, valor: p.valor }); } };
+      // cancelar duas vezes: o certo devolve o estoque uma vez
+      ops['cancelamento:repetida'] = () => { const p = doCarrinho(), r = p.reservado; cancelar(p); if (r && d.has('cancelamento-duplo')) devolver(p); };
+      // reservar duas vezes (pedido novo do carrinho): o certo reserva uma vez
+      ops['estoque:repetida'] = () => { const p = doCarrinho(); if (d.has('reserva-dupla')) reservar(p); };
+      // aplicar o mesmo cupom de 30% duas vezes: o certo não acumula
+      ops['cupom:repetida'] = () => { for (let k = 0; k < 2; k++) s.cupons = d.has('cupom-duplo') ? s.cupons + 3 : Math.max(s.cupons, 3); };
+    }
     function criarPedido() {
       const itens = Object.fromEntries(Object.entries(s.carrinho).filter(([, q]) => q !== 0));
       const p = { id: s.pedidos.length + 1, itens, valor: total(), estado: 'criado', reservado: false };
@@ -103,9 +116,15 @@
     treino: [['cobranca-dupla'], ['cancelamento-duplo'], ['cobranca-dupla', 'cancelamento-duplo']],
     teste: [['cupom-duplo'], ['reserva-dupla'], ['cupom-duplo', 'quantidade-negativa']],
   };
+  // bancada 2: teste só com defeitos de repetição em famílias novas, mais um controle que a memória não deve ajudar
+  const VERSOES2 = {
+    treino: VERSOES.treino,
+    teste: [['cupom-duplo'], ['reserva-dupla'], ['quantidade-negativa']],
+    controle: ['quantidade-negativa'],   // versão de teste cujo bug não é de repetição (o critério usa as outras)
+  };
   // troca os pares de glomérulos das características (calibração: scripts/qa_abstrato.mjs --calibrar-cheiros)
   const usarCheiros = mapa => Object.assign(CHEIRO, mapa);
-  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES, usarCheiros };
+  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES, VERSOES2, usarCheiros };
   if (typeof module !== 'undefined') module.exports = api;
   globalThis.QAPedidos = api;
 })();
