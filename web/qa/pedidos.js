@@ -62,6 +62,19 @@
       ops['estoque:repetida'] = () => { const p = doCarrinho(); if (d.has('reserva-dupla')) reservar(p); };
       // aplicar o mesmo cupom de 30% duas vezes: o certo não acumula
       ops['cupom:repetida'] = () => { for (let k = 0; k < 2; k++) s.cupons = d.has('cupom-duplo') ? s.cupons + 3 : Math.max(s.cupons, 3); };
+      // contrabalanço (01/10): defeitos em ações "normal", que também aparecem no primeiro uso. Só mudam a ação quando o
+      // defeito está na versão; a versão correta é a mesma de antes.
+      // pagamento normal registra a cobrança com valor zero (lê o valor do campo errado)
+      const pagNormal = ops['pagamento:normal'];
+      ops['pagamento:normal'] = () => { if (!d.has('cobra-zero')) return pagNormal(); const p = pedidoAberto(); s.cobrancas.push({ pedido: p?.id ?? 0, valor: 0 }); if (p) p.estado = 'pago'; };
+      // cancelamento normal devolve um item a mais ao estoque (erro de um no estorno)
+      const cancNormal = ops['cancelamento:normal'];
+      ops['cancelamento:normal'] = () => { cancNormal(); if (d.has('estorno-a-mais')) s.estoque.a += 1; };
+      // cupom normal de 10% aplicado como 40% (unidade errada)
+      ops['cupom:normal'] = () => { if (d.has('cupom-em-porcentagem')) s.cupons += 4; else if (s.cupons < 1) s.cupons++; };
+      // abrir o pedido baixa um item do estoque sem registrar a reserva
+      const estNormal = ops['estoque:normal'];
+      ops['estoque:normal'] = () => { estNormal(); if (d.has('baixa-sem-reserva')) s.estoque.a -= 1; };
     }
     function criarPedido() {
       const itens = Object.fromEntries(Object.entries(s.carrinho).filter(([, q]) => q !== 0));
@@ -121,10 +134,19 @@
     treino: VERSOES.treino,
     teste: [['cupom-duplo'], ['reserva-dupla'], ['quantidade-negativa']],
     controle: ['quantidade-negativa'],   // versão de teste cujo bug não é de repetição (o critério usa as outras)
+    caracteristica: 'repetida',
+  };
+  // contrabalanço: a mesma estrutura, com a característica "normal" premiada (nasce com valência negativa, ao contrário
+  // de "repetida"). Treino em pagamento e cancelamento, teste em cupom e estoque, o mesmo controle
+  const VERSOES2N = {
+    treino: [['cobra-zero'], ['estorno-a-mais'], ['cobra-zero', 'estorno-a-mais']],
+    teste: [['cupom-em-porcentagem'], ['baixa-sem-reserva'], ['quantidade-negativa']],
+    controle: ['quantidade-negativa'],
+    caracteristica: 'normal',
   };
   // troca os pares de glomérulos das características (calibração: scripts/qa_abstrato.mjs --calibrar-cheiros)
   const usarCheiros = mapa => Object.assign(CHEIRO, mapa);
-  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES, VERSOES2, usarCheiros };
+  const api = { FAMILIAS, ENTRADAS, CHEIRO, ACOES, cheiroDe, criar, verificar, VERSOES, VERSOES2, VERSOES2N, usarCheiros };
   if (typeof module !== 'undefined') module.exports = api;
   globalThis.QAPedidos = api;
 })();

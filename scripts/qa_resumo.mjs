@@ -1,60 +1,103 @@
-// Resume docs/medicoes/qa-abstrato.json: diferença pareada por semente (treinada - outra condição) no número de ações
-// até o primeiro bug do teste (menor é melhor) e nos bugs distintos do teste, com intervalo percentil de bootstrap
-// (2000 reamostragens das sementes, só com 5 ou mais). Também a mudança de valência das ações "repetidas" contra as
-// outras, depois do treino. Grava docs/medicoes/qa-abstrato-resumo.json.   uso: node scripts/qa_resumo.mjs
+// Resume uma série da caça a bugs só com o cérebro (docs/medicoes/<prefixo>*.json): diferença pareada por semente
+// entre duas condições no número de ações até o primeiro bug do teste (menor é melhor), nos bugs distintos do teste,
+// e, na bancada 2, nas versões de transferência, no controle e em cada versão de teste. Para cada diferença: média,
+// IC95 percentil de bootstrap (2000 reamostragens das sementes, só com 5 ou mais), p bilateral do mesmo bootstrap
+// (2 × a menor fração das médias reamostradas de um lado do zero; é a inversão do IC) e tamanho do efeito dz (média /
+// desvio-padrão das diferenças). Também a mudança de valência das ações da característica premiada contra as outras,
+// e a fração das vezes em que ela escolheu uma ação premiada visível no teste.
+//   uso: node scripts/qa_resumo.mjs [--prefixo qa-b2]      grava docs/medicoes/<prefixo>-resumo.json
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
-// junta qa-abstrato.json e qa-abstrato-*.json (processos em paralelo), menos o próprio resumo
-// --prefixo: outra série (ex.: qa-honesto, sem desconto e com cheiros calibrados)
+// junta <prefixo>.json e <prefixo>-pN.json (processos em paralelo), menos o próprio resumo
 const PREFIXO = process.argv.includes('--prefixo') ? process.argv[process.argv.indexOf('--prefixo') + 1] : 'qa-abstrato';
 const arquivos = readdirSync('docs/medicoes').filter(f => new RegExp('^' + PREFIXO + '(-p\\d+)?\\.json$').test(f));
 const rod = arquivos.flatMap(f => JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).rodadas).filter(r => PREFIXO !== 'qa-abstrato' || (r.sentir_s === 1 && r.orcamento_treino === 60));   // na série antiga, só a versão calibrada
 const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
-function ic(a) {
+const r2 = v => (v == null || Number.isNaN(v) ? null : +v.toFixed(2));
+function bootstrap(a) {
   if (a.length < 5) return null;
   let s = 982451653; const v = [];
   for (let k = 0; k < 2000; k++) { let t = 0; for (let i = 0; i < a.length; i++) { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; t += a[Math.floor(s / 4294967296 * a.length)]; } v.push(t / a.length); }
-  v.sort((x, y) => x - y); return [+v[49].toFixed(2), +v[1949].toFixed(2)];
+  v.sort((x, y) => x - y);
+  const abaixo = v.filter(x => x <= 0).length / v.length, acima = v.filter(x => x >= 0).length / v.length;
+  return { ic95: [r2(v[49]), r2(v[1949])], p: +Math.min(1, 2 * Math.min(abaixo, acima)).toFixed(4) };
+}
+function estat(dif) {
+  const m = media(dif), b = bootstrap(dif);
+  const dp = dif.length > 1 ? Math.sqrt(dif.reduce((t, x) => t + (x - m) ** 2, 0) / (dif.length - 1)) : null;
+  return { media: r2(m), ic95: b?.ic95 ?? null, p_bootstrap: b?.p ?? null, dz: dp ? r2(m / dp) : null, por_semente: dif.map(r2) };
 }
 const pega = (sem, c) => rod.findLast(r => r.semente === sem && r.condicao === c);
 const sementes = [...new Set(rod.map(r => r.semente))].sort((a, b) => a - b);
 const condicoes = [...new Set(rod.map(r => r.condicao))];
-const por = Object.fromEntries(condicoes.map(c => [c, {
-  primeiro_bug_media: +media(sementes.map(s => pega(s, c)?.resumo.primeiro_bug_teste_media).filter(v => v != null)).toFixed(2),
-  bugs_teste_media: +media(sementes.map(s => pega(s, c)?.resumo.bugs_teste).filter(v => v != null)).toFixed(2),
-  bugs_treino_media: +media(sementes.map(s => pega(s, c)?.resumo.bugs_treino).filter(v => v != null)).toFixed(2),
-}]));
-const pares = {};
-for (const outra of condicoes.filter(c => c !== 'ativa')) {
-  const dif = [], difBugs = [];
-  for (const s of sementes) { const a = pega(s, 'ativa'), b = pega(s, outra); if (a && b) { dif.push(a.resumo.primeiro_bug_teste_media - b.resumo.primeiro_bug_teste_media); difBugs.push(a.resumo.bugs_teste - b.resumo.bugs_teste); } }
-  pares['ativa_menos_' + outra] = { sementes: dif.length, primeiro_bug: { media: +media(dif)?.toFixed(2), ic95: ic(dif), por_semente: dif.map(v => +v.toFixed(2)) },
-    bugs_teste: { media: +media(difBugs)?.toFixed(2), ic95: ic(difBugs) } };
-}
-// bancada 2: critério principal nas versões de transferência; o controle (bug que não é de repetição) à parte
 const b2 = rod.some(r => r.resumo_b2);
-if (b2) for (const outra of condicoes.filter(c => c !== 'ativa')) {
-  const tr = [], ct = [];
-  for (const s of sementes) { const a = pega(s, 'ativa'), b = pega(s, outra); if (a?.resumo_b2 && b?.resumo_b2) { tr.push(a.resumo_b2.primeiro_bug_transferencia - b.resumo_b2.primeiro_bug_transferencia); ct.push(a.resumo_b2.primeiro_bug_controle - b.resumo_b2.primeiro_bug_controle); } }
-  pares['ativa_menos_' + outra].transferencia = { media: +media(tr)?.toFixed(2), ic95: ic(tr), por_semente: tr.map(v => +v.toFixed(2)) };
-  pares['ativa_menos_' + outra].controle = { media: +media(ct)?.toFixed(2), ic95: ic(ct) };
+const ORC = rod[0]?.orcamento ?? 30;
+// primeiro bug de cada versão de teste (31 quando não achou)
+const porVersao = r => Object.fromEntries(r.teste.map((b, i) => [r.teste_versoes?.[i] ?? 'versao' + (i + 1), b.length ? b[0].passo : ORC + 1]));
+
+const por = Object.fromEntries(condicoes.map(c => {
+  const rs = sementes.map(s => pega(s, c)).filter(Boolean);
+  const o = {
+    sementes: rs.length,
+    primeiro_bug_media: r2(media(rs.map(r => r.resumo.primeiro_bug_teste_media))),
+    bugs_teste_media: r2(media(rs.map(r => r.resumo.bugs_teste))),
+    bugs_treino_media: r2(media(rs.map(r => r.resumo.bugs_treino))),
+  };
+  if (b2) {
+    o.transferencia_media = r2(media(rs.map(r => r.resumo_b2.primeiro_bug_transferencia)));
+    o.controle_media = r2(media(rs.map(r => r.resumo_b2.primeiro_bug_controle)));
+    const vs = rs.map(porVersao);
+    o.por_versao = Object.fromEntries(Object.keys(vs[0] || {}).map(k => [k, r2(media(vs.map(v => v[k])))]));
+  }
+  if (rs.some(r => r.decepcoes_teste != null)) o.decepcoes_teste_media = r2(media(rs.map(r => r.decepcoes_teste ?? 0)));
+  return [c, o];
+}));
+
+// pares: a treinada contra cada outra (ativa_menos_X, o critério usa ativa_menos_congelada) e, com a decepção, a
+// treinada com decepção contra a congelada e contra a treinada sem decepção
+function par(A, B) {
+  const val = f => sementes.map(s => [pega(s, A), pega(s, B)]).filter(([a, b]) => a && b && f(a) != null && f(b) != null).map(([a, b]) => f(a) - f(b));
+  const o = { sementes: val(r => r.resumo.primeiro_bug_teste_media).length, primeiro_bug: estat(val(r => r.resumo.primeiro_bug_teste_media)), bugs_teste: estat(val(r => r.resumo.bugs_teste)) };
+  if (b2) {
+    o.transferencia = estat(val(r => r.resumo_b2?.primeiro_bug_transferencia));
+    o.controle = estat(val(r => r.resumo_b2?.primeiro_bug_controle));
+    const nomes = Object.keys(por[A]?.por_versao || {});
+    o.por_versao = Object.fromEntries(nomes.map(k => [k, estat(val(r => porVersao(r)[k]))]));
+  }
+  return o;
 }
-if (b2) for (const c of condicoes) { const x = sementes.map(s => pega(s, c)?.resumo_b2).filter(Boolean); por[c].transferencia_media = +media(x.map(v => v.primeiro_bug_transferencia)).toFixed(2); por[c].controle_media = +media(x.map(v => v.primeiro_bug_controle)).toFixed(2); }
-// fração das vezes em que uma repetida estava visível no teste e foi escolhida (a memória vira ação?)
+const pares = {};
+if (condicoes.includes('ativa')) for (const outra of condicoes.filter(c => c !== 'ativa')) pares['ativa_menos_' + outra] = par('ativa', outra);
+if (condicoes.includes('ativa_decepcao')) for (const outra of condicoes.filter(c => c !== 'ativa_decepcao' && c !== 'ativa')) pares['ativa_decepcao_menos_' + outra] = par('ativa_decepcao', outra);
+
+// característica premiada (repetida, ou normal no contrabalanço) e a mudança de valência com o treino
+const car = rod.find(r => r.caracteristica)?.caracteristica ?? 'repetida';
+const valencia = {};
+for (const c of ['ativa', 'congelada']) {
+  const prem = [], rep = [], outras = [];
+  for (const s of sementes) {
+    const r = pega(s, c); if (!r?.valencia_depois_do_treino) continue;
+    for (const [k, v] of Object.entries(r.valencia_depois_do_treino)) {
+      const d = v - r.valencia_antes[k];
+      (k.endsWith(':' + car) ? prem : outras).push(d);
+      if (k.endsWith(':repetida')) rep.push(d);
+    }
+  }
+  if (prem.length) valencia[c] = { premiadas: r2(media(prem)), outras: r2(media(outras)), repetidas: r2(media(rep)) };
+}
+// fração das vezes em que uma ação premiada estava visível no teste e foi escolhida (a memória vira ação?)
 const escolhas = {};
 for (const c of condicoes) {
   let v = 0, e = 0;
-  for (const s of sementes) { const x = pega(s, c)?.escolhas_teste; if (x) { v += x.repetida_visivel; e += x.repetida_escolhida; } }
+  for (const s of sementes) {
+    const x = pega(s, c)?.escolhas_teste; if (!x) continue;
+    v += x.premiada_visivel ?? x.repetida_visivel; e += x.premiada_escolhida ?? x.repetida_escolhida;
+  }
   if (v) escolhas[c] = +(e / v).toFixed(3);
 }
-const valencia = {};
-for (const c of ['ativa', 'congelada']) {
-  const rep = [], outras = [];
-  for (const s of sementes) {
-    const r = pega(s, c); if (!r?.valencia_depois_do_treino) continue;
-    for (const [k, v] of Object.entries(r.valencia_depois_do_treino)) (k.endsWith(':repetida') ? rep : outras).push(v - r.valencia_antes[k]);
-  }
-  valencia[c] = { repetidas: +media(rep)?.toFixed(3), outras: +media(outras)?.toFixed(3) };
-}
-const out = { metodo: 'Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.', sementes, por_condicao: por, pares, mudanca_de_valencia: valencia, ...(Object.keys(escolhas).length ? { escolhas_teste: escolhas } : {}) };
+const out = {
+  metodo: 'Diferença pareada por semente (primeira condição menos a segunda). Primeiro bug: ações até o primeiro bug de cada versão de teste (31 quando não achou em 30); média das versões (primeiro_bug), das versões de transferência (transferencia) e o controle à parte (bancada 2). Negativo = a primeira achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais); p_bootstrap bilateral do mesmo bootstrap; dz = média / desvio-padrão das diferenças. Valência: mudança (depois do treino - antes) das ações da característica premiada contra as outras. escolhas_teste: fração das vezes em que havia uma ação premiada visível no teste e ela foi escolhida.',
+  caracteristica_premiada: car, sementes, por_condicao: por, pares, mudanca_de_valencia: valencia,
+  ...(Object.keys(escolhas).length ? { escolhas_teste: escolhas } : {}),
+};
 writeFileSync('docs/medicoes/' + PREFIXO + '-resumo.json', JSON.stringify(out, null, 1) + '\n');
 console.log(JSON.stringify(out, null, 1));

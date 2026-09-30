@@ -1,0 +1,111 @@
+{
+ "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, treinada com decepção − congelada). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
+ "familia": 7,
+ "series": [
+  {
+   "serie": "qa-abstrato",
+   "desc": "bancada 1, com desconto (memória externa; referência)",
+   "medida": "primeiro_bug",
+   "media": 2.8,
+   "ic95": [
+    -1.2,
+    6.8
+   ],
+   "dz": 0.53,
+   "p": 0.151,
+   "sementes": 5,
+   "p_holm": 0.453,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-honesto",
+   "desc": "bancada 1, cheiros calibrados fracos",
+   "medida": "primeiro_bug",
+   "media": -2.54,
+   "ic95": [
+    -5.25,
+    0.17
+   ],
+   "dz": -0.59,
+   "p": 0.063,
+   "sementes": 8,
+   "p_holm": 0.315,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-fortes",
+   "desc": "bancada 1, cheiros fortes, treino padrão",
+   "medida": "primeiro_bug",
+   "media": -0.17,
+   "ic95": [
+    -2.46,
+    2.08
+   ],
+   "dz": -0.04,
+   "p": 1,
+   "sementes": 8,
+   "p_holm": 1,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-fortes-curto",
+   "desc": "bancada 1, treino curto",
+   "medida": "primeiro_bug",
+   "media": 0,
+   "ic95": [
+    -1.96,
+    1.92
+   ],
+   "dz": 0,
+   "p": 0.995,
+   "sementes": 8,
+   "p_holm": 1,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-fortes-espacado",
+   "desc": "bancada 1, treino espaçado",
+   "medida": "primeiro_bug",
+   "media": -1.83,
+   "ic95": [
+    -3.75,
+    0.08
+   ],
+   "dz": -0.63,
+   "p": 0.066,
+   "sementes": 8,
+   "p_holm": 0.315,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-b2",
+   "desc": "bancada 2, principal",
+   "medida": "transferencia",
+   "media": -5.06,
+   "ic95": [
+    -8,
+    -2.31
+   ],
+   "dz": -0.85,
+   "p": 0.0005,
+   "sementes": 16,
+   "p_holm": 0.0035,
+   "passa_holm": true
+  },
+  {
+   "serie": "qa-b2-replica",
+   "desc": "bancada 2, replicação",
+   "medida": "transferencia",
+   "media": -6.94,
+   "ic95": [
+    -9.13,
+    -4.88
+   ],
+   "dz": -1.58,
+   "p": 0.0005,
+   "sementes": 16,
+   "p_holm": 0.0035,
+   "passa_holm": true
+  }
+ ]
+}

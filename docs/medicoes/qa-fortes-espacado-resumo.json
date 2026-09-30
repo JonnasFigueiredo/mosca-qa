@@ -1,5 +1,6 @@
 {
- "metodo": "Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.",
+ "metodo": "Diferença pareada por semente (primeira condição menos a segunda). Primeiro bug: ações até o primeiro bug de cada versão de teste (31 quando não achou em 30); média das versões (primeiro_bug), das versões de transferência (transferencia) e o controle à parte (bancada 2). Negativo = a primeira achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais); p_bootstrap bilateral do mesmo bootstrap; dz = média / desvio-padrão das diferenças. Valência: mudança (depois do treino - antes) das ações da característica premiada contra as outras. escolhas_teste: fração das vezes em que havia uma ação premiada visível no teste e ela foi escolhida.",
+ "caracteristica_premiada": "repetida",
  "sementes": [
   31,
   32,
@@ -12,21 +13,25 @@
  ],
  "por_condicao": {
   "ativa": {
+   "sementes": 8,
    "primeiro_bug_media": 20.67,
    "bugs_teste_media": 2.5,
    "bugs_treino_media": 3.38
   },
   "congelada": {
+   "sementes": 8,
    "primeiro_bug_media": 22.5,
    "bugs_teste_media": 2.13,
    "bugs_treino_media": 4.38
   },
   "aleatoria": {
+   "sementes": 8,
    "primeiro_bug_media": 20.33,
    "bugs_teste_media": 4,
    "bugs_treino_media": 2.25
   },
   "novidade": {
+   "sementes": 8,
    "primeiro_bug_media": 20.17,
    "bugs_teste_media": 3.75,
    "bugs_treino_media": 2.63
@@ -41,6 +46,8 @@
      -3.75,
      0.08
     ],
+    "p_bootstrap": 0.066,
+    "dz": -0.63,
     "por_semente": [
      2,
      0,
@@ -57,6 +64,18 @@
     "ic95": [
      -0.5,
      1.13
+    ],
+    "p_bootstrap": 0.414,
+    "dz": 0.32,
+    "por_semente": [
+     -2,
+     0,
+     2,
+     0,
+     1,
+     1,
+     0,
+     1
     ]
    }
   },
@@ -68,6 +87,8 @@
      -3.04,
      4.83
     ],
+    "p_bootstrap": 0.897,
+    "dz": 0.05,
     "por_semente": [
      0,
      2.33,
@@ -84,6 +105,18 @@
     "ic95": [
      -2.38,
      -0.75
+    ],
+    "p_bootstrap": 0,
+    "dz": -1.15,
+    "por_semente": [
+     -1,
+     0,
+     -2,
+     -2,
+     -1,
+     0,
+     -4,
+     -2
     ]
    }
   },
@@ -95,6 +128,8 @@
      -3.71,
      4.71
     ],
+    "p_bootstrap": 0.779,
+    "dz": 0.08,
     "por_semente": [
      6.33,
      2,
@@ -111,18 +146,32 @@
     "ic95": [
      -2.25,
      -0.25
+    ],
+    "p_bootstrap": 0.012,
+    "dz": -0.84,
+    "por_semente": [
+     -2,
+     1,
+     -1,
+     -1,
+     -2,
+     0,
+     -4,
+     -1
     ]
    }
   }
  },
  "mudanca_de_valencia": {
   "ativa": {
-   "repetidas": 0.549,
-   "outras": -0.039
+   "premiadas": 0.55,
+   "outras": -0.04,
+   "repetidas": 0.55
   },
   "congelada": {
-   "repetidas": -0.011,
-   "outras": 0.008
+   "premiadas": -0.01,
+   "outras": 0.01,
+   "repetidas": -0.01
   }
  }
 }

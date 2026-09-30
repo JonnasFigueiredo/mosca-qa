@@ -431,6 +431,79 @@ Diferenças pareadas (treinada − outra condição), IC95 por bootstrap:
 A fila seguinte já está rodando no ramo "replicou": o controle sensorial com os cheiros trocados e, depois, o teste de
 retenção de 180 s.
 
+### 6.7 Resultado por versão e correção para várias comparações
+
+Por versão de teste (treinada − congelada, IC95):
+
+| Versão | Principal | Replicação |
+|---|---|---|
+| Cupom duplo | −8,3 [−13,3; −3,9] | −7,4 [−11,4; −3,9] |
+| Reserva dupla | −1,8 [−5,3; +1,3] | −6,4 [−11,7; −2,1] |
+
+Na série principal, a reserva dupla sozinha não se separa do zero.
+
+O projeto rodou 7 séries confirmatórias na caça a bugs: 5 negativas e as 2 da bancada 2. Para controlar a chance de
+algum falso positivo na família inteira, ajustamos os p do bootstrap pelo método de Holm (`scripts/qa_comparacoes.mjs`,
+`qa-comparacoes.json`). As duas séries da bancada 2 continuam significativas, com p de Holm 0,0035 cada e tamanhos de
+efeito dz −0,85 e −1,58. As outras 5 continuam negativas. Cada série nova entra nessa família.
+
+### 6.8 Linha de base: um aprendiz clássico com as mesmas informações
+
+Um revisor perguntaria o que a mosca faz que um algoritmo simples não faz. `scripts/qa_linha_base.mjs`
+(`qa-linha-base.json`) roda, sem cérebro, as mesmas 32 sementes, as mesmas ações visíveis e o mesmo treino e teste
+com quatro agentes:
+
+- o modelo de Rescorla–Wagner (RW) linear por característica (o modelo clássico do condicionamento; α 0,3 e T 0,15,
+  escolhidos antes de rodar);
+- o mesmo modelo atualizando só quando há recompensa, como a mosca;
+- um valor por ação inteira, sem características;
+- o teto, que prefere a característica premiada.
+
+| Agente | Transferência | Controle |
+|---|---|---|
+| **Mosca treinada** | **7,3** | 27,7 |
+| RW | 12,6 | 14,6 |
+| RW só com recompensa | 8,5 | 22,0 |
+| Valor por ação (sem características) | 15,4 | 13,7 |
+| Teto (prefere a premiada) | 6,5 | 20,0 |
+
+Os números são ações até o primeiro bug. A mosca acha os bugs de transferência antes do RW (−5,3 [−7,5; −3,2]) e
+ligeiramente antes do RW só com recompensa (−1,2 [−2,6; −0,1]), e perto do teto.
+
+Variando α (0,1–0,6) e T (0,05–0,5), aparece uma troca estável entre os dois tipos de aprendiz:
+- **quem só aprende com recompensa** transfere bem (7,4–11,5) e paga no controle (16–26);
+- **o RW que também aprende com a ausência de bug** transfere pior (10,7–20,9) e paga menos (9,7–15,6).
+
+O valor por ação, sem características, não transfere, como esperado.
+
+A mosca se comporta como um aprendiz que só aprende com recompensa e generaliza por característica. O custo dela no
+controle é o maior de todos, e parte dele é o viés de nascença das repetidas, que a congelada também tem (21,7). A tese
+não é que a mosca seja o melhor testador. A tese é que o circuito real forma e transfere a associação, e a linha de
+base mostra em que ponto da troca ela fica.
+
+### 6.9 Em andamento: contrabalanço e decepção
+
+**Contrabalanço (`qa-b2-normal`).** A característica premiada passa a ser "normal", que nasce com valência negativa
+(−0,07 a −0,23), ao contrário de "repetida". Os defeitos ficam na mesma estrutura: treino em pagamento e cancelamento,
+teste em cupom e estoque, o mesmo controle.
+
+- **Validação:** a versão correta continua sem alarme falso em 90.000 ações. O oráculo dá aleatória 13,3, memória
+  perfeita 6,7 e memória com o ganho medido 9,1.
+- **Se passar:** o viés de nascença não explica a transferência.
+- **Se não passar:** o resultado é ambíguo, porque as ações "normal" acendem menos KCs (46–83).
+
+**Decepção no teste (`qa-b2-decepcao`).** O treino é idêntico ao da mosca treinada. No teste, escolher uma ação com
+valência acima de 0,6 e não achar bug dispara a dopamina de punição (PPL1). É como a mosca real que sente sem açúcar
+o cheiro que prometia açúcar (Felsenberg et al., 2017, 2018).
+
+- **Critério principal:** o custo no controle cai.
+- **Secundário:** ela continua transferindo.
+- **Previsão pela linha de base:** a decepção leva a mosca na direção do RW (menos custo, alguma perda na
+  transferência).
+
+Os dois têm 16 sementes e replicação, com critérios escritos antes (`docs/plano-treino-robusto.md`, "Fila de
+validade").
+
 ---
 
 ## 7. Discussão
@@ -459,7 +532,7 @@ retenção de 180 s.
 
 - **Vários desenhos testados.** Houve cinco séries negativas e duas bancadas. As mudanças foram motivadas por
   diagnósticos independentes do resultado principal, mas o risco de um "jardim de caminhos que se bifurcam" existe. Por
-  isso exigimos replicação com sementes novas.
+  isso exigimos replicação com sementes novas e corrigimos os p da família inteira pelo método de Holm (seção 6.7).
 - **Regras nossas no caminho:** a codificação das ações em cheiros, a leitura da valência e o softmax. Um resultado
   positivo mostra que o circuito do mapa **suporta** essa transferência sob essas regras, não que uma mosca real
   caçaria bugs.
@@ -481,7 +554,10 @@ retenção de 180 s.
   ```
 
   As opções `--bancada 2`, `--treinos`, `--orcamento-treino`, `--visiveis` e `--retencao-teste` mudam o protocolo.
-- **Resumo pareado:** `node scripts/qa_resumo.mjs --prefixo X`.
+- **Resumo pareado:** `node scripts/qa_resumo.mjs --prefixo X`. Dá IC95, p do bootstrap, dz, o resultado por versão
+  e o de qualquer par de condições.
+- **Holm para todas as séries:** `node scripts/qa_comparacoes.mjs`.
+- **Linha de base de aprendizado de máquina:** `node scripts/qa_linha_base.mjs [--caracteristica normal]`.
 - **Diagnósticos:** `--calibrar`, `--calibrar-cheiros [--com-kcs]`, `--glomerulos`, `--kcs`, `--dose` (em
   `qa_abstrato.mjs`), além de `node scripts/qa_oraculo.mjs --bancada 2`.
 - **Sistema de Pedidos, sem alarme falso:** `node scripts/qa_pedidos_teste.mjs`.
@@ -497,6 +573,14 @@ retenção de 180 s.
 
 - Aso, Y. et al. (2014). The neuronal architecture of the mushroom body provides a logic for associative learning.
   *eLife* 3, e04577.
+- Felsenberg, J., Barnstedt, O., Cognigni, P., Lin, S., Waddell, S. (2017). Re-evaluation of learned information in
+  *Drosophila*. *Nature* 544, 240–244.
+- Felsenberg, J. et al. (2018). Integration of parallel opposing memories underlies memory extinction. *Cell* 175,
+  709–722.
+- Holm, S. (1979). A simple sequentially rejective multiple test procedure. *Scandinavian Journal of Statistics* 6,
+  65–70.
+- Rescorla, R. A., Wagner, A. R. (1972). A theory of Pavlovian conditioning: variations in the effectiveness of
+  reinforcement and nonreinforcement. Em *Classical Conditioning II*, Appleton-Century-Crofts, 64–99.
 - Hige, T., Aso, Y., Modi, M. N., Rubin, G. M., Turner, G. C. (2015). Heterosynaptic plasticity underlies aversive
   olfactory learning in *Drosophila*. *Neuron* 88, 985–998.
 - Honegger, K. S., Campbell, R. A. A., Turner, G. C. (2011). Cellular-resolution population imaging reveals robust

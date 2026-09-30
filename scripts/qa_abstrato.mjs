@@ -49,11 +49,14 @@ async function roda(s, rates) {
   return hz('mbon_aprox') - (hz('mbon_evitar') + hz('mbon_evitar_rec')) / 2;
 }
 async function sentir(acao) { const v = await roda(SENTIR_S, odor(acao)); await roda(PAUSA_S, {}); return v; }
-async function recompensar(acao) {
+async function recompensar(acao, grupo = 'recompensa') {
   const o = odor(acao);
-  for (let i = 0; i < 200; i++) await tique(i >= 150 ? { ...o, recompensa: 100 } : o);
+  for (let i = 0; i < 200; i++) await tique(i >= 150 ? { ...o, [grupo]: 100 } : o);
   await roda(PAUSA_S, {});
 }
+// decepção (01/10): o mesmo pareamento, com a dopamina de punição (PPL1, grupo 'dor') no lugar da PAM. Nas moscas, o
+// cheiro que prometia açúcar e veio sem ele ativa a PPL1 e forma uma memória oposta (Felsenberg et al., 2017, 2018)
+const decepcionar = acao => recompensar(acao, 'dor');
 const gerador = semente => { let s = semente >>> 0; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; };
 
 // ações visíveis de cada passo, sorteadas antes (iguais para todas as condições)
@@ -70,26 +73,34 @@ const DESCONTO = process.argv.includes('--desconto');
 // --bancada 2 (01/10): repetidas sem pré-condição, teste com 2 versões de transferência (cupom, estoque) e 1 controle
 // (quantidade negativa, que a memória não ajuda); no teste, sem recompensa (como o teste sem açúcar das moscas reais) e
 // o episódio acaba no primeiro bug (menos tempo para esquecer)
-const BANCADA = +arg('bancada', 1), VERSOES = BANCADA === 2 ? Q.VERSOES2 : Q.VERSOES;
+// --caracteristica normal (contrabalanço, 01/10): defeitos nas ações "normal" em vez de "repetida" (VERSOES2N)
+const CAR = arg('caracteristica', 'repetida');
+const BANCADA = +arg('bancada', 1), VERSOES = BANCADA === 2 ? (CAR === 'normal' ? Q.VERSOES2N : Q.VERSOES2) : Q.VERSOES;
+// condição ativa_decepcao: treino igual ao da ativa; no teste, escolher uma ação com valência acima do limiar (ela
+// "esperava" bug) e não achar bug novo dispara a decepção. Limiar escrito antes: 0,6 (acima da maior valência de
+// nascença, +0,50, e do ruído, 0,15). Regra nossa: quando disparar; o efeito da PPL1 é do worker
+const LIMIAR_DECEPCAO = +arg('limiar-decepcao', 0.6);
+let DECEP = false, NDECEP = 0;
 let BASE = {};
 // escolhas no teste: quantas vezes uma repetida estava visível e quantas vezes foi escolhida (a memória vira ação?)
-let ESC = { passos: 0, repetida_visivel: 0, repetida_escolhida: 0 };
+// (premiada = a característica premiada no treino, CAR)
+let ESC = { passos: 0, premiada_visivel: 0, premiada_escolhida: 0 };
 // --retencao-teste s: depois do treino, s segundos cheirando ações que não são repetidas antes do teste (retenção)
 const RET_TESTE = +arg('retencao-teste', 0);
 async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO, teste = false) {
   const sis = Q.criar(defeitos, { bancada: BANCADA }), achados = new Set(), bugs = [], tentadas = {};
   for (let p = 0; p < orcamento; p++) {
     const opcoes = vistas[p];
-    let escolha;
+    let escolha, vEscolha = 0;
     if (politica === 'aleatoria') escolha = opcoes[Math.floor(rnd() * opcoes.length)];
     else if (politica === 'novidade') { const min = Math.min(...opcoes.map(a => tentadas[a.id] || 0)); const menos = opcoes.filter(a => (tentadas[a.id] || 0) === min); escolha = menos[Math.floor(rnd() * menos.length)]; }
     else {
       const v = []; for (const a of opcoes) v.push((await sentir(a)) - (DESCONTO ? BASE[a.id] ?? 0 : 0));
       const e = v.map(x => Math.exp(x / T_SOFTMAX)), soma = e.reduce((a, b) => a + b, 0);
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
-      escolha = opcoes[k];
+      escolha = opcoes[k]; vEscolha = v[k];
     }
-    if (teste) { ESC.passos++; if (opcoes.some(a => a.entrada === 'repetida')) { ESC.repetida_visivel++; if (escolha.entrada === 'repetida') ESC.repetida_escolhida++; } }
+    if (teste) { ESC.passos++; if (opcoes.some(a => a.entrada === CAR)) { ESC.premiada_visivel++; if (escolha.entrada === CAR) ESC.premiada_escolhida++; } }
     tentadas[escolha.id] = (tentadas[escolha.id] || 0) + 1;
     sis.executar(escolha.id);
     const novos = Q.verificar(sis).filter(x => !achados.has(x));
@@ -97,7 +108,7 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
       for (const x of novos) { achados.add(x); bugs.push({ passo: p + 1, contrato: x, acao: escolha.id }); }
       if (teste && BANCADA === 2) break;
       if (comCerebro) await recompensar(escolha);
-    }
+    } else if (teste && DECEP && vEscolha > LIMIAR_DECEPCAO) { NDECEP++; await decepcionar(escolha); }
   }
   return bugs;
 }
@@ -227,9 +238,10 @@ for (const semente of SEMENTES) {
   const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: VERSOES.treino[i % VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));
   const testes = VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i, ORCAMENTO) }));
   for (const cond of CONDICOES) {
-    const comCerebro = ['ativa', 'congelada', 'ingenua'].includes(cond);
+    const comCerebro = ['ativa', 'ativa_decepcao', 'congelada', 'ingenua'].includes(cond);
+    DECEP = cond === 'ativa_decepcao'; NDECEP = 0;
     const rnd = gerador(semente * 31 + 17);
-    const r = { semente, condicao: cond, orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, desconto: DESCONTO, cheiros: arg('cheiros', 'padrao'), treino: [], teste: [] };
+    const r = { semente, condicao: cond, caracteristica: CAR, ...(DECEP ? { limiar_decepcao: LIMIAR_DECEPCAO } : {}), orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, desconto: DESCONTO, cheiros: arg('cheiros', 'padrao'), treino: [], teste: [] };
     if (comCerebro) {
       w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: cond !== 'congelada' }); w.postMessage({ type: 'semente', valor: semente });
       await roda(1, {});
@@ -239,13 +251,13 @@ for (const semente of SEMENTES) {
     if (cond !== 'ingenua') for (const t of treinos) r.treino.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORC_TREINO));
     if (comCerebro) r.valencia_depois_do_treino = await valencias(2);
     if (RET_TESTE > 0) {
-      const nr = Q.ACOES.filter(a => a.entrada !== 'repetida'), rr = gerador(semente + 77);
+      const nr = Q.ACOES.filter(a => a.entrada !== CAR), rr = gerador(semente + 77);
       for (let t = 0; t < RET_TESTE; t += SENTIR_S + PAUSA_S) if (comCerebro) await sentir(nr[Math.floor(rr() * nr.length)]);
       r.retencao_teste_s = RET_TESTE;
     }
-    ESC = { passos: 0, repetida_visivel: 0, repetida_escolhida: 0 };
+    ESC = { passos: 0, premiada_visivel: 0, premiada_escolhida: 0 };
     for (const t of testes) r.teste.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORCAMENTO, true));
-    r.escolhas_teste = { ...ESC };
+    r.escolhas_teste = { ...ESC }; if (DECEP) r.decepcoes_teste = NDECEP;
     const primeiro = r.teste.map(b => (b.length ? b[0].passo : ORCAMENTO + 1));
     if (BANCADA === 2) {
       const ctrl = VERSOES.teste.map(d => d.join('+') === VERSOES.controle.join('+'));

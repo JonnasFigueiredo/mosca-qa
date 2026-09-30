@@ -273,3 +273,55 @@ degrau que passe sem replicar não conta.
 **2026-09-30, madrugada: qa-b2 (bancada 2, treino espaçado 6 × 20, teste sem recompensa): PASSOU.** Sementes 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66. Primeiro bug de teste: treinada 14,98, congelada 17,13, aleatória 13,06, novidade 9,9. Treinada − congelada -5,06, IC95 [-8,-2.31]. Transferência: treinada 8,78, congelada 13,84, aleatória 15,41, novidade 10,22; controle (não deve melhorar): treinada − congelada 3,69 [-2.13,9.75]. Valência depois do treino (treinada): repetidas 1,026, outras -0,07. `docs/medicoes/qa-b2-resumo.json`.
 
 **2026-09-30, madrugada: qa-b2-replica (bancada 2, treino espaçado 6 × 20, teste sem recompensa, replicação com sementes novas): PASSOU.** Sementes 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86. Primeiro bug de teste: treinada 13,21, congelada 15,06, aleatória 11,85, novidade 10,31. Treinada − congelada -6,94, IC95 [-9.13,-4.88]. Transferência: treinada 5,81, congelada 12,75, aleatória 11,78, novidade 10,75; controle (não deve melhorar): treinada − congelada 8,31 [3.13,14.06]. Valência depois do treino (treinada): repetidas 0,946, outras -0,068. `docs/medicoes/qa-b2-replica-resumo.json`.
+
+## Fila de validade (30/09, escrita antes de rodar): itens 1, 2, 3 e 6
+
+Pedido do usuário depois de a bancada 2 passar e replicar: fechar as brechas do resultado (1, 2, 3) e reduzir o custo
+da especialização (6). Os itens 2 e 3 não precisam do cérebro e já rodaram; 1 e 6 entram numa fila automática
+(`node scripts/madrugada.mjs --plano validade`), que espera a fila "seguintes" terminar.
+
+**Item 3, análise (já feito).** `qa_resumo.mjs` passou a dar, em cada diferença pareada, o p bilateral do mesmo
+bootstrap (inversão do IC), o tamanho do efeito dz (média / desvio das diferenças) e o resultado de cada versão de
+teste. Os IC95 de todas as séries recalculadas são iguais aos já publicados. `scripts/qa_comparacoes.mjs` junta o
+critério principal de todas as séries confirmatórias e ajusta pelo método de Holm (`qa-comparacoes.json`): com as 7
+séries rodadas, as duas da bancada 2 continuam passando (p de Holm 0,0035 cada; dz −0,85 e −1,58); as 5 negativas
+continuam negativas. Por versão (treinada − congelada): cupom duplo −8,3 [−13,3; −3,9] e −7,4 [−11,4; −3,9]; reserva
+dupla −1,8 [−5,3; +1,3] e −6,4 [−11,7; −2,1] (na série principal, a reserva sozinha não se separa do zero).
+Arrumação: um diagnóstico de 30/09 (`--kcs` com o mapa forte inicial) tinha sobrescrito `qa-kcs.json` (a medida dos
+cheiros fracos citada no artigo); restaurado do git, e a outra medida ficou em `qa-kcs-fortes-inicial.json`.
+
+**Item 2, linha de base de aprendizado de máquina (já feito, descritivo).** `scripts/qa_linha_base.mjs`
+(`qa-linha-base.json`): sem cérebro, as mesmas 32 sementes e as mesmas ações visíveis da mosca, o mesmo treino e
+teste. Agentes: Rescorla–Wagner linear por característica (α 0,3 e T 0,15 escolhidos antes de rodar), o mesmo só
+atualizando com recompensa (como a mosca), valor por ação sem características, e o teto (prefere a característica
+premiada). Transferência / controle (ações até o primeiro bug): mosca treinada 7,3 / 27,7; RW 12,6 / 14,6; RW só com
+recompensa 8,5 / 22,0; por ação 15,4 / 13,7; teto 6,5 / 20,0. Mosca − RW na transferência −5,3 [−7,5; −3,2]; mosca −
+RW só com recompensa −1,2 [−2,6; −0,1]. Sensibilidade (α 0,1–0,6, T 0,05–0,5): quem só aprende com recompensa
+transfere bem (7,4–11,5) e paga no controle (16–26); o RW que também aprende com a ausência de bug transfere pior
+(10,7–20,9) e paga menos (9,7–15,6). A mosca fica no canto dos que só aprendem com recompensa, com o maior custo no
+controle (parte dele é o viés de nascença das repetidas, que a congelada também tem: 21,7 no controle).
+
+**Item 1, contrabalanço (`qa-b2-normal`).** A característica premiada passa a ser "normal" (nasce com valência
+negativa, −0,07 a −0,23, ao contrário de "repetida", +0,04 a +0,42). Defeitos novos, só nas versões que os contêm (a
+versão correta é a mesma): pagamento normal cobra valor zero, cancelamento normal devolve um item a mais, cupom normal
+de 10% aplicado como 40%, abrir pedido baixa um item sem reservar. Sem falso positivo em 90.000 ações; cada um
+revelado pela ação normal num passo em 300/300. Treino em pagamento e cancelamento, teste em cupom e estoque, o mesmo
+controle (quantidade negativa). Oráculo (`qa-oraculo-b2-normal.json`): aleatória 13,3, memória perfeita 6,7, memória
+com o ganho medido 9,1 (bancada 2 original: 13,2 / 6,2 / 8,4–8,8). Sementes 211–226, réplica 231–246. **Critério:** o
+mesmo da bancada 2 (transferência, treinada − congelada, IC95 < 0). **Leitura escrita antes:** se passar, o viés de
+nascença não explica a transferência. Se não passar, o resultado é ambíguo: as ações "normal" acendem menos KCs (46–83)
+e menos evitar_rec (0,8–1,8 Hz) que as repetidas, e são 5 ações (carrinho normal a mais) contra 4.
+
+**Item 6, decepção no teste (`qa-b2-decepcao`).** Condição nova `ativa_decepcao`: treino idêntico ao da treinada
+(mesma semente, mesmo cérebro até o teste); no teste, escolher uma ação com valência > 0,6 e não achar bug novo
+dispara a PPL1 (grupo `dor`, 100 Hz nos últimos 0,5 s de 2 s do cheiro da ação, o mesmo formato da recompensa). O
+limiar 0,6 fica acima da maior valência de nascença (+0,50) e do ruído (0,15). Base biológica: o cheiro que prometia
+açúcar e vem sem ele ativa a PPL1 e forma uma memória oposta (Felsenberg et al., 2017, 2018); a página já faz isso.
+Regra nossa: quando disparar. Condições: treinada, treinada com decepção, congelada, aleatória, novidade; sementes
+251–266, réplica 271–286. **Critério principal:** no controle, treinada sem − com decepção com IC95 > 0 (a decepção
+reduz o custo da especialização). **Secundário:** na transferência, com decepção − congelada com IC95 < 0 (continua
+transferindo). **Descritivo:** o custo da decepção na transferência (com − sem), o número de decepções. Previsão pela
+linha de base: a decepção deve levar a mosca na direção do RW que aprende com a ausência de bug (menos custo no
+controle, alguma perda na transferência).
+
+Cada série entra na família de Holm (`qa_comparacoes.mjs`, rodado pela rotina a cada série).
