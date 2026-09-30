@@ -164,3 +164,11 @@ da Cozinha). Os resultados em andamento valem como "o aprendizado do corpo cogum
 honesto seguinte é escolher os glomérulos de cada característica para que as 15 ações nasçam com valência parecida
 (calibração de cheiros, T0 item 2) e rodar sem desconto.
 
+**29/09, cheiros das ações calibrados e caça a bugs honesta lançada.** `--calibrar-cheiros` (40 iterações de busca local,
+pesos congelados): valência de nascença das 15 ações de [−0,65; +0,73] (média dos quadrados 0,102) para [−0,22; +0,36]
+(0,026), perto do ruído da medida (~0,15). Mapa em `docs/medicoes/qa-cheiros.json` (`melhor`). Série honesta: sem
+desconto, cheiros calibrados, sementes 11–18 em 4 processos (`qa-honesto-p1..p4.json`; logs `_tmp/_qh*.log`);
+resumo: `node scripts/qa_resumo.mjs --prefixo qa-honesto`. Mesmo critério escrito antes (a treinada acha o primeiro bug
+de teste em menos ações que a congelada, IC95 da diferença pareada abaixo de 0). A série antiga (com desconto) segue
+só com as sementes 1–5 no processo principal, como referência.
+

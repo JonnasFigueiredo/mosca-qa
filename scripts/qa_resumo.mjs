@@ -6,7 +6,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 // junta qa-abstrato.json e qa-abstrato-*.json (processos em paralelo), menos o próprio resumo
 // --prefixo: outra série (ex.: qa-honesto, sem desconto e com cheiros calibrados)
 const PREFIXO = process.argv.includes('--prefixo') ? process.argv[process.argv.indexOf('--prefixo') + 1] : 'qa-abstrato';
-const arquivos = readdirSync('docs/medicoes').filter(f => new RegExp('^' + PREFIXO + '(-p\d+)?\.json$').test(f));
+const arquivos = readdirSync('docs/medicoes').filter(f => new RegExp('^' + PREFIXO + '(-p\\d+)?\\.json$').test(f));
 const rod = arquivos.flatMap(f => JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).rodadas).filter(r => r.sentir_s === 1 && r.orcamento_treino === 60);   // só a versão calibrada
 const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
 function ic(a) {
