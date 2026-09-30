@@ -39,6 +39,13 @@ if (b2) for (const outra of condicoes.filter(c => c !== 'ativa')) {
   pares['ativa_menos_' + outra].controle = { media: +media(ct)?.toFixed(2), ic95: ic(ct) };
 }
 if (b2) for (const c of condicoes) { const x = sementes.map(s => pega(s, c)?.resumo_b2).filter(Boolean); por[c].transferencia_media = +media(x.map(v => v.primeiro_bug_transferencia)).toFixed(2); por[c].controle_media = +media(x.map(v => v.primeiro_bug_controle)).toFixed(2); }
+// fração das vezes em que uma repetida estava visível no teste e foi escolhida (a memória vira ação?)
+const escolhas = {};
+for (const c of condicoes) {
+  let v = 0, e = 0;
+  for (const s of sementes) { const x = pega(s, c)?.escolhas_teste; if (x) { v += x.repetida_visivel; e += x.repetida_escolhida; } }
+  if (v) escolhas[c] = +(e / v).toFixed(3);
+}
 const valencia = {};
 for (const c of ['ativa', 'congelada']) {
   const rep = [], outras = [];
@@ -48,6 +55,6 @@ for (const c of ['ativa', 'congelada']) {
   }
   valencia[c] = { repetidas: +media(rep)?.toFixed(3), outras: +media(outras)?.toFixed(3) };
 }
-const out = { metodo: 'Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.', sementes, por_condicao: por, pares, mudanca_de_valencia: valencia };
+const out = { metodo: 'Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.', sementes, por_condicao: por, pares, mudanca_de_valencia: valencia, ...(Object.keys(escolhas).length ? { escolhas_teste: escolhas } : {}) };
 writeFileSync('docs/medicoes/' + PREFIXO + '-resumo.json', JSON.stringify(out, null, 1) + '\n');
 console.log(JSON.stringify(out, null, 1));

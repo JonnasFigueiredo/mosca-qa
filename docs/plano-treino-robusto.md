@@ -257,3 +257,15 @@ congelada com IC95 da diferença pareada abaixo de 0, sementes 51–66. **Secund
 congelada não deve ser negativa (dissociação: a memória é de "repetida", não um "achar tudo mais rápido");
 treinada contra novidade e aleatória relatados sem critério. **Replicação:** se passar, sementes 71–86 com o mesmo
 critério; só conta como achado se replicar. Rotina: `node scripts/madrugada.mjs --plano b2`.
+
+**Fila seguinte (escrita em 01/10, antes do resultado da bancada 2): `node scripts/madrugada.mjs --plano seguintes`.**
+Espera a rotina b2 terminar e segue um de dois ramos, cada degrau com 16 sementes novas, o mesmo critério
+(transferência, treinada − congelada, IC95 < 0) e replicação própria com outras 16:
+- **Se a bancada 2 passou E replicou:** (1) `qa-b2-cheiro-trocado`, controle sensorial: "repetida" com os glomérulos
+  de "normal" e vice-versa (`qa-cheiros-trocados.json`); o aprendizado deve seguir a característica premiada, não um
+  cheiro especial (ressalva: menos KCs, efeito talvez menor); sementes 91–106, réplica 131–146. (2) `qa-b2-retencao`:
+  180 s cheirando outras ações entre treino e teste; sementes 111–126, réplica 151–166.
+- **Se não:** (1) `qa-b2-treino-longo`, 12 × 20 ações; (2) `qa-b2-vis5`, 5 ações visíveis por passo. Mesmas sementes.
+Novo registro em toda série: a fração das vezes em que a mosca escolheu uma repetida visível no teste
+(`escolhas_teste`), para ver se a memória vira escolha mesmo quando não vira bug achado. Até 4 comparações novas: um
+degrau que passe sem replicar não conta.

@@ -72,6 +72,10 @@ const DESCONTO = process.argv.includes('--desconto');
 // o episódio acaba no primeiro bug (menos tempo para esquecer)
 const BANCADA = +arg('bancada', 1), VERSOES = BANCADA === 2 ? Q.VERSOES2 : Q.VERSOES;
 let BASE = {};
+// escolhas no teste: quantas vezes uma repetida estava visível e quantas vezes foi escolhida (a memória vira ação?)
+let ESC = { passos: 0, repetida_visivel: 0, repetida_escolhida: 0 };
+// --retencao-teste s: depois do treino, s segundos cheirando ações que não são repetidas antes do teste (retenção)
+const RET_TESTE = +arg('retencao-teste', 0);
 async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento = ORCAMENTO, teste = false) {
   const sis = Q.criar(defeitos, { bancada: BANCADA }), achados = new Set(), bugs = [], tentadas = {};
   for (let p = 0; p < orcamento; p++) {
@@ -85,6 +89,7 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
       escolha = opcoes[k];
     }
+    if (teste) { ESC.passos++; if (opcoes.some(a => a.entrada === 'repetida')) { ESC.repetida_visivel++; if (escolha.entrada === 'repetida') ESC.repetida_escolhida++; } }
     tentadas[escolha.id] = (tentadas[escolha.id] || 0) + 1;
     sis.executar(escolha.id);
     const novos = Q.verificar(sis).filter(x => !achados.has(x));
@@ -233,7 +238,14 @@ for (const semente of SEMENTES) {
     }
     if (cond !== 'ingenua') for (const t of treinos) r.treino.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORC_TREINO));
     if (comCerebro) r.valencia_depois_do_treino = await valencias(2);
+    if (RET_TESTE > 0) {
+      const nr = Q.ACOES.filter(a => a.entrada !== 'repetida'), rr = gerador(semente + 77);
+      for (let t = 0; t < RET_TESTE; t += SENTIR_S + PAUSA_S) if (comCerebro) await sentir(nr[Math.floor(rr() * nr.length)]);
+      r.retencao_teste_s = RET_TESTE;
+    }
+    ESC = { passos: 0, repetida_visivel: 0, repetida_escolhida: 0 };
     for (const t of testes) r.teste.push(await episodio(t.defeitos, t.vistas, cond, rnd, comCerebro, ORCAMENTO, true));
+    r.escolhas_teste = { ...ESC };
     const primeiro = r.teste.map(b => (b.length ? b[0].passo : ORCAMENTO + 1));
     if (BANCADA === 2) {
       const ctrl = VERSOES.teste.map(d => d.join('+') === VERSOES.controle.join('+'));
