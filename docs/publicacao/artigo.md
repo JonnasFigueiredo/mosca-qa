@@ -25,8 +25,12 @@ dopamina tivesse o que modificar; corrigido isso, uma única recompensa passou a
 +0,92, contra ~0 no controle congelado; (ii) a bancada de teste tinha pouca sensibilidade: mesmo uma memória perfeita
 só adiantaria o primeiro defeito em 3,8 ações, e uma das versões de teste era quase inalcançável.
 
-Uma bancada nova, validada por simulação sem cérebro e por análise de poder antes de qualquer rodada, está em
-avaliação com 16 sementes e replicação independente pré-registradas. Relatamos todos os resultados, inclusive os
+Uma bancada nova, validada por simulação sem cérebro e por análise de poder antes de qualquer rodada, passou no
+critério pré-registrado e replicou com sementes independentes. A mosca treinada achou defeitos de repetição em
+famílias de ações que nunca viu 5,1 ações antes do controle congelado na série principal (IC95 [−8,0; −2,3], 16
+sementes) e 6,9 ações antes na replicação ([−9,1; −4,9], 16 sementes). Ela escolheu ações repetidas em 85% das
+oportunidades, contra 53% do controle congelado. Num defeito de outro tipo, não melhorou; ao contrário, piorou. Essa é
+a dissociação esperada de uma associação específica. Relatamos todos os resultados, inclusive os
 negativos, e separamos sempre o que vem do mapa do que é regra do modelo.
 
 ---
@@ -378,8 +382,54 @@ No controle, a memória piora a busca (de 14,4 para 17–20 ações), a dissocia
 
 Toda série passa a registrar a fração das vezes em que a mosca escolheu uma ação repetida visível.
 
-> **Resultados da bancada 2: em andamento.** Esta seção será preenchida com os números, sejam eles positivos ou
-> negativos.
+**Resultados: passou e replicou.** Ações até o primeiro bug (menor é melhor); 16 sementes em cada série
+(`qa-b2-resumo.json`, `qa-b2-replica-resumo.json`):
+
+| Série | Condição | Transferência | Controle |
+|---|---|---|---|
+| Principal (51–66) | Treinada | **8,8** | 27,4 |
+| | Congelada | 13,8 | 23,7 |
+| | Aleatória | 15,4 | 8,4 |
+| | Novidade | 10,2 | 9,3 |
+| Replicação (71–86) | Treinada | **5,8** | 28,0 |
+| | Congelada | 12,8 | 19,7 |
+| | Aleatória | 11,8 | 12,0 |
+| | Novidade | 10,8 | 9,4 |
+
+Diferenças pareadas (treinada − outra condição), IC95 por bootstrap:
+
+| Comparação | Principal | Replicação |
+|---|---|---|
+| **Transferência, contra a congelada (critério)** | **−5,06 [−8,00; −2,31]** | **−6,94 [−9,13; −4,88]** |
+| Transferência, contra a aleatória | −6,63 [−9,91; −3,06] | −5,97 [−8,44; −3,75] |
+| Transferência, contra a novidade | −1,44 [−3,78; +1,03] | −4,94 [−7,72; −2,50] |
+| Controle, contra a congelada | +3,69 [−2,13; +9,75] | +8,31 [+3,13; +14,06] |
+
+**O que os números mostram:**
+
+- **O critério principal passou nas duas séries**, com sementes independentes. A mosca treinada acha os defeitos de
+  repetição em famílias que nunca viu 5 a 7 ações antes da mesma mosca com os pesos congelados, que teve a mesma
+  exposição e as mesmas recompensas.
+- **Memória:** a valência das ações repetidas subiu +1,03 e +0,95 com o treino. As outras ações mudaram −0,07; na
+  congelada, as mudanças ficaram em ~0.
+- **A memória vira escolha:** na replicação, a única série que registrou isso, a treinada escolheu uma ação repetida
+  em 85% das vezes em que havia uma visível. A congelada escolheu em 53%, a aleatória em 46% e a novidade em 45%.
+- **A dissociação esperada apareceu:** no controle, em que o defeito não é de repetição, a treinada não melhora; ela
+  **piora** (+3,7 e +8,3; o segundo tem IC95 acima de 0). O que ela aprendeu foi "repetição dá defeito", e não "achar
+  qualquer coisa mais rápido". Isso tem um custo quando o defeito é de outro tipo.
+- **Contra os exploradores sem cérebro:** a treinada supera a escolha aleatória nas duas séries. Contra a novidade, o
+  resultado é descritivo: empata na principal e ganha na replicação.
+
+**Leitura cuidadosa:**
+
+1. O efeito existe **sob as nossas regras** (os cheiros das ações, a leitura da valência e o softmax); a
+   aprendizagem em si é do circuito do mapa.
+2. O viés de nascença a favor das repetidas explica por que a congelada também vai mal no controle, mas não explica a
+   diferença entre treinada e congelada, porque as duas têm o mesmo viés.
+3. A melhora da principal para a replicação (−5,1 para −6,9) está dentro do ruído entre séries.
+
+A fila seguinte já está rodando no ramo "replicou": o controle sensorial com os cheiros trocados e, depois, o teste de
+retenção de 180 s.
 
 ---
 
