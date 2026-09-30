@@ -218,3 +218,13 @@ comparações: um "passou" sem replicação não vale como resultado. Log: `_tmp
 **2026-09-30, madrugada: qa-fortes-curto (treino curto (2 × 30 ações): menos tempo para esquecer): negativo.** Sementes 21, 22, 23, 24, 25, 26, 27, 28. Primeiro bug de teste: treinada 21,29, congelada 21,29, aleatória 19,04, novidade 24,17. Treinada − congelada 0, IC95 [-1.96,1.92]. Valência depois do treino (treinada): repetidas 0,169, outras -0,016. `docs/medicoes/qa-fortes-curto-resumo.json`.
 
 **2026-09-30, madrugada: qa-fortes-espacado (treino em 6 episódios de 20 ações: mais episódios, cada um curto): negativo.** Sementes 31, 32, 33, 34, 35, 36, 37, 38. Primeiro bug de teste: treinada 20,67, congelada 22,5, aleatória 20,33, novidade 20,17. Treinada − congelada -1,83, IC95 [-3.75,0.08]. Valência depois do treino (treinada): repetidas 0,549, outras -0,039. `docs/medicoes/qa-fortes-espacado-resumo.json`.
+
+**01/10, diagnóstico da madrugada (`scripts/qa_oraculo.mjs`, `docs/medicoes/qa-oraculo.json`, sem cérebro).** A memória
+se forma (repetidas +0,27/+0,17/+0,55 nas três séries, congelada ~0), mas não vira vantagem. Com memória PERFEITA
+("prefere repetida"), o primeiro bug de teste cai de 21,8 (aleatória) para 18,0: só −3,8 ações de teto. Por versão:
+cupom-duplo 23,9 → 13,6 (a memória ajuda muito); reserva-dupla ~30 com qualquer política (achada em 6–7% dos
+episódios: precisa de pedido aberto antes, quase inalcançável em 30 passos); cupom-duplo+quantidade-negativa ~10 com
+qualquer política (quem revela é carrinho:negativa, que a memória não favorece). Duas das três versões de teste não
+medem transferência. O espaçado (−1,8) ficou em ~metade do teto, com 8 sementes, e o erro padrão (~1) não separa isso.
+Conclusão: a bancada de teste tem pouca sensibilidade; o próximo passo é consertar a bancada (versões de teste em que
+a repetida seja o caminho e seja alcançável) e usar mais sementes, com critério e sementes novos escritos antes.

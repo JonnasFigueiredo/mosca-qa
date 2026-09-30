@@ -1,0 +1,91 @@
+{
+ "metodo": "Sem cérebro. 4000 episódios por versão de teste e política; 3 de 15 ações visíveis por passo, 30 passos (31 quando não achou). \"prefere_repetida\" = a memória perfeita do treino (escolhe uma repetida visível, senão ao acaso). Uma repetida aparece entre as visíveis em ~0.52 dos passos.",
+ "por_versao": {
+  "cupom-duplo": {
+   "aleatoria": {
+    "primeiro_bug_media": 23.89,
+    "achou": 0.489,
+    "repetidas_por_passo": 0.21,
+    "acao_que_revelou": {
+     "cupom:repetida": 1958
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 13.63,
+    "achou": 0.926,
+    "repetidas_por_passo": 0.29,
+    "acao_que_revelou": {
+     "cupom:repetida": 3705
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 26.26,
+    "achou": 0.411,
+    "repetidas_por_passo": 0.23,
+    "acao_que_revelou": {
+     "cupom:repetida": 1645
+    }
+   }
+  },
+  "reserva-dupla": {
+   "aleatoria": {
+    "primeiro_bug_media": 30.27,
+    "achou": 0.064,
+    "repetidas_por_passo": 0.26,
+    "acao_que_revelou": {
+     "estoque:repetida": 257
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 30.18,
+    "achou": 0.072,
+    "repetidas_por_passo": 0.62,
+    "acao_que_revelou": {
+     "estoque:repetida": 289
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 29.54,
+    "achou": 0.128,
+    "repetidas_por_passo": 0.26,
+    "acao_que_revelou": {
+     "estoque:repetida": 513
+    }
+   }
+  },
+  "cupom-duplo+quantidade-negativa": {
+   "aleatoria": {
+    "primeiro_bug_media": 11.26,
+    "achou": 0.941,
+    "repetidas_por_passo": 0.1,
+    "acao_que_revelou": {
+     "carrinho:negativa": 2973,
+     "cupom:repetida": 791
+    }
+   },
+   "prefere_repetida": {
+    "primeiro_bug_media": 10.09,
+    "achou": 0.979,
+    "repetidas_por_passo": 0.21,
+    "acao_que_revelou": {
+     "cupom:repetida": 2616,
+     "carrinho:negativa": 1299
+    }
+   },
+   "novidade": {
+    "primeiro_bug_media": 8.87,
+    "achou": 0.996,
+    "repetidas_por_passo": 0.08,
+    "acao_que_revelou": {
+     "carrinho:negativa": 3760,
+     "cupom:repetida": 225
+    }
+   }
+  }
+ },
+ "media_das_versoes": {
+  "aleatoria": 21.81,
+  "prefere_repetida": 17.97,
+  "novidade": 21.56
+ }
+}
