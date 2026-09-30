@@ -1,0 +1,128 @@
+{
+ "metodo": "Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.",
+ "sementes": [
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38
+ ],
+ "por_condicao": {
+  "ativa": {
+   "primeiro_bug_media": 20.67,
+   "bugs_teste_media": 2.5,
+   "bugs_treino_media": 3.38
+  },
+  "congelada": {
+   "primeiro_bug_media": 22.5,
+   "bugs_teste_media": 2.13,
+   "bugs_treino_media": 4.38
+  },
+  "aleatoria": {
+   "primeiro_bug_media": 20.33,
+   "bugs_teste_media": 4,
+   "bugs_treino_media": 2.25
+  },
+  "novidade": {
+   "primeiro_bug_media": 20.17,
+   "bugs_teste_media": 3.75,
+   "bugs_treino_media": 2.63
+  }
+ },
+ "pares": {
+  "ativa_menos_congelada": {
+   "sementes": 8,
+   "primeiro_bug": {
+    "media": -1.83,
+    "ic95": [
+     -3.75,
+     0.08
+    ],
+    "por_semente": [
+     2,
+     0,
+     -3.33,
+     0,
+     -6.66,
+     -4.66,
+     0,
+     -2
+    ]
+   },
+   "bugs_teste": {
+    "media": 0.38,
+    "ic95": [
+     -0.5,
+     1.13
+    ]
+   }
+  },
+  "ativa_menos_aleatoria": {
+   "sementes": 8,
+   "primeiro_bug": {
+    "media": 0.33,
+    "ic95": [
+     -3.04,
+     4.83
+    ],
+    "por_semente": [
+     0,
+     2.33,
+     -1,
+     -2,
+     -1.33,
+     -8.33,
+     13.33,
+     -0.33
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.5,
+    "ic95": [
+     -2.38,
+     -0.75
+    ]
+   }
+  },
+  "ativa_menos_novidade": {
+   "sementes": 8,
+   "primeiro_bug": {
+    "media": 0.5,
+    "ic95": [
+     -3.71,
+     4.71
+    ],
+    "por_semente": [
+     6.33,
+     2,
+     0.33,
+     -7.33,
+     -1.33,
+     -9.33,
+     9.33,
+     4
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.25,
+    "ic95": [
+     -2.25,
+     -0.25
+    ]
+   }
+  }
+ },
+ "mudanca_de_valencia": {
+  "ativa": {
+   "repetidas": 0.549,
+   "outras": -0.039
+  },
+  "congelada": {
+   "repetidas": -0.011,
+   "outras": 0.008
+  }
+ }
+}
