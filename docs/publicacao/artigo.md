@@ -481,16 +481,33 @@ controle é o maior de todos, e parte dele é o viés de nascença das repetidas
 não é que a mosca seja o melhor testador. A tese é que o circuito real forma e transfere a associação, e a linha de
 base mostra em que ponto da troca ela fica.
 
-### 6.9 Em andamento: contrabalanço e decepção
+### 6.9 Controle de cheiro: com glomérulos fracos, a memória não vira escolha (negativo)
 
-**Contrabalanço (`qa-b2-normal`).** A característica premiada passa a ser "normal", que nasce com valência negativa
-(−0,07 a −0,23), ao contrário de "repetida". Os defeitos ficam na mesma estrutura: treino em pagamento e cancelamento,
-teste em cupom e estoque, o mesmo controle.
+`qa-b2-cheiro-trocado`, sementes 91–106: os glomérulos de "repetida" e "normal" foram trocados. As repetidas ficaram
+com VL2a+VM6v, que acendem menos KCs; "normal" ficou com o par forte DC1+VA6.
+
+- **Resultado:** transferência, treinada − congelada = −2,1, IC95 [−5,4; +1,3]. Não passou.
+- **Memória fraca:** a valência das repetidas subiu só +0,27, contra +1,0 com o par forte.
+- **A memória não virou escolha:** ela escolheu uma repetida em 30% das oportunidades, igual à congelada (29%) e abaixo
+  da aleatória (42%). Os cheiros fortes de "normal" nascem atraentes e puxam as escolhas.
+
+A ressalva escrita antes previa isso ("menos KCs, efeito talvez menor"). O resultado confirma, no comportamento, o que
+a dose-resposta mostrou no cérebro isolado (seção 6.3): a transferência depende de a pista recrutar KCs suficientes, e
+um cheiro forte que nasce atraente numa ação sem bug compete com a memória. É uma limitação real do resultado
+principal: ele vale para pistas que acendem ~90 KCs ou mais.
+
+### 6.10 Em andamento: contrabalanço do tipo de bug e decepção
+
+**Contrabalanço do tipo de bug (`qa-b2-normal`).** A característica premiada passa a ser "normal", com defeitos novos
+na mesma estrutura: treino em pagamento e cancelamento, teste em cupom e estoque, o mesmo controle.
 
 - **Validação:** a versão correta continua sem alarme falso em 90.000 ações. O oráculo dá aleatória 13,3, memória
   perfeita 6,7 e memória com o ganho medido 9,1.
-- **Se passar:** o viés de nascença não explica a transferência.
-- **Se não passar:** o resultado é ambíguo, porque as ações "normal" acendem menos KCs (46–83).
+- **Mudança declarada, feita antes de rodar este item:** o desenho original premiava "normal" com os glomérulos
+  fracos, a mesma configuração que falhou na seção 6.9. Passou a usar o mapa trocado, de modo que a característica
+  premiada tem o par forte nos dois braços.
+- **O que testa:** se a transferência depende do tipo de defeito, com a força do cheiro igual. O viés de nascença
+  continua controlado pela congelada, que tem o mesmo viés.
 
 **Decepção no teste (`qa-b2-decepcao`).** O treino é idêntico ao da mosca treinada. No teste, escolher uma ação com
 valência acima de 0,6 e não achar bug dispara a dopamina de punição (PPL1). É como a mosca real que sente sem açúcar

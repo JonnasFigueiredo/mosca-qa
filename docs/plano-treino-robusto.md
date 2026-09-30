@@ -327,3 +327,14 @@ controle, alguma perda na transferência).
 Cada série entra na família de Holm (`qa_comparacoes.mjs`, rodado pela rotina a cada série).
 
 **2026-09-30, madrugada: qa-b2-cheiro-trocado (controle sensorial: "repetida" com os glomérulos de "normal" e vice-versa (o aprendizado não depende de um cheiro específico)): negativo.** Sementes 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106. Primeiro bug de teste: treinada 20,96, congelada 22,9, aleatória 14,42, novidade 10,75. Treinada − congelada -2,09, IC95 [-5.38,1.34]. Transferência: treinada 17,66, congelada 19,75, aleatória 14,09, novidade 11; controle (não deve melhorar): treinada − congelada -1,63 [-4.88,0]. Fração das vezes em que escolheu uma repetida visível no teste: {"ativa":0.304,"congelada":0.294,"aleatoria":0.423,"novidade":0.437}. Valência depois do treino (treinada): repetidas 0,27, outras 0,02. `docs/medicoes/qa-b2-cheiro-trocado-resumo.json`.
+
+**30/09, mudança no item 1 antes de rodar (declarada).** O controle de cheiro (`qa-b2-cheiro-trocado`, "repetida" com
+os glomérulos fracos VL2a+VM6v e "normal" com os fortes DC1+VA6) deu negativo: treinada − congelada −2,1 [−5,4; +1,3];
+a valência das repetidas subiu só +0,27 (com os fortes, +1,0) e ela escolheu uma repetida em 30% das vezes, igual à
+congelada (29%): com poucos KCs a memória é fraca, e os cheiros fortes de "normal", que nascem atraentes, puxam as
+escolhas. O item 1 como estava escrito (premiar "normal" com o mapa forte, em que "normal" fica com VL2a+VM6v) repetia
+exatamente essa configuração e falharia pelo mesmo motivo. Mudança, antes de qualquer rodada do item 1: o braço
+"normal" usa o mapa trocado (`qa-cheiros-trocados.json`), então a característica premiada fica com os glomérulos
+fortes nos dois braços; o que muda é só o tipo de bug. O que ele testa agora: se a transferência depende do tipo de
+defeito, com a força do cheiro igual. O viés de nascença (os glomérulos fortes nascem atraentes) segue controlado pela
+congelada, que tem o mesmo viés, e não é mais o alvo deste item. Critério, sementes e réplica sem mudança.

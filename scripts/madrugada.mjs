@@ -52,8 +52,10 @@ const txt = (nome, x) => `${nome} ${x?.media} IC95 ${JSON.stringify(x?.ic95)}`;
 if (VALIDADE) {
   ESCADA.length = 0;
   ESCADA.push(
-    { prefixo: 'qa-b2-normal', args: [...B2ARGS, '--caracteristica', 'normal'], sementes: seq(211), replica: seq(231),
-      desc: 'contrabalanço: defeitos nas ações "normal" (nascem com valência negativa), mesma estrutura de treino e teste',
+    // mudado antes de rodar (30/09, depois do controle de cheiro): a característica premiada fica com os glomérulos
+    // fortes (DC1+VA6, o mapa trocado), como a "repetida" na bancada 2; o que muda é só o tipo de bug
+    { prefixo: 'qa-b2-normal', args: [...B2ARGS, '--caracteristica', 'normal'], cheiros: 'docs/medicoes/qa-cheiros-trocados.json', sementes: seq(211), replica: seq(231),
+      desc: 'contrabalanço do tipo de bug: defeitos nas ações "normal", com os glomérulos fortes (mapa trocado), mesma estrutura de treino e teste',
       depois: ['node scripts/qa_linha_base.mjs --caracteristica normal'], saidasDepois: ['docs/medicoes/qa-linha-base-normal.json'] },
     { prefixo: 'qa-b2-decepcao', args: [...B2ARGS, '--condicoes', 'ativa,ativa_decepcao,congelada,aleatoria,novidade'], ncond: 5, sementes: seq(251), replica: seq(271),
       desc: 'decepção no teste: PPL1 quando escolhe com valência > 0,6 e não acha bug novo',
