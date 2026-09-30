@@ -396,6 +396,8 @@ O que isso quer dizer:
 - **No Financeiro, 5 rodadas não separam o efeito do aprendizado.** O mesmo código deu diferenças de ~1 bug nos dois sentidos (olhos v1: 3,4 contra 2,8 numa medição, 3,2 contra 4,0 na outra). Sem olhos, empatou (3,2 contra 3,4). Com os olhos v2, a mosca que aprende achou menos (2,4 contra 4,0) e ficou nos mesmos dois bugs (F3 e F5), o que combina com o item anterior. A segunda medição com olhos v1 estava na tabela como "sem olhos": o filtro `?olhos=0` da página nunca funcionou (um caractere de controle no lugar de `\b`), e foi corrigido em 26/09.
 - **O controle e o ponto de partida pareado mudaram as conclusões.** Sem eles, as primeiras rodadas pareciam mostrar transferência (treinada 4 bugs, ingênua 1,5), o que era efeito de onde cada mosca começava.
 
+- **Caça a bugs só com o cérebro (30/09), negativo.** Num sistema de Pedidos com contratos, cada ação tem um cheiro (4 glomérulos, calibrados para nascerem neutros) e a escolha segue a valência do corpo cogumelar. Em 8 sementes pareadas, a treinada achou o primeiro bug de teste em 25,2 ações, a congelada em 27,7 (diferença −2,5, IC95 [−5,3; +0,2], cruza o zero) e a escolha aleatória em 19,7. A valência das ações premiadas não subiu no treino: a recompensa não gravou. Detalhes em `docs/plano-treino-robusto.md`.
+
 Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.
 
 ## Créditos

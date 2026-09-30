@@ -172,3 +172,12 @@ resumo: `node scripts/qa_resumo.mjs --prefixo qa-honesto`. Mesmo critério escri
 de teste em menos ações que a congelada, IC95 da diferença pareada abaixo de 0). A série antiga (com desconto) segue
 só com as sementes 1–5 no processo principal, como referência.
 
+
+**30/09, caça a bugs honesta: NEGATIVO no critério.** 8 sementes (11–18), `docs/medicoes/qa-honesto-resumo.json`.
+Primeiro bug de teste (ações, menor é melhor): treinada 25,2, congelada 27,7, aleatória 19,7, novidade 22,9. Treinada
+menos congelada −2,5, IC95 [−5,25; +0,17]: cruza o zero, o critério escrito antes não passou. Pior: a escolha aleatória
+acha antes que a treinada (+5,5 [0,41; 10,6]) e acha mais bugs distintos (3,5 contra 1,75). O motivo aparece na valência:
+depois do treino as ações "repetida" (as premiadas) mudaram −0,01, as outras +0,03 (congelada: +0,006 / +0,016). A
+recompensa não está gravando nos cheiros das ações, embora o mesmo cérebro aprenda na arena A/B (0,74). Suspeitas, para
+testar isoladas: poucas recompensas no treino (60 ações, poucos bugs), reforço diluído na mistura de 4 glomérulos, janela
+da dopamina (últimos 50 ms) fora da atividade dos KCs.
