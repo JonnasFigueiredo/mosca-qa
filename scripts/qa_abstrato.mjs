@@ -25,6 +25,7 @@ const CONDICOES = arg('condicoes', 'ativa,congelada,aleatoria,novidade').split('
 // (~0,75); com 1 s, 0,15 (qa-calibracao.json)
 let SENTIR_S = +arg('sentir', 1.0), PAUSA_S = 0.2;
 const meta = JSON.parse(readFileSync('web/data/meta.json', 'utf8')), G = meta.groups;
+const KCSET = new Set(G.kc), ULTIMO = { kcs: new Set(), rec: 0 }; let CONTA_KC = false;   // KCs e evitar_rec da última amostra (calibração)
 
 // ── worker real (mesma ponte de t0_cerebro.mjs) ──
 let w, receptor = () => {}, passo = 0;
@@ -42,9 +43,9 @@ return {ok:true,headers:{get:()=>String(b.length)},json:async()=>JSON.parse(b),b
 const tique = rates => new Promise(ok => { receptor = m => { if (m.type === 'tick') ok(m); }; w.postMessage({ type: 'rates', rates }); w.postMessage({ type: 'passoDuplo', passo: passo++ }); });
 const odor = acao => Object.fromEntries(Q.cheiroDe(acao).flatMap(g => ['L', 'R'].map(l => ['ORN_' + g + '_' + l, 100])));
 async function roda(s, rates) {
-  const c = { mbon_aprox: 0, mbon_evitar: 0, mbon_evitar_rec: 0 };
-  for (let i = 0; i < Math.round(s * 100); i++) { const m = await tique(rates); for (const g in c) c[g] += m.counts[g] || 0; }
-  const hz = g => c[g] / G[g].length / s;
+  const c = { mbon_aprox: 0, mbon_evitar: 0, mbon_evitar_rec: 0 }; ULTIMO.kcs.clear();
+  for (let i = 0; i < Math.round(s * 100); i++) { const m = await tique(rates); for (const g in c) c[g] += m.counts[g] || 0; if (CONTA_KC) for (const x of m.spikes || []) if (KCSET.has(x)) ULTIMO.kcs.add(x); }
+  const hz = g => c[g] / G[g].length / s; ULTIMO.rec = hz('mbon_evitar_rec');
   return hz('mbon_aprox') - (hz('mbon_evitar') + hz('mbon_evitar_rec')) / 2;
 }
 async function sentir(acao) { const v = await roda(SENTIR_S, odor(acao)); await roda(PAUSA_S, {}); return v; }
@@ -109,7 +110,16 @@ if (process.argv.includes('--calibrar-cheiros')) {
   const r = gerador(+arg('semente-cal', 3)), ITER = +arg('iteracoes', 40);
   w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: false }); w.postMessage({ type: 'semente', valor: 5 });
   for (let i = 0; i < 15; i++) await sentir(Q.ACOES[Math.floor(r() * Q.ACOES.length)]);
-  const avalia = async () => { const v = await valencias(1); const q = Object.values(v).reduce((a, x) => a + x * x, 0) / Object.keys(v).length; return { custo: q, v }; };
+  // --com-kcs: além de neutra, cada ação precisa acender KCs e mbon_evitar_rec como o cheiro A (117 KCs, 1,57 Hz),
+  // senão a dopamina não tem o que enfraquecer (qa-kcs.json). Penalidade quadrática abaixo de 90 KCs e 1,3 Hz.
+  const COM_KCS = process.argv.includes('--com-kcs'); CONTA_KC = COM_KCS;
+  const avalia = async () => {
+    const v = {}, k = {}, e = {};
+    for (const a of Q.ACOES) { v[a.id] = +(await roda(SENTIR_S, odor(a))).toFixed(3); k[a.id] = ULTIMO.kcs.size; e[a.id] = +ULTIMO.rec.toFixed(2); await roda(PAUSA_S, {}); }
+    const n = Q.ACOES.length; let q = Object.values(v).reduce((a, x) => a + x * x, 0) / n;
+    if (COM_KCS) q += Q.ACOES.reduce((t, a) => t + Math.max(0, (90 - k[a.id]) / 90) ** 2 + Math.max(0, (1.3 - e[a.id]) / 1.3) ** 2, 0) / n;
+    return { custo: q, v, kcs: k, evitar_rec: e };
+  };
   let atual = JSON.parse(JSON.stringify(Q.CHEIRO)), melhor = await avalia();
   const inicial = { mapa: JSON.parse(JSON.stringify(atual)), ...melhor }, historico = [{ iter: 0, custo: +melhor.custo.toFixed(4) }];
   console.log('inicial', melhor.custo.toFixed(4));
@@ -123,7 +133,7 @@ if (process.argv.includes('--calibrar-cheiros')) {
     if (t.custo < melhor.custo) { atual = tentativa; melhor = t; } else Q.usarCheiros(atual);
     historico.push({ iter: it, custo: +t.custo.toFixed(4), aceito: t === melhor });
     console.log(it, car, t.custo.toFixed(4), t === melhor ? 'aceito' : '', 'melhor', melhor.custo.toFixed(4));
-    writeFileSync('docs/medicoes/qa-cheiros.json', JSON.stringify({ metodo: 'Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).', inicial: { mapa: inicial.mapa, custo: inicial.custo, valencias: inicial.v }, melhor: atual, custo_melhor: melhor.custo, valencias_melhor: melhor.v, historico }, null, 1) + '\n');
+    writeFileSync(COM_KCS ? 'docs/medicoes/qa-cheiros-kcs.json' : 'docs/medicoes/qa-cheiros.json', JSON.stringify({ metodo: 'Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).', inicial: { mapa: inicial.mapa, custo: inicial.custo, valencias: inicial.v }, melhor: atual, custo_melhor: melhor.custo, valencias_melhor: melhor.v, kcs_melhor: melhor.kcs, evitar_rec_melhor: melhor.evitar_rec, com_kcs: COM_KCS, historico }, null, 1) + '\n');
   }
   await w.terminate(); process.exit(0);
 }
@@ -168,7 +178,7 @@ if (process.argv.includes('--kcs')) {
   await w.terminate(); process.exit(0);
 }
 if (process.argv.includes('--dose')) {
-  const ALVO = Q.ACOES.find(a => a.id === 'cancelamento:repetida'), CTRL = Q.ACOES.find(a => a.id === 'carrinho:normal');
+  const ALVO = Q.ACOES.find(a => a.id === arg('alvo', 'cancelamento:repetida')), CTRL = Q.ACOES.find(a => a.id === 'carrinho:normal');
   const OUTRAS = Q.ACOES.filter(a => a !== ALVO && a !== CTRL);
   const mede = async () => { let a = 0, c = 0; for (let k = 0; k < 3; k++) { a += await sentir(ALVO) / 3; c += await sentir(CTRL) / 3; } return { alvo: +a.toFixed(3), ctrl: +c.toFixed(3) }; };
   const res = [];
@@ -182,7 +192,7 @@ if (process.argv.includes('--dose')) {
     let passados = 0;
     for (const s of [60, 180]) { while (passados < s) { await sentir(OUTRAS[Math.floor(ra() * OUTRAS.length)]); passados += SENTIR_S + PAUSA_S; } linha.depois_de_outras[s] = await mede(); }
     res.push(linha); console.log(JSON.stringify(linha));
-    writeFileSync('docs/medicoes/qa-dose.json', JSON.stringify({ metodo: 'Worker real, cheiros calibrados se --cheiros. Depois de reset e aquecimento (15 cheiros), mede a valência (3 amostras de 1 s intercaladas) do alvo cancelamento:repetida e do controle carrinho:normal; pareia o alvo (2 s de cheiro, PAM 100 Hz nos últimos 0,5 s) até somar 1, 2, 4 e 8 vezes, medindo a cada etapa; depois cheira outras ações por 60 e 180 s e mede de novo. Ativa (plasticidade) contra congelada.', res }, null, 1) + '\n');
+    writeFileSync(arg('saida-dose', 'docs/medicoes/qa-dose.json'), JSON.stringify({ alvo: ALVO.id, cheiros: arg('cheiros', 'padrao'), metodo: 'Worker real, cheiros calibrados se --cheiros. Depois de reset e aquecimento (15 cheiros), mede a valência (3 amostras de 1 s intercaladas) do alvo cancelamento:repetida e do controle carrinho:normal; pareia o alvo (2 s de cheiro, PAM 100 Hz nos últimos 0,5 s) até somar 1, 2, 4 e 8 vezes, medindo a cada etapa; depois cheira outras ações por 60 e 180 s e mede de novo. Ativa (plasticidade) contra congelada.', res }, null, 1) + '\n');
   }
   await w.terminate(); process.exit(0);
 }

@@ -189,3 +189,12 @@ da dopamina (últimos 50 ms) fora da atividade dos KCs.
 só 0,83 Hz em mbon_evitar_rec (A: 1,57). A dopamina enfraquece KC→evitar_rec: com poucos KCs e pouco evitar_rec, não
 sobra o que enfraquecer. A calibração deixou as ações neutras escolhendo glomérulos fracos. Próximo: recalibrar pedindo
 também muitos KCs e evitar_rec alto (sem mexer no cérebro), refazer a dose e só então a série.
+
+**30/09, dose com cheiro forte: aprende.** Recalibração com `--com-kcs` (`qa-cheiros-kcs.json`): as ações de estoque
+chegam a 91–101 KCs, mas as três "repetida" continuam em 34–40 (os glomérulos de "repetida" são fracos). Dose no
+`estoque:repetida` (91 KCs, evitar_rec 1,63 Hz; `qa-dose-kcs.json`, sementes 11 e 12): a valência sobe de ~0 para
++0,74/+0,92 com UM pareamento e +1,06/+1,23 com 8; o controle não sobe; a congelada fica em ~0. Confirma a causa: cheiro
+com poucos KCs não aprende. Esquecimento: depois de 60 s cheirando outras ações sobra +0,85/+0,88; depois de 180 s,
++0,28/+0,57. O treino dura ~10 min, então o esquecimento (τ 90 s) também pesa. Próximo: glomérulos fortes para
+"repetida" (e para todas as características), e treino mais curto ou teste logo depois.
+Referência com desconto (sementes 1–5, `qa-abstrato-resumo.json`): também negativa, treinada − congelada +2,8 [−1,2; 6,8].

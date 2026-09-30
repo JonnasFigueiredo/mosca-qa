@@ -1,0 +1,1554 @@
+{
+ "metodo": "Worker real em thread Node. Sistema de Pedidos em memória (web/qa/pedidos.js), contratos no estado. 3 ações visíveis por passo (sequência pré-sorteada por semente, igual entre condições); cheiro de cada ação = 4 glomérulos a 100 Hz bilateral por 1 s, 0.2 s sem odor; escolha por softmax da valência (mbon_aprox - média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) menos a valência de nascença da ação (medida logo depois do reset), T = 0.15. Bug novo (contrato violado pela primeira vez no episódio): cheiro da ação por 2 s, PAM a 100 Hz nos últimos 0,5 s. Treino nas versões de treino (defeitos de repetição em pagamento e cancelamento), teste nas reservadas (repetição em cupom e estoque, quantidade negativa). A escolha por softmax e o pareamento são regras nossas; a valência e a plasticidade são do worker.",
+ "rodadas": [
+  {
+   "data": "2026-09-30T00:16:28.114Z",
+   "semente": 1,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 31,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 24,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 24,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 53,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 13,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 7,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 7,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 12,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.083,
+    "carrinho:zero": 0.233,
+    "carrinho:negativa": 0.046,
+    "carrinho:limite": 0.584,
+    "estoque:normal": 0.345,
+    "estoque:limite": 0.139,
+    "estoque:repetida": -0.059,
+    "pagamento:normal": 0.549,
+    "pagamento:zero": 0.289,
+    "pagamento:repetida": -0.278,
+    "cancelamento:normal": 0.588,
+    "cancelamento:repetida": 0.094,
+    "cupom:normal": -0.205,
+    "cupom:limite": 0.313,
+    "cupom:repetida": -0.122
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": -0.006,
+    "carrinho:zero": 0.241,
+    "carrinho:negativa": 0.097,
+    "carrinho:limite": 0.553,
+    "estoque:normal": 0.465,
+    "estoque:limite": 0.185,
+    "estoque:repetida": 0.104,
+    "pagamento:normal": 0.351,
+    "pagamento:zero": 0.098,
+    "pagamento:repetida": -0.044,
+    "cancelamento:normal": 0.611,
+    "cancelamento:repetida": 0.227,
+    "cupom:normal": 0.07,
+    "cupom:limite": 0.083,
+    "cupom:repetida": -0.091
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 17,
+    "bugs_teste": 4,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T00:55:43.587Z",
+   "semente": 1,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 21,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 30,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 21,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 21,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 16,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 7,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 7,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 16,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.083,
+    "carrinho:zero": 0.233,
+    "carrinho:negativa": 0.046,
+    "carrinho:limite": 0.584,
+    "estoque:normal": 0.345,
+    "estoque:limite": 0.139,
+    "estoque:repetida": -0.059,
+    "pagamento:normal": 0.549,
+    "pagamento:zero": 0.289,
+    "pagamento:repetida": -0.278,
+    "cancelamento:normal": 0.588,
+    "cancelamento:repetida": 0.094,
+    "cupom:normal": -0.205,
+    "cupom:limite": 0.313,
+    "cupom:repetida": -0.122
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.285,
+    "carrinho:zero": 0.146,
+    "carrinho:negativa": -0.094,
+    "carrinho:limite": 0.675,
+    "estoque:normal": 0.402,
+    "estoque:limite": 0.121,
+    "estoque:repetida": -0.077,
+    "pagamento:normal": 0.449,
+    "pagamento:zero": 0.029,
+    "pagamento:repetida": -0.305,
+    "cancelamento:normal": 0.496,
+    "cancelamento:repetida": 0.036,
+    "cupom:normal": 0.13,
+    "cupom:limite": 0.078,
+    "cupom:repetida": -0.091
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 18,
+    "bugs_teste": 4,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T00:55:43.601Z",
+   "semente": 1,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 24,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 30,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 30,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 29,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 31,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 29,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 2,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 2,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 3,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     },
+     {
+      "passo": 12,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 20.67,
+    "bugs_teste": 5,
+    "bugs_treino": 5
+   }
+  },
+  {
+   "data": "2026-09-30T00:55:43.610Z",
+   "semente": 1,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 24,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 20,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 20,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 16,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     },
+     {
+      "passo": 29,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 29,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 21,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 2,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 2,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 3,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     },
+     {
+      "passo": 16,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 18,
+    "bugs_teste": 5,
+    "bugs_treino": 6
+   }
+  },
+  {
+   "data": "2026-09-30T01:36:51.156Z",
+   "semente": 2,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 40,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 13,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 24,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 24,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.129,
+    "carrinho:zero": 0.063,
+    "carrinho:negativa": -0.059,
+    "carrinho:limite": 0.396,
+    "estoque:normal": 0.423,
+    "estoque:limite": 0.137,
+    "estoque:repetida": 0.011,
+    "pagamento:normal": 0.411,
+    "pagamento:zero": 0.08,
+    "pagamento:repetida": -0.354,
+    "cancelamento:normal": 0.356,
+    "cancelamento:repetida": 0.083,
+    "cupom:normal": 0.153,
+    "cupom:limite": 0.103,
+    "cupom:repetida": -0.117
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.12,
+    "carrinho:zero": 0.029,
+    "carrinho:negativa": -0.001,
+    "carrinho:limite": 0.429,
+    "estoque:normal": 0.586,
+    "estoque:limite": 0.068,
+    "estoque:repetida": -0.083,
+    "pagamento:normal": 0.397,
+    "pagamento:zero": 0.209,
+    "pagamento:repetida": -0.367,
+    "cancelamento:normal": 0.564,
+    "cancelamento:repetida": 0.058,
+    "cupom:normal": -0.031,
+    "cupom:limite": 0.087,
+    "cupom:repetida": -0.123
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 28.67,
+    "bugs_teste": 2,
+    "bugs_treino": 2
+   }
+  },
+  {
+   "data": "2026-09-30T02:09:48.952Z",
+   "semente": 2,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 40,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 13,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 23,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 8,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     },
+     {
+      "passo": 14,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 14,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.129,
+    "carrinho:zero": 0.063,
+    "carrinho:negativa": -0.059,
+    "carrinho:limite": 0.396,
+    "estoque:normal": 0.423,
+    "estoque:limite": 0.137,
+    "estoque:repetida": 0.011,
+    "pagamento:normal": 0.411,
+    "pagamento:zero": 0.08,
+    "pagamento:repetida": -0.354,
+    "cancelamento:normal": 0.356,
+    "cancelamento:repetida": 0.083,
+    "cupom:normal": 0.153,
+    "cupom:limite": 0.103,
+    "cupom:repetida": -0.117
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.052,
+    "carrinho:zero": 0.009,
+    "carrinho:negativa": 0.18,
+    "carrinho:limite": 0.539,
+    "estoque:normal": 0.286,
+    "estoque:limite": 0.125,
+    "estoque:repetida": -0.166,
+    "pagamento:normal": 0.62,
+    "pagamento:zero": 0.169,
+    "pagamento:repetida": -0.354,
+    "cancelamento:normal": 0.391,
+    "cancelamento:repetida": 0.05,
+    "cupom:normal": 0.147,
+    "cupom:limite": 0.281,
+    "cupom:repetida": -0.116
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 20.67,
+    "bugs_teste": 4,
+    "bugs_treino": 2
+   }
+  },
+  {
+   "data": "2026-09-30T02:09:48.959Z",
+   "semente": 2,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 41,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 60,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 21,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 1,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 1,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 8,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 21,
+    "bugs_teste": 3,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T02:09:48.964Z",
+   "semente": 2,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 19,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 60,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 13,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 1,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 1,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 21,
+    "bugs_teste": 2,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T02:41:32.866Z",
+   "semente": 3,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 21,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 32,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     },
+     {
+      "passo": 40,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 49,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.127,
+    "carrinho:zero": 0.171,
+    "carrinho:negativa": 0.033,
+    "carrinho:limite": 0.573,
+    "estoque:normal": 0.48,
+    "estoque:limite": 0.149,
+    "estoque:repetida": -0.076,
+    "pagamento:normal": 0.419,
+    "pagamento:zero": 0.108,
+    "pagamento:repetida": -0.325,
+    "cancelamento:normal": 0.727,
+    "cancelamento:repetida": -0.003,
+    "cupom:normal": 0.083,
+    "cupom:limite": -0.002,
+    "cupom:repetida": -0.044
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.168,
+    "carrinho:zero": 0.243,
+    "carrinho:negativa": -0.005,
+    "carrinho:limite": 0.496,
+    "estoque:normal": 0.414,
+    "estoque:limite": 0.053,
+    "estoque:repetida": -0.167,
+    "pagamento:normal": 0.716,
+    "pagamento:zero": 0.046,
+    "pagamento:repetida": -0.185,
+    "cancelamento:normal": 0.612,
+    "cancelamento:repetida": 0.048,
+    "cupom:normal": -0.212,
+    "cupom:limite": 0.217,
+    "cupom:repetida": -0.086
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 31,
+    "bugs_teste": 0,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T03:09:44.040Z",
+   "semente": 3,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [],
+    []
+   ],
+   "teste": [
+    [
+     {
+      "passo": 4,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.127,
+    "carrinho:zero": 0.171,
+    "carrinho:negativa": 0.033,
+    "carrinho:limite": 0.573,
+    "estoque:normal": 0.48,
+    "estoque:limite": 0.149,
+    "estoque:repetida": -0.076,
+    "pagamento:normal": 0.419,
+    "pagamento:zero": 0.108,
+    "pagamento:repetida": -0.325,
+    "cancelamento:normal": 0.727,
+    "cancelamento:repetida": -0.003,
+    "cupom:normal": 0.083,
+    "cupom:limite": -0.002,
+    "cupom:repetida": -0.044
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.148,
+    "carrinho:zero": 0.273,
+    "carrinho:negativa": -0.063,
+    "carrinho:limite": 0.721,
+    "estoque:normal": 0.359,
+    "estoque:limite": 0.158,
+    "estoque:repetida": -0.136,
+    "pagamento:normal": 0.459,
+    "pagamento:zero": 0.114,
+    "pagamento:repetida": -0.373,
+    "cancelamento:normal": 0.525,
+    "cancelamento:repetida": -0.021,
+    "cupom:normal": 0.171,
+    "cupom:limite": 0.253,
+    "cupom:repetida": -0.084
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 22,
+    "bugs_teste": 1,
+    "bugs_treino": 0
+   }
+  },
+  {
+   "data": "2026-09-30T03:09:44.046Z",
+   "semente": 3,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 15,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 26,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 26,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 26,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 26,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 4,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 7,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 7,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 14,
+    "bugs_teste": 3,
+    "bugs_treino": 5
+   }
+  },
+  {
+   "data": "2026-09-30T03:09:44.049Z",
+   "semente": 3,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 51,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 26,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 38,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     },
+     {
+      "passo": 49,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 29,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 7,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 7,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 22.33,
+    "bugs_teste": 3,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T03:41:39.233Z",
+   "semente": 4,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 11,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 29,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 29,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 43,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 43,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 1,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 1,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 6,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     },
+     {
+      "passo": 22,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.32,
+    "carrinho:zero": 0.07,
+    "carrinho:negativa": 0.038,
+    "carrinho:limite": 0.433,
+    "estoque:normal": 0.419,
+    "estoque:limite": 0.167,
+    "estoque:repetida": -0.048,
+    "pagamento:normal": 0.354,
+    "pagamento:zero": 0.187,
+    "pagamento:repetida": -0.148,
+    "cancelamento:normal": 0.525,
+    "cancelamento:repetida": -0.042,
+    "cupom:normal": -0.136,
+    "cupom:limite": 0.154,
+    "cupom:repetida": -0.086
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.122,
+    "carrinho:zero": 0.102,
+    "carrinho:negativa": 0.094,
+    "carrinho:limite": 0.661,
+    "estoque:normal": 0.216,
+    "estoque:limite": 0.266,
+    "estoque:repetida": -0.091,
+    "pagamento:normal": 0.266,
+    "pagamento:zero": 0.145,
+    "pagamento:repetida": -0.282,
+    "cancelamento:normal": 0.711,
+    "cancelamento:repetida": -0.105,
+    "cupom:normal": 0.095,
+    "cupom:limite": 0.054,
+    "cupom:repetida": -0.127
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 21,
+    "bugs_teste": 4,
+    "bugs_treino": 5
+   }
+  },
+  {
+   "data": "2026-09-30T04:05:40.722Z",
+   "semente": 4,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 11,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 25,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 25,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 1,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 1,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 6,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     },
+     {
+      "passo": 22,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "valencia_antes": {
+    "carrinho:normal": 0.32,
+    "carrinho:zero": 0.07,
+    "carrinho:negativa": 0.038,
+    "carrinho:limite": 0.433,
+    "estoque:normal": 0.419,
+    "estoque:limite": 0.167,
+    "estoque:repetida": -0.048,
+    "pagamento:normal": 0.354,
+    "pagamento:zero": 0.187,
+    "pagamento:repetida": -0.148,
+    "cancelamento:normal": 0.525,
+    "cancelamento:repetida": -0.042,
+    "cupom:normal": -0.136,
+    "cupom:limite": 0.154,
+    "cupom:repetida": -0.086
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.06,
+    "carrinho:zero": 0.215,
+    "carrinho:negativa": 0.044,
+    "carrinho:limite": 1.211,
+    "estoque:normal": 0.377,
+    "estoque:limite": 0.264,
+    "estoque:repetida": -0.109,
+    "pagamento:normal": 0.359,
+    "pagamento:zero": 0.003,
+    "pagamento:repetida": -0.402,
+    "cancelamento:normal": 0.617,
+    "cancelamento:repetida": -0.087,
+    "cupom:normal": 0.095,
+    "cupom:limite": 0.09,
+    "cupom:repetida": -0.153
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 21,
+    "bugs_teste": 4,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T04:05:40.727Z",
+   "semente": 4,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 38,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 54,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:normal"
+     }
+    ],
+    [
+     {
+      "passo": 15,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 15,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 5,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 5,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 6,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 22.33,
+    "bugs_teste": 3,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T04:05:40.730Z",
+   "semente": 4,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 11,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 29,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 29,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 20,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 20,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 28,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 26,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 5,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 5,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 6,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "estoque:normal"
+     },
+     {
+      "passo": 22,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 20.67,
+    "bugs_teste": 5,
+    "bugs_treino": 6
+   }
+  },
+  {
+   "data": "2026-09-30T04:27:33.804Z",
+   "semente": 5,
+   "condicao": "ativa",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 37,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 37,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 19,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [
+     {
+      "passo": 25,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.112,
+    "carrinho:zero": 0.184,
+    "carrinho:negativa": 0.102,
+    "carrinho:limite": 0.676,
+    "estoque:normal": 0.415,
+    "estoque:limite": 0.187,
+    "estoque:repetida": -0.076,
+    "pagamento:normal": 0.43,
+    "pagamento:zero": 0.1,
+    "pagamento:repetida": -0.375,
+    "cancelamento:normal": 0.647,
+    "cancelamento:repetida": -0.069,
+    "cupom:normal": -0.109,
+    "cupom:limite": 0.127,
+    "cupom:repetida": -0.071
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.117,
+    "carrinho:zero": 0.222,
+    "carrinho:negativa": 0.015,
+    "carrinho:limite": 1.2,
+    "estoque:normal": 0.327,
+    "estoque:limite": 0.03,
+    "estoque:repetida": -0.166,
+    "pagamento:normal": 0.447,
+    "pagamento:zero": 0.118,
+    "pagamento:repetida": -0.364,
+    "cancelamento:normal": 0.648,
+    "cancelamento:repetida": 0.037,
+    "cupom:normal": -0.069,
+    "cupom:limite": 0.121,
+    "cupom:repetida": -0.256
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 29,
+    "bugs_teste": 1,
+    "bugs_treino": 3
+   }
+  },
+  {
+   "data": "2026-09-30T04:47:43.733Z",
+   "semente": 5,
+   "condicao": "congelada",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 17,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [],
+    [
+     {
+      "passo": 19,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    []
+   ],
+   "valencia_antes": {
+    "carrinho:normal": -0.112,
+    "carrinho:zero": 0.184,
+    "carrinho:negativa": 0.102,
+    "carrinho:limite": 0.676,
+    "estoque:normal": 0.415,
+    "estoque:limite": 0.187,
+    "estoque:repetida": -0.076,
+    "pagamento:normal": 0.43,
+    "pagamento:zero": 0.1,
+    "pagamento:repetida": -0.375,
+    "cancelamento:normal": 0.647,
+    "cancelamento:repetida": -0.069,
+    "cupom:normal": -0.109,
+    "cupom:limite": 0.127,
+    "cupom:repetida": -0.071
+   },
+   "valencia_depois_do_treino": {
+    "carrinho:normal": 0.175,
+    "carrinho:zero": 0.17,
+    "carrinho:negativa": 0.042,
+    "carrinho:limite": 0.715,
+    "estoque:normal": 0.526,
+    "estoque:limite": 0.138,
+    "estoque:repetida": -0.023,
+    "pagamento:normal": 0.429,
+    "pagamento:zero": -0.131,
+    "pagamento:repetida": -0.329,
+    "cancelamento:normal": 0.63,
+    "cancelamento:repetida": 0.035,
+    "cupom:normal": -0.071,
+    "cupom:limite": 0.269,
+    "cupom:repetida": -0.127
+   },
+   "resumo": {
+    "primeiro_bug_teste_media": 31,
+    "bugs_teste": 0,
+    "bugs_treino": 2
+   }
+  },
+  {
+   "data": "2026-09-30T04:47:43.736Z",
+   "semente": 5,
+   "condicao": "aleatoria",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [],
+    [
+     {
+      "passo": 38,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 38,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 18,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 18,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 17,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 26.33,
+    "bugs_teste": 1,
+    "bugs_treino": 4
+   }
+  },
+  {
+   "data": "2026-09-30T04:47:43.738Z",
+   "semente": 5,
+   "condicao": "novidade",
+   "orcamento": 30,
+   "orcamento_treino": 60,
+   "visiveis": 3,
+   "sentir_s": 1,
+   "treino": [
+    [
+     {
+      "passo": 36,
+      "contrato": "cobranca-duplicada",
+      "acao": "pagamento:repetida"
+     }
+    ],
+    [
+     {
+      "passo": 22,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 31,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:normal"
+     }
+    ],
+    [
+     {
+      "passo": 16,
+      "contrato": "estoque-acima-do-inicial",
+      "acao": "cancelamento:repetida"
+     },
+     {
+      "passo": 16,
+      "contrato": "estoque-inconsistente",
+      "acao": "cancelamento:repetida"
+     }
+    ]
+   ],
+   "teste": [
+    [],
+    [],
+    [
+     {
+      "passo": 11,
+      "contrato": "total-negativo",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 11,
+      "contrato": "quantidade-negativa-aceita",
+      "acao": "carrinho:negativa"
+     },
+     {
+      "passo": 17,
+      "contrato": "desconto-acima-do-limite",
+      "acao": "cupom:repetida"
+     }
+    ]
+   ],
+   "resumo": {
+    "primeiro_bug_teste_media": 24.33,
+    "bugs_teste": 3,
+    "bugs_treino": 5
+   }
+  }
+ ]
+}

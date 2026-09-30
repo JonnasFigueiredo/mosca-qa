@@ -1,0 +1,151 @@
+{
+ "alvo": "estoque:repetida",
+ "cheiros": "docs/medicoes/qa-cheiros-kcs.json",
+ "metodo": "Worker real, cheiros calibrados se --cheiros. Depois de reset e aquecimento (15 cheiros), mede a valência (3 amostras de 1 s intercaladas) do alvo cancelamento:repetida e do controle carrinho:normal; pareia o alvo (2 s de cheiro, PAM 100 Hz nos últimos 0,5 s) até somar 1, 2, 4 e 8 vezes, medindo a cada etapa; depois cheira outras ações por 60 e 180 s e mede de novo. Ativa (plasticidade) contra congelada.",
+ "res": [
+  {
+   "semente": 11,
+   "plasticidade": true,
+   "antes": {
+    "alvo": 0.024,
+    "ctrl": -0.073
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.922,
+     "ctrl": -0.24
+    },
+    "2": {
+     "alvo": 1.034,
+     "ctrl": -0.352
+    },
+    "4": {
+     "alvo": 1.033,
+     "ctrl": -0.193
+    },
+    "8": {
+     "alvo": 1.064,
+     "ctrl": -0.275
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.881,
+     "ctrl": -0.346
+    },
+    "180": {
+     "alvo": 0.569,
+     "ctrl": -0.239
+    }
+   }
+  },
+  {
+   "semente": 11,
+   "plasticidade": false,
+   "antes": {
+    "alvo": 0.024,
+    "ctrl": -0.073
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": -0.012,
+     "ctrl": -0.147
+    },
+    "2": {
+     "alvo": 0.096,
+     "ctrl": -0.046
+    },
+    "4": {
+     "alvo": -0.112,
+     "ctrl": -0.051
+    },
+    "8": {
+     "alvo": 0.042,
+     "ctrl": -0.086
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": -0.054,
+     "ctrl": -0.252
+    },
+    "180": {
+     "alvo": 0.098,
+     "ctrl": -0.191
+    }
+   }
+  },
+  {
+   "semente": 12,
+   "plasticidade": true,
+   "antes": {
+    "alvo": -0.039,
+    "ctrl": -0.156
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.744,
+     "ctrl": -0.13
+    },
+    "2": {
+     "alvo": 1.009,
+     "ctrl": -0.217
+    },
+    "4": {
+     "alvo": 1.036,
+     "ctrl": -0.243
+    },
+    "8": {
+     "alvo": 1.234,
+     "ctrl": -0.273
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.845,
+     "ctrl": -0.311
+    },
+    "180": {
+     "alvo": 0.281,
+     "ctrl": -0.197
+    }
+   }
+  },
+  {
+   "semente": 12,
+   "plasticidade": false,
+   "antes": {
+    "alvo": -0.039,
+    "ctrl": -0.156
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": -0.052,
+     "ctrl": -0.081
+    },
+    "2": {
+     "alvo": -0.082,
+     "ctrl": -0.096
+    },
+    "4": {
+     "alvo": -0.056,
+     "ctrl": -0.061
+    },
+    "8": {
+     "alvo": -0.168,
+     "ctrl": -0.075
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.03,
+     "ctrl": -0.065
+    },
+    "180": {
+     "alvo": -0.001,
+     "ctrl": -0.066
+    }
+   }
+  }
+ ]
+}
