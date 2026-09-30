@@ -1,0 +1,270 @@
+{
+ "metodo": "Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.",
+ "sementes": [
+  71,
+  72,
+  73,
+  74,
+  75,
+  76,
+  77,
+  78,
+  79,
+  80,
+  81,
+  82,
+  83,
+  84,
+  85,
+  86
+ ],
+ "por_condicao": {
+  "ativa": {
+   "primeiro_bug_media": 13.21,
+   "bugs_teste_media": 2.25,
+   "bugs_treino_media": 10.5,
+   "transferencia_media": 5.81,
+   "controle_media": 28
+  },
+  "congelada": {
+   "primeiro_bug_media": 15.06,
+   "bugs_teste_media": 2.88,
+   "bugs_treino_media": 9.06,
+   "transferencia_media": 12.75,
+   "controle_media": 19.69
+  },
+  "aleatoria": {
+   "primeiro_bug_media": 11.85,
+   "bugs_teste_media": 3.88,
+   "bugs_treino_media": 7.81,
+   "transferencia_media": 11.78,
+   "controle_media": 12
+  },
+  "novidade": {
+   "primeiro_bug_media": 10.31,
+   "bugs_teste_media": 3.94,
+   "bugs_treino_media": 9.81,
+   "transferencia_media": 10.75,
+   "controle_media": 9.44
+  }
+ },
+ "pares": {
+  "ativa_menos_congelada": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": -1.86,
+    "ic95": [
+     -4.15,
+     0.54
+    ],
+    "por_semente": [
+     -6.34,
+     -1.67,
+     -6,
+     -3.33,
+     -9.67,
+     -1,
+     4,
+     -5.67,
+     -3.33,
+     2.67,
+     0,
+     -4,
+     4,
+     8.33,
+     -8.67,
+     1
+    ]
+   },
+   "bugs_teste": {
+    "media": -0.63,
+    "ic95": [
+     -1.13,
+     -0.13
+    ]
+   },
+   "transferencia": {
+    "media": -6.94,
+    "ic95": [
+     -9.13,
+     -4.88
+    ],
+    "por_semente": [
+     -9.5,
+     -2.5,
+     -8.5,
+     -5,
+     -14.5,
+     -1.5,
+     -8,
+     -12,
+     -7,
+     -10,
+     0,
+     -6,
+     -7,
+     0,
+     -13,
+     -6.5
+    ]
+   },
+   "controle": {
+    "media": 8.31,
+    "ic95": [
+     3.13,
+     14.06
+    ]
+   }
+  },
+  "ativa_menos_aleatoria": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": 1.35,
+    "ic95": [
+     -1.12,
+     3.73
+    ],
+    "por_semente": [
+     -0.67,
+     5,
+     -5.66,
+     5.33,
+     0.33,
+     -3.66,
+     -3.33,
+     -2,
+     -6.33,
+     7,
+     8.67,
+     0.66,
+     7,
+     8.33,
+     0,
+     1
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.63,
+    "ic95": [
+     -2,
+     -1.25
+    ]
+   },
+   "transferencia": {
+    "media": -5.97,
+    "ic95": [
+     -8.44,
+     -3.75
+    ],
+    "por_semente": [
+     -15.5,
+     -1,
+     -8.5,
+     -2,
+     -13.5,
+     -5.5,
+     -8,
+     -9.5,
+     -11.5,
+     -4.5,
+     0,
+     -2,
+     -3.5,
+     0,
+     -4,
+     -6.5
+    ]
+   },
+   "controle": {
+    "media": 16,
+    "ic95": [
+     10.75,
+     21.06
+    ]
+   }
+  },
+  "ativa_menos_novidade": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": 2.9,
+    "ic95": [
+     0.63,
+     5.12
+    ],
+    "por_semente": [
+     0,
+     6,
+     -2.33,
+     5.33,
+     4,
+     4.34,
+     1.33,
+     2,
+     -7,
+     2,
+     7.34,
+     2,
+     9.33,
+     8.33,
+     8.33,
+     -4.66
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.69,
+    "ic95": [
+     -2,
+     -1.31
+    ]
+   },
+   "transferencia": {
+    "media": -4.94,
+    "ic95": [
+     -7.72,
+     -2.5
+    ],
+    "por_semente": [
+     -8.5,
+     0.5,
+     -3.5,
+     -2,
+     -8.5,
+     -3.5,
+     -3.5,
+     -8,
+     -10.5,
+     -12,
+     0,
+     -0.5,
+     0,
+     0,
+     0,
+     -19
+    ]
+   },
+   "controle": {
+    "media": 18.56,
+    "ic95": [
+     13.81,
+     22.81
+    ]
+   }
+  }
+ },
+ "mudanca_de_valencia": {
+  "ativa": {
+   "repetidas": 0.946,
+   "outras": -0.068
+  },
+  "congelada": {
+   "repetidas": -0.002,
+   "outras": -0.006
+  }
+ },
+ "escolhas_teste": {
+  "ativa": 0.848,
+  "congelada": 0.533,
+  "aleatoria": 0.464,
+  "novidade": 0.447
+ }
+}
