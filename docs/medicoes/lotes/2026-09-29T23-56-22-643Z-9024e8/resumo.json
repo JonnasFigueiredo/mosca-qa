@@ -1,0 +1,109 @@
+{
+  "metodo": "Principal (depois): preferência pela pista recompensada nos dois testes após o treino, ativa menos congelada, média de A/B por semente; não depende do teste de antes. Ganho = preferência pela pista inicialmente recompensada após treino menos antes. Diferença pareada = ganho ativa menos congelada; média de A/B dentro de cada semente. Intervalo percentil de bootstrap de 2000 reamostragens das sementes, somente com pelo menos 5 sementes completas. Sessões sem visita a pistas têm preferência indefinida e ficam fora da estimativa: consultar ausências, falhas e cobertura. Comparações exploratórias entre variantes não corrigidas para multiplicidade; não provam utilidade em QA.",
+  "grupos": [
+    {
+      "variante": "mbon",
+      "condicao": "ativa",
+      "concluidas": 10,
+      "total": 10,
+      "preferencias": [
+        -2.2204460492503132e-17,
+        0.04439156225246889,
+        0.4567071977275187,
+        0.08016664029953059
+      ],
+      "semEscolha": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "ganho": 0.044391562252468944,
+      "tempoRealMedio": 262.6333
+    },
+    {
+      "variante": "mbon",
+      "condicao": "congelada",
+      "concluidas": 10,
+      "total": 10,
+      "preferencias": [
+        0,
+        0.190896250414759,
+        0.18578095845664594,
+        -0.021933542744068987
+      ],
+      "semEscolha": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "ganho": 0.19089625041475902,
+      "tempoRealMedio": 265.43989999999997
+    }
+  ],
+  "pares": [
+    {
+      "variante": "mbon",
+      "sementesTotal": 5,
+      "sementesCompletas": 5,
+      "diferencaMedia": -0.1465046881622901,
+      "intervalo95": [
+        -0.8236404134007096,
+        0.5306310370761295
+      ],
+      "efeitos": [
+        {
+          "semente": 505,
+          "diferenca": 0.7196726963613802
+        },
+        {
+          "semente": 404,
+          "diferenca": -0.9630154387336303
+        },
+        {
+          "semente": 202,
+          "diferenca": 0.745430809399475
+        },
+        {
+          "semente": 303,
+          "diferenca": -0.9575596816976122
+        },
+        {
+          "semente": 101,
+          "diferenca": -0.27705182614106333
+        }
+      ],
+      "depois": {
+        "sementesCompletas": 5,
+        "diferencaMedia": 0.06221077555429129,
+        "intervalo95": [
+          -0.4322460319686071,
+          0.6516993040475157
+        ],
+        "efeitos": [
+          {
+            "semente": 505,
+            "diferenca": 0.4420481352796942
+          },
+          {
+            "semente": 404,
+            "diferenca": -0.5054803221065415
+          },
+          {
+            "semente": 202,
+            "diferenca": 1.0853009912965352
+          },
+          {
+            "semente": 303,
+            "diferenca": -0.43945458893172135
+          },
+          {
+            "semente": 101,
+            "diferenca": -0.27136033776651014
+          }
+        ]
+      }
+    }
+  ]
+}

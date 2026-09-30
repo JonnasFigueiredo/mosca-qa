@@ -101,7 +101,7 @@ Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedi
 ## Onde parei
 
 - [~] T0 antes de treinar (1 e 2 feitos; 3 a 6 abertos)
-- [x] T1 piloto (ponte por sinapses): passou; a mesma campanha com a ponte pelas MBONs está rodando
+- [x] T1 piloto: passou com a ponte por sinapses; negativo com a ponte pelas MBONs
 - [ ] T2 retenção e consolidação
 - [ ] T3 memória entre sessões
 - [ ] T4 ampliar
@@ -149,4 +149,18 @@ média de A/B por semente (`core.mjs`); **0,74, IC95 [0,65; 0,82], 5/5 sementes*
 ativa, 1/10 congelada (< 30%). `node scripts/resumir_lote.mjs <id>` recalcula qualquer lote com a análise atual.
 Paralelo: caça a bugs só com o cérebro em 3 processos (sementes 1–5, 6–7, 8–9; arquivos `qa-abstrato*.json`, juntados
 por `qa_resumo.mjs`).
+
+**29/09, ponte pelas MBONs no treino: negativo.** Lote `2026-09-29T23-56-22-643Z-9024e8` (mesmas sementes e protocolo,
+`ponte: mbon`): `depois` ativa − congelada **0,06, IC95 [−0,43; 0,65]**, 5/5 sementes (ganho −0,15). Preferências ativa
+/ congelada: depois do treino +0,04 / +0,19; lados trocados +0,46 / +0,19. Com a ponte por sinapses, 0,74 [0,65; 0,82].
+No cérebro isolado o aprendizado aparece nas MBONs (T0), mas no corpo andando não vira preferência. Causas prováveis,
+não testadas: cheiro mais fraco nas antenas do que nas sondas de 100 Hz; leitura curta (média de ~0,5 s; na calibração
+da caça a bugs só com 1 s o ruído ficou abaixo do efeito); valência de nascença positiva nas duas pistas (A > B)
+encobrindo a mudança. **O padrão continua a ponte por sinapses.** A ponte pelas MBONs fica como opção.
+
+**Ressalva sobre a caça a bugs só com o cérebro (`qa_abstrato.mjs`):** a decisão desconta a valência de nascença de cada
+ação, medida no início e guardada numa tabela fora do cérebro. Isso é memória externa (o tipo de atalho que foi tirado
+da Cozinha). Os resultados em andamento valem como "o aprendizado do corpo cogumelar, lido com esse desconto"; o passo
+honesto seguinte é escolher os glomérulos de cada característica para que as 15 ações nasçam com valência parecida
+(calibração de cheiros, T0 item 2) e rodar sem desconto.
 

@@ -1,0 +1,1656 @@
+{
+  "id": "2026-09-29T23-56-22-643Z-9024e8",
+  "nome": "piloto-A-mbon",
+  "config": {
+    "nome": "piloto-A-mbon",
+    "sementes": [
+      101,
+      202,
+      303,
+      404,
+      505
+    ],
+    "variantes": [
+      {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon"
+      }
+    ],
+    "paralelas": 1,
+    "limiteMinutos": 20,
+    "tentativas": 2,
+    "memoriaMinGB": 2,
+    "guardarMemoria": true
+  },
+  "status": "concluido",
+  "criado": "2026-09-29T23:56:22.869Z",
+  "hash": "3b5e1f70d03647a0ae7f7577c75d2c74c74e4909ade6ac067b8b96f44017bc39",
+  "jobs": [
+    {
+      "id": "8c764f1e0836dcd3",
+      "variante": "mbon",
+      "semente": 505,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-29T23:56:23.234Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 8412,
+        "tempoRealS": 232.78
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          -1,
+          -1,
+          0.073349633251833
+        ],
+        "ganho": -2,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.7206666666666675,
+          0.5500000000000014,
+          0.8140000000000005,
+          0.5453333333333377
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 232.798,
+      "fim": "2026-09-30T00:00:17.110Z"
+    },
+    {
+      "id": "c434090f18aa5e5b",
+      "variante": "mbon",
+      "semente": 404,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-30T00:02:20.507Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 20488,
+        "tempoRealS": 205.317
+      },
+      "fim": "2026-09-30T00:05:46.906Z",
+      "metricas": {
+        "preferencias": [
+          0.5370611183354955,
+          0.5697674418604652,
+          1,
+          -1
+        ],
+        "ganho": 0.032706323524969716,
+        "primeira": [
+          "B",
+          "A",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5126666666666707,
+          0.11466666666666885,
+          0.35800000000000193,
+          0.4206666666666684
+        ],
+        "memoriaFinal": 0.018012047063393877
+      },
+      "tempoRealS": 205.403
+    },
+    {
+      "id": "c921a481c87f09a1",
+      "variante": "mbon",
+      "semente": 202,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-30T00:06:21.515Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 22328,
+        "tempoRealS": 309.803
+      },
+      "fim": "2026-09-30T00:11:32.293Z",
+      "metricas": {
+        "preferencias": [
+          -0.626556016597507,
+          1,
+          1,
+          null
+        ],
+        "ganho": 1.626556016597507,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          null
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "ocupacao": [
+          0.32133333333333663,
+          0.39866666666666845,
+          0.5913333333333346,
+          0
+        ],
+        "memoriaFinal": 0.013302795984660887
+      },
+      "tempoRealS": 309.833
+    },
+    {
+      "id": "90a5497cb6488f56",
+      "variante": "mbon",
+      "semente": 303,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:11:32.621Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 792,
+        "tempoRealS": 202.115
+      },
+      "metricas": {
+        "preferencias": [
+          0.8247422680412345,
+          1,
+          -1,
+          -0.4566037735849006
+        ],
+        "ganho": 0.17525773195876548,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5173333333333358,
+          0.552666666666668,
+          0.7300000000000008,
+          0.5300000000000044
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 202.142,
+      "fim": "2026-09-30T00:14:55.783Z"
+    },
+    {
+      "id": "02b00836aea823ad",
+      "variante": "mbon",
+      "semente": 303,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:14:56.491Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 3824,
+        "tempoRealS": 181.272
+      },
+      "metricas": {
+        "preferencias": [
+          -0.8247422680412345,
+          -1,
+          0.4846066134549552,
+          1
+        ],
+        "ganho": -0.17525773195876548,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5173333333333358,
+          0.25066666666666887,
+          0.5846666666666709,
+          0.7400000000000008
+        ],
+        "memoriaFinal": 0.013523027382948638
+      },
+      "tempoRealS": 181.293,
+      "fim": "2026-09-30T00:17:58.512Z"
+    },
+    {
+      "id": "d4742fcd7adc0844",
+      "variante": "mbon",
+      "semente": 303,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:17:58.981Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 21900,
+        "tempoRealS": 206.402
+      },
+      "metricas": {
+        "preferencias": [
+          -0.8247422680412345,
+          -1,
+          0.3273056057866159,
+          0.6296296296296267
+        ],
+        "ganho": -0.17525773195876548,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5173333333333358,
+          0.7960000000000006,
+          0.7373333333333371,
+          0.3060000000000032
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 206.425,
+      "fim": "2026-09-30T00:21:26.255Z"
+    },
+    {
+      "id": "e14d20150a39d38f",
+      "variante": "mbon",
+      "semente": 202,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:21:26.834Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 26800,
+        "tempoRealS": 218.022
+      },
+      "metricas": {
+        "preferencias": [
+          -0.626556016597507,
+          -1,
+          -0.4694960212201568,
+          -1
+        ],
+        "ganho": -0.37344398340249296,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.32133333333333663,
+          0.6153333333333345,
+          0.25133333333333696,
+          0.4486666666666683
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 218.043,
+      "fim": "2026-09-30T00:25:05.711Z"
+    },
+    {
+      "id": "2b7238688ceb9e70",
+      "variante": "mbon",
+      "semente": 303,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 303,
+          "corpo": 2447445130,
+          "mundo": 2709394203
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:25:05.780Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 29476,
+        "tempoRealS": 321.172
+      },
+      "metricas": {
+        "preferencias": [
+          0.8247422680412345,
+          -0.9151193633952246,
+          -1,
+          1
+        ],
+        "ganho": -1.739861631436459,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5173333333333358,
+          0.25133333333333574,
+          0.2100000000000023,
+          0.3773333333333352
+        ],
+        "memoriaFinal": 0.016241135680661767
+      },
+      "tempoRealS": 321.225,
+      "fim": "2026-09-30T00:30:28.457Z"
+    },
+    {
+      "id": "1af24a8f678ee2ce",
+      "variante": "mbon",
+      "semente": 505,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:30:28.560Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 16564,
+        "tempoRealS": 228.953
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          0.485587583148554,
+          1,
+          1
+        ],
+        "ganho": 1.485587583148554,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.7206666666666675,
+          0.6013333333333375,
+          0.3773333333333352,
+          0.14933333333333582
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 228.971,
+      "fim": "2026-09-30T00:34:19.234Z"
+    },
+    {
+      "id": "d243055c6d441ad6",
+      "variante": "mbon",
+      "semente": 202,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-30T00:35:09.314Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 10256,
+        "tempoRealS": 211.678
+      },
+      "fim": "2026-09-30T00:38:41.850Z",
+      "metricas": {
+        "preferencias": [
+          0.626556016597507,
+          1,
+          -1,
+          -0.40174672489082613
+        ],
+        "ganho": 0.37344398340249296,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.32133333333333663,
+          0.6053333333333345,
+          0.40600000000000175,
+          0.3053333333333374
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 211.697
+    },
+    {
+      "id": "0352fb12dbd1270c",
+      "variante": "mbon",
+      "semente": 505,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:38:42.052Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 4100,
+        "tempoRealS": 282.036
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          1,
+          0.026852846401718325,
+          -0.6744186046511594
+        ],
+        "ganho": 2,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.7206666666666675,
+          0.6886666666666675,
+          0.6206666666666707,
+          0.3726666666666698
+        ],
+        "memoriaFinal": 0.01363753583295968
+      },
+      "tempoRealS": 282.06,
+      "fim": "2026-09-30T00:43:24.935Z"
+    },
+    {
+      "id": "0cd8a947b7c39359",
+      "variante": "mbon",
+      "semente": 404,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:43:25.444Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 9812,
+        "tempoRealS": 284.54
+      },
+      "metricas": {
+        "preferencias": [
+          -0.5370611183354955,
+          -1,
+          0.9041095890410946,
+          -1
+        ],
+        "ganho": -0.4629388816645045,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5126666666666707,
+          0.04133333333333412,
+          0.38933333333333553,
+          0.5726666666666679
+        ],
+        "memoriaFinal": 0.015533733583466103
+      },
+      "tempoRealS": 284.564,
+      "fim": "2026-09-30T00:48:11.252Z"
+    },
+    {
+      "id": "2aca962bd2aff610",
+      "variante": "mbon",
+      "semente": 101,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T00:48:11.882Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 6192,
+        "tempoRealS": 591.779
+      },
+      "metricas": {
+        "preferencias": [
+          0.6035634743875228,
+          -0.07242339832868992,
+          1,
+          0.2061248527679602
+        ],
+        "ganho": -0.6759868727162127,
+        "primeira": [
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5986666666666705,
+          0.4786666666666711,
+          0.6953333333333342,
+          0.5660000000000043
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 591.816,
+      "fim": "2026-09-30T00:58:05.010Z"
+    },
+    {
+      "id": "1c14d33ecc35bfde",
+      "variante": "mbon",
+      "semente": 202,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 202,
+          "corpo": 2447445359,
+          "mundo": 2709394174
+        }
+      },
+      "status": "concluida",
+      "tentativas": 2,
+      "inicio": "2026-09-30T01:01:49.096Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 13344,
+        "tempoRealS": 297.47
+      },
+      "fim": "2026-09-30T01:06:48.941Z",
+      "metricas": {
+        "preferencias": [
+          0.626556016597507,
+          0.4908616187989502,
+          0.3808463251670345,
+          -1
+        ],
+        "ganho": -0.13569439779855685,
+        "primeira": [
+          "B",
+          "A",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.32133333333333663,
+          0.5106666666666709,
+          0.29933333333333745,
+          0.5873333333333346
+        ],
+        "memoriaFinal": 0.016341685197719946
+      },
+      "tempoRealS": 297.513
+    },
+    {
+      "id": "c11aca62e084bfdb",
+      "variante": "mbon",
+      "semente": 101,
+      "alvo": "A",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:06:49.393Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 23748,
+        "tempoRealS": 233.923
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          -0.6265270506108165,
+          1,
+          0.3959183673469349
+        ],
+        "ganho": -1.6265270506108165,
+        "primeira": [
+          "A",
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.49333333333333484,
+          0.3820000000000034,
+          0.02466666666666713,
+          0.32666666666667077
+        ],
+        "memoriaFinal": 0.011891291524040226
+      },
+      "tempoRealS": 233.947,
+      "fim": "2026-09-30T01:10:44.241Z"
+    },
+    {
+      "id": "34241c277a162369",
+      "variante": "mbon",
+      "semente": 505,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 505,
+          "corpo": 2447445084,
+          "mundo": 2709394381
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:10:44.451Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 20788,
+        "tempoRealS": 223.942
+      },
+      "metricas": {
+        "preferencias": [
+          1,
+          -0.07506702412868549,
+          0.3019943019942982,
+          1
+        ],
+        "ganho": -1.0750670241286855,
+        "primeira": [
+          "B",
+          "B",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.7206666666666675,
+          0.4973333333333378,
+          0.4680000000000045,
+          0.25800000000000217
+        ],
+        "memoriaFinal": 0.01622483460972335
+      },
+      "tempoRealS": 223.971,
+      "fim": "2026-09-30T01:14:29.240Z"
+    },
+    {
+      "id": "d17d51ee01dda0a3",
+      "variante": "mbon",
+      "semente": 404,
+      "alvo": "A",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "A",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:14:29.348Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 9844,
+        "tempoRealS": 230.74
+      },
+      "metricas": {
+        "preferencias": [
+          -0.5370611183354955,
+          0.4957983193277258,
+          1,
+          -0.7728337236533925
+        ],
+        "ganho": 1.0328594376632214,
+        "primeira": [
+          "B",
+          "A",
+          "A",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5126666666666707,
+          0.5553333333333376,
+          0.10866666666666874,
+          0.569333333333336
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 230.764,
+      "fim": "2026-09-30T01:18:20.979Z"
+    },
+    {
+      "id": "9d5034331e31dbd4",
+      "variante": "mbon",
+      "semente": 404,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 404,
+          "corpo": 2447445041,
+          "mundo": 2709394336
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:18:21.370Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 12984,
+        "tempoRealS": 276.229
+      },
+      "metricas": {
+        "preferencias": [
+          0.5370611183354955,
+          1,
+          1,
+          0.29133858267716284
+        ],
+        "ganho": 0.4629388816645045,
+        "primeira": [
+          "B",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5126666666666707,
+          0.30800000000000205,
+          0.17866666666666906,
+          0.6773333333333372
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 276.257,
+      "fim": "2026-09-30T01:22:58.542Z"
+    },
+    {
+      "id": "7a5b682309a47742",
+      "variante": "mbon",
+      "semente": 101,
+      "alvo": "B",
+      "condicao": "congelada",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": false,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:22:59.209Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 19496,
+        "tempoRealS": 255.454
+      },
+      "metricas": {
+        "preferencias": [
+          -0.6035634743875228,
+          1,
+          1,
+          0.21140609636184673
+        ],
+        "ganho": 1.603563474387523,
+        "primeira": [
+          "A",
+          "B",
+          "B",
+          "B"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.5986666666666705,
+          0.6706666666666676,
+          0.4613333333333349,
+          0.6780000000000039
+        ],
+        "memoriaFinal": 0
+      },
+      "tempoRealS": 255.486,
+      "fim": "2026-09-30T01:27:15.828Z"
+    },
+    {
+      "id": "a520a67f016e408d",
+      "variante": "mbon",
+      "semente": 101,
+      "alvo": "B",
+      "condicao": "ativa",
+      "config": {
+        "nome": "mbon",
+        "repeticoes": 3,
+        "segundos": 15,
+        "odorHz": 100,
+        "recompensaHz": 100,
+        "tauF": 90000,
+        "retencao": 0,
+        "ponte": "mbon",
+        "alvo": "B",
+        "plasticidade": true,
+        "manual": true,
+        "sementes": {
+          "cerebro": 101,
+          "corpo": 2447445440,
+          "mundo": 2709394001
+        }
+      },
+      "status": "concluida",
+      "tentativas": 1,
+      "inicio": "2026-09-30T01:27:16.527Z",
+      "erro": null,
+      "progresso": {
+        "ativa": false,
+        "t": 96.00000000001221,
+        "fase": "Concluída",
+        "indice": 28,
+        "pid": 2012,
+        "tempoRealS": 286.497
+      },
+      "metricas": {
+        "preferencias": [
+          -1,
+          1,
+          0.46866230121608593,
+          1
+        ],
+        "ganho": 2,
+        "primeira": [
+          "A",
+          "B",
+          "B",
+          "A"
+        ],
+        "semEscolha": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "ocupacao": [
+          0.49333333333333484,
+          0.8773333333333337,
+          0.7126666666666704,
+          0.30200000000000204
+        ],
+        "memoriaFinal": 0.01321345174543842
+      },
+      "tempoRealS": 286.524,
+      "fim": "2026-09-30T01:32:04.629Z"
+    }
+  ],
+  "eventos": [
+    {
+      "data": "2026-09-29T23:56:22.895Z",
+      "tipo": "criado",
+      "sessoes": 20
+    },
+    {
+      "data": "2026-09-29T23:56:22.924Z",
+      "tipo": "retomar"
+    },
+    {
+      "data": "2026-09-29T23:56:23.234Z",
+      "tipo": "iniciou",
+      "job": "8c764f1e0836dcd3",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:00:17.110Z",
+      "tipo": "concluiu",
+      "job": "8c764f1e0836dcd3"
+    },
+    {
+      "data": "2026-09-30T00:00:17.419Z",
+      "tipo": "iniciou",
+      "job": "c434090f18aa5e5b",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:02:20.504Z",
+      "tipo": "falhou",
+      "job": "c434090f18aa5e5b",
+      "mensagem": "EPERM: operation not permitted, rename 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\_39eb49ac-c1a7-4604-8de3-e44c0f959baa.tmp' -> 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\resumo.json'"
+    },
+    {
+      "data": "2026-09-30T00:02:20.507Z",
+      "tipo": "iniciou",
+      "job": "c434090f18aa5e5b",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-30T00:05:46.906Z",
+      "tipo": "concluiu",
+      "job": "c434090f18aa5e5b"
+    },
+    {
+      "data": "2026-09-30T00:05:47.225Z",
+      "tipo": "iniciou",
+      "job": "c921a481c87f09a1",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:06:20.947Z",
+      "tipo": "falhou",
+      "job": "c921a481c87f09a1",
+      "mensagem": "EPERM: operation not permitted, rename 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\_d6175d14-51fb-4fbd-8cc8-3d7385f735d4.tmp' -> 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\resumo.json'"
+    },
+    {
+      "data": "2026-09-30T00:06:21.515Z",
+      "tipo": "iniciou",
+      "job": "c921a481c87f09a1",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-30T00:11:32.293Z",
+      "tipo": "concluiu",
+      "job": "c921a481c87f09a1"
+    },
+    {
+      "data": "2026-09-30T00:11:32.621Z",
+      "tipo": "iniciou",
+      "job": "90a5497cb6488f56",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:14:55.783Z",
+      "tipo": "concluiu",
+      "job": "90a5497cb6488f56"
+    },
+    {
+      "data": "2026-09-30T00:14:56.491Z",
+      "tipo": "iniciou",
+      "job": "02b00836aea823ad",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:17:58.512Z",
+      "tipo": "concluiu",
+      "job": "02b00836aea823ad"
+    },
+    {
+      "data": "2026-09-30T00:17:58.981Z",
+      "tipo": "iniciou",
+      "job": "d4742fcd7adc0844",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:21:26.255Z",
+      "tipo": "concluiu",
+      "job": "d4742fcd7adc0844"
+    },
+    {
+      "data": "2026-09-30T00:21:26.835Z",
+      "tipo": "iniciou",
+      "job": "e14d20150a39d38f",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:25:05.711Z",
+      "tipo": "concluiu",
+      "job": "e14d20150a39d38f"
+    },
+    {
+      "data": "2026-09-30T00:25:05.780Z",
+      "tipo": "iniciou",
+      "job": "2b7238688ceb9e70",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:30:28.457Z",
+      "tipo": "concluiu",
+      "job": "2b7238688ceb9e70"
+    },
+    {
+      "data": "2026-09-30T00:30:28.560Z",
+      "tipo": "iniciou",
+      "job": "1af24a8f678ee2ce",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:34:19.234Z",
+      "tipo": "concluiu",
+      "job": "1af24a8f678ee2ce"
+    },
+    {
+      "data": "2026-09-30T00:34:19.849Z",
+      "tipo": "iniciou",
+      "job": "d243055c6d441ad6",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:35:09.030Z",
+      "tipo": "falhou",
+      "job": "d243055c6d441ad6",
+      "mensagem": "EPERM: operation not permitted, rename 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\_c65965ec-50c5-49a5-a993-88afea18dfb0.tmp' -> 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\resumo.json'"
+    },
+    {
+      "data": "2026-09-30T00:35:09.315Z",
+      "tipo": "iniciou",
+      "job": "d243055c6d441ad6",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-30T00:38:41.850Z",
+      "tipo": "concluiu",
+      "job": "d243055c6d441ad6"
+    },
+    {
+      "data": "2026-09-30T00:38:42.053Z",
+      "tipo": "iniciou",
+      "job": "0352fb12dbd1270c",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:43:24.935Z",
+      "tipo": "concluiu",
+      "job": "0352fb12dbd1270c"
+    },
+    {
+      "data": "2026-09-30T00:43:25.444Z",
+      "tipo": "iniciou",
+      "job": "0cd8a947b7c39359",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:48:11.252Z",
+      "tipo": "concluiu",
+      "job": "0cd8a947b7c39359"
+    },
+    {
+      "data": "2026-09-30T00:48:11.882Z",
+      "tipo": "iniciou",
+      "job": "2aca962bd2aff610",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T00:58:05.010Z",
+      "tipo": "concluiu",
+      "job": "2aca962bd2aff610"
+    },
+    {
+      "data": "2026-09-30T01:01:02.512Z",
+      "tipo": "iniciou",
+      "job": "1c14d33ecc35bfde",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:01:48.589Z",
+      "tipo": "falhou",
+      "job": "1c14d33ecc35bfde",
+      "mensagem": "EPERM: operation not permitted, rename 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\_366a0317-0440-440c-a9c3-24b5a190f51a.tmp' -> 'D:\\Projetos\\mosca-qa\\docs\\medicoes\\lotes\\2026-09-29T23-56-22-643Z-9024e8\\resumo.json'"
+    },
+    {
+      "data": "2026-09-30T01:01:49.096Z",
+      "tipo": "iniciou",
+      "job": "1c14d33ecc35bfde",
+      "tentativa": 2
+    },
+    {
+      "data": "2026-09-30T01:06:48.942Z",
+      "tipo": "concluiu",
+      "job": "1c14d33ecc35bfde"
+    },
+    {
+      "data": "2026-09-30T01:06:49.393Z",
+      "tipo": "iniciou",
+      "job": "c11aca62e084bfdb",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:10:44.241Z",
+      "tipo": "concluiu",
+      "job": "c11aca62e084bfdb"
+    },
+    {
+      "data": "2026-09-30T01:10:44.451Z",
+      "tipo": "iniciou",
+      "job": "34241c277a162369",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:14:29.240Z",
+      "tipo": "concluiu",
+      "job": "34241c277a162369"
+    },
+    {
+      "data": "2026-09-30T01:14:29.348Z",
+      "tipo": "iniciou",
+      "job": "d17d51ee01dda0a3",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:18:20.979Z",
+      "tipo": "concluiu",
+      "job": "d17d51ee01dda0a3"
+    },
+    {
+      "data": "2026-09-30T01:18:21.370Z",
+      "tipo": "iniciou",
+      "job": "9d5034331e31dbd4",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:22:58.542Z",
+      "tipo": "concluiu",
+      "job": "9d5034331e31dbd4"
+    },
+    {
+      "data": "2026-09-30T01:22:59.209Z",
+      "tipo": "iniciou",
+      "job": "7a5b682309a47742",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:27:15.828Z",
+      "tipo": "concluiu",
+      "job": "7a5b682309a47742"
+    },
+    {
+      "data": "2026-09-30T01:27:16.527Z",
+      "tipo": "iniciou",
+      "job": "a520a67f016e408d",
+      "tentativa": 1
+    },
+    {
+      "data": "2026-09-30T01:32:04.629Z",
+      "tipo": "concluiu",
+      "job": "a520a67f016e408d"
+    }
+  ],
+  "atualizado": "2026-09-30T01:32:04.630Z"
+}
