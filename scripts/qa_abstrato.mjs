@@ -133,7 +133,7 @@ if (process.argv.includes('--calibrar-cheiros')) {
     if (t.custo < melhor.custo) { atual = tentativa; melhor = t; } else Q.usarCheiros(atual);
     historico.push({ iter: it, custo: +t.custo.toFixed(4), aceito: t === melhor });
     console.log(it, car, t.custo.toFixed(4), t === melhor ? 'aceito' : '', 'melhor', melhor.custo.toFixed(4));
-    writeFileSync(COM_KCS ? 'docs/medicoes/qa-cheiros-kcs.json' : 'docs/medicoes/qa-cheiros.json', JSON.stringify({ metodo: 'Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).', inicial: { mapa: inicial.mapa, custo: inicial.custo, valencias: inicial.v }, melhor: atual, custo_melhor: melhor.custo, valencias_melhor: melhor.v, kcs_melhor: melhor.kcs, evitar_rec_melhor: melhor.evitar_rec, com_kcs: COM_KCS, historico }, null, 1) + '\n');
+    writeFileSync(arg('saida-cheiros', COM_KCS ? 'docs/medicoes/qa-cheiros-kcs.json' : 'docs/medicoes/qa-cheiros.json'), JSON.stringify({ metodo: 'Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).', inicial: { mapa: inicial.mapa, custo: inicial.custo, valencias: inicial.v }, melhor: atual, custo_melhor: melhor.custo, valencias_melhor: melhor.v, kcs_melhor: melhor.kcs, evitar_rec_melhor: melhor.evitar_rec, com_kcs: COM_KCS, historico }, null, 1) + '\n');
   }
   await w.terminate(); process.exit(0);
 }
@@ -175,6 +175,22 @@ if (process.argv.includes('--kcs')) {
     res[id] = { kcs: kcs.size, evitar_rec_hz: +(rec / G.mbon_evitar_rec.length).toFixed(2) }; console.log(id, JSON.stringify(res[id]));
   }
   writeFileSync('docs/medicoes/qa-kcs.json', JSON.stringify({ metodo: 'Worker real, pesos congelados, semente 11. Cada cheiro (100 Hz bilateral) por 1 s, 1 s sem odor entre eles. kcs = KCs distintos que dispararam; evitar_rec_hz = Hz por neurônio de mbon_evitar_rec (a saída que o açúcar enfraquece).', cheiros: arg('cheiros', 'padrao'), res }, null, 1) + '\n');
+  await w.terminate(); process.exit(0);
+}
+// --glomerulos: cada glomérulo do conjunto permitido sozinho (1 s, 100 Hz bilateral): KCs acesos, mbon_evitar_rec e
+// valência. Para escolher pares fortes para as características (cheiros com poucos KCs não aprendem, qa-dose-kcs.json).
+if (process.argv.includes('--glomerulos')) {
+  const INATOS = ['DM1', 'VA2', 'DM2', 'DM3', 'DM4', 'DP1m', 'DA2', 'V', 'DP1l'];
+  const POOL = Object.keys(G).filter(k => k.startsWith('ORN_') && k.endsWith('_L')).map(k => k.slice(4, -2)).filter(g => !INATOS.includes(g) && G['ORN_' + g + '_L'].length >= 6);
+  CONTA_KC = true; const res = {};
+  w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: false }); w.postMessage({ type: 'semente', valor: 11 });
+  await roda(1, {});
+  for (const g of POOL) {
+    const v = await roda(1, Object.fromEntries(['L', 'R'].map(l => ['ORN_' + g + '_' + l, 100])));
+    res[g] = { kcs: ULTIMO.kcs.size, evitar_rec: +ULTIMO.rec.toFixed(2), valencia: +v.toFixed(3) }; await roda(0.5, {});
+    console.log(g, JSON.stringify(res[g]));
+  }
+  writeFileSync('docs/medicoes/qa-glomerulos.json', JSON.stringify({ metodo: 'Worker real, pesos congelados, semente 11. Cada glomérulo permitido (sem os inatos da Cozinha e da bancada, 6+ ORNs) sozinho a 100 Hz bilateral por 1 s, 0,5 s sem odor entre eles. kcs = KCs distintos; evitar_rec = Hz por neurônio; valencia = aproximar - evitar.', res }, null, 1) + '\n');
   await w.terminate(); process.exit(0);
 }
 if (process.argv.includes('--dose')) {

@@ -198,3 +198,11 @@ com poucos KCs não aprende. Esquecimento: depois de 60 s cheirando outras açõ
 +0,28/+0,57. O treino dura ~10 min, então o esquecimento (τ 90 s) também pesa. Próximo: glomérulos fortes para
 "repetida" (e para todas as características), e treino mais curto ou teste logo depois.
 Referência com desconto (sementes 1–5, `qa-abstrato-resumo.json`): também negativa, treinada − congelada +2,8 [−1,2; 6,8].
+
+**30/09, cheiros fortes e nova série.** `--glomerulos` (`qa-glomerulos.json`): dos 34 glomérulos permitidos, poucos
+acendem KCs sozinhos (DC1 73, VA6 58, VL2a 48, VC1 36; metade ≤5). "repetida" recebe DC1+VA6; ajuste fino `--com-kcs`
+(40 iterações, `qa-cheiros-fortes.json`): as três "repetida" acendem 87–107 KCs (antes 34–40), evitar_rec 2,0–2,5 Hz;
+valência de nascença de todas em [−0,35; +0,50], as "repetida" em +0,04 a +0,42. Ressalva: esse leve viés de nascença
+a favor de "repetida" vale igual para treinada e congelada (a comparação do critério), mas não para aleatória e
+novidade. Série `qa-fortes-p1..p4` (sementes 11–18), mesmo critério escrito antes (treinada − congelada no primeiro bug
+de teste, IC95 < 0). Resumo: `node scripts/qa_resumo.mjs --prefixo qa-fortes`.
