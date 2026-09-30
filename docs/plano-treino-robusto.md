@@ -206,3 +206,9 @@ valência de nascença de todas em [−0,35; +0,50], as "repetida" em +0,04 a +0
 a favor de "repetida" vale igual para treinada e congelada (a comparação do critério), mas não para aleatória e
 novidade. Série `qa-fortes-p1..p4` (sementes 11–18), mesmo critério escrito antes (treinada − congelada no primeiro bug
 de teste, IC95 < 0). Resumo: `node scripts/qa_resumo.mjs --prefixo qa-fortes`.
+
+**30/09, rotina da madrugada (`scripts/madrugada.mjs`), escada escrita antes de ver resultados.** 1) `qa-fortes`
+(em andamento); 2) `qa-fortes-curto`: 2 treinos de 30 ações, sementes 21–28 (menos tempo para esquecer); 3)
+`qa-fortes-espacado`: 6 treinos de 20 ações, sementes 31–38. Critério igual em todas. Se uma passar, replica com
+sementes 41–48 antes de contar como achado; replicou, para. Cada degrau anota aqui e commita as medições. São até 3
+comparações: um "passou" sem replicação não vale como resultado. Log: `_tmp/_madrugada.log`.
