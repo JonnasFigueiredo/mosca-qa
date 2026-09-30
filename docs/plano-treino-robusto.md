@@ -214,3 +214,5 @@ sementes 41–48 antes de contar como achado; replicou, para. Cada degrau anota 
 comparações: um "passou" sem replicação não vale como resultado. Log: `_tmp/_madrugada.log`.
 
 **2026-09-30, madrugada: qa-fortes (cheiros fortes, treino padrão (3 × 60 ações)): negativo.** Sementes 11, 12, 13, 14, 15, 16, 17, 18. Primeiro bug de teste: treinada 23,5, congelada 23,67, aleatória 19,67, novidade 22,92. Treinada − congelada -0,17, IC95 [-2.46,2.08]. Valência depois do treino (treinada): repetidas 0,265, outras -0,002. `docs/medicoes/qa-fortes-resumo.json`.
+
+**2026-09-30, madrugada: qa-fortes-curto (treino curto (2 × 30 ações): menos tempo para esquecer): negativo.** Sementes 21, 22, 23, 24, 25, 26, 27, 28. Primeiro bug de teste: treinada 21,29, congelada 21,29, aleatória 19,04, novidade 24,17. Treinada − congelada 0, IC95 [-1.96,1.92]. Valência depois do treino (treinada): repetidas 0,169, outras -0,016. `docs/medicoes/qa-fortes-curto-resumo.json`.
