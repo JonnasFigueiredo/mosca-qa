@@ -325,3 +325,5 @@ linha de base: a decepção deve levar a mosca na direção do RW que aprende co
 controle, alguma perda na transferência).
 
 Cada série entra na família de Holm (`qa_comparacoes.mjs`, rodado pela rotina a cada série).
+
+**2026-09-30, madrugada: qa-b2-cheiro-trocado (controle sensorial: "repetida" com os glomérulos de "normal" e vice-versa (o aprendizado não depende de um cheiro específico)): negativo.** Sementes 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106. Primeiro bug de teste: treinada 20,96, congelada 22,9, aleatória 14,42, novidade 10,75. Treinada − congelada -2,09, IC95 [-5.38,1.34]. Transferência: treinada 17,66, congelada 19,75, aleatória 14,09, novidade 11; controle (não deve melhorar): treinada − congelada -1,63 [-4.88,0]. Fração das vezes em que escolheu uma repetida visível no teste: {"ativa":0.304,"congelada":0.294,"aleatoria":0.423,"novidade":0.437}. Valência depois do treino (treinada): repetidas 0,27, outras 0,02. `docs/medicoes/qa-b2-cheiro-trocado-resumo.json`.
