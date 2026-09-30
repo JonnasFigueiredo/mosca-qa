@@ -269,3 +269,5 @@ Espera a rotina b2 terminar e segue um de dois ramos, cada degrau com 16 semente
 Novo registro em toda série: a fração das vezes em que a mosca escolheu uma repetida visível no teste
 (`escolhas_teste`), para ver se a memória vira escolha mesmo quando não vira bug achado. Até 4 comparações novas: um
 degrau que passe sem replicar não conta.
+
+**2026-09-30, madrugada: qa-b2 (bancada 2, treino espaçado 6 × 20, teste sem recompensa): PASSOU.** Sementes 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66. Primeiro bug de teste: treinada 14,98, congelada 17,13, aleatória 13,06, novidade 9,9. Treinada − congelada -5,06, IC95 [-8,-2.31]. Transferência: treinada 8,78, congelada 13,84, aleatória 15,41, novidade 10,22; controle (não deve melhorar): treinada − congelada 3,69 [-2.13,9.75]. Valência depois do treino (treinada): repetidas 1,026, outras -0,07. `docs/medicoes/qa-b2-resumo.json`.
