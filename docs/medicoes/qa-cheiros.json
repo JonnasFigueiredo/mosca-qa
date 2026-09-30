@@ -1,0 +1,331 @@
+{
+ "metodo": "Busca local: a cada iteração troca um glomérulo de uma característica por outro livre (sem os da atração inata da Cozinha e da bancada A/B, com 6+ ORNs); aceita se a média dos quadrados da valência das 15 ações cai. Pesos congelados, semente 5, aquecimento de 15 cheiros; valência com amostra de 1 s. Uma medida por ação por iteração (ruído ~0,15).",
+ "inicial": {
+  "mapa": {
+   "carrinho": [
+    "DL3",
+    "VM2"
+   ],
+   "estoque": [
+    "DL4",
+    "VM3"
+   ],
+   "pagamento": [
+    "DL5",
+    "VM4"
+   ],
+   "cancelamento": [
+    "DC4",
+    "VM5d"
+   ],
+   "cupom": [
+    "VC4",
+    "VL1"
+   ],
+   "normal": [
+    "DM5",
+    "VA6"
+   ],
+   "zero": [
+    "VL2a",
+    "DC2"
+   ],
+   "limite": [
+    "DL1",
+    "VC2"
+   ],
+   "negativa": [
+    "VM7v",
+    "DA4m"
+   ],
+   "repetida": [
+    "VA4",
+    "DA3"
+   ]
+  },
+  "custo": 0.10181233333333334,
+  "valencias": {
+   "carrinho:normal": 0.001,
+   "carrinho:zero": 0.052,
+   "carrinho:negativa": 0.18,
+   "carrinho:limite": 0.735,
+   "estoque:normal": 0.473,
+   "estoque:limite": 0.109,
+   "estoque:repetida": 0.015,
+   "pagamento:normal": 0.264,
+   "pagamento:zero": 0.258,
+   "pagamento:repetida": -0.649,
+   "cancelamento:normal": 0.329,
+   "cancelamento:repetida": 0.088,
+   "cupom:normal": 0.102,
+   "cupom:limite": 0.083,
+   "cupom:repetida": -0.159
+  }
+ },
+ "melhor": {
+  "carrinho": [
+   "DL3",
+   "VM2"
+  ],
+  "estoque": [
+   "DL4",
+   "DC1"
+  ],
+  "pagamento": [
+   "VC3",
+   "VM4"
+  ],
+  "cancelamento": [
+   "DL2v",
+   "VM5d"
+  ],
+  "cupom": [
+   "VC4",
+   "VL1"
+  ],
+  "normal": [
+   "DM5",
+   "VA6"
+  ],
+  "zero": [
+   "VL2a",
+   "DC2"
+  ],
+  "limite": [
+   "VM1",
+   "VC2"
+  ],
+  "negativa": [
+   "DA4l",
+   "VC1"
+  ],
+  "repetida": [
+   "VA4",
+   "DA3"
+  ]
+ },
+ "custo_melhor": 0.02618733333333333,
+ "valencias_melhor": {
+  "carrinho:normal": 0.054,
+  "carrinho:zero": 0.11,
+  "carrinho:negativa": -0.185,
+  "carrinho:limite": -0.07,
+  "estoque:normal": 0.361,
+  "estoque:limite": 0.197,
+  "estoque:repetida": -0.114,
+  "pagamento:normal": -0.217,
+  "pagamento:zero": -0.064,
+  "pagamento:repetida": 0.06,
+  "cancelamento:normal": 0.23,
+  "cancelamento:repetida": 0.058,
+  "cupom:normal": 0.131,
+  "cupom:limite": 0.082,
+  "cupom:repetida": -0.147
+ },
+ "historico": [
+  {
+   "iter": 0,
+   "custo": 0.1018
+  },
+  {
+   "iter": 1,
+   "custo": 0.1357,
+   "aceito": false
+  },
+  {
+   "iter": 2,
+   "custo": 0.0614,
+   "aceito": true
+  },
+  {
+   "iter": 3,
+   "custo": 0.0792,
+   "aceito": false
+  },
+  {
+   "iter": 4,
+   "custo": 0.0749,
+   "aceito": false
+  },
+  {
+   "iter": 5,
+   "custo": 0.0807,
+   "aceito": false
+  },
+  {
+   "iter": 6,
+   "custo": 0.0916,
+   "aceito": false
+  },
+  {
+   "iter": 7,
+   "custo": 0.2336,
+   "aceito": false
+  },
+  {
+   "iter": 8,
+   "custo": 0.102,
+   "aceito": false
+  },
+  {
+   "iter": 9,
+   "custo": 0.0825,
+   "aceito": false
+  },
+  {
+   "iter": 10,
+   "custo": 0.0936,
+   "aceito": false
+  },
+  {
+   "iter": 11,
+   "custo": 0.0659,
+   "aceito": false
+  },
+  {
+   "iter": 12,
+   "custo": 0.0931,
+   "aceito": false
+  },
+  {
+   "iter": 13,
+   "custo": 0.0523,
+   "aceito": true
+  },
+  {
+   "iter": 14,
+   "custo": 0.0667,
+   "aceito": false
+  },
+  {
+   "iter": 15,
+   "custo": 0.0799,
+   "aceito": false
+  },
+  {
+   "iter": 16,
+   "custo": 0.0476,
+   "aceito": true
+  },
+  {
+   "iter": 17,
+   "custo": 0.0556,
+   "aceito": false
+  },
+  {
+   "iter": 18,
+   "custo": 0.081,
+   "aceito": false
+  },
+  {
+   "iter": 19,
+   "custo": 0.0874,
+   "aceito": false
+  },
+  {
+   "iter": 20,
+   "custo": 0.032,
+   "aceito": true
+  },
+  {
+   "iter": 21,
+   "custo": 0.0637,
+   "aceito": false
+  },
+  {
+   "iter": 22,
+   "custo": 0.0998,
+   "aceito": false
+  },
+  {
+   "iter": 23,
+   "custo": 0.0434,
+   "aceito": false
+  },
+  {
+   "iter": 24,
+   "custo": 0.0514,
+   "aceito": false
+  },
+  {
+   "iter": 25,
+   "custo": 0.0315,
+   "aceito": true
+  },
+  {
+   "iter": 26,
+   "custo": 0.0543,
+   "aceito": false
+  },
+  {
+   "iter": 27,
+   "custo": 0.0847,
+   "aceito": false
+  },
+  {
+   "iter": 28,
+   "custo": 0.0525,
+   "aceito": false
+  },
+  {
+   "iter": 29,
+   "custo": 0.0679,
+   "aceito": false
+  },
+  {
+   "iter": 30,
+   "custo": 0.0655,
+   "aceito": false
+  },
+  {
+   "iter": 31,
+   "custo": 0.0535,
+   "aceito": false
+  },
+  {
+   "iter": 32,
+   "custo": 0.0665,
+   "aceito": false
+  },
+  {
+   "iter": 33,
+   "custo": 0.0713,
+   "aceito": false
+  },
+  {
+   "iter": 34,
+   "custo": 0.0469,
+   "aceito": false
+  },
+  {
+   "iter": 35,
+   "custo": 0.0746,
+   "aceito": false
+  },
+  {
+   "iter": 36,
+   "custo": 0.0415,
+   "aceito": false
+  },
+  {
+   "iter": 37,
+   "custo": 0.0262,
+   "aceito": true
+  },
+  {
+   "iter": 38,
+   "custo": 0.0516,
+   "aceito": false
+  },
+  {
+   "iter": 39,
+   "custo": 0.0418,
+   "aceito": false
+  },
+  {
+   "iter": 40,
+   "custo": 0.0589,
+   "aceito": false
+  }
+ ]
+}

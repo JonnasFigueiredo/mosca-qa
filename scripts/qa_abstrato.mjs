@@ -155,7 +155,7 @@ for (const semente of SEMENTES) {
   for (const cond of CONDICOES) {
     const comCerebro = ['ativa', 'congelada', 'ingenua'].includes(cond);
     const rnd = gerador(semente * 31 + 17);
-    const r = { semente, condicao: cond, orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, treino: [], teste: [] };
+    const r = { semente, condicao: cond, orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, desconto: DESCONTO, cheiros: arg('cheiros', 'padrao'), treino: [], teste: [] };
     if (comCerebro) {
       w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: cond !== 'congelada' }); w.postMessage({ type: 'semente', valor: semente });
       await roda(1, {});

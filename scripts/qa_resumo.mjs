@@ -4,7 +4,9 @@
 // outras, depois do treino. Grava docs/medicoes/qa-abstrato-resumo.json.   uso: node scripts/qa_resumo.mjs
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 // junta qa-abstrato.json e qa-abstrato-*.json (processos em paralelo), menos o próprio resumo
-const arquivos = readdirSync('docs/medicoes').filter(f => /^qa-abstrato(-p\d+)?\.json$/.test(f));
+// --prefixo: outra série (ex.: qa-honesto, sem desconto e com cheiros calibrados)
+const PREFIXO = process.argv.includes('--prefixo') ? process.argv[process.argv.indexOf('--prefixo') + 1] : 'qa-abstrato';
+const arquivos = readdirSync('docs/medicoes').filter(f => new RegExp('^' + PREFIXO + '(-p\d+)?\.json$').test(f));
 const rod = arquivos.flatMap(f => JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).rodadas).filter(r => r.sentir_s === 1 && r.orcamento_treino === 60);   // só a versão calibrada
 const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
 function ic(a) {
@@ -38,5 +40,5 @@ for (const c of ['ativa', 'congelada']) {
   valencia[c] = { repetidas: +media(rep)?.toFixed(3), outras: +media(outras)?.toFixed(3) };
 }
 const out = { metodo: 'Diferença pareada por semente: ativa menos a outra condição. Primeiro bug: média, entre as 3 versões de teste, das ações até o primeiro bug (31 quando não achou em 30). Negativo = a treinada achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais). Valência: mudança (depois do treino - antes) da média das ações repetidas e das outras.', sementes, por_condicao: por, pares, mudanca_de_valencia: valencia };
-writeFileSync('docs/medicoes/qa-abstrato-resumo.json', JSON.stringify(out, null, 1) + '\n');
+writeFileSync('docs/medicoes/' + PREFIXO + '-resumo.json', JSON.stringify(out, null, 1) + '\n');
 console.log(JSON.stringify(out, null, 1));
