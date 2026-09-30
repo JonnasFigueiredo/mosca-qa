@@ -1,0 +1,70 @@
+{
+ "metodo": "Worker real, pesos congelados, semente 11. Cada cheiro (100 Hz bilateral) por 1 s, 1 s sem odor entre eles. kcs = KCs distintos que dispararam; evitar_rec_hz = Hz por neurônio de mbon_evitar_rec (a saída que o açúcar enfraquece).",
+ "cheiros": "docs/medicoes/qa-cheiros.json",
+ "res": {
+  "carrinho:normal": {
+   "kcs": 53,
+   "evitar_rec_hz": 2.03
+  },
+  "carrinho:zero": {
+   "kcs": 37,
+   "evitar_rec_hz": 0.63
+  },
+  "carrinho:negativa": {
+   "kcs": 38,
+   "evitar_rec_hz": 2.17
+  },
+  "carrinho:limite": {
+   "kcs": 19,
+   "evitar_rec_hz": 0.8
+  },
+  "estoque:normal": {
+   "kcs": 86,
+   "evitar_rec_hz": 2
+  },
+  "estoque:limite": {
+   "kcs": 66,
+   "evitar_rec_hz": 1.4
+  },
+  "estoque:repetida": {
+   "kcs": 81,
+   "evitar_rec_hz": 2.23
+  },
+  "pagamento:normal": {
+   "kcs": 59,
+   "evitar_rec_hz": 1.8
+  },
+  "pagamento:zero": {
+   "kcs": 37,
+   "evitar_rec_hz": 1.03
+  },
+  "pagamento:repetida": {
+   "kcs": 32,
+   "evitar_rec_hz": 1.3
+  },
+  "cancelamento:normal": {
+   "kcs": 56,
+   "evitar_rec_hz": 1.47
+  },
+  "cancelamento:repetida": {
+   "kcs": 38,
+   "evitar_rec_hz": 0.83
+  },
+  "cupom:normal": {
+   "kcs": 64,
+   "evitar_rec_hz": 2.67
+  },
+  "cupom:limite": {
+   "kcs": 23,
+   "evitar_rec_hz": 0.83
+  },
+  "cupom:repetida": {
+   "kcs": 29,
+   "evitar_rec_hz": 1.07
+  },
+  "A (VA2+DM4)": {
+   "kcs": 117,
+   "evitar_rec_hz": 1.57
+  }
+ }
+}

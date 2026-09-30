@@ -148,6 +148,44 @@ if (process.argv.includes('--calibrar')) {
   writeFileSync('docs/medicoes/qa-calibracao.json', JSON.stringify({ metodo: 'Pesos congelados, semente 5, aquecimento de 20 cheiros aleatórios de 0,5 s; depois, para cada duração de amostra, 3 passadas pelas 15 ações em ordem sorteada; desvio-padrão da valência de cada ação entre passadas. Comparar com o efeito do aprendizado no T0 (~+0,75 Hz por neurônio com sondas de 2 s).', res }, null, 1) + '\n');
   await w.terminate(); process.exit(0);
 }
+// --dose (suspeita 1 da caça honesta): quanto a valência de UMA ação sobe com 1, 2, 4 e 8 pareamentos, e quanto
+// sobra depois de 60 e 180 s cheirando outras ações (o treino dura ~10 min e o esquecimento tem τ 90 s).
+// Alvo cancelamento:repetida (a mais premiada no treino), controle carrinho:normal. Ativa contra congelada.
+// --kcs: quantas células de Kenyon e quanto de mbon_evitar_rec cada ação acende (1 s), contra o cheiro A da bancada
+// (VA2+DM4), que aprende bem. Sem KCs ou sem evitar_rec não há o que a dopamina enfraquecer.
+if (process.argv.includes('--kcs')) {
+  const kcSet = new Set(G.kc), res = {};
+  w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: false }); w.postMessage({ type: 'semente', valor: 11 });
+  await roda(1, {});
+  const itens = [...Q.ACOES.map(a => [a.id, odor(a)]), ['A (VA2+DM4)', Object.fromEntries(['VA2', 'DM4'].flatMap(g => ['L', 'R'].map(l => ['ORN_' + g + '_' + l, 100])))]];
+  for (const [id, rates] of itens) {
+    const kcs = new Set(); let rec = 0;
+    for (let i = 0; i < 100; i++) { const m = await tique(rates); rec += m.counts.mbon_evitar_rec || 0; for (const s of m.spikes || []) if (kcSet.has(s)) kcs.add(s); }
+    await roda(1, {});
+    res[id] = { kcs: kcs.size, evitar_rec_hz: +(rec / G.mbon_evitar_rec.length).toFixed(2) }; console.log(id, JSON.stringify(res[id]));
+  }
+  writeFileSync('docs/medicoes/qa-kcs.json', JSON.stringify({ metodo: 'Worker real, pesos congelados, semente 11. Cada cheiro (100 Hz bilateral) por 1 s, 1 s sem odor entre eles. kcs = KCs distintos que dispararam; evitar_rec_hz = Hz por neurônio de mbon_evitar_rec (a saída que o açúcar enfraquece).', cheiros: arg('cheiros', 'padrao'), res }, null, 1) + '\n');
+  await w.terminate(); process.exit(0);
+}
+if (process.argv.includes('--dose')) {
+  const ALVO = Q.ACOES.find(a => a.id === 'cancelamento:repetida'), CTRL = Q.ACOES.find(a => a.id === 'carrinho:normal');
+  const OUTRAS = Q.ACOES.filter(a => a !== ALVO && a !== CTRL);
+  const mede = async () => { let a = 0, c = 0; for (let k = 0; k < 3; k++) { a += await sentir(ALVO) / 3; c += await sentir(CTRL) / 3; } return { alvo: +a.toFixed(3), ctrl: +c.toFixed(3) }; };
+  const res = [];
+  for (const semente of SEMENTES) for (const plast of [true, false]) {
+    w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: plast }); w.postMessage({ type: 'semente', valor: semente });
+    await roda(1, {});
+    const ra = gerador(semente + 5); for (let i = 0; i < 15; i++) await sentir(Q.ACOES[Math.floor(ra() * Q.ACOES.length)]);
+    const linha = { semente, plasticidade: plast, antes: await mede(), pareamentos: {}, depois_de_outras: {} };
+    let feitos = 0;
+    for (const n of [1, 2, 4, 8]) { while (feitos < n) { await recompensar(ALVO); feitos++; } linha.pareamentos[n] = await mede(); }
+    let passados = 0;
+    for (const s of [60, 180]) { while (passados < s) { await sentir(OUTRAS[Math.floor(ra() * OUTRAS.length)]); passados += SENTIR_S + PAUSA_S; } linha.depois_de_outras[s] = await mede(); }
+    res.push(linha); console.log(JSON.stringify(linha));
+    writeFileSync('docs/medicoes/qa-dose.json', JSON.stringify({ metodo: 'Worker real, cheiros calibrados se --cheiros. Depois de reset e aquecimento (15 cheiros), mede a valência (3 amostras de 1 s intercaladas) do alvo cancelamento:repetida e do controle carrinho:normal; pareia o alvo (2 s de cheiro, PAM 100 Hz nos últimos 0,5 s) até somar 1, 2, 4 e 8 vezes, medindo a cada etapa; depois cheira outras ações por 60 e 180 s e mede de novo. Ativa (plasticidade) contra congelada.', res }, null, 1) + '\n');
+  }
+  await w.terminate(); process.exit(0);
+}
 for (const semente of SEMENTES) {
   const rMundo = gerador(semente * 7919 + 1);
   const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: Q.VERSOES.treino[i % Q.VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));

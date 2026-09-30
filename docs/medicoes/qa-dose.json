@@ -1,0 +1,149 @@
+{
+ "metodo": "Worker real, cheiros calibrados se --cheiros. Depois de reset e aquecimento (15 cheiros), mede a valência (3 amostras de 1 s intercaladas) do alvo cancelamento:repetida e do controle carrinho:normal; pareia o alvo (2 s de cheiro, PAM 100 Hz nos últimos 0,5 s) até somar 1, 2, 4 e 8 vezes, medindo a cada etapa; depois cheira outras ações por 60 e 180 s e mede de novo. Ativa (plasticidade) contra congelada.",
+ "res": [
+  {
+   "semente": 11,
+   "plasticidade": true,
+   "antes": {
+    "alvo": 0.171,
+    "ctrl": 0.013
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.266,
+     "ctrl": 0.163
+    },
+    "2": {
+     "alvo": 0.241,
+     "ctrl": 0.24
+    },
+    "4": {
+     "alvo": 0.385,
+     "ctrl": 0.126
+    },
+    "8": {
+     "alvo": 0.359,
+     "ctrl": 0.16
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.334,
+     "ctrl": 0.104
+    },
+    "180": {
+     "alvo": 0.257,
+     "ctrl": 0.138
+    }
+   }
+  },
+  {
+   "semente": 11,
+   "plasticidade": false,
+   "antes": {
+    "alvo": 0.171,
+    "ctrl": 0.013
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.2,
+     "ctrl": 0.116
+    },
+    "2": {
+     "alvo": 0.233,
+     "ctrl": 0.107
+    },
+    "4": {
+     "alvo": 0.28,
+     "ctrl": 0.105
+    },
+    "8": {
+     "alvo": 0.149,
+     "ctrl": 0.139
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.277,
+     "ctrl": 0.132
+    },
+    "180": {
+     "alvo": 0.177,
+     "ctrl": 0.24
+    }
+   }
+  },
+  {
+   "semente": 12,
+   "plasticidade": true,
+   "antes": {
+    "alvo": 0.349,
+    "ctrl": 0.08
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.334,
+     "ctrl": 0.083
+    },
+    "2": {
+     "alvo": 0.49,
+     "ctrl": 0.069
+    },
+    "4": {
+     "alvo": 0.374,
+     "ctrl": 0.047
+    },
+    "8": {
+     "alvo": 0.452,
+     "ctrl": 0.166
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.253,
+     "ctrl": 0.453
+    },
+    "180": {
+     "alvo": 0.223,
+     "ctrl": -0.037
+    }
+   }
+  },
+  {
+   "semente": 12,
+   "plasticidade": false,
+   "antes": {
+    "alvo": 0.215,
+    "ctrl": 0.086
+   },
+   "pareamentos": {
+    "1": {
+     "alvo": 0.272,
+     "ctrl": 0.299
+    },
+    "2": {
+     "alvo": 0.379,
+     "ctrl": 0.111
+    },
+    "4": {
+     "alvo": 0.019,
+     "ctrl": 0.284
+    },
+    "8": {
+     "alvo": 0.258,
+     "ctrl": 0.16
+    }
+   },
+   "depois_de_outras": {
+    "60": {
+     "alvo": 0.181,
+     "ctrl": 0.261
+    },
+    "180": {
+     "alvo": 0.119,
+     "ctrl": 0.232
+    }
+   }
+  }
+ ]
+}

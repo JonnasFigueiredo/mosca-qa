@@ -181,3 +181,11 @@ depois do treino as ações "repetida" (as premiadas) mudaram −0,01, as outras
 recompensa não está gravando nos cheiros das ações, embora o mesmo cérebro aprenda na arena A/B (0,74). Suspeitas, para
 testar isoladas: poucas recompensas no treino (60 ações, poucos bugs), reforço diluído na mistura de 4 glomérulos, janela
 da dopamina (últimos 50 ms) fora da atividade dos KCs.
+
+**30/09, suspeita 1 (poucas recompensas): descartada; a causa é o cheiro das ações.** `--dose` (sementes 11 e 12,
+`docs/medicoes/qa-dose.json`): até 8 pareamentos seguidos da mesma ação (`cancelamento:repetida`) sobem a valência só
++0,1 a +0,2, do tamanho do ruído (~0,15) e parecido com a congelada; o cheiro A da bancada sobe ~+0,75 com 3.
+`--kcs` (`docs/medicoes/qa-kcs.json`): as ações acendem 19–86 KCs (a premiada, 38) contra 117 do A, e a premiada dá
+só 0,83 Hz em mbon_evitar_rec (A: 1,57). A dopamina enfraquece KC→evitar_rec: com poucos KCs e pouco evitar_rec, não
+sobra o que enfraquecer. A calibração deixou as ações neutras escolhendo glomérulos fracos. Próximo: recalibrar pedindo
+também muitos KCs e evitar_rec alto (sem mexer no cérebro), refazer a dose e só então a série.
