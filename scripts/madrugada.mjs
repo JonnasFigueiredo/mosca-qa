@@ -7,6 +7,7 @@
 //   node scripts/madrugada.mjs            (espera a série qa-fortes em andamento terminar, depois segue a escada)
 import { spawn, execSync } from 'node:child_process';
 import { readFileSync, existsSync, appendFileSync } from 'node:fs';
+import os from 'node:os';
 
 const CHEIROS = 'docs/medicoes/qa-cheiros-fortes.json';
 const LOG = '_tmp/_madrugada.log';
@@ -83,23 +84,39 @@ if (CURIOSIDADE) {
 }
 const NCOND = 4;
 
-const linhas = arq => existsSync(arq) ? JSON.parse(readFileSync(arq, 'utf8')).rodadas.length : 0;
 const espera = ms => new Promise(ok => setTimeout(ok, ms));
+// condições já gravadas por semente num arquivo de parte (retomada: uma semente só conta quando tem todas)
+function feitas(arq) {
+  const m = {};
+  if (existsSync(arq)) for (const r of JSON.parse(readFileSync(arq, 'utf8')).rodadas) (m[r.semente] ||= new Set()).add(r.condicao);
+  return m;
+}
+const faltam = (p, ncond) => { const m = feitas(p.arq); return p.sem.filter(s => (m[s]?.size || 0) < ncond); };
+// --paralelos N (01/10, pedido do usuário: o PC travava com 4): no máximo N simulações ao mesmo tempo, em prioridade
+// abaixo do normal. As sementes continuam divididas em 4 partes (os mesmos arquivos); as partes esperam a vez.
+const PARALELOS = (() => { const i = process.argv.indexOf('--paralelos'); return i > 0 ? +process.argv[i + 1] : 4; })();
 
 async function rodaSerie(prefixo, args, sementes, jaRodando, cheiros = CHEIROS, ncond = NCOND, criterio = null) {
   const por = Math.ceil(sementes.length / 4);
-  const partes = [0, 1, 2, 3].map(i => ({ arq: `docs/medicoes/${prefixo}-p${i + 1}.json`, sem: sementes.slice(i * por, i * por + por) }));
-  if (!jaRodando) {
-    for (const p of partes) {
-      if (linhas(p.arq) >= p.sem.length * ncond) continue;   // já feita (retomada)
-      spawn('node', ['scripts/qa_abstrato.mjs', '--sementes', p.sem.join(','), '--cheiros', cheiros, '--saida', p.arq, ...args], { stdio: 'ignore', detached: false });
-    }
-  }
-  log(`${prefixo}: esperando ${sementes.length} sementes`);
-  // cada processo grava uma linha por condição; termina quando todos têm 2 sementes × 4 condições (limite 10 h)
+  const partes = [0, 1, 2, 3].map(i => ({ arq: `docs/medicoes/${prefixo}-p${i + 1}.json`, sem: sementes.slice(i * por, i * por + por), proc: null }));
+  log(`${prefixo}: esperando ${sementes.length} sementes (${PARALELOS} por vez)`);
   const inicio = Date.now();
-  while (partes.some(p => linhas(p.arq) < p.sem.length * ncond)) {
-    if (Date.now() - inicio > 14 * 3600e3) { log(`${prefixo}: passou de 10 h, sigo com o que tem`); break; }
+  for (;;) {
+    const pendentes = partes.filter(p => faltam(p, ncond).length);
+    if (!pendentes.length) break;
+    if (Date.now() - inicio > 30 * 3600e3) { log(`${prefixo}: passou de 30 h, sigo com o que tem`); break; }
+    if (!jaRodando) {
+      // parte que terminou o processo sem completar (queda) volta para a fila; respeita o limite de paralelos
+      for (const p of pendentes) if (p.proc && p.proc.exitCode !== null) p.proc = null;
+      let rodando = partes.filter(p => p.proc).length;
+      for (const p of pendentes) {
+        if (p.proc || rodando >= PARALELOS) continue;
+        const sem = faltam(p, ncond);   // só as sementes que faltam (a incompleta recomeça; o resumo usa a última linha)
+        p.proc = spawn('node', ['scripts/qa_abstrato.mjs', '--sementes', sem.join(','), '--cheiros', cheiros, '--saida', p.arq, ...args], { stdio: 'ignore', detached: false });
+        try { os.setPriority(p.proc.pid, os.constants.priority.PRIORITY_BELOW_NORMAL); } catch (e) { log('prioridade: ' + e.message); }
+        rodando++;
+      }
+    }
     await espera(60e3);
   }
   const out = execSync(`node scripts/qa_resumo.mjs --prefixo ${prefixo}`, { encoding: 'utf8' });

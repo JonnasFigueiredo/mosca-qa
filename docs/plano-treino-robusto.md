@@ -393,3 +393,5 @@ curiosidade`.
 
 Correção na rotina (01/10): para séries com critério próprio (decepção), a nota no plano escrevia o número do critério
 com o rótulo "treinada − congelada"; os dois rótulos da decepção acima foram corrigidos e a função foi reescrita.
+
+**01/10, 20h38: a série de curiosidade foi reiniciada com 2 simulações por vez** (`--paralelos 2`, prioridade abaixo do normal), a pedido do usuário (o PC travava com 4). Os 4 processos tinham 18 min e nenhuma linha gravada; nada foi perdido nem olhado. Mesmas sementes, critério e desenho; só o tempo dobra. A rotina agora também retoma uma série interrompida (roda só as sementes que faltam).
