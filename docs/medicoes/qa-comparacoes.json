@@ -1,6 +1,6 @@
 {
  "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, treinada com decepção − congelada). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
- "familia": 12,
+ "familia": 13,
  "series": [
   {
    "serie": "qa-abstrato",
@@ -89,7 +89,7 @@
    "dz": -0.85,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.006,
+   "p_holm": 0.0065,
    "passa_holm": true
   },
   {
@@ -104,7 +104,7 @@
    "dz": -1.58,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.006,
+   "p_holm": 0.0065,
    "passa_holm": true
   },
   {
@@ -134,7 +134,7 @@
    "dz": -0.7,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.006,
+   "p_holm": 0.0065,
    "passa_holm": true
   },
   {
@@ -164,7 +164,7 @@
    "dz": -0.9,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.006,
+   "p_holm": 0.0065,
    "passa_holm": true
   },
   {
@@ -179,7 +179,22 @@
    "dz": -0.91,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.006,
+   "p_holm": 0.0065,
+   "passa_holm": true
+  },
+  {
+   "serie": "qa-b2-decepcao",
+   "desc": "bancada 2, decepção no teste (treinada com decepção − congelada)",
+   "medida": "transferencia",
+   "media": -4.59,
+   "ic95": [
+    -7.44,
+    -1.91
+   ],
+   "dz": -0.77,
+   "p": 0.0005,
+   "sementes": 16,
+   "p_holm": 0.0065,
    "passa_holm": true
   }
  ]
