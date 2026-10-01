@@ -1,5 +1,5 @@
 {
- "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, treinada com decepção − congelada). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
+ "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, o controle: treinada com decepção − sem decepção). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
  "familia": 14,
  "series": [
   {
@@ -14,7 +14,7 @@
    "dz": 0.53,
    "p": 0.151,
    "sementes": 5,
-   "p_holm": 0.755,
+   "p_holm": 0.604,
    "passa_holm": false
   },
   {
@@ -119,7 +119,7 @@
    "dz": -0.3,
    "p": 0.248,
    "sementes": 16,
-   "p_holm": 0.992,
+   "p_holm": 0.744,
    "passa_holm": false
   },
   {
@@ -149,7 +149,7 @@
    "dz": -0.83,
    "p": 0.001,
    "sementes": 16,
-   "p_holm": 0.008,
+   "p_holm": 0.009,
    "passa_holm": true
   },
   {
@@ -185,31 +185,31 @@
   {
    "serie": "qa-b2-decepcao",
    "desc": "bancada 2, decepção no teste (treinada com decepção − congelada)",
-   "medida": "transferencia",
-   "media": -4.59,
+   "medida": "controle, com − sem decepção",
+   "media": -6.25,
    "ic95": [
-    -7.44,
-    -1.91
+    -11.56,
+    -1.69
    ],
-   "dz": -0.77,
-   "p": 0.0005,
+   "dz": -0.6,
+   "p": 0.006,
    "sementes": 16,
-   "p_holm": 0.007,
+   "p_holm": 0.048,
    "passa_holm": true
   },
   {
    "serie": "qa-b2-decepcao-replica",
    "desc": "bancada 2, decepção, replicação",
-   "medida": "transferencia",
-   "media": -0.59,
+   "medida": "controle, com − sem decepção",
+   "media": -4.63,
    "ic95": [
-    -3.38,
-    2.13
+    -10.63,
+    0.56
    ],
-   "dz": -0.1,
-   "p": 0.642,
+   "dz": -0.39,
+   "p": 0.097,
    "sementes": 16,
-   "p_holm": 1,
+   "p_holm": 0.485,
    "passa_holm": false
   }
  ]

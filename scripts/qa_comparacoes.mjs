@@ -28,7 +28,15 @@ for (const [prefixo, desc] of FAMILIA) {
   const f = `docs/medicoes/${prefixo}-resumo.json`;
   if (!existsSync(f)) continue;
   const o = JSON.parse(readFileSync(f, 'utf8'));
-  const par = prefixo.includes('decepcao') ? o.pares.ativa_decepcao_menos_congelada : o.pares.ativa_menos_congelada;
+  // na decepção, o critério principal escrito antes é o controle: treinada com decepção − sem decepção (o par
+  // guardado é sem − com; o sinal é invertido para que negativo continue querendo dizer "melhorou")
+  if (prefixo.includes('decepcao')) {
+    const x = o.pares.ativa_menos_ativa_decepcao?.controle;
+    if (!x || x.p_bootstrap == null) continue;
+    linhas.push({ serie: prefixo, desc, medida: 'controle, com − sem decepção', media: -x.media, ic95: x.ic95 && [-x.ic95[1], -x.ic95[0]], dz: x.dz == null ? null : -x.dz, p: Math.max(x.p_bootstrap, 0.0005), sementes: o.pares.ativa_menos_ativa_decepcao.sementes });
+    continue;
+  }
+  const par = o.pares.ativa_menos_congelada;
   const x = par?.transferencia ?? par?.primeiro_bug;
   if (!x || x.p_bootstrap == null) continue;
   linhas.push({ serie: prefixo, desc, medida: par.transferencia ? 'transferencia' : 'primeiro_bug', media: x.media, ic95: x.ic95, dz: x.dz, p: Math.max(x.p_bootstrap, 0.0005), sementes: par.sementes });
@@ -38,7 +46,7 @@ const m = linhas.length, ord = [...linhas].sort((a, b) => a.p - b.p);
 let maior = 0;
 ord.forEach((l, k) => { maior = Math.max(maior, Math.min(1, (m - k) * l.p)); l.p_holm = +maior.toFixed(4); l.passa_holm = l.p_holm < 0.05 && l.media < 0; });
 const out = {
-  metodo: 'Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, treinada com decepção − congelada). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série "passa" com p de Holm < 0,05 e média negativa.',
+  metodo: 'Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, o controle: treinada com decepção − sem decepção). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série "passa" com p de Holm < 0,05 e média negativa.',
   familia: m, series: linhas,
 };
 writeFileSync('docs/medicoes/qa-comparacoes.json', JSON.stringify(out, null, 1) + '\n');

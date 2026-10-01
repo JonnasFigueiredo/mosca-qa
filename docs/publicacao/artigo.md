@@ -2,8 +2,7 @@
 
 **Treino por condicionamento dopaminérgico no corpo cogumelar de um modelo integra-e-dispara do Male CNS v1.0**
 
-Jonnas Figueiredo — rascunho de trabalho (versão de 30/09/2026). Documento vivo: os resultados da seção 6.6 estão em
-andamento e serão atualizados.
+Jonnas Figueiredo — rascunho de trabalho (versão de 01/10/2026). Documento vivo.
 
 ---
 
@@ -30,8 +29,19 @@ critério pré-registrado e replicou com sementes independentes. A mosca treinad
 famílias de ações que nunca viu 5,1 ações antes do controle congelado na série principal (IC95 [−8,0; −2,3], 16
 sementes) e 6,9 ações antes na replicação ([−9,1; −4,9], 16 sementes). Ela escolheu ações repetidas em 85% das
 oportunidades, contra 53% do controle congelado. Num defeito de outro tipo, não melhorou; ao contrário, piorou. Essa é
-a dissociação esperada de uma associação específica. Relatamos todos os resultados, inclusive os
-negativos, e separamos sempre o que vem do mapa do que é regra do modelo.
+a dissociação esperada de uma associação específica.
+
+Três extensões pré-registradas, cada uma com replicação:
+- **Retenção:** o efeito sobrevive a 180 s de outros cheiros entre o treino e o teste (−4,8 e −5,6 ações).
+- **Tipo de defeito:** o efeito se repete quando o defeito premiado é de outro tipo (−4,8 e −5,1).
+- **Decepção:** uma regra de decepção baseada na dopamina de punição reduziu o custo da especialização na série
+  principal (6,3 ações), mas não replicou.
+
+Com a correção de Holm sobre as 14 séries confirmatórias, as 7 positivas continuam significativas. Um controle
+mostrou o limite do resultado: com uma pista que acende poucas células de Kenyon, a memória não vira escolha. Na média
+de todos os defeitos, um explorador simples por novidade segue mais eficiente que a mosca, que só ganha nos tipos de
+defeito que aprendeu. Relatamos todos os resultados, inclusive os negativos, e separamos sempre o que vem do mapa do
+que é regra do modelo.
 
 ---
 
@@ -512,8 +522,8 @@ Diferenças pareadas (treinada − outra condição), IC95 por bootstrap:
    diferença entre treinada e congelada, porque as duas têm o mesmo viés.
 3. A melhora da principal para a replicação (−5,1 para −6,9) está dentro do ruído entre séries.
 
-A fila seguinte já está rodando no ramo "replicou": o controle sensorial com os cheiros trocados e, depois, o teste de
-retenção de 180 s.
+As extensões pré-registradas para depois deste resultado (controle de cheiro, retenção, tipo de defeito e decepção)
+estão nas seções 6.9 e 6.10.
 
 ### 6.7 Resultado por versão e correção para várias comparações
 
@@ -526,10 +536,24 @@ Por versão de teste (treinada − congelada, IC95):
 
 Na série principal, a reserva dupla sozinha não se separa do zero.
 
-O projeto rodou 7 séries confirmatórias na caça a bugs: 5 negativas e as 2 da bancada 2. Para controlar a chance de
-algum falso positivo na família inteira, ajustamos os p do bootstrap pelo método de Holm (`scripts/qa_comparacoes.mjs`,
-`qa-comparacoes.json`). As duas séries da bancada 2 continuam significativas, com p de Holm 0,0035 cada e tamanhos de
-efeito dz −0,85 e −1,58. As outras 5 continuam negativas. Cada série nova entra nessa família.
+O projeto rodou 14 séries confirmatórias na caça a bugs. Para controlar a chance de algum falso positivo na família
+inteira, ajustamos os p do bootstrap pelo método de Holm (`scripts/qa_comparacoes.mjs`, `qa-comparacoes.json`). O
+critério de cada série é o principal escrito antes; na decepção, é a redução do custo no controle.
+
+| Série | Diferença (IC95) | p de Holm | Resultado |
+|---|---|---|---|
+| Bancada 1, com desconto | +2,8 [−1,2; +6,8] | 0,60 | negativo |
+| Bancada 1, cheiros fracos | −2,5 [−5,3; +0,2] | 0,44 | negativo |
+| Bancada 1, cheiros fortes (padrão, curto, espaçado) | −0,2 / 0 / −1,8 | 1 / 1 / 0,44 | negativos |
+| **Bancada 2, principal e replicação** | −5,1 [−8,0; −2,3] / −6,9 [−9,1; −4,9] | 0,007 / 0,007 | **positivos** |
+| Bancada 2, cheiros trocados (fracos) | −2,1 [−5,4; +1,3] | 0,74 | negativo |
+| **Retenção 180 s, principal e replicação** | −4,8 [−8,3; −1,7] / −5,6 [−8,9; −2,5] | 0,007 / 0,009 | **positivos** |
+| **Tipo de defeito "normal", principal e replicação** | −4,8 [−7,3; −2,4] / −5,1 [−8,0; −2,4] | 0,007 / 0,007 | **positivos** |
+| Decepção, principal | −6,3 [−11,6; −1,7] | 0,048 | positivo |
+| Decepção, replicação | −4,6 [−10,6; +0,6] | 0,49 | **não replicou** |
+
+As 6 séries positivas que replicaram continuam significativas depois da correção. A decepção passa por pouco na
+série principal (0,048) e não replica, então não conta como achado.
 
 ### 6.8 Linha de base: um aprendiz clássico com as mesmas informações
 
@@ -560,6 +584,10 @@ Variando α (0,1–0,6) e T (0,05–0,5), aparece uma troca estável entre os do
 
 O valor por ação, sem características, não transfere, como esperado.
 
+No braço do tipo de defeito "normal" (`qa-linha-base-normal.json`, 32 sementes), o padrão se repete. A mosca levou
+7,95 ações na transferência, contra 12,6 do RW (diferença −4,6 [−7,2; −2,4]), 7,98 do RW só com recompensa e 6,8 do
+teto.
+
 A mosca se comporta como um aprendiz que só aprende com recompensa e generaliza por característica. O custo dela no
 controle é o maior de todos, e parte dele é o viés de nascença das repetidas, que a congelada também tem (21,7). A tese
 não é que a mosca seja o melhor testador. A tese é que o circuito real forma e transfere a associação, e a linha de
@@ -580,30 +608,79 @@ a dose-resposta mostrou no cérebro isolado (seção 6.3): a transferência depe
 um cheiro forte que nasce atraente numa ação sem bug compete com a memória. É uma limitação real do resultado
 principal: ele vale para pistas que acendem ~90 KCs ou mais.
 
-### 6.10 Em andamento: contrabalanço do tipo de bug e decepção
+### 6.10 Retenção, tipo de defeito e decepção
 
-**Contrabalanço do tipo de bug (`qa-b2-normal`).** A característica premiada passa a ser "normal", com defeitos novos
-na mesma estrutura: treino em pagamento e cancelamento, teste em cupom e estoque, o mesmo controle.
+Todas as três extensões têm 16 sementes por série, critérios escritos antes (`docs/plano-treino-robusto.md`, "Fila de
+validade") e replicação. Os números são ações até o primeiro bug, e a diferença é treinada − congelada na
+transferência.
 
-- **Validação:** a versão correta continua sem alarme falso em 90.000 ações. O oráculo dá aleatória 13,3, memória
-  perfeita 6,7 e memória com o ganho medido 9,1.
-- **Mudança declarada, feita antes de rodar este item:** o desenho original premiava "normal" com os glomérulos
-  fracos, a mesma configuração que falhou na seção 6.9. Passou a usar o mapa trocado, de modo que a característica
-  premiada tem o par forte nos dois braços.
-- **O que testa:** se a transferência depende do tipo de defeito, com a força do cheiro igual. O viés de nascença
-  continua controlado pela congelada, que tem o mesmo viés.
+**Retenção (`qa-b2-retencao`).** Entre o treino e o teste, 180 s cheirando ações não premiadas.
+
+| Série | Treinada | Congelada | Diferença (IC95) | Escolheu a premiada (treinada / congelada) |
+|---|---|---|---|---|
+| Principal (111–126) | 10,8 | 15,6 | −4,8 [−8,3; −1,7] | 70% / 50% |
+| Replicação (151–166) | 6,8 | 12,4 | −5,6 [−8,9; −2,5] | 78% / 54% |
+
+- **Passou e replicou.** A memória enfraquece com a espera (85% de escolha sem espera), mas continua guiando a busca.
+- Isso é coerente com a dose-resposta (seção 6.3): depois de 180 s ainda restava +0,28 a +0,57 de valência.
+
+**Tipo de defeito (`qa-b2-normal`).** A característica premiada passa a ser "normal", com quatro defeitos novos na
+mesma estrutura:
+- pagamento que cobra valor zero;
+- cancelamento que devolve um item a mais;
+- cupom de 10% aplicado como 40%;
+- abertura de pedido que baixa estoque sem reservar.
+
+Validação antes de rodar: a versão correta continua sem alarme falso em 90.000 ações, e o oráculo dá aleatória 13,3,
+memória perfeita 6,7 e memória com o ganho medido 9,1.
+
+Mudança declarada, feita antes de rodar este item: o desenho original premiava "normal" com os glomérulos fracos, a
+mesma configuração que falhou na seção 6.9. Passou a usar o mapa trocado, de modo que a característica premiada tem o
+par forte nos dois braços. O viés de nascença continua controlado pela congelada, que tem o mesmo viés.
+
+| Série | Treinada | Congelada | Diferença (IC95) | Escolheu a premiada (treinada / congelada) |
+|---|---|---|---|---|
+| Principal (211–226) | 8,3 | 13,1 | −4,8 [−7,3; −2,4] | 81% / 58% |
+| Replicação (231–246) | 7,6 | 12,7 | −5,1 [−8,0; −2,4] | 76% / 55% |
+
+- **Passou e replicou.** Nas duas séries, as duas versões de transferência se separaram do zero sozinhas.
+- A valência de "normal" subiu +0,89 e +0,92; as outras ações mudaram −0,08 e −0,09.
+- **A transferência não é exclusiva de um tipo de defeito.**
 
 **Decepção no teste (`qa-b2-decepcao`).** O treino é idêntico ao da mosca treinada. No teste, escolher uma ação com
-valência acima de 0,6 e não achar bug dispara a dopamina de punição (PPL1). É como a mosca real que sente sem açúcar
-o cheiro que prometia açúcar (Felsenberg et al., 2017, 2018).
+valência acima de 0,6 e não achar bug dispara a dopamina de punição (PPL1, 100 Hz nos últimos 0,5 s de 2 s do
+cheiro). É como a mosca real que sente sem açúcar o cheiro que prometia açúcar (Felsenberg et al., 2017, 2018).
+Quando disparar é regra nossa.
 
-- **Critério principal:** o custo no controle cai.
-- **Secundário:** ela continua transferindo.
-- **Previsão pela linha de base:** a decepção leva a mosca na direção do RW (menos custo, alguma perda na
-  transferência).
+| Série | Condição | Transferência | Controle | Escolheu a premiada |
+|---|---|---|---|---|
+| Principal (251–266) | Treinada | 7,7 | 29,5 | 79% |
+| | Com decepção | 9,0 | 23,3 | 63% |
+| | Congelada | 13,6 | 25,6 | 52% |
+| Replicação (271–286) | Treinada | 8,6 | 26,8 | 79% |
+| | Com decepção | 12,5 | 22,1 | 59% |
+| | Congelada | 13,1 | 24,3 | 55% |
 
-Os dois têm 16 sementes e replicação, com critérios escritos antes (`docs/plano-treino-robusto.md`, "Fila de
-validade").
+Critérios pré-registrados:
+
+| Critério | Principal | Replicação |
+|---|---|---|
+| Principal: no controle, sem − com decepção > 0 | +6,3 [+1,7; +11,6], **passou** | +4,6 [−0,6; +10,6], **não passou** |
+| Secundário: na transferência, com decepção − congelada < 0 | −4,6 [−7,4; −1,9], passou | −0,6 [−3,4; +2,1], não passou |
+
+- **Não replicou, então não conta como achado.** A direção do efeito no controle se repetiu (4,6 a 6,3 ações a
+  menos), com 5,1 decepções por sessão em média. O que variou foi o custo na transferência: 1,4 ações na principal e
+  3,9 na replicação. Nesta, a mosca com decepção deixou de se separar da congelada.
+- **Análise exploratória, não pré-registrada:** juntando as 32 sementes, a decepção reduz o custo no controle em 5,4
+  [+1,7; +9,4], custa 2,7 [+1,0; +4,5] na transferência e ainda transfere contra a congelada (−2,6 [−4,7; −0,5]).
+- **Leitura:** a decepção move a mosca ao longo da troca prevista pela linha de base (seção 6.8): menos
+  especialização, alguma perda no que aprendeu. O tamanho dessa perda não é estável com 16 sementes.
+
+**O explorador por novidade.** Em todas as séries da bancada 2, a novidade foi a melhor estratégia no controle (7,9
+a 12,3 ações, contra 26,6–29,9 da mosca treinada e 22–23 da mosca com decepção) e na média de todos os defeitos (7,7 a
+12,7 ações, contra 13,2 a 17,2 da treinada). Na transferência, a mosca treinada empatou com
+ela em quase todas as séries; a exceção é a replicação da bancada 2, em que ganhou (−4,9 [−7,7; −2,5]). A mosca
+treinada ganha onde aprendeu e perde onde não aprendeu.
 
 ---
 
@@ -618,7 +695,13 @@ validade").
   exagerado, porque as KCs são mais esparsas que na mosca real.
 - **O esquecimento do modelo é rápido** (τ = 90 s) em relação a tarefas de minutos. As moscas reais formam memórias de
   curto, médio e longo prazo, e o treino espaçado produz memória duradoura (Tully et al., 1994). Nosso modelo tem só
-  uma forma de consolidação simplificada.
+  uma forma de consolidação simplificada. Mesmo assim, a memória formada no treino espaçado guiou a busca depois de
+  180 s de outros cheiros, com replicação.
+- **A associação transfere por característica e não depende do tipo de defeito.** Defeitos de repetição e defeitos
+  em ações normais deram efeitos do mesmo tamanho (−4,8 a −6,9 ações), cada um com replicação.
+- **A associação é específica e tem custo.** Num defeito de outro tipo, a mosca treinada não melhora, e tende a
+  piorar. Ela se comporta como um aprendiz que só aprende com recompensa: forte no que aprendeu, menos exploradora no
+  resto. A decepção pela PPL1 reduziu esse custo na série principal, mas o resultado não replicou.
 
 ### 7.2 Lições de método
 
@@ -640,6 +723,21 @@ validade").
 - **Viés de nascença a favor das repetidas** (+0,04 a +0,42) nos cheiros fortes. Ele se cancela na comparação principal
   (treinada contra congelada), mas não contra a aleatória e a novidade.
 - **Sementes independentes**, mas sempre do mesmo conectoma: não há variabilidade entre indivíduos.
+- **Dependência da força da pista.** O efeito só aparece com pistas que acendem ~90 KCs ou mais (seções 6.3 e 6.9). Na
+  bancada, a escolha dos glomérulos é nossa.
+- **Utilidade prática limitada.** Como testador, a mosca não supera um explorador simples por novidade na média dos
+  defeitos. O resultado é sobre o circuito, não sobre um método de teste melhor.
+
+### 7.4 Próximos passos
+
+1. **Memória com curiosidade.** Somar à valência aprendida a habituação ao que já foi provado, que a página já usa
+   para a visão, e testar se isso combina a transferência com a exploração da novidade.
+2. **Defeitos de sequência**, que exigem várias ações, e **várias associações ao mesmo tempo**, para testar se uma
+   apaga a outra.
+3. **Software real com defeitos gerados automaticamente** (testes de mutação), para que os defeitos não sejam
+   escolhidos por nós.
+4. **Memória entre sessões:** treinar, guardar e testar numa sessão nova.
+5. **Decepção com mais sementes,** para medir de forma estável o custo dela na transferência.
 
 ---
 
