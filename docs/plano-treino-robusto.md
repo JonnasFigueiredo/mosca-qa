@@ -338,3 +338,5 @@ exatamente essa configuração e falharia pelo mesmo motivo. Mudança, antes de 
 fortes nos dois braços; o que muda é só o tipo de bug. O que ele testa agora: se a transferência depende do tipo de
 defeito, com a força do cheiro igual. O viés de nascença (os glomérulos fortes nascem atraentes) segue controlado pela
 congelada, que tem o mesmo viés, e não é mais o alvo deste item. Critério, sementes e réplica sem mudança.
+
+**2026-10-01, madrugada: qa-b2-retencao (retenção: 180 s cheirando outras ações entre o treino e o teste): PASSOU.** Sementes 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126. Primeiro bug de teste: treinada 17,17, congelada 19,89, aleatória 16,56, novidade 12,69. Treinada − congelada -4,81, IC95 [-8.25,-1.72]. Transferência: treinada 10,81, congelada 15,63, aleatória 16,59, novidade 12,91; controle (não deve melhorar): treinada − congelada 1,44 [0,3.81]. Fração das vezes em que escolheu uma repetida visível no teste: {"ativa":0.702,"congelada":0.495,"aleatoria":0.363,"novidade":0.415}. Valência depois do treino (treinada): repetidas 1,02, outras -0,06. `docs/medicoes/qa-b2-retencao-resumo.json`.

@@ -1,0 +1,678 @@
+{
+ "metodo": "Diferença pareada por semente (primeira condição menos a segunda). Primeiro bug: ações até o primeiro bug de cada versão de teste (31 quando não achou em 30); média das versões (primeiro_bug), das versões de transferência (transferencia) e o controle à parte (bancada 2). Negativo = a primeira achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais); p_bootstrap bilateral do mesmo bootstrap; dz = média / desvio-padrão das diferenças. Valência: mudança (depois do treino - antes) das ações da característica premiada contra as outras. escolhas_teste: fração das vezes em que havia uma ação premiada visível no teste e ela foi escolhida.",
+ "caracteristica_premiada": "repetida",
+ "sementes": [
+  111,
+  112,
+  113,
+  114,
+  115,
+  116,
+  117,
+  118,
+  119,
+  120,
+  121,
+  122,
+  123,
+  124,
+  125,
+  126
+ ],
+ "por_condicao": {
+  "ativa": {
+   "sementes": 16,
+   "primeiro_bug_media": 17.17,
+   "bugs_teste_media": 2.13,
+   "bugs_treino_media": 10.19,
+   "transferencia_media": 10.81,
+   "controle_media": 29.88,
+   "por_versao": {
+    "cupom-duplo": 10.38,
+    "reserva-dupla": 11.25,
+    "quantidade-negativa": 29.88
+   }
+  },
+  "congelada": {
+   "sementes": 16,
+   "primeiro_bug_media": 19.89,
+   "bugs_teste_media": 1.88,
+   "bugs_treino_media": 9.69,
+   "transferencia_media": 15.63,
+   "controle_media": 28.44,
+   "por_versao": {
+    "cupom-duplo": 16.81,
+    "reserva-dupla": 14.44,
+    "quantidade-negativa": 28.44
+   }
+  },
+  "aleatoria": {
+   "sementes": 16,
+   "primeiro_bug_media": 16.56,
+   "bugs_teste_media": 2.81,
+   "bugs_treino_media": 7.81,
+   "transferencia_media": 16.59,
+   "controle_media": 16.5,
+   "por_versao": {
+    "cupom-duplo": 18.75,
+    "reserva-dupla": 14.44,
+    "quantidade-negativa": 16.5
+   }
+  },
+  "novidade": {
+   "sementes": 16,
+   "primeiro_bug_media": 12.69,
+   "bugs_teste_media": 4,
+   "bugs_treino_media": 10,
+   "transferencia_media": 12.91,
+   "controle_media": 12.25,
+   "por_versao": {
+    "cupom-duplo": 11.75,
+    "reserva-dupla": 14.06,
+    "quantidade-negativa": 12.25
+   }
+  }
+ },
+ "pares": {
+  "ativa_menos_congelada": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": -2.73,
+    "ic95": [
+     -5.19,
+     -0.31
+    ],
+    "p_bootstrap": 0.025,
+    "dz": -0.53,
+    "por_semente": [
+     -10.33,
+     0,
+     -2,
+     0,
+     -2.33,
+     -1.67,
+     0,
+     1.34,
+     -2.67,
+     -13,
+     -6.34,
+     8.67,
+     0.34,
+     -3.34,
+     -9.33,
+     -3
+    ]
+   },
+   "bugs_teste": {
+    "media": 0.25,
+    "ic95": [
+     -0.25,
+     0.63
+    ],
+    "p_bootstrap": 0.372,
+    "dz": 0.25,
+    "por_semente": [
+     1,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     -3,
+     0,
+     1,
+     1,
+     1
+    ]
+   },
+   "transferencia": {
+    "media": -4.81,
+    "ic95": [
+     -8.25,
+     -1.72
+    ],
+    "p_bootstrap": 0,
+    "dz": -0.7,
+    "por_semente": [
+     -15.5,
+     0,
+     -3,
+     0,
+     -3.5,
+     -2.5,
+     0,
+     2,
+     -4,
+     -19.5,
+     -9.5,
+     3.5,
+     0.5,
+     -5,
+     -16,
+     -4.5
+    ]
+   },
+   "controle": {
+    "media": 1.44,
+    "ic95": [
+     0,
+     3.81
+    ],
+    "p_bootstrap": 0.212,
+    "dz": 0.3,
+    "por_semente": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     19,
+     0,
+     0,
+     4,
+     0
+    ]
+   },
+   "por_versao": {
+    "cupom-duplo": {
+     "media": -6.44,
+     "ic95": [
+      -10.88,
+      -2.69
+     ],
+     "p_bootstrap": 0,
+     "dz": -0.75,
+     "por_semente": [
+      -11,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -13,
+      -8,
+      -18,
+      -5,
+      0,
+      0,
+      -10,
+      -30,
+      -8
+     ]
+    },
+    "reserva-dupla": {
+     "media": -3.19,
+     "ic95": [
+      -7.88,
+      1.56
+     ],
+     "p_bootstrap": 0.201,
+     "dz": -0.34,
+     "por_semente": [
+      -20,
+      0,
+      -6,
+      0,
+      -7,
+      -5,
+      0,
+      17,
+      0,
+      -21,
+      -14,
+      7,
+      1,
+      0,
+      -2,
+      -1
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 1.44,
+     "ic95": [
+      0,
+      3.81
+     ],
+     "p_bootstrap": 0.212,
+     "dz": 0.3,
+     "por_semente": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      19,
+      0,
+      0,
+      4,
+      0
+     ]
+    }
+   }
+  },
+  "ativa_menos_aleatoria": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": 0.6,
+    "ic95": [
+     -2.77,
+     3.54
+    ],
+    "p_bootstrap": 0.7,
+    "dz": 0.09,
+    "por_semente": [
+     2.34,
+     -10,
+     -2.34,
+     7.66,
+     7,
+     -1.67,
+     -6,
+     3.67,
+     -12.67,
+     10,
+     -5.34,
+     -3.33,
+     3,
+     8,
+     1.67,
+     7.66
+    ]
+   },
+   "bugs_teste": {
+    "media": -0.69,
+    "ic95": [
+     -1.19,
+     -0.13
+    ],
+    "p_bootstrap": 0.015,
+    "dz": -0.6,
+    "por_semente": [
+     -2,
+     1,
+     -2,
+     -2,
+     -1,
+     -1,
+     1,
+     0,
+     1,
+     -2,
+     -1,
+     0,
+     -2,
+     0,
+     0,
+     -1
+    ]
+   },
+   "transferencia": {
+    "media": -5.78,
+    "ic95": [
+     -9.38,
+     -2.38
+    ],
+    "p_bootstrap": 0.004,
+    "dz": -0.77,
+    "por_semente": [
+     -5,
+     -15,
+     -13.5,
+     0,
+     -3.5,
+     -15.5,
+     -9,
+     5.5,
+     -19,
+     0,
+     -11.5,
+     -5,
+     0.5,
+     5.5,
+     -4,
+     -3
+    ]
+   },
+   "controle": {
+    "media": 13.38,
+    "ic95": [
+     8.06,
+     18.81
+    ],
+    "p_bootstrap": 0,
+    "dz": 1.16,
+    "por_semente": [
+     17,
+     0,
+     20,
+     23,
+     28,
+     26,
+     0,
+     0,
+     0,
+     30,
+     7,
+     0,
+     8,
+     13,
+     13,
+     29
+    ]
+   },
+   "por_versao": {
+    "cupom-duplo": {
+     "media": -8.38,
+     "ic95": [
+      -15.06,
+      -2.19
+     ],
+     "p_bootstrap": 0.008,
+     "dz": -0.6,
+     "por_semente": [
+      2,
+      -30,
+      -21,
+      0,
+      0,
+      -30,
+      0,
+      0,
+      -29,
+      0,
+      -20,
+      -10,
+      0,
+      18,
+      -6,
+      -8
+     ]
+    },
+    "reserva-dupla": {
+     "media": -3.19,
+     "ic95": [
+      -6.31,
+      -0.06
+     ],
+     "p_bootstrap": 0.049,
+     "dz": -0.48,
+     "por_semente": [
+      -12,
+      0,
+      -6,
+      0,
+      -7,
+      -1,
+      -18,
+      11,
+      -9,
+      0,
+      -3,
+      0,
+      1,
+      -7,
+      -2,
+      2
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 13.38,
+     "ic95": [
+      8.06,
+      18.81
+     ],
+     "p_bootstrap": 0,
+     "dz": 1.16,
+     "por_semente": [
+      17,
+      0,
+      20,
+      23,
+      28,
+      26,
+      0,
+      0,
+      0,
+      30,
+      7,
+      0,
+      8,
+      13,
+      13,
+      29
+     ]
+    }
+   }
+  },
+  "ativa_menos_novidade": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": 4.48,
+    "ic95": [
+     1.67,
+     7.06
+    ],
+    "p_bootstrap": 0.003,
+    "dz": 0.78,
+    "por_semente": [
+     2.34,
+     -2.67,
+     -2.34,
+     7.66,
+     9,
+     -4,
+     5,
+     10,
+     -6,
+     10,
+     2.66,
+     9.34,
+     11.34,
+     9.66,
+     1.67,
+     8
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.88,
+    "ic95": [
+     -2.19,
+     -1.44
+    ],
+    "p_bootstrap": 0,
+    "dz": -2.33,
+    "por_semente": [
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -3,
+     -3,
+     0,
+     0,
+     -2
+    ]
+   },
+   "transferencia": {
+    "media": -2.09,
+    "ic95": [
+     -5.69,
+     1.41
+    ],
+    "p_bootstrap": 0.231,
+    "dz": -0.28,
+    "por_semente": [
+     -5,
+     -15.5,
+     -13.5,
+     0,
+     8.5,
+     -10,
+     -3.5,
+     5.5,
+     -13,
+     0,
+     0,
+     3.5,
+     3.5,
+     6.5,
+     -4,
+     3.5
+    ]
+   },
+   "controle": {
+    "media": 17.63,
+    "ic95": [
+     14.56,
+     20.94
+    ],
+    "p_bootstrap": 0,
+    "dz": 2.58,
+    "por_semente": [
+     17,
+     23,
+     20,
+     23,
+     10,
+     8,
+     22,
+     19,
+     8,
+     30,
+     8,
+     21,
+     27,
+     16,
+     13,
+     17
+    ]
+   },
+   "por_versao": {
+    "cupom-duplo": {
+     "media": -1.38,
+     "ic95": [
+      -6.5,
+      3.81
+     ],
+     "p_bootstrap": 0.595,
+     "dz": -0.13,
+     "por_semente": [
+      2,
+      -15,
+      -21,
+      0,
+      0,
+      -15,
+      0,
+      0,
+      -12,
+      0,
+      0,
+      0,
+      19,
+      18,
+      -6,
+      8
+     ]
+    },
+    "reserva-dupla": {
+     "media": -2.81,
+     "ic95": [
+      -7,
+      1.63
+     ],
+     "p_bootstrap": 0.192,
+     "dz": -0.31,
+     "por_semente": [
+      -12,
+      -16,
+      -6,
+      0,
+      17,
+      -5,
+      -7,
+      11,
+      -14,
+      0,
+      0,
+      7,
+      -12,
+      -5,
+      -2,
+      -1
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 17.63,
+     "ic95": [
+      14.56,
+      20.94
+     ],
+     "p_bootstrap": 0,
+     "dz": 2.58,
+     "por_semente": [
+      17,
+      23,
+      20,
+      23,
+      10,
+      8,
+      22,
+      19,
+      8,
+      30,
+      8,
+      21,
+      27,
+      16,
+      13,
+      17
+     ]
+    }
+   }
+  }
+ },
+ "mudanca_de_valencia": {
+  "ativa": {
+   "premiadas": 1.02,
+   "outras": -0.06,
+   "repetidas": 1.02
+  },
+  "congelada": {
+   "premiadas": 0.01,
+   "outras": 0.01,
+   "repetidas": 0.01
+  }
+ },
+ "escolhas_teste": {
+  "ativa": 0.702,
+  "congelada": 0.495,
+  "aleatoria": 0.363,
+  "novidade": 0.415
+ }
+}
