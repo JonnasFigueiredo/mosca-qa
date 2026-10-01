@@ -73,6 +73,36 @@ portanto, o comportamento de aproximação ou de evitação.
 
 ## 2. O modelo: o que vem do mapa e o que é regra
 
+### 2.0 Visão geral: como o cérebro simulado funciona
+
+Em uma frase, o modelo é fiel ao animal na **fiação** e simplificado no **neurônio**. A fiação vem da mosca real:
+quem se liga a quem, com quantas sinapses e com que sinal. O comportamento elétrico de cada neurônio é uma abstração
+deliberada.
+
+O caminho do estímulo ao comportamento tem seis passos:
+
+1. **O mapa.** O Male CNS v1.0 foi obtido fatiando o sistema nervoso de um macho em camadas de poucas dezenas de
+   nanômetros, fotografando cada uma por microscopia eletrônica e reconstruindo cada neurônio e cada sinapse. O modelo
+   usa os 166.700 neurônios e as 6,2 milhões de conexões com 5 ou mais sinapses.
+2. **O neurônio.** Cada neurônio é um integrador com vazamento: uma voltagem que sobe com as entradas e decai para o
+   repouso. Ao cruzar o limiar, ele dispara e é reiniciado (formato de Shiu et al., 2024).
+3. **A sinapse.** Cada disparo chega aos neurônios de destino com peso proporcional ao número de sinapses da conexão.
+   O sinal vem do neurotransmissor previsto para o neurônio de origem.
+4. **O tempo.** A simulação avança em passos de 0,25 ms e só calcula os neurônios fora do repouso e os disparos que
+   existem. No navegador, roda a 0,65–1,2× o tempo real.
+5. **Entradas e saídas.** Os sentidos entram como trens de disparos nos neurônios sensoriais reais: os receptores
+   olfativos de cada glomérulo, os neurônios de açúcar das patas e o LC10a na visão. O comportamento é lido na taxa de
+   disparo de neurônios de comando reais:
+   - os descendentes DNa01–03, que viram a mosca;
+   - os motores da probóscide;
+   - a fibra gigante (DNp01), que comanda a fuga;
+   - os motores das asas;
+   - as saídas do corpo cogumelar.
+6. **O aprendizado.** A dopamina de recompensa deprime as sinapses entre células de Kenyon ativas e as saídas de
+   evitar (seção 2.2).
+
+As seções 2.1 a 2.4 detalham cada parte. A seção 2.6 discute o quanto esse modelo se parece com o animal real.
+
 A regra de honestidade do projeto é declarar, para cada comportamento, se ele emerge da fiação medida ("do mapa") ou
 se é uma regra que escrevemos ("regra"). A página interativa e o README fazem o mesmo.
 
@@ -136,6 +166,60 @@ motor. Os detalhes do corpo estão no README.
   receptor nem de mistura.
 - **Um tipo de plasticidade:** há só a depressão KC→MBON. Faltam plasticidade de longo prazo com síntese de proteínas,
   compartimentos com tempos distintos e a transmissão rápida da dopamina, que o worker zera.
+
+### 2.6 Quão real é o cérebro simulado
+
+**Onde o modelo se comporta como o animal.** Os circuitos abaixo não foram programados: emergem da fiação. Os números
+são triagens do próprio modelo, com o método e os dados citados no README.
+
+- **Alimentação:** açúcar nos neurônios gustativos das patas ativa os neurônios motores da probóscide. Com açúcar a
+  160 Hz por neurônio, o grupo da probóscide somou 290 disparos/s, com o primeiro sinal em 30 ms. Sem estímulo, ficou
+  em silêncio.
+- **Orientação visual:** o LC10a de um olho, detector de objetos pequenos que nos machos guia a perseguição da fêmea,
+  ativa o descendente DNa02 do mesmo lado em ~90 Hz. O resultado é virar para o que vê.
+- **Fuga:** uma ameaça em expansão (LPLC2 e LC4) dispara a fibra gigante em rajada, com ~250 disparos em 300 ms e o
+  primeiro em 5–6 ms. Os descendentes DNp02, DNp04 e DNp11 dão a direção da fuga.
+- **Aprendizado associativo:** o pareamento de um cheiro com dopamina reduz a resposta das MBONs de evitar só para
+  aquele cheiro (seção 5.1), como no animal (Hige et al., 2015).
+- **Previsões validadas no trabalho de origem:** um modelo do mesmo formato (Shiu et al., 2024) previu circuitos de
+  alimentação e de higiene. Boa parte das previsões testadas foi confirmada em moscas reais por ativação e silenciamento
+  de neurônios.
+
+**Onde o modelo não reproduz o animal.**
+
+- **Neurônio-ponto:** cada neurônio é um único compartimento, sem a geometria dos dendritos, sem condutâncias
+  intrínsecas próprias e com os mesmos parâmetros para todos. Neurônios reais variam muito nesses três pontos.
+- **Sem retina:** as primeiras etapas da visão (fotorreceptores, L1–L3, Mi1, Tm3) funcionam por potenciais graduados,
+  que o modelo de disparos não representa. A visão entra diretamente no LC10a, por uma regra nossa.
+- **Química incompleta:** faltam neuromodulação ampla (hormônios, octopamina, serotonina; a dopamina age só pela regra
+  de aprendizado), junções elétricas e glia.
+- **Calibrações globais** (seção 2.1), necessárias para evitar a atividade descontrolada; nenhum peso individual foi
+  ajustado:
+  - pesos pela metade;
+  - adaptação depois de cada disparo;
+  - um circuito excitatório do lobo antenal removido;
+  - sem autapses.
+- **Memória:** um único mecanismo, que esquece em ~90 s. O animal tem memórias de curto, médio e longo prazo, com
+  mecanismos distintos.
+- **Esparsidade do corpo cogumelar:** cada cheiro ativa ~3% das células de Kenyon, contra 5–10% no animal. Isso pesa
+  nos resultados deste artigo: pistas que acendem poucas KCs não aprendem (seções 6.3 e 6.9).
+- **Resultados negativos do próprio modelo:**
+  - os descendentes de pouso (DNp07, DNp10) ficaram silenciosos;
+  - tocar as patas da frente não altera nenhum neurônio descendente;
+  - os neurônios do órgão de Johnston anotados como de higiene não ativaram os descendentes de limpeza nas condições
+    testadas.
+
+**O que é regra nossa.**
+
+- **No corpo:** o passo das patas, a fome e a atração inata por cheiros, esta tirada da literatura.
+- **Na caça a bugs:** a codificação das ações em cheiros, a leitura da valência nas MBONs e a escolha por softmax.
+
+Cada regra está declarada no README, na página e neste texto.
+
+**Síntese.** O modelo é a fiação real de um sistema nervoso inteiro, rodando com neurônios simplificados. Não é uma
+mosca dentro do computador, e não afirmamos isso. Afirmamos que, com essa fiação e essa abstração, aparecem os
+circuitos que a biologia descreve no animal: alimentação, orientação, fuga e aprendizado associativo. Os resultados
+da caça a bugs devem ser lidos dentro desse limite.
 
 ---
 
