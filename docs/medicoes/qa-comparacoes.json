@@ -1,6 +1,6 @@
 {
  "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, treinada com decepção − congelada). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
- "familia": 13,
+ "familia": 14,
  "series": [
   {
    "serie": "qa-abstrato",
@@ -14,7 +14,7 @@
    "dz": 0.53,
    "p": 0.151,
    "sementes": 5,
-   "p_holm": 0.604,
+   "p_holm": 0.755,
    "passa_holm": false
   },
   {
@@ -29,7 +29,7 @@
    "dz": -0.59,
    "p": 0.063,
    "sementes": 8,
-   "p_holm": 0.378,
+   "p_holm": 0.441,
    "passa_holm": false
   },
   {
@@ -74,7 +74,7 @@
    "dz": -0.63,
    "p": 0.066,
    "sementes": 8,
-   "p_holm": 0.378,
+   "p_holm": 0.441,
    "passa_holm": false
   },
   {
@@ -89,7 +89,7 @@
    "dz": -0.85,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
   },
   {
@@ -104,7 +104,7 @@
    "dz": -1.58,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
   },
   {
@@ -119,7 +119,7 @@
    "dz": -0.3,
    "p": 0.248,
    "sementes": 16,
-   "p_holm": 0.744,
+   "p_holm": 0.992,
    "passa_holm": false
   },
   {
@@ -134,7 +134,7 @@
    "dz": -0.7,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
   },
   {
@@ -149,7 +149,7 @@
    "dz": -0.83,
    "p": 0.001,
    "sementes": 16,
-   "p_holm": 0.007,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -164,7 +164,7 @@
    "dz": -0.9,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
   },
   {
@@ -179,7 +179,7 @@
    "dz": -0.91,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
   },
   {
@@ -194,8 +194,23 @@
    "dz": -0.77,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0065,
+   "p_holm": 0.007,
    "passa_holm": true
+  },
+  {
+   "serie": "qa-b2-decepcao-replica",
+   "desc": "bancada 2, decepção, replicação",
+   "medida": "transferencia",
+   "media": -0.59,
+   "ic95": [
+    -3.38,
+    2.13
+   ],
+   "dz": -0.1,
+   "p": 0.642,
+   "sementes": 16,
+   "p_holm": 1,
+   "passa_holm": false
   }
  ]
 }
