@@ -32,7 +32,12 @@ const condicoes = [...new Set(rod.map(r => r.condicao))];
 const b2 = rod.some(r => r.resumo_b2);
 const ORC = rod[0]?.orcamento ?? 30;
 // primeiro bug de cada versão de teste (31 quando não achou)
-const porVersao = r => Object.fromEntries(r.teste.map((b, i) => [r.teste_versoes?.[i] ?? 'versao' + (i + 1), b.length ? b[0].passo : ORC + 1]));
+// (com --repeticoes-teste, a mesma versão aparece várias vezes: média das repetições)
+function porVersao(r) {
+  const ac = {};
+  r.teste.forEach((b, i) => (ac[r.teste_versoes?.[i] ?? 'versao' + (i + 1)] ||= []).push(b.length ? b[0].passo : ORC + 1));
+  return Object.fromEntries(Object.entries(ac).map(([k, v]) => [k, v.reduce((a, x) => a + x, 0) / v.length]));
+}
 
 const por = Object.fromEntries(condicoes.map(c => {
   const rs = sementes.map(s => pega(s, c)).filter(Boolean);
@@ -67,7 +72,9 @@ function par(A, B) {
 }
 const pares = {};
 if (condicoes.includes('ativa')) for (const outra of condicoes.filter(c => c !== 'ativa')) pares['ativa_menos_' + outra] = par('ativa', outra);
-if (condicoes.includes('ativa_decepcao')) for (const outra of condicoes.filter(c => c !== 'ativa_decepcao' && c !== 'ativa')) pares['ativa_decepcao_menos_' + outra] = par('ativa_decepcao', outra);
+// as variantes da treinada (ativa_decepcao, ativa_curiosa) contra as outras condições, menos a própria treinada
+for (const v of condicoes.filter(c => c.startsWith('ativa_')))
+  for (const outra of condicoes.filter(c => c !== v && c !== 'ativa')) pares[v + '_menos_' + outra] = par(v, outra);
 
 // característica premiada (repetida, ou normal no contrabalanço) e a mudança de valência com o treino
 const car = rod.find(r => r.caracteristica)?.caracteristica ?? 'repetida';

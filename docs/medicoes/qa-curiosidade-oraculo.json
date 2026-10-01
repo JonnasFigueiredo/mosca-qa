@@ -1,0 +1,161 @@
+{
+ "metodo": "Sem cérebro. Valência de cada ação = média medida no cérebro depois do treino (qa-b2 e qa-b2-replica; treinada ou congelada) + ruído N(0; 0.15) a cada amostra; escolha softmax T 0.15 sobre valência − H × tentativas da ação no episódio. 4000 episódios por versão de teste da bancada 2 (cupom-duplo, reserva-dupla, quantidade-negativa); 3 de 15 visíveis; 30 passos; fim no primeiro bug (31 se não achou). geral = média das 3 versões; transferencia = as 2 primeiras; controle = quantidade negativa. Não inclui o esquecimento durante o teste.",
+ "valencias": {
+  "treinada": {
+   "carrinho:normal": -0.23928125000000006,
+   "carrinho:zero": -0.2992500000000001,
+   "carrinho:negativa": -0.21434375,
+   "carrinho:limite": 0.5825000000000001,
+   "estoque:normal": 0.12206249999999999,
+   "estoque:limite": 0.4405625,
+   "estoque:repetida": 1.04121875,
+   "pagamento:normal": -0.13556250000000003,
+   "pagamento:zero": -0.09178125000000002,
+   "pagamento:repetida": 1.1241562499999997,
+   "cancelamento:normal": -0.25146875,
+   "cancelamento:repetida": 1.1888124999999998,
+   "cupom:normal": -0.35771875000000003,
+   "cupom:limite": 0.3706562499999999,
+   "cupom:repetida": 0.9471875000000001
+  },
+  "congelada": {
+   "carrinho:normal": -0.12799999999999997,
+   "carrinho:zero": -0.2990625,
+   "carrinho:negativa": -0.19471875,
+   "carrinho:limite": 0.5865312500000002,
+   "estoque:normal": 0.17603125,
+   "estoque:limite": 0.37840625,
+   "estoque:repetida": 0.009687499999999998,
+   "pagamento:normal": 0.04674999999999999,
+   "pagamento:zero": -0.074,
+   "pagamento:repetida": 0.264,
+   "cancelamento:normal": -0.044437500000000005,
+   "cancelamento:repetida": 0.12940625,
+   "cupom:normal": -0.13334375000000004,
+   "cupom:limite": 0.36356250000000007,
+   "cupom:repetida": -0.055249999999999994
+  }
+ },
+ "res": {
+  "aleatoria": {
+   "geral": 13.57,
+   "transferencia": 13.17,
+   "controle": 14.38
+  },
+  "novidade": {
+   "geral": 9.56,
+   "transferencia": 9.1,
+   "controle": 10.47
+  },
+  "treinada_H0": {
+   "geral": 13.1,
+   "transferencia": 6.79,
+   "controle": 25.72
+  },
+  "congelada_H0": {
+   "geral": 19.29,
+   "transferencia": 16.92,
+   "controle": 24.04
+  },
+  "treinada_H0.1": {
+   "geral": 12.65,
+   "transferencia": 6.42,
+   "controle": 25.11
+  },
+  "congelada_H0.1": {
+   "geral": 17.37,
+   "transferencia": 15.06,
+   "controle": 21.98
+  },
+  "treinada_H0.2": {
+   "geral": 12.18,
+   "transferencia": 6.2,
+   "controle": 24.13
+  },
+  "congelada_H0.2": {
+   "geral": 15.54,
+   "transferencia": 13.39,
+   "controle": 19.83
+  },
+  "treinada_H0.3": {
+   "geral": 11.54,
+   "transferencia": 6.07,
+   "controle": 22.48
+  },
+  "congelada_H0.3": {
+   "geral": 14.19,
+   "transferencia": 12.3,
+   "controle": 17.97
+  },
+  "treinada_H0.5": {
+   "geral": 10.36,
+   "transferencia": 5.92,
+   "controle": 19.24
+  },
+  "congelada_H0.5": {
+   "geral": 12.57,
+   "transferencia": 11,
+   "controle": 15.7
+  },
+  "treinada_H0.8": {
+   "geral": 9.34,
+   "transferencia": 5.84,
+   "controle": 16.34
+  },
+  "congelada_H0.8": {
+   "geral": 11.37,
+   "transferencia": 10.1,
+   "controle": 13.92
+  },
+  "treinada_H1.2": {
+   "geral": 8.72,
+   "transferencia": 5.82,
+   "controle": 14.51
+  },
+  "congelada_H1.2": {
+   "geral": 10.87,
+   "transferencia": 9.79,
+   "controle": 13.05
+  },
+  "treinada_H1.6": {
+   "geral": 8.37,
+   "transferencia": 5.82,
+   "controle": 13.46
+  },
+  "congelada_H1.6": {
+   "geral": 10.8,
+   "transferencia": 9.75,
+   "controle": 12.89
+  },
+  "treinada_H2.5": {
+   "geral": 8.22,
+   "transferencia": 5.82,
+   "controle": 13.01
+  },
+  "congelada_H2.5": {
+   "geral": 10.79,
+   "transferencia": 9.74,
+   "controle": 12.89
+  },
+  "treinada_H4": {
+   "geral": 8.22,
+   "transferencia": 5.82,
+   "controle": 13
+  },
+  "congelada_H4": {
+   "geral": 10.79,
+   "transferencia": 9.74,
+   "controle": 12.89
+  },
+  "treinada_H8": {
+   "geral": 8.22,
+   "transferencia": 5.82,
+   "controle": 13
+  },
+  "congelada_H8": {
+   "geral": 10.79,
+   "transferencia": 9.74,
+   "controle": 12.89
+  }
+ }
+}

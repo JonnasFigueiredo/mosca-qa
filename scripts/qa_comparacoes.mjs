@@ -22,6 +22,8 @@ const FAMILIA = [
   ['qa-b2-normal-replica', 'bancada 2, contrabalanço, replicação'],
   ['qa-b2-decepcao', 'bancada 2, decepção no teste (treinada com decepção − congelada)'],
   ['qa-b2-decepcao-replica', 'bancada 2, decepção, replicação'],
+  ['qa-b2-curiosidade', 'bancada 2, memória + curiosidade contra a novidade (média de todos os defeitos)'],
+  ['qa-b2-curiosidade-replica', 'bancada 2, memória + curiosidade, replicação'],
 ];
 const linhas = [];
 for (const [prefixo, desc] of FAMILIA) {
@@ -34,6 +36,14 @@ for (const [prefixo, desc] of FAMILIA) {
     const x = o.pares.ativa_menos_ativa_decepcao?.controle;
     if (!x || x.p_bootstrap == null) continue;
     linhas.push({ serie: prefixo, desc, medida: 'controle, com − sem decepção', media: -x.media, ic95: x.ic95 && [-x.ic95[1], -x.ic95[0]], dz: x.dz == null ? null : -x.dz, p: Math.max(x.p_bootstrap, 0.0005), sementes: o.pares.ativa_menos_ativa_decepcao.sementes });
+    continue;
+  }
+  // na curiosidade, o critério principal é de não-inferioridade contra a novidade (IC95 < +1,5), que não é um teste
+  // contra zero; entra na família o teste de superioridade (curiosa − novidade < 0), o mais exigente
+  if (prefixo.includes('curiosidade')) {
+    const x = o.pares.ativa_curiosa_menos_novidade?.primeiro_bug;
+    if (!x || x.p_bootstrap == null) continue;
+    linhas.push({ serie: prefixo, desc, medida: 'média de todos os defeitos, curiosa − novidade (superioridade)', media: x.media, ic95: x.ic95, dz: x.dz, p: Math.max(x.p_bootstrap, 0.0005), sementes: o.pares.ativa_curiosa_menos_novidade.sementes });
     continue;
   }
   const par = o.pares.ativa_menos_congelada;

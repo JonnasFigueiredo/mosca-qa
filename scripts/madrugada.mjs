@@ -67,6 +67,20 @@ if (VALIDADE) {
       } },
   );
 }
+// --plano curiosidade (escrito em 01/10, antes de rodar; docs/plano-treino-robusto.md, "Memória + curiosidade"): a
+// treinada com curiosidade no teste contra o explorador por novidade, na média de todos os defeitos do teste
+const CURIOSIDADE = process.argv.includes('curiosidade');
+if (CURIOSIDADE) {
+  ESCADA.length = 0;
+  ESCADA.push({ prefixo: 'qa-b2-curiosidade', args: [...B2ARGS, '--condicoes', 'ativa,ativa_curiosa,congelada_curiosa,aleatoria,novidade', '--repeticoes-teste', '3'], ncond: 5, sementes: seq(301), replica: seq(321),
+    desc: 'memória + curiosidade no teste (valência − 2,5 × tentativas da ação no episódio), cada versão de teste 3 vezes',
+    criterio: r => {
+      const nov = r.pares.ativa_curiosa_menos_novidade?.primeiro_bug, tr = r.pares.ativa_curiosa_menos_congelada_curiosa?.transferencia, ct = r.pares.ativa_menos_ativa_curiosa?.controle;
+      // principal: não-inferioridade contra a novidade na média de todos os defeitos (IC95 abaixo de +1,5 ações)
+      const passou = !!(nov?.ic95 && nov.ic95[1] < 1.5);
+      return { passou, pc: nov, texto: `${txt('geral, curiosa − novidade (principal: IC95 < +1,5):', nov)}; superioridade (IC95 < 0): ${abaixo(nov) ? 'sim' : 'não'}; ${txt('transferência, curiosa − congelada curiosa (deve ser < 0; ' + (abaixo(tr) ? 'passou' : 'não passou') + '):', tr)}; ${txt('controle, sem − com curiosidade (deve ser > 0; ' + (acima(ct) ? 'passou' : 'não passou') + '):', ct)}` };
+    } });
+}
 const NCOND = 4;
 
 const linhas = arq => existsSync(arq) ? JSON.parse(readFileSync(arq, 'utf8')).rodadas.length : 0;
@@ -92,22 +106,25 @@ async function rodaSerie(prefixo, args, sementes, jaRodando, cheiros = CHEIROS, 
   const r = JSON.parse(out);
   if (criterio) { const c = criterio(r); log(`${prefixo}: ${c.texto} → ${c.passou ? 'PASSOU' : 'não passou'}`); return { r, ...c }; }
   const pc = B2 ? r.pares.ativa_menos_congelada.transferencia : r.pares.ativa_menos_congelada.primeiro_bug;
-  const passou = !!(pc.ic95 && pc.ic95[1] < 0);
+  const passou = !!(pc?.ic95 && pc.ic95[1] < 0);
   log(`${prefixo}: treinada − congelada ${pc.media} IC95 ${JSON.stringify(pc.ic95)} → ${passou ? 'PASSOU' : 'não passou'}`);
   return { r, pc, passou };
 }
 
 function registra(prefixo, desc, { r, pc, passou, texto }, extras = []) {
-  const c = r.por_condicao, v = r.mudanca_de_valencia.ativa;
+  const c = r.por_condicao, v = r.mudanca_de_valencia.ativa || {};
   const f = n => String(n).replace('.', ',');
   const nota = `\n**${new Date().toISOString().slice(0, 10)}, madrugada: ${prefixo} (${desc}): ${passou ? 'PASSOU' : 'negativo'}.** ` +
-    `Sementes ${r.sementes.join(', ')}. Primeiro bug de teste: treinada ${f(c.ativa?.primeiro_bug_media)}, congelada ${f(c.congelada?.primeiro_bug_media)}, ` +
-    `aleatória ${f(c.aleatoria?.primeiro_bug_media)}, novidade ${f(c.novidade?.primeiro_bug_media)}. Treinada − congelada ${f(pc.media)}, IC95 ${JSON.stringify(pc.ic95)}. ` +
-    (B2 ? `Transferência: treinada ${f(c.ativa?.transferencia_media)}, congelada ${f(c.congelada?.transferencia_media)}, aleatória ${f(c.aleatoria?.transferencia_media)}, novidade ${f(c.novidade?.transferencia_media)}; controle (não deve melhorar): treinada − congelada ${f(r.pares.ativa_menos_congelada.controle.media)} ${JSON.stringify(r.pares.ativa_menos_congelada.controle.ic95)}. ` : '') +
-    (texto ? `Critério: ${texto}. ` : '') +
+    `Sementes ${r.sementes.join(', ')}. ` +
+    // critério próprio (decepção, curiosidade): o texto dele; senão, o de sempre (treinada − congelada)
+    (texto ? `Critério: ${texto}. ` : `Critério: treinada − congelada ${f(pc.media)}, IC95 ${JSON.stringify(pc.ic95)}. `) +
+    `Ações até o primeiro bug por condição (${c.ativa?.transferencia_media != null ? 'transferência / controle / ' : ''}média de todas as versões): ` +
+    Object.entries(c).map(([k, x]) => `${k} ${x.transferencia_media != null ? f(x.transferencia_media) + ' / ' + f(x.controle_media) + ' / ' : ''}${f(x.primeiro_bug_media)}`).join('; ') + '. ' +
+    (r.pares.ativa_menos_congelada?.controle ? `Controle (não deve melhorar), treinada − congelada ${f(r.pares.ativa_menos_congelada.controle.media)} ${JSON.stringify(r.pares.ativa_menos_congelada.controle.ic95)}. ` : '') +
     (c.ativa_decepcao ? `Com decepção: transferência ${f(c.ativa_decepcao.transferencia_media)}, controle ${f(c.ativa_decepcao.controle_media)}, decepções por sessão ${f(c.ativa_decepcao.decepcoes_teste_media)}. ` : '') +
     (r.escolhas_teste ? `Fração das vezes em que escolheu uma ação da característica premiada (${r.caracteristica_premiada ?? 'repetida'}) visível no teste: ${JSON.stringify(r.escolhas_teste)}. ` : '') +
-    `Valência depois do treino (treinada): premiadas ${f(v.premiadas ?? v.repetidas)}, outras ${f(v.outras)}. \`docs/medicoes/${prefixo}-resumo.json\`.\n`;
+    (v.outras != null ? `Valência depois do treino (treinada): premiadas ${f(v.premiadas ?? v.repetidas)}, outras ${f(v.outras)}. ` : '') +
+    `Resumo: \`docs/medicoes/${prefixo}-resumo.json\`.\n`;
   appendFileSync('docs/plano-treino-robusto.md', nota);
   try {
     // correção de Holm para todas as séries rodadas até agora (qa_comparacoes.mjs) e as saídas dos passos extras
@@ -118,7 +135,7 @@ function registra(prefixo, desc, { r, pc, passou, texto }, extras = []) {
   } catch (e) { log('git: ' + e.message.split('\n')[0]); }
 }
 
-log('início' + (SEGUINTES ? ' (seguintes)' : VALIDADE ? ' (validade)' : ''));
+log('início' + (SEGUINTES ? ' (seguintes)' : VALIDADE ? ' (validade)' : CURIOSIDADE ? ' (curiosidade)' : ''));
 if (VALIDADE) {
   // espera a fila "seguintes" terminar: "fim" depois da escolha do ramo
   for (;;) { const t = readFileSync(LOG, 'utf8'); const i = t.lastIndexOf('sigo o ramo escrito antes'); if (i >= 0 && /\d fim\s*$/.test(t.slice(i))) break; await espera(120e3); }

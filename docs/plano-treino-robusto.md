@@ -347,9 +347,9 @@ congelada, que tem o mesmo viés, e não é mais o alvo deste item. Critério, s
 
 **2026-10-01, madrugada: qa-b2-normal-replica (contrabalanço do tipo de bug: defeitos nas ações "normal", com os glomérulos fortes (mapa trocado), mesma estrutura de treino e teste, replicação com sementes novas): PASSOU.** Sementes 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246. Primeiro bug de teste: treinada 14,37, congelada 16,25, aleatória 12,85, novidade 8,52. Treinada − congelada -5,09, IC95 [-7.97,-2.44]. Transferência: treinada 7,63, congelada 12,72, aleatória 11, novidade 7,59; controle (não deve melhorar): treinada − congelada 4,56 [-3.13,12.19]. Fração das vezes em que escolheu uma ação da característica premiada (normal) visível no teste: {"ativa":0.764,"congelada":0.549,"aleatoria":0.472,"novidade":0.47}. Valência depois do treino (treinada): premiadas 0,92, outras -0,09. `docs/medicoes/qa-b2-normal-replica-resumo.json`.
 
-**2026-10-01, madrugada: qa-b2-decepcao (decepção no teste: PPL1 quando escolhe com valência > 0,6 e não acha bug novo): PASSOU.** Sementes 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266. Primeiro bug de teste: treinada 14,94, congelada 17,63, aleatória 14,11, novidade 8,85. Treinada − congelada 6,25, IC95 [1.69,11.56]. Transferência: treinada 7,66, congelada 13,63, aleatória 13,03, novidade 9,06; controle (não deve melhorar): treinada − congelada 3,88 [-2.06,9.81]. Critério: controle, treinada sem − com decepção (principal, deve ser > 0): 6.25 IC95 [1.69,11.56]; transferência, com decepção − congelada (secundário, deve ser < 0; passou): -4.59 IC95 [-7.44,-1.91]. Com decepção: transferência 9,03, controle 23,25, decepções por sessão 5,13. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.794,"ativa_decepcao":0.629,"congelada":0.52,"aleatoria":0.449,"novidade":0.463}. Valência depois do treino (treinada): premiadas 1,03, outras -0,05. `docs/medicoes/qa-b2-decepcao-resumo.json`.
+**2026-10-01, madrugada: qa-b2-decepcao (decepção no teste: PPL1 quando escolhe com valência > 0,6 e não acha bug novo): PASSOU.** Sementes 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266. Primeiro bug de teste: treinada 14,94, congelada 17,63, aleatória 14,11, novidade 8,85. Controle, treinada sem − com decepção 6,25, IC95 [1.69,11.56] (rótulo corrigido em 01/10: a rotina escrevia "treinada − congelada" para o critério próprio). Transferência: treinada 7,66, congelada 13,63, aleatória 13,03, novidade 9,06; controle (não deve melhorar): treinada − congelada 3,88 [-2.06,9.81]. Critério: controle, treinada sem − com decepção (principal, deve ser > 0): 6.25 IC95 [1.69,11.56]; transferência, com decepção − congelada (secundário, deve ser < 0; passou): -4.59 IC95 [-7.44,-1.91]. Com decepção: transferência 9,03, controle 23,25, decepções por sessão 5,13. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.794,"ativa_decepcao":0.629,"congelada":0.52,"aleatoria":0.449,"novidade":0.463}. Valência depois do treino (treinada): premiadas 1,03, outras -0,05. `docs/medicoes/qa-b2-decepcao-resumo.json`.
 
-**2026-10-01, madrugada: qa-b2-decepcao-replica (decepção no teste: PPL1 quando escolhe com valência > 0,6 e não acha bug novo, replicação com sementes novas): negativo.** Sementes 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286. Primeiro bug de teste: treinada 14,65, congelada 16,83, aleatória 13,25, novidade 9,08. Treinada − congelada 4,63, IC95 [-0.56,10.63]. Transferência: treinada 8,59, congelada 13,13, aleatória 15,94, novidade 9,38; controle (não deve melhorar): treinada − congelada 2,5 [-2.56,8]. Critério: controle, treinada sem − com decepção (principal, deve ser > 0): 4.63 IC95 [-0.56,10.63]; transferência, com decepção − congelada (secundário, deve ser < 0; não passou): -0.59 IC95 [-3.38,2.13]. Com decepção: transferência 12,53, controle 22,13, decepções por sessão 5,13. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.787,"ativa_decepcao":0.588,"congelada":0.546,"aleatoria":0.402,"novidade":0.43}. Valência depois do treino (treinada): premiadas 0,93, outras -0,08. `docs/medicoes/qa-b2-decepcao-replica-resumo.json`.
+**2026-10-01, madrugada: qa-b2-decepcao-replica (decepção no teste: PPL1 quando escolhe com valência > 0,6 e não acha bug novo, replicação com sementes novas): negativo.** Sementes 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286. Primeiro bug de teste: treinada 14,65, congelada 16,83, aleatória 13,25, novidade 9,08. Controle, treinada sem − com decepção 4,63, IC95 [-0.56,10.63] (rótulo corrigido em 01/10). Transferência: treinada 8,59, congelada 13,13, aleatória 15,94, novidade 9,38; controle (não deve melhorar): treinada − congelada 2,5 [-2.56,8]. Critério: controle, treinada sem − com decepção (principal, deve ser > 0): 4.63 IC95 [-0.56,10.63]; transferência, com decepção − congelada (secundário, deve ser < 0; não passou): -0.59 IC95 [-3.38,2.13]. Com decepção: transferência 12,53, controle 22,13, decepções por sessão 5,13. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.787,"ativa_decepcao":0.588,"congelada":0.546,"aleatoria":0.402,"novidade":0.43}. Valência depois do treino (treinada): premiadas 0,93, outras -0,08. `docs/medicoes/qa-b2-decepcao-replica-resumo.json`.
 
 **01/10, fila de validade concluída.** Retenção (−4,8 e −5,6) e tipo de defeito "normal" (−4,8 e −5,1) passaram e
 replicaram. Decepção: passou na principal (controle, sem − com, +6,3 [+1,7; +11,6]; transferência contra a congelada
@@ -360,3 +360,36 @@ em `qa_comparacoes.mjs`: na decepção, a família de Holm usava o critério sec
 principal passa por pouco (0,048) e a replicação não (0,49). A novidade segue a melhor no controle e na média de todos
 os defeitos; na transferência a treinada empata com ela (ganha só na replicação da bancada 2). Artigo e README
 atualizados.
+
+## Memória + curiosidade (01/10, escrito antes de rodar)
+
+Pedido do usuário: seguir com memória + curiosidade e consolidar a versão final. Motivo: na média de todos os defeitos,
+o explorador por novidade ganha da mosca treinada (ela se especializa demais).
+
+**Regra (nossa, declarada):** nas condições `*_curiosa`, no teste, a escolha usa valência − H × vezes que ela já
+tentou aquela ação neste episódio. É habituação ao que já provou; a página já faz isso na visão, e moscas reais
+habituam. O treino é idêntico ao da condição sem curiosidade (mesma semente, mesmo cérebro até o teste).
+
+**H escolhido antes, no oráculo** (`scripts/qa_curiosidade_oraculo.mjs`, `qa-curiosidade-oraculo.json`): a valência de
+cada ação é a média medida no cérebro depois do treino (qa-b2 e réplica), com o viés de nascença, mais ruído 0,15.
+O oráculo reproduz o cérebro sem curiosidade (treinada 6,8 na transferência e 25,7 no controle; no cérebro, 5,8–8,8 e
+26,6–29,9). Média de todos os defeitos: novidade 9,56; treinada sem curiosidade 13,1; com H 0,5 10,4; com H 1,2 8,7; de
+H 2,5 em diante estabiliza em 8,22 (transferência 5,82, controle 13,0). **H = 2,5.** Na prática: tenta primeiro o que
+ainda não tentou e, entre as novas, escolhe pela memória. Congelada com curiosidade: 10,8.
+
+**Poder** (simulação com o oráculo, `_tmp/_poder_cur.mjs`): com cada versão de teste 1 vez, 16 sementes detectam a
+superioridade em 34% das vezes; com 3 vezes, em 73%; a não-inferioridade (margem +1,5) em 100%. **Desenho:** cada
+versão de teste 3 vezes (`--repeticoes-teste 3`, a primeira com as ações visíveis de sempre).
+
+**Série `qa-b2-curiosidade`:** condições treinada, treinada com curiosidade, congelada com curiosidade, aleatória e
+novidade; sementes 301–316, réplica 321–336 (se o principal passar). Rotina: `node scripts/madrugada.mjs --plano
+curiosidade`.
+- **Principal (não-inferioridade):** na média de todos os defeitos do teste, curiosa − novidade com IC95 abaixo de
+  +1,5 ações (15% dos 9,6 da novidade).
+- **Secundário 1 (superioridade):** curiosa − novidade com IC95 abaixo de 0. É o que entra na família de Holm.
+- **Secundário 2:** na transferência, curiosa − congelada com curiosidade < 0 (a vantagem vem da memória, não só da
+  curiosidade).
+- **Secundário 3:** no controle, treinada sem − com curiosidade > 0 (a curiosidade reduz o custo da especialização).
+
+Correção na rotina (01/10): para séries com critério próprio (decepção), a nota no plano escrevia o número do critério
+com o rótulo "treinada − congelada"; os dois rótulos da decepção acima foram corrigidos e a função foi reescrita.

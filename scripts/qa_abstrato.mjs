@@ -81,6 +81,15 @@ const BANCADA = +arg('bancada', 1), VERSOES = BANCADA === 2 ? (CAR === 'normal' 
 // nascença, +0,50, e do ruído, 0,15). Regra nossa: quando disparar; o efeito da PPL1 é do worker
 const LIMIAR_DECEPCAO = +arg('limiar-decepcao', 0.6);
 let DECEP = false, NDECEP = 0;
+// curiosidade (01/10, docs/plano-treino-robusto.md, "Memória + curiosidade"): nas condições *_curiosa, no teste, a
+// escolha usa valência − H × vezes que ela já tentou aquela ação neste episódio (habituação ao que já provou, como a
+// visão da página faz). H 2,5 escolhido antes no oráculo (qa-curiosidade-oraculo.json): a partir daí o resultado
+// estabiliza; na prática, ela tenta primeiro o que ainda não tentou e, entre as novas, escolhe pela memória. Regra
+// nossa: a forma de somar; a valência é do cérebro. O treino é idêntico ao da condição sem curiosidade
+const H_CURIOSIDADE = +arg('curiosidade', 2.5);
+let CURIOSA = false;
+// --repeticoes-teste K: cada versão de teste K vezes, com ações visíveis diferentes (a primeira é a de sempre)
+const REP_TESTE = +arg('repeticoes-teste', 1);
 let BASE = {};
 // escolhas no teste: quantas vezes uma repetida estava visível e quantas vezes foi escolhida (a memória vira ação?)
 // (premiada = a característica premiada no treino, CAR)
@@ -96,7 +105,8 @@ async function episodio(defeitos, vistas, politica, rnd, comCerebro, orcamento =
     else if (politica === 'novidade') { const min = Math.min(...opcoes.map(a => tentadas[a.id] || 0)); const menos = opcoes.filter(a => (tentadas[a.id] || 0) === min); escolha = menos[Math.floor(rnd() * menos.length)]; }
     else {
       const v = []; for (const a of opcoes) v.push((await sentir(a)) - (DESCONTO ? BASE[a.id] ?? 0 : 0));
-      const e = v.map(x => Math.exp(x / T_SOFTMAX)), soma = e.reduce((a, b) => a + b, 0);
+      const pontos = teste && CURIOSA ? v.map((x, i) => x - H_CURIOSIDADE * (tentadas[opcoes[i].id] || 0)) : v;
+      const e = pontos.map(x => Math.exp(x / T_SOFTMAX)), soma = e.reduce((a, b) => a + b, 0);
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
       escolha = opcoes[k]; vEscolha = v[k];
     }
@@ -236,14 +246,15 @@ if (process.argv.includes('--dose')) {
 for (const semente of SEMENTES) {
   const rMundo = gerador(semente * 7919 + 1);
   const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: VERSOES.treino[i % VERSOES.treino.length], vistas: visiveis(semente * 100 + i, ORC_TREINO) }));
-  const testes = VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i, ORCAMENTO) }));
+  const testes = Array.from({ length: REP_TESTE }, (_, k) => VERSOES.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(semente * 100 + 50 + i + 10 * k, ORCAMENTO) }))).flat();
   for (const cond of CONDICOES) {
-    const comCerebro = ['ativa', 'ativa_decepcao', 'congelada', 'ingenua'].includes(cond);
+    const comCerebro = ['ativa', 'ativa_decepcao', 'ativa_curiosa', 'congelada', 'congelada_curiosa', 'ingenua'].includes(cond);
+    CURIOSA = cond.endsWith('_curiosa');
     DECEP = cond === 'ativa_decepcao'; NDECEP = 0;
     const rnd = gerador(semente * 31 + 17);
     const r = { semente, condicao: cond, caracteristica: CAR, ...(DECEP ? { limiar_decepcao: LIMIAR_DECEPCAO } : {}), orcamento: ORCAMENTO, orcamento_treino: ORC_TREINO, visiveis: VISIVEIS, sentir_s: SENTIR_S, desconto: DESCONTO, cheiros: arg('cheiros', 'padrao'), treino: [], teste: [] };
     if (comCerebro) {
-      w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: cond !== 'congelada' }); w.postMessage({ type: 'semente', valor: semente });
+      w.postMessage({ type: 'reset' }); w.postMessage({ type: 'params', plasticidade: !cond.startsWith('congelada') }); w.postMessage({ type: 'semente', valor: semente });
       await roda(1, {});
       { const ra = gerador(semente + 5); for (let i = 0; i < 15; i++) await sentir(Q.ACOES[Math.floor(ra() * Q.ACOES.length)]); }   // aquecimento
       r.valencia_antes = await valencias(2); BASE = r.valencia_antes;
@@ -260,9 +271,9 @@ for (const semente of SEMENTES) {
     r.escolhas_teste = { ...ESC }; if (DECEP) r.decepcoes_teste = NDECEP;
     const primeiro = r.teste.map(b => (b.length ? b[0].passo : ORCAMENTO + 1));
     if (BANCADA === 2) {
-      const ctrl = VERSOES.teste.map(d => d.join('+') === VERSOES.controle.join('+'));
+      const ctrl = testes.map(t => t.defeitos.join('+') === VERSOES.controle.join('+'));
       const tr = primeiro.filter((_, i) => !ctrl[i]), ct = primeiro.filter((_, i) => ctrl[i]);
-      r.bancada = 2; r.teste_versoes = VERSOES.teste.map(d => d.join('+'));
+      r.bancada = 2; r.teste_versoes = testes.map(t => t.defeitos.join('+')); if (REP_TESTE > 1) r.repeticoes_teste = REP_TESTE; if (CURIOSA) r.curiosidade = H_CURIOSIDADE;
       r.resumo_b2 = { primeiro_bug_transferencia: +(tr.reduce((a, b) => a + b, 0) / tr.length).toFixed(2), primeiro_bug_controle: +(ct.reduce((a, b) => a + b, 0) / ct.length).toFixed(2) };
     }
     r.resumo = { primeiro_bug_teste_media: +(primeiro.reduce((a, b) => a + b, 0) / primeiro.length).toFixed(2), bugs_teste: r.teste.reduce((a, b) => a + b.length, 0), bugs_treino: r.treino.reduce((a, b) => a + b.length, 0) };
