@@ -1,0 +1,678 @@
+{
+ "metodo": "Diferença pareada por semente (primeira condição menos a segunda). Primeiro bug: ações até o primeiro bug de cada versão de teste (31 quando não achou em 30); média das versões (primeiro_bug), das versões de transferência (transferencia) e o controle à parte (bancada 2). Negativo = a primeira achou antes. IC95 percentil de bootstrap das sementes (2000 reamostragens; só com 5 ou mais); p_bootstrap bilateral do mesmo bootstrap; dz = média / desvio-padrão das diferenças. Valência: mudança (depois do treino - antes) das ações da característica premiada contra as outras. escolhas_teste: fração das vezes em que havia uma ação premiada visível no teste e ela foi escolhida.",
+ "caracteristica_premiada": "normal",
+ "sementes": [
+  211,
+  212,
+  213,
+  214,
+  215,
+  216,
+  217,
+  218,
+  219,
+  220,
+  221,
+  222,
+  223,
+  224,
+  225,
+  226
+ ],
+ "por_condicao": {
+  "ativa": {
+   "sementes": 16,
+   "primeiro_bug_media": 14.77,
+   "bugs_teste_media": 2.31,
+   "bugs_treino_media": 12.31,
+   "transferencia_media": 8.28,
+   "controle_media": 27.75,
+   "por_versao": {
+    "cupom-em-porcentagem": 8.81,
+    "baixa-sem-reserva": 7.75,
+    "quantidade-negativa": 27.75
+   }
+  },
+  "congelada": {
+   "sementes": 16,
+   "primeiro_bug_media": 17.04,
+   "bugs_teste_media": 2.44,
+   "bugs_treino_media": 10.31,
+   "transferencia_media": 13.13,
+   "controle_media": 24.88,
+   "por_versao": {
+    "cupom-em-porcentagem": 12.69,
+    "baixa-sem-reserva": 13.56,
+    "quantidade-negativa": 24.88
+   }
+  },
+  "aleatoria": {
+   "sementes": 16,
+   "primeiro_bug_media": 15.83,
+   "bugs_teste_media": 3.19,
+   "bugs_treino_media": 8.31,
+   "transferencia_media": 14.13,
+   "controle_media": 19.25,
+   "por_versao": {
+    "cupom-em-porcentagem": 12.94,
+    "baixa-sem-reserva": 15.31,
+    "quantidade-negativa": 19.25
+   }
+  },
+  "novidade": {
+   "sementes": 16,
+   "primeiro_bug_media": 9.85,
+   "bugs_teste_media": 4,
+   "bugs_treino_media": 10.31,
+   "transferencia_media": 9.38,
+   "controle_media": 10.81,
+   "por_versao": {
+    "cupom-em-porcentagem": 8.88,
+    "baixa-sem-reserva": 9.88,
+    "quantidade-negativa": 10.81
+   }
+  }
+ },
+ "pares": {
+  "ativa_menos_congelada": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": -2.27,
+    "ic95": [
+     -4.9,
+     0.73
+    ],
+    "p_bootstrap": 0.117,
+    "dz": -0.38,
+    "por_semente": [
+     8.67,
+     -4.66,
+     -12.33,
+     -0.67,
+     -0.67,
+     -3.67,
+     -4,
+     10.66,
+     0,
+     -4.67,
+     -3.34,
+     0,
+     -8.33,
+     -9,
+     -5.67,
+     1.33
+    ]
+   },
+   "bugs_teste": {
+    "media": -0.13,
+    "ic95": [
+     -0.63,
+     0.38
+    ],
+    "p_bootstrap": 0.744,
+    "dz": -0.11,
+    "por_semente": [
+     -2,
+     0,
+     2,
+     0,
+     0,
+     -2,
+     0,
+     -2,
+     0,
+     0,
+     0,
+     0,
+     1,
+     1,
+     0,
+     0
+    ]
+   },
+   "transferencia": {
+    "media": -4.84,
+    "ic95": [
+     -7.34,
+     -2.44
+    ],
+    "p_bootstrap": 0,
+    "dz": -0.9,
+    "por_semente": [
+     0,
+     -7,
+     -10.5,
+     -1,
+     -1,
+     -10.5,
+     -6,
+     3,
+     0,
+     -7,
+     -5,
+     0,
+     -12.5,
+     -13.5,
+     -8.5,
+     2
+    ]
+   },
+   "controle": {
+    "media": 2.88,
+    "ic95": [
+     -1.38,
+     8.13
+    ],
+    "p_bootstrap": 0.257,
+    "dz": 0.28,
+    "por_semente": [
+     26,
+     0,
+     -16,
+     0,
+     0,
+     10,
+     0,
+     26,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "por_versao": {
+    "cupom-em-porcentagem": {
+     "media": -3.88,
+     "ic95": [
+      -7.19,
+      -0.69
+     ],
+     "p_bootstrap": 0.013,
+     "dz": -0.57,
+     "por_semente": [
+      0,
+      0,
+      -12,
+      -2,
+      0,
+      -11,
+      -9,
+      8,
+      0,
+      -18,
+      -10,
+      0,
+      -2,
+      -2,
+      -8,
+      4
+     ]
+    },
+    "baixa-sem-reserva": {
+     "media": -5.81,
+     "ic95": [
+      -10.06,
+      -2.25
+     ],
+     "p_bootstrap": 0,
+     "dz": -0.68,
+     "por_semente": [
+      0,
+      -14,
+      -9,
+      0,
+      -2,
+      -10,
+      -3,
+      -2,
+      0,
+      4,
+      0,
+      0,
+      -23,
+      -25,
+      -9,
+      0
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 2.88,
+     "ic95": [
+      -1.38,
+      8.13
+     ],
+     "p_bootstrap": 0.257,
+     "dz": 0.28,
+     "por_semente": [
+      26,
+      0,
+      -16,
+      0,
+      0,
+      10,
+      0,
+      26,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   }
+  },
+  "ativa_menos_aleatoria": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": -1.06,
+    "ic95": [
+     -2.92,
+     0.79
+    ],
+    "p_bootstrap": 0.279,
+    "dz": -0.28,
+    "por_semente": [
+     -6,
+     1.34,
+     -0.33,
+     -0.67,
+     -5.67,
+     1.66,
+     2,
+     5.33,
+     -3.67,
+     -3,
+     -6,
+     2.66,
+     -3,
+     0.67,
+     4,
+     -6.34
+    ]
+   },
+   "bugs_teste": {
+    "media": -0.88,
+    "ic95": [
+     -1.31,
+     -0.44
+    ],
+    "p_bootstrap": 0,
+    "dz": -0.91,
+    "por_semente": [
+     0,
+     -2,
+     0,
+     0,
+     0,
+     -2,
+     0,
+     -2,
+     0,
+     0,
+     -1,
+     -2,
+     0,
+     -2,
+     -2,
+     -1
+    ]
+   },
+   "transferencia": {
+    "media": -5.84,
+    "ic95": [
+     -8.72,
+     -3.03
+    ],
+    "p_bootstrap": 0,
+    "dz": -1,
+    "por_semente": [
+     -9,
+     -8.5,
+     -6,
+     -1,
+     -10.5,
+     -10.5,
+     3,
+     3,
+     -6,
+     -4.5,
+     -20,
+     -2,
+     -4.5,
+     -1,
+     -5,
+     -11
+    ]
+   },
+   "controle": {
+    "media": 8.5,
+    "ic95": [
+     4.38,
+     13.19
+    ],
+    "p_bootstrap": 0,
+    "dz": 0.9,
+    "por_semente": [
+     0,
+     21,
+     11,
+     0,
+     4,
+     26,
+     0,
+     10,
+     1,
+     0,
+     22,
+     12,
+     0,
+     4,
+     22,
+     3
+    ]
+   },
+   "por_versao": {
+    "cupom-em-porcentagem": {
+     "media": -4.13,
+     "ic95": [
+      -8,
+      -0.56
+     ],
+     "p_bootstrap": 0.027,
+     "dz": -0.53,
+     "por_semente": [
+      0,
+      -9,
+      0,
+      -2,
+      0,
+      -11,
+      6,
+      8,
+      -5,
+      -18,
+      -10,
+      0,
+      -2,
+      -2,
+      -1,
+      -20
+     ]
+    },
+    "baixa-sem-reserva": {
+     "media": -7.56,
+     "ic95": [
+      -12.25,
+      -3.13
+     ],
+     "p_bootstrap": 0.001,
+     "dz": -0.8,
+     "por_semente": [
+      -18,
+      -8,
+      -12,
+      0,
+      -21,
+      -10,
+      0,
+      -2,
+      -7,
+      9,
+      -30,
+      -4,
+      -7,
+      0,
+      -9,
+      -2
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 8.5,
+     "ic95": [
+      4.38,
+      13.19
+     ],
+     "p_bootstrap": 0,
+     "dz": 0.9,
+     "por_semente": [
+      0,
+      21,
+      11,
+      0,
+      4,
+      26,
+      0,
+      10,
+      1,
+      0,
+      22,
+      12,
+      0,
+      4,
+      22,
+      3
+     ]
+    }
+   }
+  },
+  "ativa_menos_novidade": {
+   "sementes": 16,
+   "primeiro_bug": {
+    "media": 4.92,
+    "ic95": [
+     2.81,
+     7.19
+    ],
+    "p_bootstrap": 0,
+    "dz": 1.08,
+    "por_semente": [
+     4.67,
+     2.67,
+     -1,
+     4.67,
+     1.33,
+     1.66,
+     6.67,
+     12,
+     5.33,
+     14.33,
+     2.33,
+     2.66,
+     0.33,
+     0.67,
+     9.33,
+     11
+    ]
+   },
+   "bugs_teste": {
+    "media": -1.69,
+    "ic95": [
+     -2.06,
+     -1.25
+    ],
+    "p_bootstrap": 0,
+    "dz": -1.93,
+    "por_semente": [
+     -2,
+     -2,
+     0,
+     -2,
+     0,
+     -2,
+     -2,
+     -2,
+     0,
+     -3,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2,
+     -2
+    ]
+   },
+   "transferencia": {
+    "media": -1.09,
+    "ic95": [
+     -3.53,
+     1.31
+    ],
+    "p_bootstrap": 0.417,
+    "dz": -0.22,
+    "por_semente": [
+     -6,
+     2.5,
+     -4.5,
+     -4,
+     0,
+     -10.5,
+     3,
+     5,
+     0,
+     8,
+     -9.5,
+     -2,
+     -3.5,
+     -1,
+     3,
+     2
+    ]
+   },
+   "controle": {
+    "media": 16.94,
+    "ic95": [
+     12.38,
+     21.25
+    ],
+    "p_bootstrap": 0,
+    "dz": 1.76,
+    "por_semente": [
+     26,
+     3,
+     6,
+     22,
+     4,
+     26,
+     14,
+     26,
+     16,
+     27,
+     26,
+     12,
+     8,
+     4,
+     22,
+     29
+    ]
+   },
+   "por_versao": {
+    "cupom-em-porcentagem": {
+     "media": -0.06,
+     "ic95": [
+      -2.69,
+      2.38
+     ],
+     "p_bootstrap": 0.99,
+     "dz": -0.01,
+     "por_semente": [
+      0,
+      3,
+      0,
+      -1,
+      0,
+      -11,
+      6,
+      8,
+      -4,
+      7,
+      -10,
+      0,
+      0,
+      -2,
+      -1,
+      4
+     ]
+    },
+    "baixa-sem-reserva": {
+     "media": -2.13,
+     "ic95": [
+      -5,
+      1
+     ],
+     "p_bootstrap": 0.19,
+     "dz": -0.34,
+     "por_semente": [
+      -12,
+      2,
+      -9,
+      -7,
+      0,
+      -10,
+      0,
+      2,
+      4,
+      9,
+      -9,
+      -4,
+      -7,
+      0,
+      7,
+      0
+     ]
+    },
+    "quantidade-negativa": {
+     "media": 16.94,
+     "ic95": [
+      12.38,
+      21.25
+     ],
+     "p_bootstrap": 0,
+     "dz": 1.76,
+     "por_semente": [
+      26,
+      3,
+      6,
+      22,
+      4,
+      26,
+      14,
+      26,
+      16,
+      27,
+      26,
+      12,
+      8,
+      4,
+      22,
+      29
+     ]
+    }
+   }
+  }
+ },
+ "mudanca_de_valencia": {
+  "ativa": {
+   "premiadas": 0.89,
+   "outras": -0.08,
+   "repetidas": -0.07
+  },
+  "congelada": {
+   "premiadas": -0.01,
+   "outras": 0,
+   "repetidas": -0.02
+  }
+ },
+ "escolhas_teste": {
+  "ativa": 0.81,
+  "congelada": 0.577,
+  "aleatoria": 0.452,
+  "novidade": 0.482
+ }
+}

@@ -1,0 +1,238 @@
+{
+ "metodo": "Sem cérebro. Mesmas sementes (16, das séries qa-b2-normal e qa-b2-normal-replica) e mesmas ações visíveis da mosca; treino 6 × 20 ações com recompensa em bug novo, teste nas versões cupom-em-porcentagem, baixa-sem-reserva, quantidade-negativa sem aprendizado, terminando no primeiro bug (31 se não achou). RW: V = soma dos pesos das características da ação, Δw = α(recompensa − V), α 0.3, softmax T 0.15 (a tabela sensibilidade varia os dois). Diferença pareada mosca treinada − agente (negativo = a mosca achou antes), IC95 bootstrap. Descritivo: sem critério de passar, escrito antes em docs/plano-treino-robusto.md.",
+ "caracteristica": "normal",
+ "sementes": [
+  211,
+  212,
+  213,
+  214,
+  215,
+  216,
+  217,
+  218,
+  219,
+  220,
+  221,
+  222,
+  223,
+  224,
+  225,
+  226
+ ],
+ "resumo": {
+  "mosca_treinada": {
+   "transferencia": 8.28,
+   "controle": 27.75
+  },
+  "rw": {
+   "transferencia": 14.09,
+   "controle": 18.63
+  },
+  "rw_so_recompensa": {
+   "transferencia": 8.34,
+   "controle": 29.94
+  },
+  "por_acao": {
+   "transferencia": 15.75,
+   "controle": 21.75
+  },
+  "prefere_premiada": {
+   "transferencia": 7.81,
+   "controle": 26.19
+  }
+ },
+ "pares": {
+  "mosca_menos_rw": {
+   "transferencia": {
+    "media": -5.81,
+    "ic95": [
+     -9,
+     -2.84
+    ]
+   },
+   "controle": {
+    "media": 9.13,
+    "ic95": [
+     4.5,
+     14.38
+    ]
+   }
+  },
+  "mosca_menos_rw_so_recompensa": {
+   "transferencia": {
+    "media": -0.06,
+    "ic95": [
+     -1.19,
+     1.19
+    ]
+   },
+   "controle": {
+    "media": -2.19,
+    "ic95": [
+     -6.63,
+     1.75
+    ]
+   }
+  },
+  "mosca_menos_por_acao": {
+   "transferencia": {
+    "media": -7.47,
+    "ic95": [
+     -10.88,
+     -4.13
+    ]
+   },
+   "controle": {
+    "media": 6,
+    "ic95": [
+     2.06,
+     10.38
+    ]
+   }
+  },
+  "mosca_menos_prefere_premiada": {
+   "transferencia": {
+    "media": 0.47,
+    "ic95": [
+     -0.44,
+     1.44
+    ]
+   },
+   "controle": {
+    "media": 1.56,
+    "ic95": [
+     -2.81,
+     6.69
+    ]
+   }
+  }
+ },
+ "sensibilidade": [
+  {
+   "tipo": "rw",
+   "alfa": 0.1,
+   "T": 0.05,
+   "transferencia": 10.78,
+   "controle": 22.38
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.1,
+   "T": 0.15,
+   "transferencia": 10.97,
+   "controle": 20.44
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.1,
+   "T": 0.5,
+   "transferencia": 13.75,
+   "controle": 21.88
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.3,
+   "T": 0.05,
+   "transferencia": 17.94,
+   "controle": 17.31
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.3,
+   "T": 0.15,
+   "transferencia": 14.09,
+   "controle": 18.63
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.3,
+   "T": 0.5,
+   "transferencia": 12,
+   "controle": 17.75
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.6,
+   "T": 0.05,
+   "transferencia": 17.66,
+   "controle": 13.5
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.6,
+   "T": 0.15,
+   "transferencia": 13.06,
+   "controle": 14
+  },
+  {
+   "tipo": "rw",
+   "alfa": 0.6,
+   "T": 0.5,
+   "transferencia": 14.47,
+   "controle": 15.38
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.1,
+   "T": 0.05,
+   "transferencia": 8.31,
+   "controle": 29.13
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.1,
+   "T": 0.15,
+   "transferencia": 8.5,
+   "controle": 27.94
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.1,
+   "T": 0.5,
+   "transferencia": 11.44,
+   "controle": 21.25
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.3,
+   "T": 0.05,
+   "transferencia": 8.31,
+   "controle": 29.13
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.3,
+   "T": 0.15,
+   "transferencia": 8.34,
+   "controle": 29.94
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.3,
+   "T": 0.5,
+   "transferencia": 10.25,
+   "controle": 23
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.6,
+   "T": 0.05,
+   "transferencia": 8.31,
+   "controle": 29.13
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.6,
+   "T": 0.15,
+   "transferencia": 8.34,
+   "controle": 29.94
+  },
+  {
+   "tipo": "rw_so_recompensa",
+   "alfa": 0.6,
+   "T": 0.5,
+   "transferencia": 10.25,
+   "controle": 23
+  }
+ ]
+}
