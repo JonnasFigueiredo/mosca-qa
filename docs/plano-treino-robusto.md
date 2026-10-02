@@ -399,3 +399,22 @@ com o rótulo "treinada − congelada"; os dois rótulos da decepção acima for
 **2026-10-02, madrugada: qa-b2-curiosidade (memória + curiosidade no teste (valência − 2,5 × tentativas da ação no episódio), cada versão de teste 3 vezes): PASSOU.** Sementes 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316. Critério: geral, curiosa − novidade (principal: IC95 < +1,5): -0.18 IC95 [-1.17,0.9]; superioridade (IC95 < 0): não; transferência, curiosa − congelada curiosa (deve ser < 0; não passou): -0.53 IC95 [-1.26,0.19]; controle, sem − com curiosidade (deve ser > 0; passou): 13.42 IC95 [10.46,16.33]. Ações até o primeiro bug por condição (transferência / controle / média de todas as versões): ativa 10,63 / 25,77 / 15,68; ativa_curiosa 8,05 / 12,35 / 9,49; congelada_curiosa 8,58 / 13,5 / 10,22; aleatoria 12,05 / 14,88 / 12,99; novidade 9,69 / 9,63 / 9,67. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.663,"ativa_curiosa":0.548,"congelada_curiosa":0.487,"aleatoria":0.437,"novidade":0.451}. Valência depois do treino (treinada): premiadas 1,09, outras -0,08. Resumo: `docs/medicoes/qa-b2-curiosidade-resumo.json`.
 
 **2026-10-02, madrugada: qa-b2-curiosidade-replica (memória + curiosidade no teste (valência − 2,5 × tentativas da ação no episódio), cada versão de teste 3 vezes, replicação com sementes novas): PASSOU.** Sementes 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336. Critério: geral, curiosa − novidade (principal: IC95 < +1,5): -0.26 IC95 [-1.47,0.92]; superioridade (IC95 < 0): não; transferência, curiosa − congelada curiosa (deve ser < 0; não passou): -1.19 IC95 [-2.44,0.03]; controle, sem − com curiosidade (deve ser > 0; passou): 11.77 IC95 [8.77,14.31]. Ações até o primeiro bug por condição (transferência / controle / média de todas as versões): ativa 9,07 / 26,31 / 14,82; ativa_curiosa 7,16 / 14,54 / 9,62; congelada_curiosa 8,34 / 14,48 / 10,39; aleatoria 11,97 / 14,85 / 12,93; novidade 9,29 / 11,06 / 9,88. Fração das vezes em que escolheu uma ação da característica premiada (repetida) visível no teste: {"ativa":0.663,"ativa_curiosa":0.557,"congelada_curiosa":0.498,"aleatoria":0.439,"novidade":0.454}. Valência depois do treino (treinada): premiadas 1, outras -0,08. Resumo: `docs/medicoes/qa-b2-curiosidade-replica-resumo.json`.
+
+**02/10, memória + curiosidade concluída e versão final.** Principal (301–316): curiosa − novidade na média de todos
+os defeitos −0,18 [−1,17; +0,90]; replicação (321–336): −0,26 [−1,47; +0,92]. Não-inferioridade passou nas duas;
+superioridade não. Descritivo: na transferência a curiosa ganha da novidade (−1,6 e −2,1), no controle perde (+2,7 e
++3,5). Secundários: controle, sem − com curiosidade +13,4 e +11,8 (passou); transferência, curiosa − congelada curiosa
+−0,5 e −1,2 (não passou: com H 2,5 a memória acrescenta pouco sobre a curiosidade). O oráculo previa uma vantagem maior
+da memória (5,8 contra 9,7 na transferência); a causa provável é o esquecimento ao longo de um teste com 9 episódios (a
+treinada sem curiosidade também caiu para 10,6 e 9,1 na transferência), limitação declarada antes. Holm com 16 séries:
+as 6 positivas replicadas passam (0,008–0,011); a decepção principal deixou de passar com a família maior (0,06).
+Versão final do artigo (`docs/publicacao/artigo.md`, seções 6.11 e 7.5), README e AGENTS.md atualizados. Dois defeitos
+da rotina corrigidos nesta etapa: a vaga de uma parte concluída não era liberada (com `--paralelos 2`, ficou 1 por vez
+por umas horas; corrigido e reiniciado, só a semente 308 recomeçou) e o rótulo da nota para critérios próprios.
+
+## Onde parei (02/10/2026)
+
+- [x] T0 itens 1 e 2; [x] T1 piloto; [x] caça a bugs: bancada 2 + retenção + tipo de defeito (replicados), decepção
+  (não replicou), memória + curiosidade (empata com a novidade, replicado). Versão final do artigo.
+- [ ] Abertos (artigo, 7.4): equilíbrio memória/curiosidade com oráculo que inclua esquecimento; defeitos de
+  sequência; software real com testes de mutação; memória entre sessões; T0 itens 3 a 6.

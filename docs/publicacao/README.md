@@ -14,4 +14,4 @@ Fontes primárias, que o artigo resume:
 Antes de tornar isto público:
 1. Revisar o que deve sair do repositório.
 2. Conferir as referências.
-3. Preencher a seção 6.6 com o resultado da bancada 2.
+3. Conferir o número de acertos das previsões de Shiu et al. (2024) citado na seção 2.6.

@@ -2,7 +2,7 @@
 
 **Treino por condicionamento dopaminérgico no corpo cogumelar de um modelo integra-e-dispara do Male CNS v1.0**
 
-Jonnas Figueiredo — rascunho de trabalho (versão de 01/10/2026). Documento vivo.
+Jonnas Figueiredo — versão de 02/10/2026.
 
 ---
 
@@ -37,11 +37,19 @@ Três extensões pré-registradas, cada uma com replicação:
 - **Decepção:** uma regra de decepção baseada na dopamina de punição reduziu o custo da especialização na série
   principal (6,3 ações), mas não replicou.
 
-Com a correção de Holm sobre as 14 séries confirmatórias, as 7 positivas continuam significativas. Um controle
-mostrou o limite do resultado: com uma pista que acende poucas células de Kenyon, a memória não vira escolha. Na média
-de todos os defeitos, um explorador simples por novidade segue mais eficiente que a mosca, que só ganha nos tipos de
-defeito que aprendeu. Relatamos todos os resultados, inclusive os negativos, e separamos sempre o que vem do mapa do
-que é regra do modelo.
+Com a correção de Holm sobre as 16 séries confirmatórias, as 6 positivas que replicaram continuam significativas. Um
+controle mostrou o limite do resultado: com uma pista que acende poucas células de Kenyon, a memória não vira escolha.
+
+Sozinha, a memória especializa a mosca: na média de todos os defeitos, um explorador simples por novidade é mais
+eficiente que ela. Somar à memória uma regra de habituação ("o que já tentou atrai menos") resolveu isso:
+- a mosca empatou com a novidade na média de todos os defeitos (−0,2 e −0,3 ações; não-inferioridade pré-registrada,
+  com replicação);
+- ganhou dela nos defeitos do tipo aprendido (−1,6 e −2,1);
+- perdeu no defeito de outro tipo (+2,7 e +3,5).
+
+Com essa regra, a memória acrescenta pouco sobre a curiosidade: a diferença para a mosca congelada com a mesma regra
+foi −0,5 e −1,2 ações, sem se separar do zero. Relatamos todos os resultados, inclusive os negativos, e separamos
+sempre o que vem do mapa do que é regra do modelo.
 
 ---
 
@@ -436,7 +444,7 @@ transferência:
 O melhor resultado cerebral (espaçado, −1,8) ficou em cerca de metade do teto, com 8 sementes, e o ruído não separa
 isso de zero. A conclusão é que **o experimento não tinha poder para ver o efeito, mesmo que ele existisse**.
 
-### 6.6 Bancada 2: desenho validado antes de rodar (em andamento)
+### 6.6 Bancada 2: desenho validado antes de rodar
 
 **Mudanças** (`criar(defeitos, {bancada: 2})`):
 - **Repetidas sem pré-condição:** as quatro ações "repetida" viraram cliques duplos completos (pagar, cancelar,
@@ -536,7 +544,7 @@ Por versão de teste (treinada − congelada, IC95):
 
 Na série principal, a reserva dupla sozinha não se separa do zero.
 
-O projeto rodou 14 séries confirmatórias na caça a bugs. Para controlar a chance de algum falso positivo na família
+O projeto rodou 16 séries confirmatórias na caça a bugs. Para controlar a chance de algum falso positivo na família
 inteira, ajustamos os p do bootstrap pelo método de Holm (`scripts/qa_comparacoes.mjs`, `qa-comparacoes.json`). O
 critério de cada série é o principal escrito antes; na decepção, é a redução do custo no controle.
 
@@ -549,11 +557,14 @@ critério de cada série é o principal escrito antes; na decepção, é a redu�
 | Bancada 2, cheiros trocados (fracos) | −2,1 [−5,4; +1,3] | 0,74 | negativo |
 | **Retenção 180 s, principal e replicação** | −4,8 [−8,3; −1,7] / −5,6 [−8,9; −2,5] | 0,007 / 0,009 | **positivos** |
 | **Tipo de defeito "normal", principal e replicação** | −4,8 [−7,3; −2,4] / −5,1 [−8,0; −2,4] | 0,007 / 0,007 | **positivos** |
-| Decepção, principal | −6,3 [−11,6; −1,7] | 0,048 | positivo |
-| Decepção, replicação | −4,6 [−10,6; +0,6] | 0,49 | **não replicou** |
+| Decepção, principal | −6,3 [−11,6; −1,7] | 0,06 | positivo sem correção |
+| Decepção, replicação | −4,6 [−10,6; +0,6] | 0,68 | **não replicou** |
+| Curiosidade, principal e replicação (superioridade contra a novidade) | −0,2 [−1,2; +0,9] / −0,3 [−1,5; +0,9] | 1 / 1 | empate (ver 6.11) |
 
-As 6 séries positivas que replicaram continuam significativas depois da correção. A decepção passa por pouco na
-série principal (0,048) e não replica, então não conta como achado.
+As 6 séries positivas que replicaram continuam significativas depois da correção (p de Holm 0,008–0,011). A decepção
+passou na série principal sem correção (p 0,006), mas não com ela, e não replicou: não conta como achado. Na
+curiosidade, a família recebe o teste de superioridade contra a novidade, que não passa. O critério principal dela era
+de não-inferioridade, que não é um teste contra zero e fica fora da família (seção 6.11).
 
 ### 6.8 Linha de base: um aprendiz clássico com as mesmas informações
 
@@ -682,6 +693,76 @@ a 12,3 ações, contra 26,6–29,9 da mosca treinada e 22–23 da mosca com dece
 ela em quase todas as séries; a exceção é a replicação da bancada 2, em que ganhou (−4,9 [−7,7; −2,5]). A mosca
 treinada ganha onde aprendeu e perde onde não aprendeu.
 
+### 6.11 Memória + curiosidade: empate com a novidade
+
+**Pergunta.** Somar à memória uma regra de habituação faz a mosca empatar com o explorador por novidade, ou ganhar
+dele, na média de todos os defeitos?
+
+**Regra (nossa, declarada).** No teste, a escolha usa:
+
+> valência − H × vezes que ela já tentou aquela ação neste episódio
+
+É habituação ao que já provou, como a visão da página faz, e moscas reais habituam. O treino é idêntico ao da mosca
+sem curiosidade: mesma semente e mesmo cérebro até o teste.
+
+**H escolhido antes, no oráculo** (`qa_curiosidade_oraculo.mjs`). O oráculo usa a valência de cada ação medida no
+cérebro depois do treino, com o viés de nascença, mais ruído. Ele reproduz o cérebro sem curiosidade (6,8 na
+transferência e 25,7 no controle, contra 5,8–8,8 e 26,6–29,9 no cérebro). Na média de todos os defeitos, o resultado
+estabiliza a partir de H = 2,5, em 8,2 ações, contra 9,6 da novidade.
+
+Com esse peso, a mosca tenta primeiro o que ainda não tentou e, entre as opções igualmente novas, escolhe pela
+memória.
+
+**Desenho, escrito antes.**
+- **Poder:** 16 sementes com cada versão de teste repetida 3 vezes (73% de poder para superioridade e ~100% para
+  não-inferioridade, no oráculo).
+- **Condições:** treinada, treinada com curiosidade, congelada com curiosidade, aleatória e novidade. Sementes 301–316,
+  replicação 321–336; 2 simulações por vez, a pedido do usuário.
+
+Ações até o primeiro bug:
+
+| Série | Condição | Média de todos | Transferência | Controle |
+|---|---|---|---|---|
+| Principal | Treinada (só memória) | 15,7 | 10,6 | 25,8 |
+| | **Treinada com curiosidade** | **9,5** | **8,1** | 12,4 |
+| | Congelada com curiosidade | 10,2 | 8,6 | 13,5 |
+| | Aleatória | 13,0 | 12,1 | 14,9 |
+| | Novidade | 9,7 | 9,7 | **9,6** |
+| Replicação | Treinada (só memória) | 14,8 | 9,1 | 26,3 |
+| | **Treinada com curiosidade** | **9,6** | **7,2** | 14,5 |
+| | Congelada com curiosidade | 10,4 | 8,3 | 14,5 |
+| | Aleatória | 12,9 | 12,0 | 14,9 |
+| | Novidade | 9,9 | 9,3 | **11,1** |
+
+Critérios pré-registrados:
+
+| Critério | Principal | Replicação |
+|---|---|---|
+| **Principal:** curiosa − novidade, média de todos, IC95 < +1,5 | −0,18 [−1,17; +0,90], **passou** | −0,26 [−1,47; +0,92], **passou** |
+| Superioridade: curiosa − novidade, IC95 < 0 | não | não |
+| Transferência: curiosa − congelada curiosa < 0 | −0,53 [−1,26; +0,19], não | −1,19 [−2,44; +0,03], não |
+| Controle: sem − com curiosidade > 0 | +13,4 [+10,5; +16,3], passou | +11,8 [+8,8; +14,3], passou |
+
+Descritivo, contra a novidade:
+- na transferência, a curiosa ganha: −1,6 [−2,8; −0,5] e −2,1 [−3,7; −0,5];
+- no controle, perde: +2,7 [+0,3; +5,3] e +3,5 [+2,1; +4,8].
+
+**Leitura.**
+- **Empata com a novidade na média, nas duas séries.** É a primeira vez que a mosca empata com a melhor estratégia
+  simples na média de todos os defeitos. Ela ganha nos defeitos do tipo aprendido e perde no de outro tipo.
+- **A curiosidade resolve o custo da especialização,** que caiu de ~26 para ~13 ações no controle.
+- **Mas a memória acrescenta pouco sobre a curiosidade.** A diferença para a congelada com a mesma regra, na
+  transferência, ficou em −0,5 e −1,2 ações, sem se separar do zero.
+- **A divergência do oráculo tem causa identificada.** O oráculo previa 5,8 contra 9,7. A causa provável é o
+  esquecimento ao longo do teste, agora com 9 episódios em vez de 3. A própria treinada sem curiosidade transferiu
+  pior aqui (10,6 e 9,1) do que nas séries com teste curto (5,8–8,8). Essa limitação do oráculo estava declarada antes
+  de rodar.
+- **Com H = 2,5, quem decide é a curiosidade.** A memória só desempata.
+
+**Resultado útil para o objetivo prático.** Memória + curiosidade dá um testador que empata com a melhor estratégia
+simples e é melhor que ela nos tipos de defeito já vistos. Mas a contribuição própria da memória, nesse arranjo, ficou
+pequena.
+
 ---
 
 ## 7. Discussão
@@ -702,6 +783,10 @@ treinada ganha onde aprendeu e perde onde não aprendeu.
 - **A associação é específica e tem custo.** Num defeito de outro tipo, a mosca treinada não melhora, e tende a
   piorar. Ela se comporta como um aprendiz que só aprende com recompensa: forte no que aprendeu, menos exploradora no
   resto. A decepção pela PPL1 reduziu esse custo na série principal, mas o resultado não replicou.
+- **Memória + habituação empata com a novidade.** Na média de todos os defeitos, o empate replicou. A mosca ganha da
+  novidade nos defeitos do tipo aprendido e perde no de outro tipo. Com o peso de habituação escolhido, a memória
+  contribui pouco além da habituação; ficou em aberto se um peso menor, ou uma memória que esqueça menos ao longo do
+  teste, preservaria mais da vantagem da memória.
 
 ### 7.2 Lições de método
 
@@ -726,18 +811,46 @@ treinada ganha onde aprendeu e perde onde não aprendeu.
 - **Dependência da força da pista.** O efeito só aparece com pistas que acendem ~90 KCs ou mais (seções 6.3 e 6.9). Na
   bancada, a escolha dos glomérulos é nossa.
 - **Utilidade prática limitada.** Como testador, a mosca não supera um explorador simples por novidade na média dos
-  defeitos. O resultado é sobre o circuito, não sobre um método de teste melhor.
+  defeitos; com a habituação, empata. O resultado é sobre o circuito, não sobre um método de teste melhor.
+- **O oráculo não modela o esquecimento ao longo do teste.** Isso superestimou a vantagem da memória com curiosidade
+  (seção 6.11). Ele acertou nas outras séries, que tinham teste curto.
 
 ### 7.4 Próximos passos
 
-1. **Memória com curiosidade.** Somar à valência aprendida a habituação ao que já foi provado, que a página já usa
-   para a visão, e testar se isso combina a transferência com a exploração da novidade.
+1. **Equilíbrio entre memória e curiosidade.** Testar pesos de habituação menores, já com um oráculo que inclua o
+   esquecimento ao longo do teste, para preservar mais da vantagem da memória sem perder o empate na média.
 2. **Defeitos de sequência**, que exigem várias ações, e **várias associações ao mesmo tempo**, para testar se uma
    apaga a outra.
 3. **Software real com defeitos gerados automaticamente** (testes de mutação), para que os defeitos não sejam
    escolhidos por nós.
 4. **Memória entre sessões:** treinar, guardar e testar numa sessão nova.
 5. **Decepção com mais sementes,** para medir de forma estável o custo dela na transferência.
+
+### 7.5 Conclusão
+
+**O circuito aprende e transfere.** Num modelo do sistema nervoso central completo de uma *Drosophila* macho, o
+circuito de aprendizado do corpo cogumelar, condicionado com dopamina de recompensa a cada defeito encontrado, forma
+uma associação com a característica das ações que revelaram defeitos e a transfere para partes de um sistema que
+nunca viu.
+- O efeito é específico: some no cérebro de pesos congelados e não ajuda num defeito de outro tipo.
+- Sobrevive a 3 minutos de outros cheiros e vale para dois tipos de defeito.
+- Foi pré-registrado, replicado com sementes independentes e resiste à correção para 16 comparações.
+
+**Com uma regra de habituação, empata com a novidade.** Sozinha, a associação especializa a mosca. Com a regra de
+habituação, ela empata na média de todos os defeitos com a melhor estratégia simples de exploração e ganha dela nos
+tipos de defeito já vistos.
+
+**O que não afirmamos.**
+- Que uma mosca real procuraria defeitos.
+- Que o modelo é uma mosca.
+- Que o método é melhor que testes convencionais.
+
+Quem transforma ações em cheiros e lê a memória para escolher são regras nossas. O que o trabalho mostra é que a
+fiação medida de um cérebro real, com neurônios simplificados, sustenta aprendizado associativo e transferência numa
+tarefa que nada tem de natural para ela.
+
+O caminho até aqui incluiu oito séries negativas ou não replicadas (cinco na primeira bancada, a ponte pelas MBONs
+na arena, o controle de cheiros fracos e a replicação da decepção), e cada uma está relatada com a sua causa.
 
 ---
 
@@ -752,7 +865,12 @@ treinada ganha onde aprendeu e perde onde não aprendeu.
   node scripts/qa_abstrato.mjs --sementes 11,12 --cheiros docs/medicoes/qa-cheiros-fortes.json --saida docs/medicoes/X.json
   ```
 
-  As opções `--bancada 2`, `--treinos`, `--orcamento-treino`, `--visiveis` e `--retencao-teste` mudam o protocolo.
+  As opções `--bancada 2`, `--caracteristica normal`, `--treinos`, `--orcamento-treino`, `--visiveis`,
+  `--retencao-teste`, `--repeticoes-teste`, `--condicoes` (ativa, ativa_decepcao, ativa_curiosa, congelada,
+  congelada_curiosa, aleatoria, novidade), `--limiar-decepcao` e `--curiosidade` mudam o protocolo.
+- **Rotina automática:** `node scripts/madrugada.mjs --plano b2 | seguintes | validade | curiosidade [--paralelos 2]`.
+- **Oráculos e poder:** `node scripts/qa_oraculo.mjs --bancada 2 [--caracteristica normal]`,
+  `node scripts/qa_curiosidade_oraculo.mjs` e `node scripts/qa_curiosidade_poder.mjs`.
 - **Resumo pareado:** `node scripts/qa_resumo.mjs --prefixo X`. Dá IC95, p do bootstrap, dz, o resultado por versão
   e o de qualquer par de condições.
 - **Holm para todas as séries:** `node scripts/qa_comparacoes.mjs`.
