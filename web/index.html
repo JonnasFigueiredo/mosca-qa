@@ -60,6 +60,9 @@ button.ctl {
 button.ctl:hover { border-color: var(--muted); }
 button.ctl:focus-visible, .sx button:focus-visible, .app-tabs button:focus-visible { outline: 2px solid var(--spike); outline-offset: 2px; }
 button.ctl[disabled] { opacity: .5; cursor: default; }
+a.ctl { font: 500 14px var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; text-decoration: none; }
+a.ctl:hover { border-color: var(--muted); }
+a.link-caca { border-color: var(--spike); color: var(--spike); }
 
 /* palco */
 .stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 290px; gap: 18px; align-items: start; }
@@ -350,6 +353,7 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
       <div class="stat"><span class="eyebrow">velocidade</span><span class="mono" id="stSpeed">—</span></div>
       <button class="ctl" id="btnRun" disabled>Pausar</button>
       <button class="ctl" id="btnReset" disabled>Reiniciar</button>
+      <a class="ctl link-caca" href="caca.html" title="Tela separada: o treino de caça a bugs validado, passo a passo, com o cérebro real">Caça a bugs ao vivo →</a>
     </div>
   </header>
 

@@ -399,6 +399,17 @@ O que isso quer dizer:
 - **Caça a bugs só com o cérebro (30/09), negativo.** Num sistema de Pedidos com contratos, cada ação tem um cheiro (4 glomérulos, calibrados para nascerem neutros) e a escolha segue a valência do corpo cogumelar. Em 8 sementes pareadas, a treinada achou o primeiro bug de teste em 25,2 ações, a congelada em 27,7 (diferença −2,5, IC95 [−5,3; +0,2], cruza o zero) e a escolha aleatória em 19,7. A valência das ações premiadas não subiu no treino: a recompensa não gravou. Detalhes em `docs/plano-treino-robusto.md`.
 - **Caça a bugs só com o cérebro, depois das correções (30/09–01/10): positivo, com replicação.** Duas causas do negativo eram do nosso desenho, não do cérebro: os cheiros das ações acendiam poucas células de Kenyon (com um cheiro forte, uma única recompensa sobe a valência em +0,74 a +0,92) e a bancada de teste quase não media transferência (validado por um "oráculo" sem cérebro). Na bancada nova, validada antes de rodar, a mosca treinada acha defeitos do tipo que aprendeu, em partes do sistema que nunca viu, 4,8 a 6,9 ações antes da mesma mosca com os pesos congelados: em 6 séries de 16 sementes (bancada 2, retenção de 180 s e outro tipo de defeito, cada uma com replicação), todas significativas depois da correção de Holm. Ela escolhe a ação do tipo premiado em 70–85% das oportunidades, contra 50–58% da congelada. Num defeito de outro tipo ela não melhora, e um explorador simples por novidade continua melhor na média de todos os defeitos. Uma regra de decepção (dopamina de punição quando a ação esperada não dá bug) reduziu esse custo na série principal, mas não replicou. Somando à memória uma regra de habituação ("o que já tentou atrai menos"), ela empata com a novidade na média de todos os defeitos (com replicação), ganha dela nos tipos já aprendidos e perde nos outros; com esse peso de habituação, a memória acrescenta pouco sobre a curiosidade. Com cheiros fracos, a memória não vira escolha (negativo). Os cheiros das ações, a leitura da valência e a escolha são regras nossas; o aprendizado é do circuito do mapa. Tudo, com métodos, números e resultados negativos: `docs/publicacao/artigo.md`.
 
+### Caça a bugs ao vivo
+
+Uma tela separada, `http://localhost:8765/caca.html` (ou o botão "Caça a bugs ao vivo" no topo da página), roda no navegador o mesmo treino validado, com o cérebro real, e mostra passo a passo:
+- as 3 ações visíveis a cada passo, com o cheiro (glomérulos) de cada uma e a valência lida enquanto ela cheira;
+- a escolha e a chance de cada ação, o bug encontrado e a dopamina de recompensa;
+- a atividade no cérebro: células de Kenyon, saídas do corpo cogumelar, dopamina e glomérulos;
+- a memória: quanto ela gosta de cada uma das 15 ações, antes e depois do treino, e a curva das ações premiadas ao longo do tempo;
+- o placar do teste ao lado das médias medidas em 32 sementes.
+
+Condições: treinada, congelada, com ou sem curiosidade; bug premiado de repetição ou em ação normal; semente. Com as medições ligadas, a sessão repete exatamente a sessão medida com a mesma semente (conferido com a semente 51: as valências antes do treino e os bugs de cada episódio são os mesmos do `qa-b2`). Uma sessão leva uns 11 minutos de cérebro (no navegador, ~0,6–0,7× o tempo real). É uma demonstração; as conclusões vêm das séries medidas. Código: `web/caca.html`, `web/caca.js`.
+
 Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.
 
 ## Créditos

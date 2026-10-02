@@ -1,0 +1,256 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caça a bugs ao vivo · Mosca QA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* mesmas cores e fontes da página principal (index.html) */
+:root {
+  --bg: #E9ECEA; --surface: #F6F7F5; --ink: #1C2127; --muted: #5F6A74; --line: #C9CFCC;
+  --spike: #D0245E; --ok: #1F7A5A; --bug: #9A6200; --crit: #B3261E; --em: #3C4650; --track: #DCE0DE;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0F1214; --surface: #171B1E; --ink: #E4E8E6; --muted: #8C979F; --line: #2A3035;
+    --spike: #FF4F8B; --ok: #4CC38A; --bug: #E0A43A; --crit: #FF6B5E; --em: #7D8A94; --track: #242A2E;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0F1214; --surface: #171B1E; --ink: #E4E8E6; --muted: #8C979F; --line: #2A3035;
+  --spike: #FF4F8B; --ok: #4CC38A; --bug: #E0A43A; --crit: #FF6B5E; --em: #7D8A94; --track: #242A2E;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); padding-inline: 16px; padding-block: 18px 40px; }
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 16px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* topo */
+.top { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px 24px; }
+.voltar { font: 500 13px var(--mono); color: var(--muted); text-decoration: none; }
+.voltar:hover { color: var(--ink); }
+.brand h1 { font: 700 clamp(28px, 4vw, 42px)/1.05 var(--display); letter-spacing: -.02em; margin-top: 6px; }
+.brand h1 b { color: var(--spike); }
+.brand p { margin: 6px 0 0; color: var(--muted); max-width: 64ch; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 10px 12px; }
+.controls label { display: grid; gap: 3px; font: 500 11px var(--mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.controls select, .controls input[type=number] { font: 14px var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; }
+.controls input[type=number] { width: 78px; font-family: var(--mono); }
+.controls label.chk { display: flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; font: 13px var(--sans); color: var(--ink); padding-bottom: 8px; }
+button.ctl { font: 500 14px var(--sans); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+button.ctl:hover { border-color: var(--muted); }
+button.ctl.primario { background: var(--spike); border-color: var(--spike); color: #fff; }
+button.ctl[disabled] { opacity: .5; cursor: default; }
+button.ctl:focus-visible { outline: 2px solid var(--spike); outline-offset: 2px; }
+
+/* faixa de estado */
+.estado { display: flex; flex-wrap: wrap; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.estado .stat { display: grid; gap: 1px; padding: 8px 14px; border-right: 1px solid var(--line); min-width: 0; }
+.estado .stat:last-child { border-right: 0; flex: 1; }
+.estado .mono { font-size: 15px; }
+.carga { height: 3px; background: var(--track); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.carga i { display: block; height: 100%; width: 0; background: var(--spike); transition: width .2s; }
+
+/* linha do tempo das fases */
+.fases { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.fases li { font: 500 12px var(--mono); padding: 4px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); background: var(--surface); }
+.fases li.feita { color: var(--ink); border-color: var(--em); }
+.fases li.agora { color: #fff; background: var(--spike); border-color: var(--spike); }
+.fases li.teste { border-style: dashed; }
+
+/* grade de painéis */
+.grade { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.col { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.painel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px 16px; min-width: 0; }
+.painel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.painel-head h2 { font: 600 16px var(--sans); }
+.nota { color: var(--muted); font-size: 13px; margin: 10px 0 0; }
+
+/* agora: as ações visíveis */
+.contexto { font: 500 13px var(--mono); color: var(--muted); margin-bottom: 10px; }
+.contexto b { color: var(--ink); font-weight: 500; }
+.cartas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.carta { border: 1px solid var(--line); border-radius: 8px; padding: 10px 10px 12px; background: var(--bg); display: grid; gap: 7px; align-content: start; transition: border-color .15s, box-shadow .15s; min-height: 168px; }
+.carta.cheirando { border-color: var(--spike); }
+.carta.escolhida { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink) inset; }
+.carta.bug { border-color: var(--bug); box-shadow: 0 0 0 2px var(--bug) inset; }
+.carta.vazia { opacity: .45; }
+.carta .tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font: 500 11px var(--mono); padding: 1px 6px; border-radius: 4px; background: var(--track); color: var(--em); }
+.tag.premiada { background: var(--spike); color: #fff; }
+.carta .nome { font: 600 14px/1.3 var(--sans); }
+.gloms { display: flex; gap: 4px; flex-wrap: wrap; }
+.gl { font: 500 10.5px var(--mono); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); }
+.carta.cheirando .gl { border-color: var(--spike); color: var(--spike); }
+.val { display: grid; gap: 3px; }
+.val .linha { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--muted); }
+.val .linha b { color: var(--ink); font-weight: 500; }
+.barra0 { position: relative; height: 10px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.barra0::after { content: ""; position: absolute; left: 40%; top: 0; bottom: 0; width: 1px; background: var(--muted); }
+.barra0 i { position: absolute; top: 0; bottom: 0; background: var(--em); }
+.barra0 i.prem { background: var(--spike); }
+.selo { font: 600 12px var(--mono); justify-self: start; padding: 2px 7px; border-radius: 4px; background: var(--track); color: var(--muted); }
+.selo.bug { background: var(--bug); color: #fff; }
+.selo.ok { background: var(--ink); color: var(--surface); }
+.resumo-agora { margin: 12px 0 0; font-size: 14px; min-height: 1.5em; }
+.resumo-agora.dopa { color: var(--ok); font-weight: 600; }
+
+/* cérebro */
+.medidores { display: grid; gap: 9px; }
+.med { display: grid; grid-template-columns: 150px minmax(0, 1fr) 64px; gap: 8px; align-items: center; font-size: 13px; }
+.med .trilho { height: 10px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.med .trilho i { display: block; height: 100%; width: 0; background: var(--em); transition: width .08s linear; }
+.med.kc .trilho i { background: var(--spike); }
+.med.pam .trilho i { background: var(--ok); }
+.med.ppl .trilho i { background: var(--crit); }
+.med .num { font: 12px var(--mono); text-align: right; color: var(--muted); }
+.flash { transition: background .3s; border-radius: 6px; }
+.flash.on { background: color-mix(in srgb, var(--ok) 18%, transparent); }
+.glomgrade { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; margin-top: 14px; }
+.gcel { border: 1px solid var(--line); border-radius: 5px; padding: 4px 6px; display: grid; gap: 0; font-size: 11px; line-height: 1.25; }
+.gcel b { font: 500 12px var(--mono); }
+.gcel span { color: var(--muted); }
+.gcel.premiada b { color: var(--spike); }
+
+/* memória */
+.barras { display: grid; gap: 4px; }
+.lin { display: grid; grid-template-columns: minmax(0, 210px) minmax(0, 1fr) 52px; gap: 8px; align-items: center; font-size: 13px; }
+.lin .rot { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lin.premiada .rot { color: var(--spike); font-weight: 600; }
+.lin .num { font: 12px var(--mono); text-align: right; }
+.lin .barra0 { height: 12px; }
+.lin .barra0 .antes { position: absolute; top: -1px; bottom: -1px; width: 2px; background: var(--ink); opacity: .55; }
+.legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.legenda i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+canvas#grafico { width: 100%; height: 170px; display: block; margin-top: 14px; }
+
+/* placar */
+.treinos { display: grid; gap: 4px; margin-bottom: 14px; font-size: 13px; }
+.treinos div { display: flex; gap: 8px; justify-content: space-between; border-bottom: 1px dashed var(--line); padding-bottom: 3px; }
+.treinos .mono { color: var(--muted); }
+.tabela-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { padding: 6px 5px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { white-space: normal; vertical-align: bottom; }
+th:first-child, td:first-child { text-align: left; white-space: normal; }
+th { font: 500 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+td.vivo { font-weight: 600; color: var(--spike); }
+td.mono, td.vivo { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+tr.controle td:first-child::after { content: " · controle"; color: var(--muted); font-size: 12px; }
+
+/* registro */
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 300px; overflow-y: auto; font-size: 13px; }
+.log li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; }
+.log li .mono { color: var(--muted); font-size: 12px; }
+.log li.bug { color: var(--bug); }
+.log li.dopa { color: var(--ok); }
+.log li.fase { color: var(--muted); }
+.regras { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; }
+.regras b { font-weight: 600; }
+
+@media (max-width: 900px) {
+  .grade { grid-template-columns: minmax(0, 1fr); }
+  .cartas { grid-template-columns: minmax(0, 1fr); }
+  .carta { min-height: 0; }
+  .med { grid-template-columns: 120px minmax(0, 1fr) 56px; }
+  .lin { grid-template-columns: minmax(0, 130px) minmax(0, 1fr) 48px; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <a class="voltar" href="index.html">← Mosca QA</a>
+      <h1>Caça a bugs <b>ao vivo</b></h1>
+      <p>O mesmo cérebro e o mesmo protocolo dos experimentos medidos. A cada passo, ela cheira as ações visíveis do sistema de Pedidos, escolhe pela memória, e cada bug novo libera dopamina. Depois do treino, é testada em partes do sistema que nunca viu.</p>
+    </div>
+    <div class="controls">
+      <label>Condição
+        <select id="cond">
+          <option value="ativa">Treinada (aprende)</option>
+          <option value="congelada">Congelada (sem aprendizado)</option>
+          <option value="ativa_curiosa">Treinada + curiosidade</option>
+          <option value="congelada_curiosa">Congelada + curiosidade</option>
+        </select>
+      </label>
+      <label>Bug premiado
+        <select id="car">
+          <option value="repetida">Repetição (clique duplo)</option>
+          <option value="normal">Ação normal</option>
+        </select>
+      </label>
+      <label>Semente <input id="semente" type="number" value="51" min="1" step="1"></label>
+      <label class="chk"><input type="checkbox" id="medir" checked> medir as 15 ações antes e depois</label>
+      <button class="ctl primario" id="btnIniciar" disabled>Carregando o cérebro…</button>
+      <button class="ctl" id="btnPausar" disabled>Pausar</button>
+      <button class="ctl" id="btnParar" disabled>Parar</button>
+    </div>
+  </header>
+
+  <div class="estado">
+    <div class="stat"><span class="eyebrow">tempo do cérebro</span><span class="mono" id="stTempo">0,0 s</span></div>
+    <div class="stat"><span class="eyebrow">velocidade</span><span class="mono" id="stVel">—</span></div>
+    <div class="stat"><span class="eyebrow">bugs no treino</span><span class="mono" id="stBugs">0</span></div>
+    <div class="stat"><span class="eyebrow">dopamina de recompensa</span><span class="mono" id="stDopa">0 vezes</span></div>
+    <div class="stat"><span class="eyebrow">situação</span><span id="stSit">Baixando o conectoma…</span><div class="carga"><i id="carga"></i></div></div>
+  </div>
+
+  <ol class="fases" id="fases" aria-label="Fases da sessão"></ol>
+
+  <main class="grade">
+   <div class="col">
+    <section class="painel">
+      <div class="painel-head"><h2>Agora</h2><span class="eyebrow" id="agoraFase">—</span></div>
+      <div class="contexto" id="contexto">Aperte <b>Iniciar</b>. O cérebro leva uns 20 segundos para carregar.</div>
+      <div class="cartas" id="cartas"></div>
+      <p class="resumo-agora" id="resumoAgora"></p>
+    </section>
+    <section class="painel">
+      <div class="painel-head"><h2>Memória</h2><span class="eyebrow">quanto ela gosta de cada ação</span></div>
+      <div class="barras" id="barras"></div>
+      <div class="legenda"><span><i style="background:var(--spike)"></i>característica premiada</span><span><i style="background:var(--ink);opacity:.55"></i>antes do treino</span><span>valência = aproximar − evitar (Hz por neurônio)</span></div>
+      <canvas id="grafico" aria-label="Valência média das ações premiadas e das outras ao longo do tempo"></canvas>
+      <div class="legenda"><span><i style="background:var(--spike)"></i>premiadas</span><span><i style="background:var(--em)"></i>outras</span><span>a cada vez que ela cheira uma ação</span></div>
+    </section>
+    <section class="painel">
+      <div class="painel-head"><h2>Registro</h2><span class="eyebrow">o mais recente em cima</span></div>
+      <ol class="log" id="log"></ol>
+    </section>
+   </div>
+   <div class="col">
+    <section class="painel flash" id="painelCerebro">
+      <div class="painel-head"><h2>No cérebro</h2><span class="eyebrow">últimos 100 ms</span></div>
+      <div class="medidores" id="medidores"></div>
+      <div class="glomgrade" id="glomgrade"></div>
+      <p class="nota">Cada característica de uma ação é um par de glomérulos do lobo antenal (o cheiro). As células de Kenyon recebem o cheiro; as saídas do corpo cogumelar dizem se ele atrai ou afasta. A dopamina de recompensa enfraquece a saída de "evitar" para as células ativas.</p>
+    </section>
+    <section class="painel">
+      <div class="painel-head"><h2>Placar</h2><span class="eyebrow">ações até o primeiro bug</span></div>
+      <div class="treinos" id="treinos"></div>
+      <div class="tabela-wrap"><table id="tabela"></table></div>
+      <p class="nota" id="notaRef"></p>
+    </section>
+    <section class="painel">
+      <div class="painel-head"><h2>O que vem do cérebro e o que é regra</h2></div>
+      <ul class="regras">
+        <li><b>Do cérebro (o mapa do Janelia):</b> a resposta de cada célula ao cheiro, a valência lida nas saídas do corpo cogumelar, e o aprendizado: a dopamina muda as sinapses entre células de Kenyon e saídas.</li>
+        <li><b>Regra nossa:</b> cada ação do sistema vira um cheiro de 4 glomérulos; a escolha é um sorteio ponderado pela valência; um bug novo no treino dispara a dopamina; na curiosidade, cada vez que ela já tentou a ação desconta 2,5 da valência.</li>
+        <li><b>Não é uma mosca de verdade:</b> é a fiação real de um cérebro inteiro com neurônios simplificados. O sistema de Pedidos é simulado.</li>
+        <li><b>Esta tela é uma demonstração.</b> As medidas, com critério escrito antes, replicação e correção estatística, estão em <span class="mono">docs/publicacao/artigo.md</span>.</li>
+      </ul>
+    </section>
+   </div>
+  </main>
+</div>
+
+<script src="qa/pedidos.js"></script>
+<script src="caca.js"></script>
