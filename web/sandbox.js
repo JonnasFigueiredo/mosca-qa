@@ -1462,6 +1462,22 @@ function sbObjeto(o) {
     // o vinagre enche a tampa até a borda (é nele que ela pisa, na física)
     const liquido = new THREE.Mesh(new THREE.CircleGeometry(r - 0.5, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
     liquido.rotation.x = -Math.PI / 2; liquido.position.y = alt - 0.3; g.add(liquido);
+  } else if (o.forma === 'placa') {
+    // caça a bugs no mundo (caca-mundo.js): uma plaquinha com o nome da ação; o cheiro é das características dela
+    const cv = document.createElement('canvas'); cv.width = 512; cv.height = 320;
+    const c2 = cv.getContext('2d');
+    c2.fillStyle = '#fbf8f2'; c2.fillRect(0, 0, 512, 320); c2.strokeStyle = '#b9ab95'; c2.lineWidth = 12; c2.strokeRect(6, 6, 500, 308);
+    c2.font = '500 34px ui-monospace, Consolas, monospace'; c2.textBaseline = 'top';
+    let tx = 28;
+    for (const t of [o.acao?.familia, o.acao?.entrada].filter(Boolean)) { const tw = c2.measureText(t).width + 22; c2.fillStyle = '#dce0de'; c2.fillRect(tx, 26, tw, 46); c2.fillStyle = '#3c4650'; c2.fillText(t, tx + 11, 33); tx += tw + 12; }
+    c2.font = '600 48px system-ui, "Segoe UI", sans-serif'; c2.fillStyle = '#1c2127';
+    let linha = '', ly = 100;
+    for (const p of o.r.split(' ')) { const t = linha ? linha + ' ' + p : p; if (c2.measureText(t).width > 456 && linha) { c2.fillText(linha, 28, ly); ly += 56; linha = p; } else linha = t; }
+    if (linha) c2.fillText(linha, 28, ly);
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
+    const lado = sbMat('#efe9df');
+    const m = new THREE.Mesh(new THREE.BoxGeometry(W, Hh, D), [lado, lado, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 }), lado, lado, lado]);
+    m.position.y = Hh / 2; g.add(m);
   } else if (o.forma === 'pista') {
     const base=new THREE.Mesh(new THREE.CircleGeometry(W/2,32),sbMat('#eeeece'));
     base.rotation.x=-Math.PI/2;base.scale.y=D/W;base.position.y=.6;g.add(base);
@@ -1517,7 +1533,8 @@ function sbSyncWorld() {
       const g = sbObjeto(o);
       g.position.set(x, 0, z);
       add(g);
-      const rot = sbRotulo(o.r); rot.position.set(x, L.z + 55, z); SBR.rotulos.add(rot);
+      // as plaquinhas da caça a bugs já trazem o nome escrito: sem o rótulo flutuante, que tapava a vista
+      if (o.forma !== 'placa') { const rot = sbRotulo(o.r); rot.position.set(x, L.z + 55, z); SBR.rotulos.add(rot); }
       SBR.boxes.set(id, { mesh: g, natural: true, base: new THREE.Vector3(x, L.z, z), vazio: false });
     }
     return;

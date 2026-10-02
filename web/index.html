@@ -806,7 +806,7 @@ const odorName = id => ODOR_PESO[id] ? (ODORS[id].join(' + ') || 'sem cheiro') :
 // (Stensmyr et al. 2012; Suh et al. 2004)
 const INATA = { ORN_DM1: 1, ORN_VA2: 1, ORN_DM2: 0.6, ORN_DM3: 0.6, ORN_DM4: 0.6, ORN_DP1m: 0.4, ORN_DA2: -2, ORN_V: -1.5 };
 function inata(glom) {
-  if(APP.id==='treino')return [0,0]; // sem a preferência inata por frutas da Cozinha nesta sonda
+  if(APP.id==='treino'||APP.id==='caca')return [0,0]; // sem a preferência inata por frutas da Cozinha (treino e caça a bugs)
   let a = 0, v = 0;
   for (const [nome, w] of Object.entries(INATA)) {
     const gi = GLOM_IX[nome];
@@ -1024,7 +1024,7 @@ function stepBody(dt, counts, destino = worker) {
   f.visionTurn = visionTurn;
   // aversão: escolhe um lado (o de menos cheiro; se empatar, sorteia) e mantém a curva até sair
   // (no mundo natural, a diferença entre as antenas é a dos cheiros que afastam, como a geosmina)
-  const [dAv, dAt, sAt] = ina ? [ina.vL - ina.vR, ina.aL - ina.aR, ina.aL + ina.aR] : [tL - tR, tL - tR, tL + tR];
+  const [dAv, dAt, sAt] = ina && APP.id !== 'caca' ? [ina.vL - ina.vR, ina.aL - ina.aR, ina.aL + ina.aR] : [tL - tR, tL - tR, tL + tR];
   if (f.aversion > 0.3 && !f.fleeDir) f.fleeDir = Math.abs(dAv) > 0.03 ? Math.sign(dAv) : (Math.random() < 0.5 ? -1 : 1);
   if (f.aversion < 0.05) f.fleeDir = 0;
   // Regra do corpo, sem consultar objetos: se o cheiro ruim diminui, seguir a saída encontrada.
@@ -1165,7 +1165,8 @@ function stepBody(dt, counts, destino = worker) {
   // (no mundo natural: doce é pisar em algo com açúcar que ainda tem comida)
   const gostoEl = SB.on && APP.mundo ? f.patasEl : f.onEl;
   if (SB.on && APP.mundo && (!gostoEl || CorpoNatural.impedida(f))) f.sweet = 0;
-  const onNew = APP.mundo ? (gostoEl && APP.objetos[gostoEl.id]?.gosto === 'doce' && restoDe(gostoEl.id) > 0 ? 1 : 0)
+  const gostoObj = APP.mundo && gostoEl ? APP.objetos[gostoEl.id] : null;
+  const onNew = APP.mundo ? (gostoObj?.gosto === 'doce' && restoDe(gostoEl.id) > 0 ? 1 : gostoObj?.gosto === 'teste' ? el(gostoEl.id).novelty : 0)
     : (f.onEl ? el(f.onEl.id).novelty : 0);
   rates = {
     // (no mundo natural, a fome regula a sensibilidade ao açúcar, como nas moscas reais: saciada, ela não estende a probóscide)
@@ -1279,6 +1280,7 @@ function press(r) {
   s.novelty *= 0.35;
   renderShop();
   requestAnimationFrame(measure);
+  if (APP.provar) { APP.provar(r.id); return; }   // caça a bugs no mundo: provar executa a ação (caca-mundo.js)
   if (APP.mundo) {
     labEvent('clique', { id: r.id, bug: null, arriscado: false });
     const expect = clamp((fly.lv - 0.1) / 0.5, 0, 1);
@@ -2090,3 +2092,5 @@ else $('#ldText').textContent = 'A biblioteca 3D não carregou. Recarregue a pá
 <script src="colonia.js"></script>
 <script src="treino-protocolo.js"></script>
 <script src="treino-memoria.js"></script>
+<script src="qa/pedidos.js"></script>
+<script src="caca-mundo.js"></script>

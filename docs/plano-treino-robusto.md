@@ -428,3 +428,12 @@ as 15 ações ficam espalhadas na bancada e as visíveis são as 3 mais perto de
 mapa com o mesmo mecanismo (cheira 1 s, valência, softmax, recompensa). É variante de demonstração, não medida: as
 ações visíveis passam a depender do caminho. Medir o modo mapa em série seria um experimento novo (oráculo, critério,
 replicação).
+
+**02/10, caça a bugs no mundo da mosca (`web/caca-mundo.js`, aba "Caça a bugs" da página).** Pedido do usuário: a
+mosca tem de andar, voar e agir como na Cozinha; o treino é a etapa final de todo o trabalho no corpo. As 15 ações
+viram plaquinhas na bancada (cheiro das características a 100 Hz no centro, peso 0,67 × 150 Hz); provar com a
+probóscide executa a ação; bug novo no treino = açúcar + PAM (a regra de `foundBug`). Ganchos mínimos no `index.html`:
+`press` chama `APP.provar`; a plaquinha não provada tem "gosto doce" pela novidade (a regra da caça a bugs da
+página); sem atração inata; a atração aprendida usa a diferença de cheiro entre as antenas. Primeira sessão: ela
+explora, prova plaquinhas diferentes e limpa o corpo entre elas. Ainda não medido: é o próximo experimento (o
+caminho, a visão e o corpo passam a decidir o que ela encontra).
