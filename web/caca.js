@@ -80,6 +80,14 @@
   const w = new Worker('sim-worker.js');
   let TAM = null, kcMask = null, aoTique = null, passo = 0, pronto = false;
   const kcJanela = [];
+  // as vistas (caca-vistas.js) recebem cada bloco e podem pedir pausas de animação. A pausa para o relógio da tela,
+  // não o cérebro: nenhum passo cerebral é acrescentado (a sessão continua igual à medida com a mesma semente)
+  const ganchos = [];
+  window.__cacaGancho = f => ganchos.push(f);
+  async function pausaVisual(ms) {
+    if (!window.__cacaPausa || parar) return;
+    const t0 = performance.now(); await window.__cacaPausa(ms); S.wallPausado += performance.now() - t0;
+  }
   w.onmessage = ({ data: m }) => {
     if (m.type === 'progress') { S.carga = m.total ? m.loaded / m.total : 0; S.sit = m.stage || 'Carregando…'; marca(); }
     else if (m.type === 'ready') { pronto = true; S.carga = 1; tentaLiberar(); }
@@ -89,6 +97,7 @@
   w.postMessage({ type: 'load' });
   fetch('data/meta.json').then(r => r.json()).then(meta => {
     TAM = Object.fromEntries(Object.entries(meta.groups).map(([k, v]) => [k, v.length]));
+    window.__cacaMeta = meta;
     kcMask = new Uint8Array(meta.neurons || 200000);
     for (const i of meta.groups.kc) kcMask[i] = 1;
     tentaLiberar();
@@ -103,6 +112,7 @@
   const a = 0.25;   // suavização (~40 ms)
   function registra(m) {
     S.tempo += 0.01;
+    for (const f of ganchos) f(m, S.tempo);
     const hz = g => (m.counts[g] || 0) / (TAM[g] || 1) / 0.01;
     const ema = (k, v) => { S.med[k] += a * (v - S.med[k]); };
     ema('aprox', hz('mbon_aprox')); ema('evitar', hz('mbon_evitar')); ema('evitarRec', hz('mbon_evitar_rec'));
@@ -166,7 +176,8 @@
       e.forEach((x, i) => { S.cartas[i].prob = x / soma; if (curiosa) S.cartas[i].tentadas = tentadas[opcoes[i].id] || 0; });
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
       const escolha = opcoes[k];
-      S.cartas[k].escolhida = true;
+      S.cartas[k].escolhida = true; marca();
+      await pausaVisual(750);
       tentadas[escolha.id] = (tentadas[escolha.id] || 0) + 1;
       sis.executar(escolha.id);
       const novos = Q.verificar(sis).filter(x => !achados.has(x));
@@ -176,13 +187,15 @@
         log(`${rotulo}, passo ${p + 1}: "${ACAO_TXT[escolha.id]}" revelou um bug (${novos.map(x => CONTRATO_TXT[x] || x).join('; ')}).`, 'bug');
         if (!teste) S.bugsTreino++;
         marca();
-        if (teste) { S.resumo = `Achou o bug em ${p + 1} ações. No teste não há recompensa.`; await roda(0.6, {}); break; }
+        if (teste) { S.resumo = `Achou o bug em ${p + 1} ações. No teste não há recompensa.`; await pausaVisual(1400); break; }
+        await pausaVisual(500);
         await recompensar(escolha);
         log(`Dopamina de recompensa pareada com o cheiro de "${ACAO_TXT[escolha.id]}".`, 'dopa');
       } else {
         S.cartas[k].nada = true;
         S.resumo = `Escolheu "${ACAO_TXT[escolha.id]}" (chance ${Math.round(100 * e[k] / soma)}%): nenhum contrato violado.`;
         marca();
+        await pausaVisual(350);
       }
     }
     return bugs;

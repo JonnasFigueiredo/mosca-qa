@@ -157,6 +157,39 @@ tr.controle td:first-child::after { content: " · controle"; color: var(--muted)
 .regras { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13.5px; }
 .regras b { font-weight: 600; }
 
+
+/* vistas: mosca, cérebro 3D e painel, ligadas uma a uma */
+.vistas-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.seg button { font: 500 14px var(--sans); color: var(--muted); background: transparent; border: 0; border-right: 1px solid var(--line); padding: 7px 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
+.seg button:last-child { border-right: 0; }
+.seg button kbd { font: 500 10.5px var(--mono); color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 0 4px; }
+.seg button[aria-pressed="true"] { color: var(--ink); background: var(--bg); box-shadow: inset 0 -2px 0 var(--spike); }
+.seg button:focus-visible, button.mini:focus-visible { outline: 2px solid var(--spike); outline-offset: -2px; }
+button.mini { font: 500 12px var(--mono); color: var(--muted); background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 3px 8px; cursor: pointer; }
+button.mini:hover { color: var(--ink); border-color: var(--muted); }
+button.mini[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+.dica { font: 12px var(--mono); color: var(--muted); }
+.palco { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+body.v-mosca.v-cerebro .palco { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
+body:not(.v-mosca) #vMosca, body:not(.v-cerebro) #vCerebro { display: none; }
+.vista { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr); min-width: 0; }
+.vista-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.vista-head h2 { font: 600 15px var(--sans); margin-right: auto; }
+.tela { position: relative; height: clamp(360px, 54vh, 600px); }
+body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:not(.v-mosca) .tela { height: clamp(420px, 66vh, 820px); }
+.vista:fullscreen { border-radius: 0; }
+.vista:fullscreen .tela { height: calc(100vh - 52px); }
+.tela canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#cvCerebro { cursor: grab; touch-action: none; }
+.hud { position: absolute; left: 12px; top: 10px; right: 12px; font: 12px var(--mono); color: var(--muted); pointer-events: none; display: grid; gap: 3px; }
+.hud b { color: var(--ink); font-weight: 500; }
+.leg { position: absolute; left: 12px; bottom: 10px; margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: 12px; color: var(--muted); pointer-events: none; }
+.leg i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+@media (max-width: 900px) {
+  body.v-mosca.v-cerebro .palco { grid-template-columns: minmax(0, 1fr); }
+  .seg button kbd { display: none; }
+}
 @media (max-width: 900px) {
   .grade { grid-template-columns: minmax(0, 1fr); }
   .cartas { grid-template-columns: minmax(0, 1fr); }
@@ -206,10 +239,47 @@ tr.controle td:first-child::after { content: " · controle"; color: var(--muted)
 
   <ol class="fases" id="fases" aria-label="Fases da sessão"></ol>
 
-  <main class="grade">
+  <div class="vistas-bar">
+    <span class="eyebrow">Ver</span>
+    <div class="seg" role="group" aria-label="Vistas">
+      <button data-vista="mosca" aria-pressed="true">A mosca <kbd>1</kbd></button>
+      <button data-vista="cerebro" aria-pressed="true">Cérebro 3D <kbd>2</kbd></button>
+      <button data-vista="painel" aria-pressed="true">Painel <kbd>3</kbd></button>
+    </div>
+    <button class="mini" id="vTudo" title="Tecla 0">Tudo</button>
+    <span class="dica">ligue uma, duas ou as três · "Focar" mostra só aquela</span>
+  </div>
+
+  <section class="palco" id="palco">
+    <div class="vista" id="vMosca">
+      <div class="vista-head">
+        <h2>A mosca</h2>
+        <button class="mini" data-foco="mosca">Focar</button>
+        <button class="mini" data-cheia="vMosca">Tela cheia</button>
+      </div>
+      <div class="tela"><canvas id="cvMosca" aria-label="Ilustração: a mosca cheira cada ação visível, anda até a escolhida e prova; um bug trinca a ação e a dopamina aparece em volta dela"></canvas></div>
+    </div>
+    <div class="vista" id="vCerebro">
+      <div class="vista-head">
+        <h2>Cérebro 3D</h2>
+        <button class="mini" id="camInteiro">Inteiro</button>
+        <button class="mini" id="camCogumelar">Corpo cogumelar</button>
+        <button class="mini" id="camGirar" aria-pressed="true">Girar</button>
+        <button class="mini" data-foco="cerebro">Focar</button>
+        <button class="mini" data-cheia="vCerebro">Tela cheia</button>
+      </div>
+      <div class="tela">
+        <canvas id="cvCerebro" aria-label="O sistema nervoso da mosca em 3D; cada ponto é um neurônio e acende quando dispara"></canvas>
+        <div class="hud"><span id="hudCerebro">O cérebro 3D carrega quando esta vista está ligada.</span><span id="hudCerebroNum"></span></div>
+        <ul class="leg" id="legCerebro"></ul>
+      </div>
+    </div>
+  </section>
+
+  <main class="grade" id="vPainel">
    <div class="col">
     <section class="painel">
-      <div class="painel-head"><h2>Agora</h2><span class="eyebrow" id="agoraFase">—</span></div>
+      <div class="painel-head"><h2>Agora</h2><span class="eyebrow" id="agoraFase">—</span><button class="mini" data-foco="painel">Focar no painel</button></div>
       <div class="contexto" id="contexto">Aperte <b>Iniciar</b>. O cérebro leva uns 20 segundos para carregar.</div>
       <div class="cartas" id="cartas"></div>
       <p class="resumo-agora" id="resumoAgora"></p>
@@ -252,5 +322,7 @@ tr.controle td:first-child::after { content: " · controle"; color: var(--muted)
   </main>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="qa/pedidos.js"></script>
 <script src="caca.js"></script>
+<script src="caca-vistas.js"></script>

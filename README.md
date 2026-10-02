@@ -408,6 +408,11 @@ Uma tela separada, `http://localhost:8765/caca.html` (ou o botão "Caça a bugs 
 - a memória: quanto ela gosta de cada uma das 15 ações, antes e depois do treino, e a curva das ações premiadas ao longo do tempo;
 - o placar do teste ao lado das médias medidas em 32 sementes.
 
+Três vistas, ligadas uma a uma (teclas 1, 2 e 3; "Focar" deixa só uma; "Tela cheia" em cada uma):
+- **A mosca:** ilustração do protocolo. Ela cheira cada ação visível na ordem em que o cérebro a cheira (a pluma de cheiro sai da ação até as antenas), anda até a escolhida e prova; o bug trinca a ação e a dopamina aparece em volta dela. O corpo e o andar são desenho; a escolha, a valência e a dopamina vêm do cérebro. As pausas da animação param só o relógio da tela, sem passos cerebrais a mais.
+- **Cérebro 3D:** o da página principal, com os disparos reais de cada bloco de 10 ms e as formas reais das saídas do corpo cogumelar e da dopamina; um botão aproxima o corpo cogumelar.
+- **Painel:** os dados acima (ações, medidores, memória, placar, registro).
+
 Condições: treinada, congelada, com ou sem curiosidade; bug premiado de repetição ou em ação normal; semente. Com as medições ligadas, a sessão repete exatamente a sessão medida com a mesma semente (conferido com a semente 51: as valências antes do treino e os bugs de cada episódio são os mesmos do `qa-b2`). Uma sessão leva uns 11 minutos de cérebro (no navegador, ~0,6–0,7× o tempo real). É uma demonstração; as conclusões vêm das séries medidas. Código: `web/caca.html`, `web/caca.js`.
 
 Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.
