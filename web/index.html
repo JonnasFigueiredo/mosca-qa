@@ -576,6 +576,8 @@ button.ctl.small { padding: 5px 10px; font-size: 13px; }
 const $ = s => document.querySelector(s);
 // ?headless=1: usado pelo scripts/lab_headless.mjs, roda sem desenhar o cérebro em 3D
 const HEADLESS = /[?&]headless=1\b/.test(location.search);
+// sem janela, mas com os olhos reais amostrados (as medidas da caça a bugs no mundo: scripts/qa_mundo.mjs)
+const OLHOS_HEADLESS = HEADLESS && /[?&]olhosHeadless=1\b/.test(location.search);
 // olhos: ligam se os dados trazem os grupos da visão; ?olhos=0 desliga, para comparar
 const EYES_OFF = /[?&]olhos=0\b/.test(location.search);
 // ?campos=0: no sandbox com olhos reais, volta a dar a mesma taxa a todos os LC10a de um olho (sem campo receptivo)
@@ -1160,6 +1162,11 @@ function stepBody(dt, counts, destino = worker) {
   const R = antenas ? smellAt(antenas[1].x, antenas[1].y, antenas[1].z) : smellAt(hxp + rx * side, hyp + ry * side);
   f.cv = [L.cur, R.cur]; f.ct = [L.tot, R.tot];
   if (APP.mundo) { const [aL, vL] = inata(L.glom), [aR, vR] = inata(R.glom); f.inata = { aL, aR, vL, vR }; } else f.inata = null;
+  // caça a bugs no mundo (regra nossa, declarada): o cheiro que a dopamina tornou atraente faz o papel do cheiro de comida
+  // nos comportamentos da Cozinha (busca pelo cheiro, decolar quando ele para de crescer, pousar onde ele está). Em cada
+  // antena, a atração aprendida do cheiro atual vezes o quanto de cheiro chega ali. Moscas reais se aproximam de um cheiro
+  // condicionado com recompensa como de um cheiro de comida
+  if (APP.id === 'caca' && f.inata) { const ap = f.atrAprendida || 0; f.inata.aL = ap * Math.min(1, L.tot); f.inata.aR = ap * Math.min(1, R.tot); }
   f.sweet -= dt; f.threat -= dt; f.pain -= dt; f.reward -= dt;
   // as patas têm sensores de gosto: pisar num elemento ainda não provado tem gosto doce
   // (no mundo natural: doce é pisar em algo com açúcar que ainda tem comida)
@@ -1661,6 +1668,7 @@ function frame(now) {
   animateFly(now, dtw);
   if (evOn && !HEADLESS) evFrame(dtw);
   if (SB.on && !HEADLESS && typeof sbFrame === 'function') sbFrame(dtw);
+  if (SB.on && OLHOS_HEADLESS && typeof sbFrameOlhos === 'function') sbFrameOlhos(dtw);
   requestAnimationFrame(frame);
 }
 

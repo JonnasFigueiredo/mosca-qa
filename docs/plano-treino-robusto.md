@@ -437,3 +437,17 @@ probóscide executa a ação; bug novo no treino = açúcar + PAM (a regra de `f
 página); sem atração inata; a atração aprendida usa a diferença de cheiro entre as antenas. Primeira sessão: ela
 explora, prova plaquinhas diferentes e limpa o corpo entre elas. Ainda não medido: é o próximo experimento (o
 caminho, a visão e o corpo passam a decidir o que ela encontra).
+
+**02/10, série medida no mundo: infraestrutura e piloto.** `scripts/qa_mundo.mjs` abre a página num Chrome sem janela
+com os olhos reais amostrados (`?headless=1&olhosHeadless=1`, sem desenhar a câmera de quem assiste) e roda o modo
+automático de `caca-mundo.js` (`?caca=auto&cond&car&semente&treinos`): treino (6 versões; cada uma até 12 provas ou 90 s
+de cérebro; bug novo = açúcar + PAM) e teste (3 versões novas, sem recompensa, até o primeiro bug, 15 provas ou 120 s).
+A semente fixa o cérebro, o mapa e os sorteios da página (Math.random); o que depende do relógio de parede ainda varia.
+Resumo: `scripts/qa_mundo_resumo.mjs` (pareado, bootstrap, p, dz; provas e tempo até o primeiro bug, fração das provas
+em plaquinhas da característica premiada). Pedido do usuário no meio do caminho: "o comportamento dela deve ser igual ao
+de uma mosca de verdade, use o que construímos": no mundo da caça a bugs, a atração aprendida passou a alimentar os
+mesmos caminhos da atração inata por comida na Cozinha (busca pelo cheiro, decolar quando ele para de crescer, pousar
+onde ele está), regra declarada. Teste rápido (`--curto`): sem erros, olhos reais ativos, ~1× o tempo real.
+**Piloto (exploratório, não conta como resultado):** sementes 501–503, treinada e congelada, 2 por vez
+(`qa-mundo-piloto.json`). Serve para decidir, antes da série confirmatória: a medida principal (provas ou tempo até o
+primeiro bug, ou a fração das provas na característica premiada), os limites de cada versão e o número de sementes.

@@ -96,7 +96,7 @@
   const C = { fase: 'livre', car: 'repetida', versoes: [], vi: -1, sis: null, achados: new Set(), provas: 0, t0: 0, bugs: [], teste: [], treino: [], iv: 0, recompensa: true };
   const agoraS = () => brainT / 1000;
   function novaVersao(defeitos, rotulo) {
-    C.sis = Q.criar(defeitos, { bancada: 2 }); C.achados = new Set(); C.provas = 0; C.t0 = agoraS(); C.rotulo = rotulo; C.defeitos = defeitos; C.bugs = [];
+    C.sis = Q.criar(defeitos, { bancada: 2 }); C.achados = new Set(); C.provas = 0; C.t0 = agoraS(); C.rotulo = rotulo; C.defeitos = defeitos; C.bugs = []; C.provadas = []; C.encerrada = false;
     // sistema novo: tudo pode ter mudado, então tudo volta a ser novo para ela
     for (const id of Object.keys(objetos)) { el(id).novelty = 1; el(id).bug = false; }
     renderShop(); requestAnimationFrame(measure);
@@ -109,8 +109,10 @@
     $('#cacaResultados').innerHTML = (tr ? `<p><b>Treino:</b> ${tr}</p>` : '') + (linhas ? `<table><thead><tr><th>Teste</th><th>Provas até o 1º bug</th><th>Tempo</th><th>Provas</th></tr></thead><tbody>${linhas}</tbody></table>` : '');
   }
   function fimVersao() {
-    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas });
-    if (C.fase === 'teste') C.teste.push({ defeitos: C.defeitos, controle: C.defeitos.join('+') === C.V.controle.join('+'), primeiro: C.bugs[0]?.prova ?? null, tempo: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provas: C.provas });
+    if (C.encerrada) return; C.encerrada = true;
+    const provadas = C.provadas.map(p => p.acao);
+    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas, tempo: agoraS() - C.t0, provadas });
+    if (C.fase === 'teste') C.teste.push({ defeitos: C.defeitos, controle: C.defeitos.join('+') === C.V.controle.join('+'), primeiro: C.bugs[0]?.prova ?? null, tempo: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provas: C.provas, duracao: agoraS() - C.t0, provadas });
     tabela();
     C.vi++;
     if (C.vi < C.versoes.length) novaVersao(C.versoes[C.vi], (C.fase === 'treino' ? 'Treino ' : 'Teste ') + (C.vi + 1));
@@ -118,7 +120,8 @@
   }
   function vigia() {
     if (C.fase !== 'treino' && C.fase !== 'teste') return;
-    const lim = C.fase === 'treino' ? { provas: 12, s: 90 } : { provas: 15, s: 120 };
+    // limites de cada versão; &curto=1 (só para testar a automação) usa versões bem curtas
+    const lim = C.curto ? { provas: 3, s: 25 } : C.fase === 'treino' ? { provas: 12, s: 90 } : { provas: 15, s: 120 };
     const dt = agoraS() - C.t0;
     $('#cacaProgresso').value = Math.min(1, (C.vi + Math.min(1, Math.max(C.provas / lim.provas, dt / lim.s))) / C.versoes.length);
     status(`${C.rotulo} · ${nomeVersao(C.defeitos)} · ${C.provas} provas · ${dt.toFixed(0)} s · ${C.bugs.length} bug${C.bugs.length === 1 ? '' : 's'}${C.recompensa ? '' : ' · sem recompensa'}`);
@@ -154,6 +157,7 @@
       if (!o) return;
       if (!C.sis) novaVersao(C.V?.treino?.[0] || Q.VERSOES2.treino[0], 'Livre');
       C.provas++;
+      C.provadas.push({ acao: o.acao.id, t: agoraS() });
       C.sis.executar(o.acao.id);
       const novos = Q.verificar(C.sis).filter(x => !C.achados.has(x));
       labEvent('clique', { id, bug: novos[0] || null, arriscado: false });
@@ -169,10 +173,34 @@
         sweetPop(fly.x, fly.y - 18);
         logEvent(`Bug: "${o.r}" quebrou o sistema (${txt}). Recompensa: açúcar e dopamina PAM reforçam esse cheiro.`, 's');
       } else logEvent(`Bug: "${o.r}" quebrou o sistema (${txt}). Teste: sem recompensa.`, 's');
-      if (C.fase === 'teste') setTimeout(fimVersao, 600);   // no teste, a versão acaba no primeiro bug
+      if (C.fase === 'teste') fimVersao();   // no teste, a versão acaba no primeiro bug
     },
     estado: () => C,
   };
+  // modo automático, sem janela (scripts/qa_mundo.mjs): ?caca=auto&cond=ativa|congelada&car=repetida|normal&semente=N&treinos=6
+  // treina, testa e deixa o resultado em window.__cacaFim. Com a semente, o cérebro (worker) e os sorteios da página
+  // (passadas, pausas, ruído da direção) ficam fixos; o que depende do relógio de parede ainda varia entre rodadas
+  if (/[?&]caca=auto(&|$)/.test(location.search)) {
+    const q = new URLSearchParams(location.search), sem = Math.max(1, +q.get('semente') || 1);
+    let sr = Math.imul(sem, 2654435761) >>> 0;
+    Math.random = () => (sr = (Math.imul(sr, 1664525) + 1013904223) >>> 0) / 4294967296;
+    window.__cacaFim = null; C.curto = q.get('curto') === '1';
+    const espera = ms => new Promise(r => setTimeout(r, ms));
+    (async () => {
+      while (!(typeof brainReady !== 'undefined' && brainReady)) await espera(500);
+      $('#cacaCond').value = q.get('cond') === 'congelada' ? 'congelada' : 'ativa';
+      $('#cacaCar').value = q.get('car') === 'normal' ? 'normal' : 'repetida';
+      const n = q.get('treinos'); if (n && [...$('#cacaTreinos').options].some(o => o.value === n)) $('#cacaTreinos').value = n;
+      switchApp('caca'); sbSet(true);
+      worker.postMessage({ type: 'semente', valor: sem });
+      await espera(1500);
+      const t0 = brainT / 1000;
+      iniciar('treino'); while (C.fase !== 'livre') await espera(1000);
+      iniciar('teste'); while (C.fase !== 'livre') await espera(1000);
+      window.__cacaFim = { semente: sem, condicao: $('#cacaCond').value, caracteristica: C.V.caracteristica, treino: C.treino, teste: C.teste,
+        tempoCerebro: brainT / 1000 - t0, olhosReais: !!fly.olhoReal, data: new Date().toISOString() };
+    })();
+  }
   // ao trocar de aba, o painel some e a sessão para
   const trocaOriginal = window.switchApp;
   if (typeof trocaOriginal === 'function') {

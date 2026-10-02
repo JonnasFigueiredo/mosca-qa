@@ -1868,6 +1868,14 @@ function sbFrame(dtw) {
   R.setScissorTest(false);
 }
 
+// sem janela, só com ?headless=1&olhosHeadless=1 (as medidas da caça a bugs no mundo, scripts/qa_mundo.mjs): atualiza
+// o mundo e amostra os olhos dela, sem desenhar a câmera de quem assiste. Os olhos são o que entra no LC10a
+function sbFrameOlhos(dtw) {
+  if (!SBR.r || !fly) return;
+  sbUpdate(dtw, performance.now());
+  if (OLHO.mapa && !window.Colonia?.ativa && (OLHO.conta++ & 1) === 0) olhoAmostrar(fly);
+}
+
 /* ───────────── fantasma: câmera livre, como o espectador livre de um jogo de tiro ───────────── */
 // W/S vai para onde a câmera olha, A/D para os lados, Espaço ou E sobe, C ou Q desce, Shift acelera, a roda do mouse
 // muda a velocidade, F vai para perto dela. O mouse olha: clique na cena para prender o mouse (Esc solta) ou arraste.
