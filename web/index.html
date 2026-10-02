@@ -578,6 +578,8 @@ const $ = s => document.querySelector(s);
 const HEADLESS = /[?&]headless=1\b/.test(location.search);
 // sem janela, mas com os olhos reais amostrados (as medidas da caça a bugs no mundo: scripts/qa_mundo.mjs)
 const OLHOS_HEADLESS = HEADLESS && /[?&]olhosHeadless=1\b/.test(location.search);
+// dentro da tela "Caça a bugs ao vivo" (caca.html): só o mundo, sem desenhar o cérebro 3D desta página (caca-mundo.js)
+const EMBED = /[?&]embed=caca(&|$)/.test(location.search);
 // olhos: ligam se os dados trazem os grupos da visão; ?olhos=0 desliga, para comparar
 const EYES_OFF = /[?&]olhos=0\b/.test(location.search);
 // ?campos=0: no sandbox com olhos reais, volta a dar a mesma taxa a todos os LC10a de um olho (sem campo receptivo)
@@ -1652,7 +1654,7 @@ function frame(now) {
   const dtw = Math.min(0.05, (now - lastFrame) / 1000 || 0);
   lastFrame = now;
   const evOn = typeof EV !== 'undefined' && EV.on && !SB.on;
-  if (renderer && !HEADLESS && !evOn) {
+  if (renderer && !HEADLESS && !evOn && !EMBED) {
     const canvas = renderer.domElement;
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (canvas.width !== Math.round(w * renderer.getPixelRatio()) || canvas.height !== Math.round(h * renderer.getPixelRatio())) {

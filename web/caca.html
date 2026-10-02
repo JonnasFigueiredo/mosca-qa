@@ -234,7 +234,8 @@ body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:no
       </label>
       <label>Onde ela procura
         <select id="visao" title="Mapa: as 15 ações espalhadas na bancada, ela anda e testa as 3 mais perto. Sorteio: as ações visíveis sorteadas como no experimento medido (repete a medida com a mesma semente).">
-          <option value="mapa">Mapa: anda e testa</option>
+          <option value="mundo">Mundo real: a mosca de verdade</option>
+          <option value="mapa">Mapa: anda e testa (desenho)</option>
           <option value="sorteio">Sorteio (como na medida)</option>
         </select>
       </label>
@@ -277,6 +278,7 @@ body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:no
         <button class="mini" data-cheia="vMosca">Tela cheia</button>
       </div>
       <div class="tela">
+        <iframe id="ifMundo" hidden title="O mundo da mosca de verdade: a bancada com as ações do sistema de Pedidos" style="position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--surface)"></iframe>
         <canvas id="cvMundo" aria-label="A mosca em 3D na bancada: ela cheira cada ação visível, anda até a escolhida e prova; um bug trinca a plaquinha e a dopamina aparece em volta dela"></canvas>
         <canvas id="cvMosca" hidden aria-label="Ilustração em 2D: a mosca cheira cada ação visível, anda até a escolhida e prova"></canvas>
         <div class="legenda-mundo mono" id="capMundo"></div>

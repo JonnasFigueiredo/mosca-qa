@@ -488,8 +488,17 @@
   let ultimo = 0;
   function quadro(agora) {
     const dt = Math.min(0.05, (agora - (ultimo || agora)) / 1000); ultimo = agora;
-    if (ativas.has('mosca') && mundo3d) { CacaMundo3D.iniciar($('cvMundo')); CacaMundo3D.quadro(agora, dt, $('cvMundo'), $('capMundo')); }
-    else { window.CacaMundo3D?.oculta(); if (ativas.has('mosca')) quadroMosca(agora); }
+    // mundo real: a vista mostra a página do mundo embutida (a mosca de verdade); os desenhos ficam parados
+    const real = !!st()?.mundoReal;
+    if (real !== M.real) {
+      M.real = real; $('ifMundo').hidden = !real;
+      for (const id of ['cvMundo', 'cvMosca', 'capMundo', 'camModos', 'ajudaFant']) $(id).hidden = real || (id === 'cvMosca' ? mundo3d : id === 'ajudaFant' ? true : !mundo3d);
+      document.querySelectorAll('[data-mundo]').forEach(b => { b.closest('.seg').hidden = real; });
+      if (!real) aplicaMundo();
+    }
+    if (real) window.CacaMundo3D?.oculta();
+    else if (ativas.has('mosca') && mundo3d) { CacaMundo3D.iniciar($('cvMundo')); CacaMundo3D.quadro(agora, dt, $('cvMundo'), $('capMundo')); }
+    else if (!real) { window.CacaMundo3D?.oculta(); if (ativas.has('mosca')) quadroMosca(agora); }
     if (ativas.has('cerebro')) quadroCerebro(dt);
     requestAnimationFrame(quadro);
   }

@@ -205,6 +205,53 @@
         tempoCerebro: brainT / 1000 - t0, olhosReais: !!fly.olhoReal, data: new Date().toISOString() };
     })();
   }
+  // dentro da tela "Caça a bugs ao vivo" (caca.html, ?embed=caca): só o mundo, ocupando o quadro todo; a tela de fora
+  // lê e comanda a sessão por window.__mundo (mesma origem). Neste mundo não há louva-a-deus
+  const estiloMundo = document.createElement('style');
+  estiloMundo.textContent = `body.mundo-caca #predBtn, body.mundo-caca #sbModes button[data-mode="pred"], body.mundo-caca #predHelp, body.mundo-caca #predHud { display: none !important; }
+    body.embed-caca { overflow: hidden; } body.embed-caca #worldBox { position: fixed !important; inset: 0; z-index: 50; width: 100vw; height: 100vh; border-radius: 0; margin: 0; }
+    body.embed-caca #cacaPainel, body.embed-caca #treinoPainel { display: none !important; }`;
+  document.head.append(estiloMundo);
+  const mostrarOriginal = CacaMundo.mostrar;
+  CacaMundo.mostrar = () => { mostrarOriginal(); document.body.classList.toggle('mundo-caca', APP.id === 'caca'); };
+  const embutido = typeof EMBED !== 'undefined' && EMBED;
+  if (embutido) {
+    document.body.classList.add('embed-caca');
+    (async () => {
+      while (!(typeof brainReady !== 'undefined' && brainReady)) await new Promise(r => setTimeout(r, 500));
+      switchApp('caca'); sbSet(true); CacaMundo.mostrar();
+      requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    })();
+  }
+  window.__mundo = {
+    pronto: () => typeof brainReady !== 'undefined' && brainReady && APP.id === 'caca',
+    worker: () => worker,
+    objetos: () => Object.entries(objetos).map(([id, o]) => ({ id, acao: o.acao.id, entrada: o.acao.entrada, familia: o.acao.familia, nome: o.r, x: o.x, y: o.y })),
+    estado: () => ({
+      t: brainT / 1000, rodando: typeof running !== 'undefined' ? running : true,
+      fase: C.fase, rotulo: C.rotulo, defeitos: C.defeitos, provas: C.provas, bugs: C.bugs.length, recompensa: C.recompensa,
+      versao: C.vi, nVersoes: C.versoes.length, caracteristica: C.V?.caracteristica || C.car,
+      treino: C.treino, teste: C.teste, provadas: (C.provadas || []).slice(-12),
+      status: $('#cacaStatus').textContent,
+      mosca: fly ? { x: fly.x, y: fly.y, z: fly.z, voando: !!fly.flying, marcha: fly.marcha, limpando: !!fly.limpeza?.ativa, sobre: fly.patasEl?.id || null,
+        boca: fly.boca || 0, fome: fly.hunger, valencia: fly.valencia || 0, atracao: fly.atrAprendida || 0, velocidade: fly.speed || 0 } : null,
+    }),
+    log: n => [...document.querySelectorAll('#log li')].slice(0, n || 30).map(li => ({ t: li.querySelector('.mono')?.textContent || '', txt: li.lastElementChild?.textContent || li.textContent, cls: li.className })),
+    // uma sessão inteira: treino e depois teste, como no modo automático (sem fixar os sorteios da página)
+    async sessao({ cond = 'ativa', car = 'repetida', treinos = '6', semente = null } = {}) {
+      if (C.fase !== 'livre') parar();
+      $('#cacaCond').value = cond === 'congelada' ? 'congelada' : 'ativa'; $('#cacaCar').value = car === 'normal' ? 'normal' : 'repetida';
+      if ([...$('#cacaTreinos').options].some(o => o.value === String(treinos))) $('#cacaTreinos').value = String(treinos);
+      if (APP.id !== 'caca') { switchApp('caca'); sbSet(true); }
+      if (semente != null) worker.postMessage({ type: 'semente', valor: semente });
+      C.cancelada = false;
+      iniciar('treino'); while (C.fase !== 'livre') await new Promise(r => setTimeout(r, 500));
+      if (C.cancelada) return;
+      iniciar('teste'); while (C.fase !== 'livre') await new Promise(r => setTimeout(r, 500));
+    },
+    parar: () => { C.cancelada = true; parar(); status('Parado.'); },
+    pausar: () => $('#btnRun')?.click(),
+  };
   // ao trocar de aba, o painel some e a sessão para
   const trocaOriginal = window.switchApp;
   if (typeof trocaOriginal === 'function') {

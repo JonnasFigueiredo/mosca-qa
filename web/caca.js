@@ -76,8 +76,8 @@
   const marca = () => { sujo = true; };
   function log(txt, tipo = '') { S.log.unshift({ t: S.tempo, txt, tipo }); if (S.log.length > 200) S.log.pop(); marca(); }
 
-  // ── o worker ──
-  const w = new Worker('sim-worker.js');
+  // ── o worker local (só no protocolo medido; no "Mundo real", o cérebro é o do mundo embutido) ──
+  let w = null;
   let TAM = null, kcMask = null, aoTique = null, passo = 0, pronto = false;
   const kcJanela = [];
   // as vistas (caca-vistas.js) recebem cada bloco e podem pedir pausas de animação. A pausa para o relógio da tela,
@@ -88,13 +88,17 @@
     if (!window.__cacaPausa || parar) return;
     const t0 = performance.now(); await window.__cacaPausa(ms); S.wallPausado += performance.now() - t0;
   }
-  w.onmessage = ({ data: m }) => {
-    if (m.type === 'progress') { S.carga = m.total ? m.loaded / m.total : 0; S.sit = m.stage || 'Carregando…'; marca(); }
-    else if (m.type === 'ready') { pronto = true; S.carga = 1; tentaLiberar(); }
-    else if (m.type === 'error') { S.sit = 'Erro ao carregar o cérebro: ' + m.message; marca(); }
-    else if (m.type === 'tick') { const f = aoTique; aoTique = null; if (f) f(m); }
-  };
-  w.postMessage({ type: 'load' });
+  function cerebroLocal() {
+    if (w) return;
+    w = new Worker('sim-worker.js');
+    w.onmessage = ({ data: m }) => {
+      if (m.type === 'progress') { S.carga = m.total ? m.loaded / m.total : 0; S.sit = m.stage || 'Carregando…'; marca(); }
+      else if (m.type === 'ready') { pronto = true; S.carga = 1; tentaLiberar(); }
+      else if (m.type === 'error') { S.sit = 'Erro ao carregar o cérebro: ' + m.message; marca(); }
+      else if (m.type === 'tick') { const f = aoTique; aoTique = null; if (f) f(m); }
+    };
+    w.postMessage({ type: 'load' });
+  }
   fetch('data/meta.json').then(r => r.json()).then(meta => {
     TAM = Object.fromEntries(Object.entries(meta.groups).map(([k, v]) => [k, v.length]));
     window.__cacaMeta = meta;
@@ -103,15 +107,15 @@
     tentaLiberar();
   });
   function tentaLiberar() {
-    if (!pronto || !TAM) return;
+    if (!pronto || !TAM || S.mundoReal) return;
     S.sit = 'Cérebro pronto: 166.700 neurônios.'; $('btnIniciar').disabled = false; $('btnIniciar').textContent = 'Iniciar';
     preparaFases(); marca();
   }
 
   // cada bloco de 10 ms do cérebro: atualiza os medidores da tela
   const a = 0.25;   // suavização (~40 ms)
-  function registra(m) {
-    S.tempo += 0.01;
+  function registra(m, t) {
+    S.tempo = t ?? S.tempo + 0.01;
     for (const f of ganchos) f(m, S.tempo);
     const hz = g => (m.counts[g] || 0) / (TAM[g] || 1) / 0.01;
     const ema = (k, v) => { S.med[k] += a * (v - S.med[k]); };
@@ -283,8 +287,91 @@
     log('Fim da sessão.', 'fase');
   }
 
+  // ── "Mundo real": a mosca de verdade da página (index.html?embed=caca, aba "Caça a bugs") dentro da vista "A mosca".
+  // Esta tela não roda cérebro próprio: lê o estado do mundo (window.__mundo) e os blocos de 10 ms do worker dele, que
+  // alimentam os medidores, os glomérulos e o cérebro 3D daqui. A memória por ação é a valência lida nas saídas do corpo
+  // cogumelar quando ela está em cima da plaquinha daquela ação (a mesma leitura do protocolo medido)
+  const MUNDO = { inscrito: null, poll: 0, ultimoT: null, ultimaParede: 0, vel: 0, ultimaAnota: 0 };
+  const mundoLigado = () => $('visao').value === 'mundo';
+  const acaoPorId = Object.fromEntries(Q.ACOES.map(a => [a.id, a]));
+  function janelaMundo() { const fr = $('ifMundo'); try { return fr.contentWindow?.__mundo || null; } catch { return null; } }
+  function abreMundo() {
+    S.mundoReal = true; S.mundo = null; S.cartas = []; S.carga = 0;
+    const fr = $('ifMundo');
+    if (!fr.dataset.aberto) { fr.dataset.aberto = '1'; fr.src = 'index.html?embed=caca&r=' + Date.now(); }
+    S.sit = 'Carregando o mundo e o cérebro da mosca (uns 20 s)…';
+    $('btnIniciar').disabled = true; $('btnIniciar').textContent = 'Carregando o cérebro…';
+    clearInterval(MUNDO.poll); MUNDO.poll = setInterval(lerMundo, 250);
+    marca();
+  }
+  function fechaMundo() {
+    clearInterval(MUNDO.poll); S.mundoReal = false;
+    if (MUNDO.inscrito) { try { MUNDO.inscrito.wk.removeEventListener('message', MUNDO.inscrito.f); } catch { /* já foi */ } MUNDO.inscrito = null; }
+    const fr = $('ifMundo'); fr.removeAttribute('src'); delete fr.dataset.aberto; fr.src = 'about:blank';   // libera a memória do cérebro do mundo
+  }
+  function lerMundo() {
+    const M = janelaMundo();
+    if (!M || !M.pronto()) return;
+    if (!MUNDO.inscrito && TAM) {
+      const wk = M.worker(), f = ev => { const m = ev.data; if (m && m.type === 'tick') registra(m, m.t / 1000); };
+      wk.addEventListener('message', f); MUNDO.inscrito = { wk, f };
+      S.carga = 1; $('btnIniciar').disabled = false; $('btnIniciar').textContent = 'Iniciar';
+    }
+    const E = M.estado(), car = E.caracteristica || $('car').value;
+    S.car = car; V = car === 'normal' ? Q.VERSOES2N : Q.VERSOES2;
+    const nTreinos = 6;
+    S.fases = [...Array.from({ length: nTreinos }, (_, i) => `Treino ${i + 1}`), ...V.teste.map(d => 'Teste: ' + nomeVersao(d))];
+    S.versoesTeste = V.teste.map(d => d.join('+'));
+    S.faseIdx = E.fase === 'treino' ? E.versao : E.fase === 'teste' ? nTreinos + E.versao : E.teste.length ? S.fases.length : -1;
+    S.fase = E.fase === 'livre' ? (E.teste.length ? 'Fim' : 'Livre') : E.rotulo;
+    S.rodando = E.fase !== 'livre';
+    S.contexto = esc(E.status);
+    const mo = E.mosca;
+    // a plaquinha embaixo das patas, com a valência que o cérebro dá ao cheiro dela agora
+    const sob = mo?.sobre ? M.objetos().find(o => o.id === mo.sobre) : null;
+    S.cartas = sob ? [{ acao: acaoPorId[sob.acao], estado: mo.boca > 0.5 ? 'cheirando' : 'feita', v: mo.valencia }] : [];
+    if (sob && performance.now() - MUNDO.ultimaAnota > 400) { MUNDO.ultimaAnota = performance.now(); anotaValencia(acaoPorId[sob.acao], mo.valencia); }
+    const estado = !mo ? '' : mo.voando ? 'voando' : mo.limpando ? 'limpando o corpo' : sob ? (mo.boca > 0.5 ? `provando "${ACAO_TXT[sob.acao]}"` : `em cima de "${ACAO_TXT[sob.acao]}"`)
+      : mo.marcha === 'pausa' ? 'parada (pausa)' : mo.marcha === 'girar' ? 'girando' : 'andando';
+    const ultimo = M.log(1)[0];
+    S.resumo = `Agora: ${estado}${mo ? ` · fome ${Math.round(mo.fome * 100)}% · atração aprendida ${fmt(mo.atracao)}` : ''}${ultimo ? ' · ' + ultimo.txt : ''}`;
+    S.resumoDopa = S.med.pam > 5;
+    S.bugsTreino = E.treino.reduce((t, v) => t + v.bugs, 0) + (E.fase === 'treino' ? E.bugs : 0);
+    S.dopas = S.bugsTreino;
+    S.treinosMundo = E.treino; S.testeMundo = E.teste;
+    S.log = M.log(60).map(l => ({ t: parseFloat(String(l.t).replace(',', '.')) || 0, txt: l.txt, tipo: /\bs\b/.test(l.cls) ? 'dopa' : /\ba\b|\bb\b/.test(l.cls) ? 'bug' : '' }));
+    // velocidade do cérebro do mundo
+    const agora = performance.now();
+    if (MUNDO.ultimoT != null && agora - MUNDO.ultimaParede > 1500) { const v = (E.t - MUNDO.ultimoT) / ((agora - MUNDO.ultimaParede) / 1000); MUNDO.vel += 0.5 * (v - MUNDO.vel); MUNDO.ultimoT = E.t; MUNDO.ultimaParede = agora; }
+    if (MUNDO.ultimoT == null) { MUNDO.ultimoT = E.t; MUNDO.ultimaParede = agora; }
+    S.velMundo = MUNDO.vel; S.pausadoMundo = !E.rodando;
+    $('btnPausar').disabled = false; $('btnPausar').textContent = E.rodando ? 'Pausar' : 'Continuar';
+    $('btnParar').disabled = E.fase === 'livre';
+    for (const id of ['cond', 'car', 'semente', 'visao']) $(id).disabled = E.fase !== 'livre';
+    S.sit = `${COND_TXT[S.cond] || ''} · mundo real: a mosca de verdade (sessão do mundo, não a medida)`;
+    marca();
+  }
+  function aplicaVisao() {
+    const real = mundoLigado();
+    // no mundo real, só treinada ou congelada (a curiosidade e as medições antes e depois são do protocolo medido)
+    for (const o of $('cond').options) o.disabled = real && o.value.endsWith('_curiosa');
+    if (real && $('cond').value.endsWith('_curiosa')) $('cond').value = $('cond').value.replace('_curiosa', '');
+    $('medir').closest('label').hidden = real;
+    if (real) abreMundo();
+    else { fechaMundo(); cerebroLocal(); if (pronto) tentaLiberar(); else { $('btnIniciar').disabled = true; $('btnIniciar').textContent = 'Carregando o cérebro…'; } }
+    preparaFases(); marca();
+  }
+  $('visao').addEventListener('change', aplicaVisao);
+
   // ── botões ──
   $('btnIniciar').addEventListener('click', async () => {
+    if (S.mundoReal) {
+      const M = janelaMundo(); if (!M) return;
+      S.cond = $('cond').value; S.car = $('car').value;
+      Object.assign(S, { val: {}, antes: {}, hist: [], marcas: [] });
+      M.sessao({ cond: S.cond, car: S.car, treinos: 6, semente: Math.max(1, Math.floor(+$('semente').value || 51)) });
+      return;
+    }
     if (S.rodando) return;
     S.rodando = true; parar = false; pausado = false;
     for (const id of ['cond', 'car', 'semente', 'medir', 'visao']) $(id).disabled = true;
@@ -297,11 +384,13 @@
     marca();
   });
   $('btnPausar').addEventListener('click', () => {
+    if (S.mundoReal) { janelaMundo()?.pausar(); return; }
     pausado = !pausado; $('btnPausar').textContent = pausado ? 'Continuar' : 'Pausar';
     if (!pausado && retomar) { const r = retomar; retomar = null; r(); }
     log(pausado ? 'Pausado.' : 'Continuando.', 'fase');
   });
   $('btnParar').addEventListener('click', () => {
+    if (S.mundoReal) { janelaMundo()?.parar(); return; }
     parar = true; if (pausado) { pausado = false; if (retomar) { const r = retomar; retomar = null; r(); } }
   });
   for (const id of ['cond', 'car', 'medir']) $(id).addEventListener('change', () => { if (!S.rodando) preparaFases(); });
@@ -380,6 +469,17 @@
     }
   }
   function desenhaPlacar() {
+    if (S.mundoReal) {
+      const tr = S.treinosMundo || [], te = S.testeMundo || [];
+      $('treinos').innerHTML = tr.map((t, i) => `<div><span>Treino ${i + 1} · ${esc(nomeVersao(t.defeitos))}</span><span class="mono">${t.bugs} bug${t.bugs === 1 ? '' : 's'} em ${t.provas} provas</span></div>`).join('') || '<div><span>O treino ainda não começou.</span></div>';
+      const linhas = S.versoesTeste.map(v => {
+        const r = te.find(x => x.defeitos.join('+') === v), ctrl = v === V.controle.join('+');
+        return `<tr class="${ctrl ? 'controle' : ''}"><td>${esc(nomeVersao(v.split('+')))}</td><td class="vivo">${r ? (r.primeiro ?? 'não achou') : '…'}</td><td class="mono">${r?.tempo != null ? fmt(r.tempo, 0) + ' s' : r ? '—' : '…'}</td><td class="mono">${r ? r.provas : '…'}</td></tr>`;
+      }).join('');
+      $('tabela').innerHTML = `<thead><tr><th>Versão de teste</th><th>Provas até o 1º bug</th><th>Tempo</th><th>Provas</th></tr></thead><tbody>${linhas}</tbody>`;
+      $('notaRef').textContent = 'Mundo real: esta sessão, com a mosca andando, voando e provando. Cada versão de teste vai até o primeiro bug (ou 15 provas, ou 2 min). O mundo ainda não tem médias medidas: a série medida está em andamento.';
+      return;
+    }
     $('treinos').innerHTML = S.treinos.map((t, i) => `<div><span>Treino ${i + 1} · ${esc(nomeVersao(t.versao))}</span><span class="mono">${t.bugs.length ? t.bugs.map(b => `passo ${b.passo}`).filter((x, j, a) => a.indexOf(x) === j).join(', ') : 'nenhum bug'}</span></div>`).join('') || '<div><span>O treino ainda não começou.</span></div>';
     const ref = REF[S.car], cols = [['ativa', 'Treinada'], ['congelada', 'Congelada'], ['ativa_curiosa', 'Curiosa'], ['novidade', 'Novidade'], ['aleatoria', 'Aleatória']];
     const linhas = S.versoesTeste.map(v => {
@@ -396,7 +496,7 @@
   function desenhaEstado() {
     $('stTempo').textContent = fmtT(S.tempo);
     const wall = (performance.now() - S.wallInicio - S.wallPausado) / 1000;
-    $('stVel').textContent = S.rodando && wall > 1 ? `${fmt(S.tempo / wall, 2)}× o tempo real` : '—';
+    $('stVel').textContent = S.mundoReal ? (S.velMundo ? `${fmt(S.velMundo, 2)}× o tempo real${S.pausadoMundo ? ' · pausado' : ''}` : '—') : S.rodando && wall > 1 ? `${fmt(S.tempo / wall, 2)}× o tempo real` : '—';
     $('stBugs').textContent = String(S.bugsTreino);
     $('stDopa').textContent = `${S.dopas} ${S.dopas === 1 ? 'vez' : 'vezes'}`;
     $('stSit').textContent = S.sit; $('carga').style.width = (100 * S.carga).toFixed(0) + '%';
@@ -415,7 +515,7 @@
     requestAnimationFrame(quadro);
   }
   window.addEventListener('resize', () => { ultimoGrafico = 0; marca(); });
-  preparaFases();
+  aplicaVisao();
   requestAnimationFrame(quadro);
   // para conferir no console ou num teste sem janela
   window.__caca = S;
