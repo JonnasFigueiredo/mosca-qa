@@ -178,10 +178,21 @@ body:not(.v-mosca) #vMosca, body:not(.v-cerebro) #vCerebro { display: none; }
 .vista-head h2 { font: 600 15px var(--sans); margin-right: auto; }
 .tela { position: relative; height: clamp(360px, 54vh, 600px); }
 body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:not(.v-mosca) .tela { height: clamp(420px, 66vh, 820px); }
-.vista:fullscreen { border-radius: 0; }
-.vista:fullscreen .tela { height: calc(100vh - 52px); }
+.vista:fullscreen { display: block; width: 100vw; height: 100vh; border: 0; border-radius: 0; background: var(--surface); }
+/* tela cheia de verdade: o canvas ocupa a tela toda e os botões flutuam no canto */
+.vista:fullscreen .tela { position: fixed; inset: 0; height: 100vh !important; }
+.vista:fullscreen .vista-head { position: fixed; top: 12px; right: 12px; z-index: 2; border: 1px solid var(--line); border-radius: 8px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(6px); padding: 6px 8px; }
+.vista:fullscreen .vista-head h2 { font-size: 13px; margin-right: 6px; }
+.vista:fullscreen [data-foco] { display: none; }
+.vista:fullscreen .hud { top: 14px; right: auto; max-width: 46ch; }
 .tela canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 #cvCerebro { cursor: grab; touch-action: none; }
+.mini-seg button { font: 500 12px var(--mono); padding: 3px 8px; }
+.legenda-mundo { position: absolute; left: 10px; bottom: 8px; right: 10px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11.5px; color: var(--ink);
+  pointer-events: none; text-shadow: 0 0 3px var(--surface), 0 0 6px var(--surface); }
+.legenda-mundo b { font-weight: 600; }
+.ajuda-fant { position: absolute; left: 10px; top: 10px; right: 30%; font-size: 11.5px; color: var(--ink); background: color-mix(in srgb, var(--surface) 80%, transparent); border-radius: 6px; padding: 5px 8px; pointer-events: none; }
 .hud { position: absolute; left: 12px; top: 10px; right: 12px; font: 12px var(--mono); color: var(--muted); pointer-events: none; display: grid; gap: 3px; }
 .hud b { color: var(--ink); font-weight: 500; }
 .leg { position: absolute; left: 12px; bottom: 10px; margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; font-size: 12px; color: var(--muted); pointer-events: none; }
@@ -221,6 +232,12 @@ body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:no
           <option value="normal">Ação normal</option>
         </select>
       </label>
+      <label>Onde ela procura
+        <select id="visao" title="Mapa: as 15 ações espalhadas na bancada, ela anda e testa as 3 mais perto. Sorteio: as ações visíveis sorteadas como no experimento medido (repete a medida com a mesma semente).">
+          <option value="mapa">Mapa: anda e testa</option>
+          <option value="sorteio">Sorteio (como na medida)</option>
+        </select>
+      </label>
       <label>Semente <input id="semente" type="number" value="51" min="1" step="1"></label>
       <label class="chk"><input type="checkbox" id="medir" checked> medir as 15 ações antes e depois</label>
       <button class="ctl primario" id="btnIniciar" disabled>Carregando o cérebro…</button>
@@ -254,10 +271,17 @@ body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:no
     <div class="vista" id="vMosca">
       <div class="vista-head">
         <h2>A mosca</h2>
+        <span class="seg mini-seg" role="group" aria-label="Desenho"><button data-mundo="3d" aria-pressed="true">3D</button><button data-mundo="2d" aria-pressed="false">2D</button></span>
+        <span class="seg mini-seg" id="camModos" role="group" aria-label="Câmera"><button data-cam="spec" aria-pressed="true">Espectador</button><button data-cam="fantasma" aria-pressed="false" title="Câmera livre: WASD, mouse, Espaço/C, Shift, roda, F">Fantasma</button><button data-cam="olhos" aria-pressed="false">Olhos dela</button><button data-cam="cima" aria-pressed="false">De cima</button></span>
         <button class="mini" data-foco="mosca">Focar</button>
         <button class="mini" data-cheia="vMosca">Tela cheia</button>
       </div>
-      <div class="tela"><canvas id="cvMosca" aria-label="Ilustração: a mosca cheira cada ação visível, anda até a escolhida e prova; um bug trinca a ação e a dopamina aparece em volta dela"></canvas></div>
+      <div class="tela">
+        <canvas id="cvMundo" aria-label="A mosca em 3D na bancada: ela cheira cada ação visível, anda até a escolhida e prova; um bug trinca a plaquinha e a dopamina aparece em volta dela"></canvas>
+        <canvas id="cvMosca" hidden aria-label="Ilustração em 2D: a mosca cheira cada ação visível, anda até a escolhida e prova"></canvas>
+        <div class="legenda-mundo mono" id="capMundo"></div>
+        <div class="ajuda-fant mono" id="ajudaFant" hidden>W/S frente e trás · A/D lados · mouse olha (clique prende, Esc solta; ou arraste) · Espaço/E sobe · C/Q desce · Shift rápido · roda: velocidade · F: perto dela</div>
+      </div>
     </div>
     <div class="vista" id="vCerebro">
       <div class="vista-head">
@@ -325,4 +349,5 @@ body:not(.v-painel) .tela, body.v-mosca:not(.v-cerebro) .tela, body.v-cerebro:no
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="qa/pedidos.js"></script>
 <script src="caca.js"></script>
+<script src="caca-mundo3d.js"></script>
 <script src="caca-vistas.js"></script>

@@ -418,3 +418,13 @@ por umas horas; corrigido e reiniciado, só a semente 308 recomeçou) e o rótul
   (não replicou), memória + curiosidade (empata com a novidade, replicado). Versão final do artigo.
 - [ ] Abertos (artigo, 7.4): equilíbrio memória/curiosidade com oráculo que inclua esquecimento; defeitos de
   sequência; software real com testes de mutação; memória entre sessões; T0 itens 3 a 6.
+
+**02/10, tela "Caça a bugs ao vivo" (`web/caca.html`).** O protocolo da bancada 2 rodando no navegador, com o worker
+real, e três vistas (a mosca em 3D ou 2D, o cérebro 3D com os disparos reais, o painel). No modo "Sorteio", a sessão
+repete a medida com a mesma semente (conferido com a semente 51 treinada: valências antes do treino, os 6 episódios
+de treino e o teste iguais ao `qa-b2`). Defeito achado nessa conferência e corrigido: a tela acrescentava 0,6 s de
+cérebro depois de cada bug do teste; as pausas da animação agora param só o relógio da tela. No modo "Mapa" (padrão),
+as 15 ações ficam espalhadas na bancada e as visíveis são as 3 mais perto de onde ela está: ela anda e testa pelo
+mapa com o mesmo mecanismo (cheira 1 s, valência, softmax, recompensa). É variante de demonstração, não medida: as
+ações visíveis passam a depender do caminho. Medir o modo mapa em série seria um experimento novo (oráculo, critério,
+replicação).

@@ -70,7 +70,7 @@
     fase: '', fases: [], faseIdx: -1, contexto: '', cartas: [], resumo: '', resumoDopa: false,
     tempo: 0, wallInicio: 0, wallPausado: 0, med: { kc: 0, aprox: 0, evitar: 0, evitarRec: 0, pam: 0, ppl: 0 }, gl: {},
     val: {}, antes: {}, hist: [], marcas: [], treinos: [], teste: [], log: [], bugsTreino: 0, dopas: 0,
-    car: 'repetida', cond: 'ativa', versoesTeste: [], sit: 'Baixando o conectoma…', rodando: false, carga: 0,
+    car: 'repetida', cond: 'ativa', versoesTeste: [], mundo: null, sit: 'Baixando o conectoma…', rodando: false, carga: 0,
   };
   let sujo = true;
   const marca = () => { sujo = true; };
@@ -156,12 +156,27 @@
     marca();
   }
 
+  // ── modo mapa (variante de demonstração, não medida): as 15 ações viram plaquinhas espalhadas na bancada, numa grade
+  // de 5 × 3 com espaçamento de 18 mm e um pouco de sorte (pela semente). As ações visíveis de cada passo são as 3
+  // mais perto de onde ela está (sem a que ela acabou de testar e a anterior); o resto do protocolo é o mesmo. O
+  // caminho entre as plaquinhas é desenho: o cérebro espera parado enquanto ela anda (pausa só da tela).
+  function criaMapa(sem) {
+    const r = gerador(sem * 97 + 3), ordem = [...Q.ACOES];
+    for (let k = ordem.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [ordem[k], ordem[j]] = [ordem[j], ordem[k]]; }
+    const placas = ordem.map((acao, i) => ({ acao, x: ((i % 5) - 2) * 18 + (r() - 0.5) * 6, y: (Math.floor(i / 5) - 1) * 18 - 14 + (r() - 0.5) * 6 }));
+    return { placas, pos: { x: 0, y: 22 }, atual: null, anterior: null };
+  }
+  function vizinhas(n) {
+    const M = S.mundo, d = pl => Math.hypot(pl.x - M.pos.x, pl.y - M.pos.y);
+    return M.placas.filter(pl => pl !== M.atual && pl !== M.anterior).sort((a, b) => d(a) - d(b)).slice(0, n).map(pl => pl.acao);
+  }
+
   // ── um episódio (igual ao de qa_abstrato.mjs, bancada 2) ──
   async function episodio(defeitos, vistas, rnd, orcamento, teste, rotulo) {
     const sis = Q.criar(defeitos, { bancada: 2 }), achados = new Set(), bugs = [], tentadas = {};
     const curiosa = teste && S.cond.endsWith('_curiosa');
     for (let p = 0; p < orcamento; p++) {
-      const opcoes = vistas[p];
+      const opcoes = S.mundo ? vizinhas(VISIVEIS) : vistas[p];
       S.cartas = opcoes.map(acao => ({ acao, estado: 'aguardando', v: null, prob: null }));
       S.contexto = `${rotulo} · passo <b>${p + 1}</b> de ${orcamento} · versão: <b>${nomeVersao(defeitos)}</b>`;
       S.resumo = 'Ela cheira cada ação visível por 1 s; a valência é lida nas saídas do corpo cogumelar.';
@@ -177,7 +192,12 @@
       let u = rnd() * soma, k = 0; while (k < e.length - 1 && (u -= e[k]) > 0) k++;
       const escolha = opcoes[k];
       S.cartas[k].escolhida = true; marca();
-      await pausaVisual(750);
+      if (S.mundo) {
+        // ela anda até a plaquinha escolhida (a ~20 mm/s na tela) e para ali; dali saem as próximas vizinhas
+        const M = S.mundo, alvo = M.placas.find(pl => pl.acao === escolha), dist = Math.hypot(alvo.x - M.pos.x, alvo.y - M.pos.y);
+        await pausaVisual(450 + dist / 20 * 1000);
+        M.anterior = M.atual; M.atual = alvo; M.pos = { x: alvo.x, y: alvo.y };
+      } else await pausaVisual(750);
       tentadas[escolha.id] = (tentadas[escolha.id] || 0) + 1;
       sis.executar(escolha.id);
       const novos = Q.verificar(sis).filter(x => !achados.has(x));
@@ -231,8 +251,9 @@
     const sem = Math.max(1, Math.floor(+$('semente').value || 51)), medir = $('medir').checked;
     Q.usarCheiros(MAPAS[S.car]);
     Object.assign(S, { tempo: 0, val: {}, antes: {}, hist: [], marcas: [], treinos: [], teste: [], log: [], bugsTreino: 0, dopas: 0, cartas: [], resumo: '' });
+    S.mundo = $('visao').value === 'mapa' ? criaMapa(sem) : null;
     S.wallInicio = performance.now(); S.wallPausado = 0; passo = 0; kcJanela.length = 0;
-    S.sit = `${COND_TXT[S.cond]} · bug premiado: ${S.car === 'normal' ? 'ação normal' : 'repetição'} · semente ${sem}`;
+    S.sit = `${COND_TXT[S.cond]} · bug premiado: ${S.car === 'normal' ? 'ação normal' : 'repetição'} · semente ${sem}` + (S.mundo ? ' · mapa (demonstração, não medida)' : ' · sorteio (repete a medida)');
     log(`Sessão: ${S.sit}.`, 'fase');
     const treinos = Array.from({ length: TREINOS }, (_, i) => ({ defeitos: V.treino[i % V.treino.length], vistas: visiveis(sem * 100 + i, ORC_TREINO) }));
     const testes = V.teste.map((d, i) => ({ defeitos: d, vistas: visiveis(sem * 100 + 50 + i, ORCAMENTO) }));
@@ -266,12 +287,12 @@
   $('btnIniciar').addEventListener('click', async () => {
     if (S.rodando) return;
     S.rodando = true; parar = false; pausado = false;
-    for (const id of ['cond', 'car', 'semente', 'medir']) $(id).disabled = true;
+    for (const id of ['cond', 'car', 'semente', 'medir', 'visao']) $(id).disabled = true;
     $('btnIniciar').disabled = true; $('btnPausar').disabled = false; $('btnParar').disabled = false; $('btnPausar').textContent = 'Pausar';
     try { await sessao(); }
     catch (e) { if (e.message !== 'parada') { S.sit = 'Erro: ' + e.message; console.error(e); } else log('Sessão interrompida.', 'fase'); }
     S.rodando = false; aoTique = null;
-    for (const id of ['cond', 'car', 'semente', 'medir']) $(id).disabled = false;
+    for (const id of ['cond', 'car', 'semente', 'medir', 'visao']) $(id).disabled = false;
     $('btnIniciar').disabled = false; $('btnIniciar').textContent = 'Iniciar de novo'; $('btnPausar').disabled = true; $('btnParar').disabled = true;
     marca();
   });

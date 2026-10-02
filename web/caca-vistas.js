@@ -41,7 +41,13 @@
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
     else el.requestFullscreen?.().catch(() => {});
   }));
-  document.addEventListener('fullscreenchange', () => requestAnimationFrame(redimensiona));
+  // entrando ou saindo da tela cheia: o botão muda de nome e o cérebro se enquadra de novo no tamanho novo
+  document.addEventListener('fullscreenchange', () => {
+    const cheia = document.fullscreenElement;
+    document.querySelectorAll('[data-cheia]').forEach(b => { b.textContent = cheia && cheia.id === b.dataset.cheia ? 'Sair da tela cheia' : 'Tela cheia'; });
+    cerebro.auto = true;
+    requestAnimationFrame(() => { redimensiona(); requestAnimationFrame(() => enquadra(true)); });
+  });
   addEventListener('keydown', e => {
     if (e.target.closest('input, select, textarea') || e.ctrlKey || e.metaKey || e.altKey) return;
     const v = { 1: 'mosca', 2: 'cerebro', 3: 'painel' }[e.key];
@@ -184,6 +190,62 @@
     ctx.restore();
   }
 
+  // o mapa visto de cima: as 15 plaquinhas na bancada, cada uma com a última valência que ela sentiu
+  const M2 = { mapa: null, x: 0, y: 0, ang: -Math.PI / 2, passo: 0, prob: 0, parada: null, paraQual: null, brilho: 0 };
+  function quadroMapa2D(ctx, W, H, S, agora, dt) {
+    const mapa = S.mundo, cartas = S.cartas || [];
+    const minx = -50, maxx = 50, miny = -42, maxy = 30, k = Math.min(W / (maxx - minx), (H - 40) / (maxy - miny));
+    const P = (x, y) => ({ x: W / 2 + x * k, y: 34 + (y - miny) * k });
+    if (M2.mapa !== mapa) { M2.mapa = mapa; const p = P(mapa.pos.x, mapa.pos.y); Object.assign(M2, { x: p.x, y: p.y, parada: null, paraQual: null, ang: -Math.PI / 2 }); }
+    const tw = 8.4 * k, th = 5.2 * k, ich = cartas.findIndex(c => c.estado === 'cheirando'), iesc = cartas.findIndex(c => c.escolhida);
+    const onde = acao => P(...(pl => [pl.x, pl.y])(mapa.placas.find(pl => pl.acao === acao)));
+    // a mosca: fica onde parou, vira para a que cheira, anda até a escolhida e para na frente dela
+    let alvo = M2.parada || { x: M2.x, y: M2.y }, olhar = null, prova = false;
+    if (iesc >= 0 && ich < 0) {
+      const c = onde(cartas[iesc].acao);
+      if (M2.paraQual !== cartas[iesc]) { M2.paraQual = cartas[iesc]; const vx = M2.x - c.x, vy = M2.y - c.y, n = Math.hypot(vx, vy) || 1, r = th / 2 + 2 * k; M2.parada = { x: c.x + vx / n * r, y: c.y + vy / n * r }; }
+      alvo = M2.parada; olhar = c; prova = true;
+    } else if (ich >= 0) olhar = onde(cartas[ich].acao);
+    const dx = alvo.x - M2.x, dy = alvo.y - M2.y, dist = Math.hypot(dx, dy), anda = dist > 1;
+    if (anda) { const q = Math.min(1, 20 * k * dt / dist); M2.x += dx * q; M2.y += dy * q; M2.passo += dt * 22; }
+    const angAlvo = anda ? Math.atan2(dy, dx) : olhar ? Math.atan2(olhar.y - M2.y, olhar.x - M2.x) : M2.ang;
+    let da = angAlvo - M2.ang; while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI;
+    M2.ang += da * Math.min(1, dt * 9); M2.prob += ((prova && !anda ? 1 : 0) - M2.prob) * Math.min(1, dt * 8);
+    // plaquinhas
+    for (const pl of mapa.placas) {
+      const c = cartas.find(x => x.acao === pl.acao), p = P(pl.x, pl.y), prem = pl.acao.entrada === S.car, v = c?.v ?? S.val[pl.acao.id];
+      ctx.save();
+      if (c?.estado === 'cheirando') { ctx.shadowColor = cor('--spike'); ctx.shadowBlur = 14; }
+      retangulo(ctx, p.x - tw / 2, p.y - th / 2, tw, th, 5); ctx.fillStyle = cor('--surface'); ctx.fill(); ctx.shadowBlur = 0;
+      ctx.lineWidth = c?.bug || c?.escolhida || c?.estado === 'cheirando' ? 2.5 : c ? 1.5 : 1;
+      ctx.strokeStyle = c?.bug ? cor('--bug') : c?.estado === 'cheirando' ? cor('--spike') : c?.escolhida ? cor('--ink') : c ? cor('--muted') : cor('--line'); ctx.stroke();
+      ctx.globalAlpha = c ? 1 : 0.7;
+      ctx.font = `600 ${Math.max(9, Math.min(12, k * 1.3))}px ${cor('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = prem ? cor('--spike') : cor('--ink'); ctx.fillText(pl.acao.entrada, p.x, p.y - th * 0.18, tw - 6);
+      ctx.font = `${Math.max(8, Math.min(11, k * 1.15))}px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.fillText(pl.acao.familia, p.x, p.y + th * 0.12, tw - 6);
+      if (v != null) { const bw = tw - 10, x0 = p.x - bw / 2, y0 = p.y + th / 2 - 7, pz = x => (x >= 0 ? 0.4 + 0.6 * Math.min(x, 1.5) / 1.5 : 0.4 - 0.4 * Math.min(-x, 1)), p1 = pz(v);
+        ctx.fillStyle = cor('--track'); ctx.fillRect(x0, y0, bw, 4); ctx.fillStyle = prem ? cor('--spike') : cor('--em'); ctx.fillRect(x0 + bw * Math.min(0.4, p1), y0, bw * Math.abs(p1 - 0.4), 4); }
+      ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      if (c?.bug) { const t = 'BUG: ' + c.bug.map(b => CONTRATO_TXT[b] || b).join('; '); ctx.font = `600 11px ${cor('--mono')}`; const bw = ctx.measureText(t).width + 12; retangulo(ctx, p.x - bw / 2, p.y - th / 2 - 22, bw, 18, 4); ctx.fillStyle = cor('--bug'); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(t, p.x, p.y - th / 2 - 9); ctx.textAlign = 'left'; }
+      ctx.restore();
+    }
+    // pluma de cheiro e dopamina
+    if (ich >= 0 && !reduzMovimento() && agora - (M.ultimaParticula || 0) > 28) {
+      M.ultimaParticula = agora; const c = onde(cartas[ich].acao);
+      M.particulas.push({ x: c.x + (Math.random() - 0.5) * tw * 0.5, y: c.y, alvo: { x: M2.x + Math.cos(M2.ang) * 12, y: M2.y + Math.sin(M2.ang) * 12 }, t0: agora, vida: 800 + Math.random() * 400 });
+    }
+    ctx.fillStyle = cor('--spike'); M.particulas = M.particulas.filter(p => agora - p.t0 < p.vida);
+    for (const p of M.particulas) { const q = (agora - p.t0) / p.vida; ctx.globalAlpha = 0.5 * (1 - q); ctx.beginPath(); ctx.arc(p.x + (p.alvo.x - p.x) * q, p.y + (p.alvo.y - p.y) * q, 2 + 1.5 * q, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    M2.brilho += ((S.resumoDopa ? 1 : 0) - M2.brilho) * Math.min(1, dt * 6);
+    const L = Math.max(26, 3.4 * k);
+    if (M2.brilho > 0.02) { const g = ctx.createRadialGradient(M2.x, M2.y, 4, M2.x, M2.y, L * 1.8); g.addColorStop(0, rgba('--ok', 0.55 * M2.brilho)); g.addColorStop(1, rgba('--ok', 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(M2.x, M2.y, L * 1.8, 0, 7); ctx.fill(); }
+    desenhaMosca(ctx, M2.x, M2.y, M2.ang, L, M2.passo, M2.prob, ich >= 0 ? 1 : 0.15);
+    ctx.font = `500 12px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textBaseline = 'top';
+    ctx.fillText(((S.fase || '') + ' · mapa: as 3 plaquinhas mais perto são as visíveis').toUpperCase(), 14, 10);
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'right'; ctx.fillText('mosca desenhada maior que a escala', W - 14, H - 12); ctx.textAlign = 'left';
+  }
+
   function quadroMosca(agora) {
     const cv = $('cvMosca'), { w: W, h: H, dpr } = ajusta(cv);
     if (!W || !H) return;
@@ -196,6 +258,7 @@
     for (let gx = 0; gx < W; gx += 32) { ctx.beginPath(); ctx.moveTo(gx + 0.5, 0); ctx.lineTo(gx + 0.5, H); ctx.stroke(); }
     for (let gy = 0; gy < H; gy += 32) { ctx.beginPath(); ctx.moveTo(0, gy + 0.5); ctx.lineTo(W, gy + 0.5); ctx.stroke(); }
     if (!S) return;
+    if (S.mundo) { quadroMapa2D(ctx, W, H, S, agora, dt); return; }
     const cartas = S.cartas || [], lug = lugares(cartas.length), L = Math.max(46, Math.min(84, Math.min(W, H) * 0.13));
     const tw = Math.min(230, W * (cartas.length === 1 ? 0.42 : 0.29)), th = 96;
     const px = f => f.x * W, py = f => f.y * H;
@@ -249,7 +312,25 @@
 
   /* ───────────── O cérebro em 3D (o mesmo da página principal) ───────────── */
   const cerebro = { iniciando: false, renderer: null, scene: null, camera: null, uniforms: null, last: null, formas: null, faixa: new Map(),
-    rotY: 0.5, rotX: 0.12, dist: 2300, alvo: { x: 0, y: -60, z: 0 }, alvoQuer: null, distQuer: null, girar: true, pos: null, kcCentro: null, tamanho: null };
+    rotY: 0.5, rotX: 0.12, dist: 2300, alvo: { x: 0, y: -60, z: 0 }, alvoQuer: null, distQuer: null, girar: true, pos: null, kcCentro: null, tamanho: null,
+    caixa: null, auto: true, aspecto: 0 };
+  // enquadra o sistema nervoso inteiro no canvas, qualquer que seja o formato (girando, a largura que conta é a do
+  // plano horizontal). A caixa usa os percentis 0,5 e 99,5 das posições, para alguns pontos soltos não encolherem tudo
+  function caixa(pos) {
+    const n = pos.length / 3, passo = Math.max(1, Math.floor(n / 6000)), xs = [], ys = [], zs = [];
+    for (let i = 0; i < n; i += passo) { xs.push(pos[i * 3]); ys.push(pos[i * 3 + 1]); zs.push(pos[i * 3 + 2]); }
+    const q = (a, f) => { a.sort((x, y) => x - y); return a[Math.floor(f * (a.length - 1))]; };
+    const x0 = q(xs, 0.005), x1 = q(xs, 0.995), y0 = q(ys, 0.005), y1 = q(ys, 0.995), z0 = q(zs, 0.005), z1 = q(zs, 0.995);
+    return { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, cz: (z0 + z1) / 2, meiaAlt: (y1 - y0) / 2, raio: Math.hypot(x1 - x0, z1 - z0) / 2 };
+  }
+  function enquadra(imediato) {
+    const c = cerebro; if (!c.caixa || !c.renderer) return;
+    const cv = c.renderer.domElement, w = cv.clientWidth, h = cv.clientHeight; if (!w || !h) return;
+    const t = Math.tan((c.camera.fov * Math.PI / 180) / 2), b = c.caixa;
+    const d = Math.max(b.meiaAlt / t, b.raio / (t * (w / h))) * 1.04 + b.raio * 0.35;
+    c.alvoQuer = { x: b.cx, y: b.cy, z: b.cz }; c.distQuer = d; c.aspecto = w / h;
+    if (imediato) { c.alvo = { ...c.alvoQuer }; c.dist = d; }
+  }
   async function iniciaCerebro() {
     if (cerebro.iniciando) return;
     cerebro.iniciando = true;
@@ -261,7 +342,7 @@
       const [nb, rb] = await Promise.all([b64('neurons.b64.txt'), b64('region.b64.txt')]);
       const dv = new DataView(nb), N = nb.byteLength / 8, pos = new Float32Array(N * 3), region = new Float32Array(new Uint8Array(rb));
       for (let i = 0; i < N; i++) { pos[i * 3] = dv.getInt16(i * 8, true); pos[i * 3 + 1] = -dv.getInt16(i * 8 + 4, true); pos[i * 3 + 2] = dv.getInt16(i * 8 + 2, true); }
-      cerebro.pos = pos;
+      cerebro.pos = pos; cerebro.caixa = caixa(pos);
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       cerebro.last = new THREE.BufferAttribute(new Float32Array(N).fill(-1e6), 1); cerebro.last.setUsage(THREE.DynamicDrawUsage);
@@ -291,7 +372,7 @@
       cv.addEventListener('pointerdown', e => { arrastando = true; cerebro.girar = false; px = e.clientX; py = e.clientY; cv.setPointerCapture(e.pointerId); });
       cv.addEventListener('pointermove', e => { if (!arrastando) return; cerebro.rotY += (e.clientX - px) * 0.008; cerebro.rotX = Math.max(-1.2, Math.min(1.2, cerebro.rotX + (e.clientY - py) * 0.006)); px = e.clientX; py = e.clientY; });
       cv.addEventListener('pointerup', () => { arrastando = false; });
-      cv.addEventListener('wheel', e => { e.preventDefault(); cerebro.distQuer = Math.max(350, Math.min(4000, (cerebro.distQuer ?? cerebro.dist) * Math.exp(e.deltaY * 0.001))); }, { passive: false });
+      cv.addEventListener('wheel', e => { e.preventDefault(); cerebro.auto = false; cerebro.distQuer = Math.max(350, Math.min(4000, (cerebro.distQuer ?? cerebro.dist) * Math.exp(e.deltaY * 0.001))); }, { passive: false });
       hud.textContent = 'Cada ponto é um neurônio e acende quando dispara. Arraste para girar; a roda aproxima.';
       centroKC();
       carregaFormas();
@@ -368,14 +449,15 @@
       if (mudou) cerebro.formasLast.needsUpdate = true;
     }
   });
-  $('camInteiro').addEventListener('click', () => { cerebro.alvoQuer = { x: 0, y: -60, z: 0 }; cerebro.distQuer = 2300; });
-  $('camCogumelar').addEventListener('click', () => { if (cerebro.kcCentro) { cerebro.alvoQuer = cerebro.kcCentro; cerebro.distQuer = 760; } });
+  $('camInteiro').addEventListener('click', () => { cerebro.auto = true; enquadra(); });
+  $('camCogumelar').addEventListener('click', () => { if (cerebro.kcCentro) { cerebro.auto = false; cerebro.alvoQuer = cerebro.kcCentro; cerebro.distQuer = 760; } });
   $('camGirar').addEventListener('click', () => { cerebro.girar = !cerebro.girar; $('camGirar').setAttribute('aria-pressed', String(cerebro.girar)); });
   function quadroCerebro(dt) {
     const c = cerebro; if (!c.renderer) return;
     const cv = c.renderer.domElement, w = cv.clientWidth, h = cv.clientHeight, pr = c.renderer.getPixelRatio();
     if (!w || !h) return;
     if (cv.width !== Math.round(w * pr) || cv.height !== Math.round(h * pr)) { c.renderer.setSize(w, h, false); c.camera.aspect = w / h; c.camera.updateProjectionMatrix(); }
+    if (c.auto && Math.abs(w / h - c.aspecto) > 0.01) enquadra(!c.aspecto);
     const S = st();
     if (c.girar && S?.rodando && !reduzMovimento()) c.rotY += dt * 0.12;
     if (c.alvoQuer) { const k = Math.min(1, dt * 3); for (const e of ['x', 'y', 'z']) c.alvo[e] += (c.alvoQuer[e] - c.alvo[e]) * k; }
@@ -387,10 +469,27 @@
     if (S) $('hudCerebroNum').textContent = `células de Kenyon ativas ${Math.round(S.med.kc)} · dopamina ${S.med.pam > 5 ? 'LIGADA' : 'parada'}`;
   }
 
+  // "A mosca" em 3D (caca-mundo3d.js: a bancada da Cozinha e a NeuroMechFly) ou em 2D (o desenho de cima)
+  let mundo3d = guarda.get('caca:mosca3d') !== '0' && !!window.THREE && !!window.CacaMundo3D;
+  function aplicaMundo() {
+    $('cvMundo').hidden = !mundo3d; $('cvMosca').hidden = mundo3d; $('capMundo').hidden = !mundo3d; $('camModos').hidden = !mundo3d;
+    document.querySelectorAll('[data-mundo]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.mundo === '3d') === mundo3d)));
+    if (!mundo3d) { window.CacaMundo3D?.oculta(); $('ajudaFant').hidden = true; }
+    guarda.set('caca:mosca3d', mundo3d ? '1' : '0');
+  }
+  document.querySelectorAll('[data-mundo]').forEach(b => b.addEventListener('click', () => { mundo3d = b.dataset.mundo === '3d' && !!window.THREE; aplicaMundo(); }));
+  document.querySelectorAll('[data-cam]').forEach(b => b.addEventListener('click', () => {
+    window.CacaMundo3D?.modo(b.dataset.cam);
+    document.querySelectorAll('[data-cam]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    $('ajudaFant').hidden = b.dataset.cam !== 'fantasma';
+  }));
+  aplicaMundo();
+
   let ultimo = 0;
   function quadro(agora) {
     const dt = Math.min(0.05, (agora - (ultimo || agora)) / 1000); ultimo = agora;
-    if (ativas.has('mosca')) quadroMosca(agora);
+    if (ativas.has('mosca') && mundo3d) { CacaMundo3D.iniciar($('cvMundo')); CacaMundo3D.quadro(agora, dt, $('cvMundo'), $('capMundo')); }
+    else { window.CacaMundo3D?.oculta(); if (ativas.has('mosca')) quadroMosca(agora); }
     if (ativas.has('cerebro')) quadroCerebro(dt);
     requestAnimationFrame(quadro);
   }
