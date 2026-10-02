@@ -1,6 +1,6 @@
 {
  "metodo": "Critério principal de cada série confirmatória (diferença pareada treinada − congelada; na bancada 2, a média das versões de transferência; na decepção, o controle: treinada com decepção − sem decepção). p bilateral do bootstrap de qa_resumo.mjs (0 vira 0,0005, o menor valor que 2000 reamostragens resolvem) ajustado por Holm para a família inteira de séries rodadas até agora. Uma série \"passa\" com p de Holm < 0,05 e média negativa.",
- "familia": 15,
+ "familia": 16,
  "series": [
   {
    "serie": "qa-abstrato",
@@ -14,7 +14,7 @@
    "dz": 0.53,
    "p": 0.151,
    "sementes": 5,
-   "p_holm": 0.755,
+   "p_holm": 0.906,
    "passa_holm": false
   },
   {
@@ -29,7 +29,7 @@
    "dz": -0.59,
    "p": 0.063,
    "sementes": 8,
-   "p_holm": 0.504,
+   "p_holm": 0.567,
    "passa_holm": false
   },
   {
@@ -74,7 +74,7 @@
    "dz": -0.63,
    "p": 0.066,
    "sementes": 8,
-   "p_holm": 0.504,
+   "p_holm": 0.567,
    "passa_holm": false
   },
   {
@@ -89,7 +89,7 @@
    "dz": -0.85,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0075,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -104,7 +104,7 @@
    "dz": -1.58,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0075,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -119,7 +119,7 @@
    "dz": -0.3,
    "p": 0.248,
    "sementes": 16,
-   "p_holm": 0.992,
+   "p_holm": 1,
    "passa_holm": false
   },
   {
@@ -134,7 +134,7 @@
    "dz": -0.7,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0075,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -149,7 +149,7 @@
    "dz": -0.83,
    "p": 0.001,
    "sementes": 16,
-   "p_holm": 0.01,
+   "p_holm": 0.011,
    "passa_holm": true
   },
   {
@@ -164,7 +164,7 @@
    "dz": -0.9,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0075,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -179,7 +179,7 @@
    "dz": -0.91,
    "p": 0.0005,
    "sementes": 16,
-   "p_holm": 0.0075,
+   "p_holm": 0.008,
    "passa_holm": true
   },
   {
@@ -194,7 +194,7 @@
    "dz": -0.6,
    "p": 0.006,
    "sementes": 16,
-   "p_holm": 0.054,
+   "p_holm": 0.06,
    "passa_holm": false
   },
   {
@@ -209,7 +209,7 @@
    "dz": -0.39,
    "p": 0.097,
    "sementes": 16,
-   "p_holm": 0.582,
+   "p_holm": 0.679,
    "passa_holm": false
   },
   {
@@ -223,6 +223,21 @@
    ],
    "dz": -0.08,
    "p": 0.729,
+   "sementes": 16,
+   "p_holm": 1,
+   "passa_holm": false
+  },
+  {
+   "serie": "qa-b2-curiosidade-replica",
+   "desc": "bancada 2, memória + curiosidade, replicação",
+   "medida": "média de todos os defeitos, curiosa − novidade (superioridade)",
+   "media": -0.26,
+   "ic95": [
+    -1.47,
+    0.92
+   ],
+   "dz": -0.1,
+   "p": 0.678,
    "sementes": 16,
    "p_holm": 1,
    "passa_holm": false
