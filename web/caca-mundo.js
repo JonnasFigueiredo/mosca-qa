@@ -158,6 +158,10 @@
       if (!C.sis) novaVersao(C.V?.treino?.[0] || Q.VERSOES2.treino[0], 'Livre');
       C.provas++;
       C.provadas.push({ acao: o.acao.id, t: agoraS() });
+      // provada nesta versão, a plaquinha deixa de "ter gosto de novidade" para as patas: sem isso (só enfraquecendo a
+      // cada mordida, como na página), a probóscide seguia ativa e ela ficava parada provando a mesma plaquinha ~20 s.
+      // Como uma mosca que prova algo que não é comida: não insiste
+      el(id).novelty = 0;
       C.sis.executar(o.acao.id);
       const novos = Q.verificar(C.sis).filter(x => !C.achados.has(x));
       labEvent('clique', { id, bug: novos[0] || null, arriscado: false });

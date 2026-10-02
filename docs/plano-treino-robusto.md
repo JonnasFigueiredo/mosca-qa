@@ -451,3 +451,10 @@ onde ele está), regra declarada. Teste rápido (`--curto`): sem erros, olhos re
 **Piloto (exploratório, não conta como resultado):** sementes 501–503, treinada e congelada, 2 por vez
 (`qa-mundo-piloto.json`). Serve para decidir, antes da série confirmatória: a medida principal (provas ou tempo até o
 primeiro bug, ou a fração das provas na característica premiada), os limites de cada versão e o número de sementes.
+
+**02/10, piloto reiniciado com uma correção de comportamento.** Usuário: "ela ainda tá ficando parada". Amostrando as duas
+primeiras sessões do piloto (`_tmp/_espia_mundo.mjs`): numa, parada 33% do tempo (pausas curtas, limpeza, provas; o nível
+medido na Cozinha); na outra, 57%, presa ~20 s numa só plaquinha, provando de novo e de novo: a regra da "novidade com
+gosto doce" só enfraquecia a cada mordida (×0,35, como na página), a probóscide seguia ativa e a atividade dela ainda
+freava o andar. Correção: provada nesta versão, a plaquinha deixa de ter gosto de novidade (como uma mosca que prova algo
+que não é comida e não insiste). O piloto tinha ~10 min e nenhuma sessão concluída; recomeçou do zero.
