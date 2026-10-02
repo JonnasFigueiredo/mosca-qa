@@ -107,7 +107,7 @@ async function rodaSerie(prefixo, args, sementes, jaRodando, cheiros = CHEIROS, 
     if (Date.now() - inicio > 30 * 3600e3) { log(`${prefixo}: passou de 30 h, sigo com o que tem`); break; }
     if (!jaRodando) {
       // parte que terminou o processo sem completar (queda) volta para a fila; respeita o limite de paralelos
-      for (const p of pendentes) if (p.proc && p.proc.exitCode !== null) p.proc = null;
+      for (const p of partes) if (p.proc && p.proc.exitCode !== null) p.proc = null;   // todas as partes, não só as pendentes
       let rodando = partes.filter(p => p.proc).length;
       for (const p of pendentes) {
         if (p.proc || rodando >= PARALELOS) continue;
