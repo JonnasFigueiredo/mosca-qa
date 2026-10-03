@@ -470,6 +470,803 @@
    "extra": "&placa=13&alcance=20",
    "so": null,
    "resgatada": "o runner travou esperando o Chrome; resultado lido da página depois (03/10, 17h)"
+  },
+  {
+   "semente": 832,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 3,
+     "tempo": 240.09,
+     "tBug": null,
+     "provadas": [
+      "estoque:limite",
+      "estoque:normal",
+      "cupom:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 5,
+     "tempo": 31.939999999999998,
+     "tBug": 21.879999999999995,
+     "provadas": [
+      "cupom:repetida",
+      "cupom:normal",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 6,
+     "tempo": 157.26999999999998,
+     "tBug": 147.20999999999998,
+     "provadas": [
+      "cupom:limite",
+      "cupom:repetida",
+      "cupom:normal",
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 4,
+     "tempo": 240.05,
+     "tBug": null,
+     "provadas": [
+      "cancelamento:normal",
+      "cupom:normal",
+      "cupom:limite",
+      "cupom:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 2,
+     "tempo": 28.549999999999955,
+     "tBug": 18.539999999999964,
+     "provadas": [
+      "cancelamento:normal",
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 7,
+     "tempo": 109.43000000000006,
+     "tBug": 99.34000000000003,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:normal",
+      "carrinho:limite",
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:repetida"
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 5,
+     "duracao": 180.01999999999998,
+     "provadas": [
+      "cancelamento:normal",
+      "carrinho:zero",
+      "carrinho:normal",
+      "cupom:normal",
+      "cupom:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 2,
+     "duracao": 180.0300000000001,
+     "provadas": [
+      "estoque:limite",
+      "estoque:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 4,
+     "duracao": 180.01,
+     "provadas": [
+      "cancelamento:normal",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "cancelamento:repetida"
+     ]
+    }
+   ],
+   "tempoCerebro": 1347.6699999999998,
+   "olhosReais": true,
+   "data": "2026-10-03T21:11:04.263Z",
+   "erros": [],
+   "minutosParede": 72.8,
+   "extra": "&placa=13&alcance=20",
+   "so": null
+  },
+  {
+   "semente": 833,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 1,
+     "tempo": 240.12,
+     "tBug": null,
+     "provadas": [
+      "estoque:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 5,
+     "tempo": 240.01000000000002,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "carrinho:zero",
+      "estoque:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 7,
+     "tempo": 240.04999999999995,
+     "tBug": null,
+     "provadas": [
+      "cupom:repetida",
+      "cupom:limite",
+      "cupom:normal",
+      "carrinho:normal",
+      "carrinho:zero",
+      "carrinho:limite",
+      "carrinho:negativa"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 3,
+     "tempo": 24.659999999999968,
+     "tBug": 14.600000000000023,
+     "provadas": [
+      "pagamento:zero",
+      "pagamento:zero",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 0,
+     "tempo": 240.05000000000007,
+     "tBug": null,
+     "provadas": []
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 8,
+     "tempo": 151.9000000000001,
+     "tBug": 141.8699999999999,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:normal",
+      "carrinho:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "cancelamento:normal"
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": 4,
+     "tempo": 18.200000000000045,
+     "provas": 4,
+     "duracao": 18.200000000000045,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:zero",
+      "cupom:normal",
+      "cupom:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 7,
+     "duracao": 180.03999999999996,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:zero",
+      "carrinho:normal",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "estoque:limite",
+      "estoque:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 3,
+     "duracao": 180.04999999999995,
+     "provadas": [
+      "pagamento:normal",
+      "pagamento:repetida",
+      "pagamento:zero"
+     ]
+    }
+   ],
+   "tempoCerebro": 1515.19,
+   "olhosReais": true,
+   "data": "2026-10-03T21:26:35.666Z",
+   "erros": [],
+   "minutosParede": 85.3,
+   "extra": "&placa=13&alcance=20",
+   "so": null
+  },
+  {
+   "semente": 833,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 3,
+     "tempo": 106.8,
+     "tBug": 96.78,
+     "provadas": [
+      "pagamento:normal",
+      "pagamento:repetida",
+      "estoque:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 8,
+     "tempo": 240,
+     "tBug": null,
+     "provadas": [
+      "estoque:repetida",
+      "estoque:limite",
+      "estoque:normal",
+      "carrinho:normal",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:negativa",
+      "carrinho:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 6,
+     "tempo": 180.88000000000005,
+     "tBug": 170.85999999999996,
+     "provadas": [
+      "estoque:limite",
+      "estoque:normal",
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 7,
+     "tempo": 178.57999999999993,
+     "tBug": 168.55999999999995,
+     "provadas": [
+      "carrinho:negativa",
+      "carrinho:zero",
+      "carrinho:normal",
+      "pagamento:normal",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 6,
+     "tempo": 102.00999999999999,
+     "tBug": 92,
+     "provadas": [
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 4,
+     "tempo": 85.30000000000007,
+     "tBug": 75.27999999999997,
+     "provadas": [
+      "carrinho:zero",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "pagamento:normal"
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 6,
+     "duracao": 180.03999999999996,
+     "provadas": [
+      "estoque:limite",
+      "estoque:normal",
+      "pagamento:normal",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "cancelamento:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 6,
+     "duracao": 180.05999999999995,
+     "provadas": [
+      "pagamento:repetida",
+      "pagamento:normal",
+      "carrinho:normal",
+      "carrinho:zero",
+      "cancelamento:repetida",
+      "carrinho:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 10,
+     "duracao": 180,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:limite",
+      "carrinho:normal",
+      "carrinho:normal",
+      "carrinho:negativa",
+      "pagamento:normal",
+      "cancelamento:normal",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "cancelamento:repetida"
+     ]
+    }
+   ],
+   "tempoCerebro": 1433.8700000000001,
+   "olhosReais": true,
+   "data": "2026-10-03T21:27:26.497Z",
+   "erros": [],
+   "minutosParede": 87.6,
+   "extra": "&placa=13&alcance=20",
+   "so": null
+  },
+  {
+   "semente": 834,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 7,
+     "tempo": 240.07,
+     "tBug": null,
+     "provadas": [
+      "cupom:normal",
+      "cupom:repetida",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "carrinho:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 6,
+     "tempo": 51.06999999999999,
+     "tBug": 40.99000000000001,
+     "provadas": [
+      "pagamento:normal",
+      "pagamento:repetida",
+      "pagamento:zero",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 1,
+     "tempo": 27.710000000000036,
+     "tBug": 17.700000000000045,
+     "provadas": [
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 1,
+     "tempo": 17.569999999999993,
+     "tBug": 7.529999999999973,
+     "provadas": [
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 3,
+     "tempo": 77.51999999999998,
+     "tBug": 67.5,
+     "provadas": [
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 4,
+     "tempo": 69.76999999999998,
+     "tBug": 59.70999999999998,
+     "provadas": [
+      "cupom:limite",
+      "cupom:normal",
+      "estoque:normal",
+      "cancelamento:repetida"
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 6,
+     "duracao": 180.04999999999995,
+     "provadas": [
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:normal",
+      "cancelamento:repetida",
+      "cancelamento:normal",
+      "estoque:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 7,
+     "duracao": 180,
+     "provadas": [
+      "pagamento:repetida",
+      "pagamento:zero",
+      "pagamento:normal",
+      "cancelamento:normal",
+      "cupom:normal",
+      "cupom:repetida",
+      "cupom:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 4,
+     "duracao": 180.0200000000001,
+     "provadas": [
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:normal",
+      "pagamento:repetida"
+     ]
+    }
+   ],
+   "tempoCerebro": 1024.2399999999998,
+   "olhosReais": true,
+   "data": "2026-10-03T21:58:56.467Z",
+   "erros": [],
+   "minutosParede": 47.8,
+   "extra": "&placa=13&alcance=20",
+   "so": null
+  },
+  {
+   "semente": 834,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 5,
+     "tempo": 64.25,
+     "tBug": 54.239999999999995,
+     "provadas": [
+      "cupom:repetida",
+      "cupom:limite",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "pagamento:zero"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 240,
+     "tBug": null,
+     "provadas": [
+      "cupom:normal",
+      "cupom:repetida",
+      "estoque:repetida",
+      "estoque:normal",
+      "pagamento:normal",
+      "carrinho:limite",
+      "carrinho:normal",
+      "estoque:limite",
+      "pagamento:zero",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 4,
+     "tempo": 37.95999999999998,
+     "tBug": 27.939999999999998,
+     "provadas": [
+      "pagamento:zero",
+      "estoque:normal",
+      "pagamento:normal",
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 4,
+     "tempo": 240.01999999999998,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:normal"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 0,
+     "tempo": 240.06000000000006,
+     "tBug": null,
+     "provadas": []
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 2,
+     "tempo": 17.459999999999923,
+     "tBug": 7.3799999999999955,
+     "provadas": [
+      "pagamento:normal",
+      "pagamento:repetida"
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 0,
+     "duracao": 180.06000000000006,
+     "provadas": []
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 2,
+     "duracao": 180.13999999999987,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:zero"
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 2,
+     "tempo": 54.0300000000002,
+     "provas": 2,
+     "duracao": 54.0300000000002,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:negativa"
+     ]
+    }
+   ],
+   "tempoCerebro": 1254.14,
+   "olhosReais": true,
+   "data": "2026-10-03T22:09:04.247Z",
+   "erros": [],
+   "minutosParede": 42.6,
+   "extra": "&placa=13&alcance=20",
+   "so": null
   }
  ]
 }

@@ -1,0 +1,125 @@
+{
+ "metodo": "Treinada (ativa) menos congelada, pareado por semente. transferencia/controle: provas até o primeiro bug nas versões de teste (as provas feitas + 1 quando não achou em 180 s). tempo_*: s de cérebro até o primeiro bug (a duração da versão quando não achou). fracao_premiada: fração das provas do teste em plaquinhas da característica premiada. IC95 percentil de bootstrap (2000; só com 5 ou mais sementes), p bilateral do mesmo bootstrap, dz = média / desvio das diferenças.",
+ "sementes": [
+  831,
+  832,
+  833,
+  834
+ ],
+ "sessoes_validas": 8,
+ "por_condicao": {
+  "ativa": {
+   "sementes": 4,
+   "transferencia": 5.88,
+   "controle": 6,
+   "tempo_transferencia": 170.55,
+   "tempo_controle": 143.53,
+   "fracao_premiada": 0.32,
+   "bugs_treino": 4.5,
+   "provas_teste": 15.25
+  },
+  "congelada": {
+   "sementes": 4,
+   "transferencia": 4.5,
+   "controle": 5.5,
+   "tempo_transferencia": 159.85,
+   "tempo_controle": 148.52,
+   "fracao_premiada": 0.12,
+   "bugs_treino": 3,
+   "provas_teste": 12
+  }
+ },
+ "ativa_menos_congelada": {
+  "transferencia": {
+   "n": 4,
+   "media": 1.38,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 0.47,
+   "por_semente": [
+    0.5,
+    -1.5,
+    1,
+    5.5
+   ]
+  },
+  "controle": {
+   "n": 4,
+   "media": 0.5,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 0.07,
+   "por_semente": [
+    -9,
+    1,
+    7,
+    3
+   ]
+  },
+  "tempo_transferencia": {
+   "n": 4,
+   "media": 10.69,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 0.21,
+   "por_semente": [
+    -0.15,
+    -37.92,
+    80.93,
+    -0.07
+   ]
+  },
+  "tempo_controle": {
+   "n": 4,
+   "media": -4.99,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": -0.04,
+   "por_semente": [
+    -145.9,
+    -0.01,
+    -0.05,
+    125.99
+   ]
+  },
+  "fracao_premiada": {
+   "n": 4,
+   "media": 0.2,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 2.54,
+   "por_semente": [
+    0.26,
+    0.22,
+    0.08,
+    0.24
+   ]
+  },
+  "bugs_treino": {
+   "n": 4,
+   "media": 1.5,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 1.16,
+   "por_semente": [
+    1,
+    0,
+    3,
+    2
+   ]
+  },
+  "provas_teste": {
+   "n": 4,
+   "media": 3.25,
+   "ic95": null,
+   "p_bootstrap": null,
+   "dz": 0.36,
+   "por_semente": [
+    -7,
+    -1,
+    8,
+    13
+   ]
+  }
+ }
+}

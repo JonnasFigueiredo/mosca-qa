@@ -551,3 +551,5 @@ Teste depois (semente 937, versões de 60 s só para o teste): volta ao centro e
 pagamento em ~33 s e o do treino 3 no cancelamento. Escada: d1 com as sementes 971–973, d2 com 981–983; o resto, igual.
 
 **03/10, rotina do mundo, calibração d1 (plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino): passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 971, 972, 973. Achou o bug em 1 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 68,67 s de cérebro; 5,44 provas por versão. Por sessão: 973 111, 972 111, 971 111. `docs/medicoes/qa-mundo-calib-d1.json`.
+
+**03/10, rotina do mundo, piloto (d1; exploratório, não conta como resultado).** Sementes 831–834, treinada e congelada, 6 versões de treino. Tempo até o primeiro bug na transferência, treinada − congelada: 10,69 s (por semente [-0.15,-37.92,80.93,-0.07]; dz 0,21). Bugs no treino por sessão: treinada 4,5, congelada 3. N da série confirmatória pela regra escrita antes: 20.
