@@ -9,6 +9,8 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 const PREFIXO = process.argv.includes('--prefixo') ? process.argv[process.argv.indexOf('--prefixo') + 1] : 'qa-mundo-piloto';
 const arquivos = readdirSync('docs/medicoes').filter(f => new RegExp('^' + PREFIXO + '(-p\\d+)?\\.json$').test(f));
+const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
+const r2 = v => (v == null || Number.isNaN(v) ? null : +v.toFixed(2));
 const todasSess = arquivos.flatMap(f => JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).sessoes);
 if (process.argv.includes('--calibracao')) {
   // treino: achou o bug na versão? em quanto tempo (s de cérebro)? (tBug; nas sessões antigas, a duração − 10 s)
@@ -23,8 +25,6 @@ if (process.argv.includes('--calibracao')) {
   process.exit(0);
 }
 const sess = todasSess.filter(s => !s.erro && s.teste?.length);
-const media = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
-const r2 = v => (v == null || Number.isNaN(v) ? null : +v.toFixed(2));
 function bootstrap(a) {
   if (a.length < 5) return null;
   let s = 982451653; const v = [];
