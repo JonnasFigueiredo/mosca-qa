@@ -511,3 +511,13 @@ no pires, provou 4 plaquinhas em duas plataformas. Escada nova (o mundo de todos
 cheiro com alcance de 14 mm e 240 s por versão de treino (sementes 841–844); c2 = alcance de 24 mm (851–854); c3 =
 alcance de 24 mm e 360 s por versão de treino (861–864). O resto da rotina (critério, piloto, série, replicação,
 alternativa) segue como escrito acima.
+
+**03/10, 13h40: escada da calibração ajustada de novo, antes de rodar c2 e c3.** No c1 (sementes 841–843, em
+andamento), 0 bugs nas 6 primeiras versões de treino: ela prova ~1 plaquinha a cada 50 s de cérebro, e achar a ação
+com defeito entre 15 pede ~8 provas (~400 s), mais que os 240 s da versão. O alcance do cheiro (o c2 antigo) não muda
+esse ritmo. Teste à parte na página normal (semente 871, 90 s de cérebro): com plaquinhas de 13 × 8,5 mm, 4 provas
+(~1 a cada 22 s; uma rodada só, ruidosa). Também visto: 14 sinais de fuga da fibra gigante em 90 s, quase todos em
+voo (sacadas diante da borda da bandeja e das plataformas); do cérebro, não mexido. Escada nova, 3 sementes por
+degrau (9 versões de treino; o critério de 60% vira ≥ 6 de 9): c1 fica com as 3 sessões que já estão rodando
+(841–843; a 844 não roda); c2 = plaquinhas de 13 × 8,5 mm e cheiro com alcance de 20 mm (881–883); c3 = como c2,
+com 420 s por versão de treino (891–893). O degrau escolhido vale para o piloto e as séries.

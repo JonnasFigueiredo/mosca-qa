@@ -53,6 +53,8 @@
   const ALCANCE = Math.max(4, +QS.get('alcance') || 14);
   // &limtreino=N: limite de cada versão de treino (s de cérebro; padrão 240)
   const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
+  // &placa=N: largura das plaquinhas (mm; padrão 10, profundidade 0,65 × a largura)
+  const PLACA = Math.min(16, Math.max(6, +QS.get('placa') || 10));
   const idDe = a => 'q-' + a.id.replace(':', '-');
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
@@ -62,7 +64,7 @@
     acoes.forEach((a, i) => {
       const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * 0.52;
       placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: p.x + Math.cos(ang) * rr, y: p.y + Math.sin(ang) * rr, base: p.h,
-        w: 10, d: 6.5, h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
+        w: PLACA, d: +(PLACA * 0.65).toFixed(2), h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
     });
   }
   const objetos = { ...plataformas, ...placas };

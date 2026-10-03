@@ -35,10 +35,13 @@ const salva = () => writeFileSync(ESTADO, JSON.stringify(est, null, 1));
 // a escada do mundo, escrita antes
 const ESCADA = [
   // (03/10, 12h55) refeita depois da calibração m0 interrompida: ver a nota no plano. O mundo de todos os degraus
-  // tem a bandeja, a subida pela lateral e o afastamento da borda
-  { id: 'c1', extra: '', desc: 'bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino', sementes: seq(841, 4) },
-  { id: 'c2', extra: '&alcance=24', desc: 'como c1, com o cheiro das plaquinhas com alcance de 24 mm', sementes: seq(851, 4) },
-  { id: 'c3', extra: '&alcance=24&limtreino=360', desc: 'como c2, com 360 s por versão de treino', sementes: seq(861, 4) },
+  // tem a bandeja, a subida pela lateral e o afastamento da borda.
+  // (03/10, 13h40) c1 parou em 3 sessões (0 bugs nas versões de treino vistas: ~1 prova a cada 50 s, e achar a ação
+  // certa entre 15 pede ~8 provas); c2 e c3 trocados antes de rodar: plaquinhas maiores (mais provas por minuto) e,
+  // no c3, mais tempo por versão de treino. Cada degrau novo com 3 sementes (9 versões de treino)
+  { id: 'c1', extra: '', desc: 'bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino', sementes: seq(841, 3) },
+  { id: 'c2', extra: '&placa=13&alcance=20', desc: 'como c1, com plaquinhas de 13 × 8,5 mm e cheiro com alcance de 20 mm', sementes: seq(881, 3) },
+  { id: 'c3', extra: '&placa=13&alcance=20&limtreino=420', desc: 'como c2, com 420 s por versão de treino', sementes: seq(891, 3) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 
