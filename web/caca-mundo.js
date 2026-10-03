@@ -40,6 +40,12 @@
     cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', x: 100, y: 162, raio: 15, h: 9 },
     cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', x: 52, y: 138, raio: 17, h: 3.5 },
   };
+  // variantes do mundo na URL (a escada de calibração escrita antes, scripts/madrugada_mundo.mjs):
+  // &mundo=compacto aproxima as plataformas do centro da bancada (onde ela começa); &alcance=N (mm) muda o alcance do
+  // cheiro das plaquinhas (padrão 14 mm)
+  const QS = new URLSearchParams(location.search);
+  if (QS.get('mundo') === 'compacto') for (const p of Object.values(PLATAFORMAS)) { p.x = 100 + (p.x - 100) * 0.75; p.y = 112 + (p.y - 112) * 0.75; }
+  const ALCANCE = Math.max(4, +QS.get('alcance') || 14);
   const idDe = a => 'q-' + a.id.replace(':', '-');
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
@@ -49,7 +55,7 @@
     acoes.forEach((a, i) => {
       const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * 0.52;
       placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: p.x + Math.cos(ang) * rr, y: p.y + Math.sin(ang) * rr, base: p.h,
-        w: 10, d: 6.5, h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: 14, cheiro: {} };
+        w: 10, d: 6.5, h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
     });
   }
   const objetos = { ...plataformas, ...placas };
@@ -131,7 +137,7 @@
   function fimVersao() {
     if (C.encerrada) return; C.encerrada = true;
     const provadas = C.provadas.map(p => p.acao);
-    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas, tempo: agoraS() - C.t0, provadas });
+    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas, tempo: agoraS() - C.t0, tBug: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provadas });
     if (C.fase === 'teste') C.teste.push({ defeitos: C.defeitos, controle: C.defeitos.join('+') === C.V.controle.join('+'), primeiro: C.bugs[0]?.prova ?? null, tempo: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provas: C.provas, duracao: agoraS() - C.t0, provadas });
     tabela();
     C.vi++;
@@ -224,7 +230,8 @@
       await espera(1500);
       const t0 = brainT / 1000;
       iniciar('treino'); while (C.fase !== 'livre') await espera(1000);
-      iniciar('teste'); while (C.fase !== 'livre') await espera(1000);
+      // &so=treino: só o treino (calibração do mundo: quantas versões de treino ela acha o bug)
+      if (q.get('so') !== 'treino') { iniciar('teste'); while (C.fase !== 'livre') await espera(1000); }
       window.__cacaFim = { semente: sem, condicao: $('#cacaCond').value, caracteristica: C.V.caracteristica, treino: C.treino, teste: C.teste,
         tempoCerebro: brainT / 1000 - t0, olhosReais: !!fly.olhoReal, data: new Date().toISOString() };
     })();

@@ -15,6 +15,8 @@ const SEMENTES = arg('sementes', '1').split(',').map(Number);
 const CONDICOES = arg('condicoes', 'ativa,congelada').split(',');
 const CAR = arg('car', 'repetida'), TREINOS = arg('treinos', '6'), PARALELOS = +arg('paralelos', 1);
 const SAIDA = arg('saida', 'docs/medicoes/qa-mundo-piloto.json'), TIMEOUT = +arg('timeout-min', 150) * 60e3, CURTO = process.argv.includes('--curto');
+// --so treino: só o treino (calibração do mundo); --extra '&chave=valor': parâmetros do mundo na URL (variantes da escada)
+const SO = arg('so', ''), EXTRA = arg('extra', '');
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 try { os.setPriority(0, os.constants.priority.PRIORITY_BELOW_NORMAL); } catch { /* sem permissão: segue normal */ }
 mkdirSync('_tmp', { recursive: true });
@@ -23,7 +25,7 @@ const hora = () => new Date().toLocaleTimeString('pt-BR');
 
 function grava(sessao) {
   const dados = existsSync(SAIDA) ? JSON.parse(readFileSync(SAIDA, 'utf8')) : {
-    metodo: 'Caça a bugs no mundo da mosca (web/caca-mundo.js). Página num Chrome sem janela com os olhos reais amostrados; modo automático: treino com as versões de treino da bancada 2 (cada versão até 12 provas ou 90 s de cérebro; bug novo = açúcar + PAM) e teste com as 3 versões de teste (sem recompensa; cada versão até o primeiro bug, 15 provas ou 120 s). Semente fixa para o cérebro, o mapa e os sorteios da página; o relógio de parede ainda varia. "provadas" = ações provadas na ordem.',
+    metodo: 'Caça a bugs no mundo da mosca (web/caca-mundo.js). Página num Chrome sem janela com os olhos reais amostrados; modo automático: treino com as versões de treino da bancada 2 (cada versão até achar o bug, +10 s, ou 240 s de cérebro; bug novo = açúcar + PAM) e teste com as 3 versões de teste (sem recompensa; cada versão até o primeiro bug ou 180 s). Mundo: cinco plataformas de cozinha por família, plaquinhas em cima. Semente fixa para o cérebro, o mapa e os sorteios da página; o relógio de parede ainda varia. "provadas" = ações provadas na ordem.',
     sessoes: [] };
   dados.sessoes.push(sessao);
   writeFileSync(SAIDA, JSON.stringify(dados, null, 1) + '\n');
@@ -32,7 +34,7 @@ function grava(sessao) {
 async function sessao(semente, condicao) {
   // o perfil do Chrome vai para _tmp do projeto (o disco C está quase cheio), com caminho absoluto
   const porta = 9300 + Math.floor(Math.random() * 600), perfil = mkdtempSync(resolve('_tmp/mosca-mundo-'));
-  const url = `http://localhost:8765/?headless=1&olhosHeadless=1&caca=auto&cond=${condicao}&car=${CAR}&semente=${semente}&treinos=${TREINOS}${CURTO ? '&curto=1' : ''}&r=${Date.now()}`;
+  const url = `http://localhost:8765/?headless=1&olhosHeadless=1&caca=auto&cond=${condicao}&car=${CAR}&semente=${semente}&treinos=${TREINOS}${CURTO ? '&curto=1' : ''}${SO ? '&so=' + SO : ''}${EXTRA}&r=${Date.now()}`;
   const proc = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`, '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', '--enable-unsafe-swiftshader', '--window-size=1400,1000', '--hide-scrollbars', '--no-first-run', url], { stdio: 'ignore' });
   const erros = [], t0 = Date.now();
@@ -71,7 +73,9 @@ async function sessao(semente, condicao) {
   }
 }
 
-const fila = SEMENTES.flatMap(s => CONDICOES.map(c => [s, c]));
+// retomada: pula as sessões que já estão no arquivo de saída sem erro
+const feitas = new Set(existsSync(SAIDA) ? JSON.parse(readFileSync(SAIDA, 'utf8')).sessoes.filter(x => !x.erro).map(x => x.semente + ':' + x.condicao) : []);
+const fila = SEMENTES.flatMap(s => CONDICOES.map(c => [s, c])).filter(([s, c]) => !feitas.has(s + ':' + c));
 console.log(`${hora()} ${fila.length} sessões (${SEMENTES.length} sementes × ${CONDICOES.join('/')}), ${PARALELOS} por vez → ${SAIDA}`);
 let proxima = 0;
 async function trabalhador() {
@@ -79,6 +83,7 @@ async function trabalhador() {
     const [s, c] = fila[proxima++];
     console.log(`${hora()} começa semente ${s} ${c}`);
     const r = await sessao(s, c);
+    r.semente ??= s; r.condicao ??= c; r.extra = EXTRA; r.so = SO || null;
     grava(r);
     const t = r.teste?.map(v => v.primeiro ?? '—').join(' / ');
     console.log(`${hora()} fim semente ${s} ${c}: ${r.erro ? 'ERRO ' + r.erro : `teste (provas até o 1º bug) ${t} · ${r.minutosParede} min`}`);

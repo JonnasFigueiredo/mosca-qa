@@ -469,3 +469,30 @@ plaquinhas da família em cima de cada uma, com ícone (para quem assiste). Trei
 (+10 s) ou 4 min; teste: até o primeiro bug ou 3 min. Regra da página aplicada às plaquinhas: o que ela já provou fica
 fosco (chega ao cérebro pelos olhos, LC10a). Primeira sessão: 9 voos entre plataformas e o bug da versão 1 em 9 provas
 (183 s); a atração aprendida ao cheiro premiado foi a 1,0. Uma sessão completa leva ~25 min de cérebro.
+
+## Série no mundo da mosca (03/10, escrita antes de rodar)
+
+**Piloto 2 interrompido e o defeito achado.** O piloto do mundo novo (sementes 601–603) ficou 4 min de cérebro no
+primeiro treino sem nenhuma prova nas duas sessões. Diagnóstico (`_diag_mundo.mjs`, uma sessão sem janela amostrada a
+cada 5 s): ela andava até a borda da bancada e deslizava rente a ela por minutos, sem nunca chegar às plataformas. A
+posição só era presa no limite (`sbMove`), sem reação. Na mesma semente, outra rodada decolou aos 21 s e provou: o
+relógio de parede muda o caminho, e a borda prendia uma parte das sessões. Correção (regra do corpo, declarada): a borda
+da bancada é uma beira como a de uma plataforma, então ela decola (a mesma regra de decolar na beira) ou vira para o
+centro. Vale também para a Cozinha.
+
+**Rotina (`scripts/madrugada_mundo.mjs`), 3 sessões por vez:**
+1. *Calibração do mundo* (só treino, condição ativa, 3 versões por sessão, 4 sementes por degrau). Escada: m0 = mundo
+   atual (sementes 801–804); m1 = cheiro das plaquinhas com alcance de 24 mm em vez de 14 (811–814); m2 = alcance de
+   24 mm e plataformas mais perto do centro da bancada (821–824). Fica o primeiro degrau em que ela acha o bug em
+   ≥ 60% das versões de treino. Se nenhum passar, fica o melhor; se o melhor não chegar a 40%, a rotina para (negativo
+   do mundo: sem recompensa no treino, não há o que medir).
+2. *Piloto* (sementes 831–834, treinada e congelada, 6 versões de treino; exploratório): só estima o desvio para
+   escolher N = (1,96 + 0,84)² / dz² + 2, entre 12 e 20 (20 se não houver efeito na direção esperada).
+3. *Série confirmatória* (sementes 901 em diante, N pares). **Critério principal:** tempo até o primeiro bug nas
+   versões de transferência (s de cérebro; 180 s quando não achou), treinada − congelada, IC95 do bootstrap < 0.
+   Secundários, só relatados: provas até o primeiro bug na transferência; controle (não deve melhorar); fração das
+   provas do teste na característica premiada (deve ser maior na treinada); bugs no treino.
+4. Se passar, *replicação* com sementes novas (951 em diante), mesmo N e mesmo critério. Se não passar, a alternativa
+   escrita antes: 9 versões de treino (sementes 1001 em diante; replicação 1051 em diante).
+Cada etapa anota aqui, grava em `docs/medicoes/qa-mundo-*.json` e commita. O tempo é a medida principal porque no mundo
+o custo de achar um bug é andar, voar e provar, não só o número de provas.

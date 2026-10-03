@@ -396,6 +396,14 @@ function sbMove(f, dt, v) {
   if (f.flying) return sbFly(f, dt);
   const nx = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * v * dt));
   const ny = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * v * dt));
+  // a borda da bancada é uma beira como a de uma plataforma (03/10): decola ou vira. Antes a posição só era presa no
+  // limite e ela deslizava rente à borda por minutos (no mundo da caça a bugs, sem nunca chegar às plataformas)
+  const naBorda = (nx <= 10 || nx >= SB.W - 10) && Math.abs(Math.sin(f.th)) > 0.05 || (ny <= 10 || ny >= SB.H - 10) && Math.abs(Math.cos(f.th)) > 0.05;
+  if (naBorda && (f.z || 0) <= SB_STEP) {
+    if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) sbTakeoff(f, 'beira');
+    else { const c = Math.atan2(SB.W / 2 - f.x, -(SB.H / 2 - f.y)); f.th = c + (Math.random() - 0.5) * 1.6; }
+    return;
+  }
   const s = sbSurface(nx, ny);
   if(window.Colonia && !Colonia.permitePasso(f,nx,ny,s))return;
   // vence um degrau de SB_STEP e rampas de até ~55° (o topo redondo das frutas); paredes, não
