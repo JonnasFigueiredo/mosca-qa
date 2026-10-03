@@ -521,3 +521,5 @@ voo (sacadas diante da borda da bandeja e das plataformas); do cérebro, não me
 degrau (9 versões de treino; o critério de 60% vira ≥ 6 de 9): c1 fica com as 3 sessões que já estão rodando
 (841–843; a 844 não roda); c2 = plaquinhas de 13 × 8,5 mm e cheiro com alcance de 20 mm (881–883); c3 = como c2,
 com 420 s por versão de treino (891–893). O degrau escolhido vale para o piloto e as séries.
+
+**03/10, rotina do mundo, calibração c1 (bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 841, 842, 843. Achou o bug em 0 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug null s de cérebro; 5,56 provas por versão. Por sessão: 843 000, 842 000, 841 000. `docs/medicoes/qa-mundo-calib-c1.json`.
