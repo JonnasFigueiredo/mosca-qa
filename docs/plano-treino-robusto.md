@@ -549,3 +549,5 @@ nova, ela volta ao centro da bandeja, no chão, virada para um lado sorteado (co
 mosca). Os dados da d1 (931–933, incompleta) ficam fora das medições (`_tmp/_descartado-calib-d1.json`, não versionado).
 Teste depois (semente 937, versões de 60 s só para o teste): volta ao centro em cada versão; achou o bug do treino 1 no
 pagamento em ~33 s e o do treino 3 no cancelamento. Escada: d1 com as sementes 971–973, d2 com 981–983; o resto, igual.
+
+**03/10, rotina do mundo, calibração d1 (plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino): passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 971, 972, 973. Achou o bug em 1 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 68,67 s de cérebro; 5,44 provas por versão. Por sessão: 973 111, 972 111, 971 111. `docs/medicoes/qa-mundo-calib-d1.json`.
