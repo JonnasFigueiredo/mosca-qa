@@ -33,7 +33,11 @@ function grava(sessao) {
   writeFileSync(SAIDA, JSON.stringify(dados, null, 1) + '\n');
 }
 
+// (03/10) duas páginas carregando o cérebro ao mesmo tempo travaram (memória): uma sessão só começa 90 s depois da anterior
+let ultimoInicio = 0;
 async function sessao(semente, condicao) {
+  while (Date.now() - ultimoInicio < 90e3) await sleep(5000);
+  ultimoInicio = Date.now();
   // o perfil do Chrome vai para _tmp do projeto (o disco C está quase cheio), com caminho absoluto
   const porta = 9300 + Math.floor(Math.random() * 600), perfil = mkdtempSync(resolve('_tmp/mosca-mundo-'));
   const url = `http://localhost:${PORTA}/?headless=1&olhosHeadless=1&caca=auto&cond=${condicao}&car=${CAR}&semente=${semente}&treinos=${TREINOS}${CURTO ? '&curto=1' : ''}${SO ? '&so=' + SO : ''}${EXTRA}&r=${Date.now()}`;
@@ -52,17 +56,25 @@ async function sessao(semente, condicao) {
       if (m.method === 'Runtime.exceptionThrown') erros.push(m.params.exceptionDetails.exception?.description?.split('\n')[0]);
       if (espera.has(m.id)) { espera.get(m.id)(m); espera.delete(m.id); }
     };
-    const envia = (method, params = {}) => new Promise(ok => { const id = ++seq; espera.set(id, ok); ws.send(JSON.stringify({ id, method, params })); });
+    // (03/10) com tempo limite: uma resposta que nunca chegou deixou o runner parado por uma hora
+    const envia = (method, params = {}) => new Promise((ok, falha) => {
+      const id = ++seq; espera.set(id, ok); ws.send(JSON.stringify({ id, method, params }));
+      setTimeout(() => { if (espera.delete(id)) falha(new Error('o Chrome não respondeu em 30 s')); }, 30e3);
+    });
     const avalia = async expr => { const r = await envia('Runtime.evaluate', { expression: expr, returnByValue: true }); return r.result?.result?.value; };
     await envia('Runtime.enable');
-    let ultimo = 0;
+    let ultimo = 0, semResposta = 0;
     for (;;) {
       await sleep(15000);
-      const fim = await avalia('window.__cacaFim ? JSON.stringify(window.__cacaFim) : null');
+      let fim;
+      try { fim = await avalia('window.__cacaFim ? JSON.stringify(window.__cacaFim) : null'); semResposta = 0; }
+      catch (e) { if (++semResposta >= 6) throw new Error('o Chrome parou de responder'); continue; }
+      // o cérebro tem de carregar em 8 min; senão a sessão é refeita (a rotina tenta de novo)
+      if (Date.now() - t0 > 8 * 60e3 && !(await avalia('typeof brainReady !== "undefined" && brainReady').catch(() => false))) throw new Error('o cérebro não carregou em 8 min');
       if (fim) { const r = JSON.parse(fim); r.erros = erros.slice(0, 20); r.minutosParede = +((Date.now() - t0) / 60e3).toFixed(1); return r; }
       if (Date.now() - ultimo > 120e3) {
         ultimo = Date.now();
-        console.log(`${hora()} semente ${semente} ${condicao}: ${await avalia('(typeof brainT !== "undefined" ? (brainT/1000).toFixed(0) + " s de cérebro · " : "") + (document.getElementById("cacaStatus")?.textContent || "carregando")')}`);
+        console.log(`${hora()} semente ${semente} ${condicao}: ${await avalia('(typeof brainT !== "undefined" ? (brainT/1000).toFixed(0) + " s de cérebro · " : "") + (document.getElementById("cacaStatus")?.textContent || "carregando")').catch(() => 'sem resposta')}`);
       }
       if (Date.now() - t0 > TIMEOUT) throw new Error('passou do tempo limite');
     }
