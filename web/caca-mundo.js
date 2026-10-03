@@ -34,18 +34,25 @@
   // diferentes; em cima de cada um, as plaquinhas das ações daquela família. Ir de uma plataforma a outra pede subir a
   // parede ou voar (os comportamentos da Cozinha). Cheiro só nas plaquinhas; as plataformas não cheiram nem têm gosto
   const PLATAFORMAS = {
-    carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', x: 60, y: 80, raio: 18, h: 5 },
-    estoque: { forma: 'plat-prato', r: 'Estoque · pires', x: 140, y: 78, raio: 17, h: 8 },
-    pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', x: 148, y: 138, raio: 16, h: 12 },
-    cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', x: 100, y: 162, raio: 15, h: 9 },
-    cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', x: 52, y: 138, raio: 17, h: 3.5 },
+    carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', x: 70, y: 88, raio: 18, h: 5 },
+    estoque: { forma: 'plat-prato', r: 'Estoque · pires', x: 130, y: 86.5, raio: 17, h: 8 },
+    pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', x: 136, y: 131.5, raio: 16, h: 12 },
+    cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', x: 100, y: 149.5, raio: 15, h: 9 },
+    cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', x: 64, y: 131.5, raio: 17, h: 3.5 },
   };
+  // a bandeja (03/10): as plataformas ficam numa bandeja de madeira, 14 mm além delas, e não soltas na bancada de 20 cm.
+  // Na bancada inteira ela passava minutos longe de tudo (diagnóstico com _diag_mundo.mjs): numa área menor, encontra
+  // as plataformas com mais frequência. Regra do mundo, declarada; a borda aparece no 3D e ela se afasta dela
+  const BANDEJA = (() => {
+    const v = Object.values(PLATAFORMAS), m = 14;
+    return [Math.min(...v.map(p => p.x - p.raio)) - m, Math.min(...v.map(p => p.y - p.raio)) - m, Math.max(...v.map(p => p.x + p.raio)) + m, Math.max(...v.map(p => p.y + p.raio)) + m];
+  })();
   // variantes do mundo na URL (a escada de calibração escrita antes, scripts/madrugada_mundo.mjs):
-  // &mundo=compacto aproxima as plataformas do centro da bancada (onde ela começa); &alcance=N (mm) muda o alcance do
-  // cheiro das plaquinhas (padrão 14 mm)
+  // &alcance=N (mm) muda o alcance do cheiro das plaquinhas (padrão 14 mm)
   const QS = new URLSearchParams(location.search);
-  if (QS.get('mundo') === 'compacto') for (const p of Object.values(PLATAFORMAS)) { p.x = 100 + (p.x - 100) * 0.75; p.y = 112 + (p.y - 112) * 0.75; }
   const ALCANCE = Math.max(4, +QS.get('alcance') || 14);
+  // &limtreino=N: limite de cada versão de treino (s de cérebro; padrão 240)
+  const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
   const idDe = a => 'q-' + a.id.replace(':', '-');
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
@@ -76,7 +83,7 @@
   }
   usarCheiros('repetida');
 
-  APPS.caca = { ...APPS.cozinha, id: 'caca', nome: 'Caça a bugs', url: 'bancada.testes', objetos,
+  APPS.caca = { ...APPS.cozinha, id: 'caca', nome: 'Caça a bugs', url: 'bancada.testes', objetos, bandeja: BANDEJA,
     elementos: Object.fromEntries(Object.entries(objetos).map(([id, o]) => [id, { r: o.r, notas: [], acao: () => {} }])),
     estado() { return { rota: 'caca', msg: '' }; },
     // página 2D: a bancada vista de cima, com as plaquinhas (2,8 px por mm)
@@ -149,7 +156,7 @@
     // limites de cada versão; &curto=1 (só para testar a automação) usa versões bem curtas
     // treino: a versão vai até ela achar o bug (e mais 10 s, para a dopamina parear com o cheiro), ou 4 min de cérebro;
     // teste: até o primeiro bug ou 3 min. Antes (12 provas ou 90 s) quase não havia recompensa no treino (piloto de 02/10)
-    const lim = C.curto ? { provas: 3, s: 25 } : C.fase === 'treino' ? { provas: Infinity, s: 240 } : { provas: Infinity, s: 180 };
+    const lim = C.curto ? { provas: 3, s: 25 } : C.fase === 'treino' ? { provas: Infinity, s: LIM_TREINO } : { provas: Infinity, s: 180 };
     if (C.fase === 'treino' && !C.curto && C.bugs.length && agoraS() - C.bugs.at(-1).t > 10) { fimVersao(); return; }
     const dt = agoraS() - C.t0;
     $('#cacaProgresso').value = Math.min(1, (C.vi + Math.min(1, Math.max(C.provas / lim.provas, dt / lim.s))) / C.versoes.length);

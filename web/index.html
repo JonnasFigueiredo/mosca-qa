@@ -1053,10 +1053,21 @@ function stepBody(dt, counts, destino = worker) {
   let turn = (HAS_EYES ? visionTurn : brainTurn) + chemo + tumble + (Math.random() - 0.5) * (f.steady ? 0.6 : 2.2) * (f.buscaR ? f.buscaR.ruido : 1);
   // paredes
   const ax = f.x + Math.sin(f.th) * 22, ay = f.y - Math.cos(f.th) * 22;
-  if (ax < 12 || ax > bw() - 12 || ay < 12 || ay > bh() - 12) {
-    const toC = Math.atan2(bw() / 2 - f.x, -(bh() / 2 - f.y));
+  const [lx0, ly0, lx1, ly1] = SB.on ? sbLim() : [0, 0, bw(), bh()];   // no sandbox, a bancada ou a bandeja
+  if (ax < lx0 + 12 || ax > lx1 - 12 || ay < ly0 + 12 || ay > ly1 - 12) {
+    const toC = Math.atan2((lx0 + lx1) / 2 - f.x, -((ly0 + ly1) / 2 - f.y));
     let d = toC - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
     turn += 5 * Math.sign(d);
+  }
+  // no mundo da caça a bugs (03/10, regra do corpo, declarada): a borda da bandeja é uma beira, não uma parede, e ela
+  // se afasta dela; sem isso, a regra acima a deixava andando rente à borda, em paralelo, por minutos (diagnóstico com
+  // _diag_mundo.mjs), longe das plataformas
+  if (SB.on && APP.id === 'caca' && !f.flying) {
+    const dB = Math.min(f.x - lx0, lx1 - f.x, f.y - ly0, ly1 - f.y), perto = 1 - dB / (10 * CORPO.S);
+    if (perto > 0) {
+      let d = Math.atan2((lx0 + lx1) / 2 - f.x, -((ly0 + ly1) / 2 - f.y)) - f.th; d = Math.atan2(Math.sin(d), Math.cos(d));
+      if (Math.abs(d) > 0.4) turn += 8 * perto * Math.sign(d);
+    }
   }
   turn *= marcha.girar;
   f.giroCorpo = turn;

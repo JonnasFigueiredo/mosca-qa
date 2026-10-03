@@ -1,6 +1,6 @@
 // Rotina automática da caça a bugs no mundo da mosca (web/caca-mundo.js), escrita antes de rodar (03/10;
 // docs/plano-treino-robusto.md, "Série no mundo da mosca"). Nada é escolhido olhando o resultado do teste:
-//  1. calibração do mundo (só treino, condição ativa): escada m0 → m1 → m2; fica o primeiro degrau em que ela acha o
+//  1. calibração do mundo (só treino, condição ativa): escada c1 → c2 → c3; fica o primeiro degrau em que ela acha o
 //     bug em pelo menos 60% das versões de treino (sem recompensa no treino não há o que transferir);
 //  2. piloto (4 sementes, treinada e congelada): só estima a variação para escolher o número de sementes;
 //  3. série confirmatória: treinada − congelada no tempo até o primeiro bug nas versões de transferência, IC95 < 0;
@@ -34,9 +34,11 @@ const salva = () => writeFileSync(ESTADO, JSON.stringify(est, null, 1));
 
 // a escada do mundo, escrita antes
 const ESCADA = [
-  { id: 'm0', extra: '', desc: 'mundo atual (borda da bancada corrigida)', sementes: seq(801, 4) },
-  { id: 'm1', extra: '&alcance=24', desc: 'cheiro das plaquinhas com alcance de 24 mm (em vez de 14)', sementes: seq(811, 4) },
-  { id: 'm2', extra: '&alcance=24&mundo=compacto', desc: 'alcance de 24 mm e plataformas mais perto do centro da bancada', sementes: seq(821, 4) },
+  // (03/10, 12h55) refeita depois da calibração m0 interrompida: ver a nota no plano. O mundo de todos os degraus
+  // tem a bandeja, a subida pela lateral e o afastamento da borda
+  { id: 'c1', extra: '', desc: 'bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino', sementes: seq(841, 4) },
+  { id: 'c2', extra: '&alcance=24', desc: 'como c1, com o cheiro das plaquinhas com alcance de 24 mm', sementes: seq(851, 4) },
+  { id: 'c3', extra: '&alcance=24&limtreino=360', desc: 'como c2, com 360 s por versão de treino', sementes: seq(861, 4) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 

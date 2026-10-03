@@ -496,3 +496,18 @@ centro. Vale também para a Cozinha.
    escrita antes: 9 versões de treino (sementes 1001 em diante; replicação 1051 em diante).
 Cada etapa anota aqui, grava em `docs/medicoes/qa-mundo-*.json` e commita. O tempo é a medida principal porque no mundo
 o custo de achar um bug é andar, voar e provar, não só o número de provas.
+
+**03/10, 12h55: calibração m0 interrompida e escada refeita (antes de qualquer teste).** Com a borda corrigida, o m0
+(sementes 801–803) seguia sem recompensa: em ~6 min de cérebro por sessão, 0 bugs, 0–5 provas. Novo diagnóstico
+(`_diag_mundo.mjs` com contagem de eventos): (1) sem o servidor de física, ela não tinha como subir nas plataformas
+andando, só voando, e chegava a 1–5 mm da lateral e virava; (2) a regra antiga das paredes da página a deixava andar
+rente à borda da bancada, em paralelo, por minutos; (3) a bancada de 20 × 20 cm é grande para cinco plataformas: ela
+passava a maior parte do tempo longe de todas; (4) parte dos voos é fuga pela fibra gigante quando a plataforma cresce
+na frente dela (do cérebro: não mexido). Regras novas do mundo da caça a bugs, declaradas: **subida pela lateral** de
+uma plataforma de até 15 mm, sem a física, a ~8 mm/s (60% das vezes que encosta; senão decola ou vira, como antes);
+**bandeja**: as plataformas mais perto umas das outras, numa bandeja de madeira com 14 mm de folga, borda visível no
+3D; **afastamento da borda** (a 10 mm dela, vira para o centro). Teste de 80 s depois: subiu 4 vezes, voou 3, pousou
+no pires, provou 4 plaquinhas em duas plataformas. Escada nova (o mundo de todos os degraus tem essas regras): c1 =
+cheiro com alcance de 14 mm e 240 s por versão de treino (sementes 841–844); c2 = alcance de 24 mm (851–854); c3 =
+alcance de 24 mm e 360 s por versão de treino (861–864). O resto da rotina (critério, piloto, série, replicação,
+alternativa) segue como escrito acima.

@@ -12,7 +12,8 @@
 const SB_EL_W = 120, SB_EL_H = 44, SB_GAP = 22, SB_PAD = 26;
 const SB_FLY_SPEED = 115;   // px por segundo de tempo cerebral, no ar
 const SB_CRUISE = 60;       // quanto ela voa acima do que está embaixo
-const SB_STEP = 3;          // desnível que ela vence andando
+const SB_STEP = 3;
+const SB_LATERAL = 8 * 7;   // subir ou descer a lateral de uma plataforma sem a física: ~8 mm/s (px/s, 7 px por mm)          // desnível que ela vence andando
 // plataformas: centro (x, y) e altura; cada grupo de elementos da mesma função ocupa uma
 const SB_SLOTS = [[330, 330, 50], [720, 250, 95], [1100, 340, 65], [270, 760, 25], [1150, 760, 115],
   [330, 1140, 80], [720, 1190, 40], [1100, 1120, 105], [720, 470, 18], [980, 560, 130]];
@@ -388,20 +389,34 @@ function animBocaSimples(f, mostrar) {
 }
 
 /* ───────────── andar e voar ───────────── */
+// limites de onde ela anda e voa (px: x0, y0, x1, y1): a bancada toda, ou, no mundo da caça a bugs, a bandeja
+// (APP.bandeja, mm; caca-mundo.js), cuja borda aparece no 3D
+function sbLim() {
+  const B = APP.bandeja, S = CORPO.S;
+  return B ? [B[0] * S, B[1] * S, B[2] * S, B[3] * S] : [0, 0, SB.W, SB.H];
+}
 function sbMove(f, dt, v) {
   predStep(f, dt);
   f.voarCd = (f.voarCd || 0) - dt;
   if (f.presa) return;   // presa nas patas do louva-a-deus
   if (SB.fisico && !f.flying) { f.startle = (f.startle || 0) - dt; return; }
   if (f.flying) return sbFly(f, dt);
-  const nx = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * v * dt));
-  const ny = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * v * dt));
+  // subindo ou descendo pela lateral de uma plataforma (sem a física; regra abaixo): a altura muda no ritmo da subida
+  if (f.lateral) {
+    const L = f.lateral; L.t += dt;
+    f.z = L.z0 + Math.sign(L.z1 - L.z0) * Math.min(Math.abs(L.z1 - L.z0), SB_LATERAL * L.t);
+    if (f.z === L.z1) { f.x = L.x; f.y = L.y; f.z = sbSurface(L.x, L.y); f.lateral = null; }
+    return;
+  }
+  const [x0, y0, x1, y1] = sbLim();
+  const nx = Math.min(x1 - 10, Math.max(x0 + 10, f.x + Math.sin(f.th) * v * dt));
+  const ny = Math.min(y1 - 10, Math.max(y0 + 10, f.y - Math.cos(f.th) * v * dt));
   // a borda da bancada é uma beira como a de uma plataforma (03/10): decola ou vira. Antes a posição só era presa no
   // limite e ela deslizava rente à borda por minutos (no mundo da caça a bugs, sem nunca chegar às plataformas)
-  const naBorda = (nx <= 10 || nx >= SB.W - 10) && Math.abs(Math.sin(f.th)) > 0.05 || (ny <= 10 || ny >= SB.H - 10) && Math.abs(Math.cos(f.th)) > 0.05;
+  const naBorda = (nx <= x0 + 10 || nx >= x1 - 10) && Math.abs(Math.sin(f.th)) > 0.05 || (ny <= y0 + 10 || ny >= y1 - 10) && Math.abs(Math.cos(f.th)) > 0.05;
   if (naBorda && (f.z || 0) <= SB_STEP) {
     if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) sbTakeoff(f, 'beira');
-    else { const c = Math.atan2(SB.W / 2 - f.x, -(SB.H / 2 - f.y)); f.th = c + (Math.random() - 0.5) * 1.6; }
+    else { const c = Math.atan2((x0 + x1) / 2 - f.x, -((y0 + y1) / 2 - f.y)); f.th = c + (Math.random() - 0.5) * 1.6; }
     return;
   }
   const s = sbSurface(nx, ny);
@@ -409,8 +424,21 @@ function sbMove(f, dt, v) {
   // vence um degrau de SB_STEP e rampas de até ~55° (o topo redondo das frutas); paredes, não
   if (Math.abs(s - f.z) <= SB_STEP + 1.5 * Math.hypot(nx - f.x, ny - f.y)) { f.x = nx; f.y = ny; f.z = s; return; }
   // beira de uma plataforma, ou parede de outra mais alta (logo depois de pousar, ela anda antes de voar de novo)
-  if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) sbTakeoff(f, s > f.z ? 'subir' : 'beira');
-  else f.th += Math.PI * (0.55 + 0.4 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
+  if ((f.voarCd || 0) <= 0 && sbWantsFly(f)) { sbTakeoff(f, s > f.z ? 'subir' : 'beira'); return; }
+  // no mundo da caça a bugs, sem a física (03/10, regra do corpo, declarada): a lateral de uma plataforma baixa (até
+  // 15 mm) é uma parede que ela sobe ou desce andando, como moscas andam em superfícies verticais; aqui feita de forma
+  // cinemática, no ritmo de ~8 mm/s. Sem isso ela só subia voando e quase nunca chegava às plaquinhas no treino. Com a
+  // física ligada, quem sobe é a escalada do corpo físico (corpoParede)
+  if (APP.id === 'caca' && !SB.fisico && Math.random() < 0.6) {
+    const ix = nx + Math.sin(f.th) * 2.5 * CORPO.S, iy = ny - Math.cos(f.th) * 2.5 * CORPO.S, z1 = Math.max(0, sbSurface(ix, iy));
+    if (Math.abs(z1 - f.z) <= 15 * CORPO.S && Math.abs(z1 - s) <= SB_STEP + 1) {
+      f.lateral = { z0: f.z, z1, t: 0, x: ix, y: iy };
+      labEvent('parede', { como: z1 > f.z ? 'subida' : 'descida' });
+      if (z1 > f.z) logEvent('Subiu pela lateral de uma plataforma.', 's');
+      return;
+    }
+  }
+  f.th += Math.PI * (0.55 + 0.4 * Math.random()) * (Math.random() < 0.5 ? -1 : 1);
 }
 // regra do corpo: decola quando há coisa nova em outro nível, mais ainda com fome de bug
 function sbWantsFly(f) {
@@ -432,7 +460,7 @@ function sbTakeoff(f, why) {
   const noAr = f.flying;
   if (noAr && why !== 'fuga') return;
   // no ar, a fibra gigante vira uma guinada de fuga; no chão, decolagem
-  if (!noAr) { f.flying = true; f.flyT = 0; f.naParede = null; f.pouso = null; f.alvoT = 0; }
+  if (!noAr) { f.flying = true; f.flyT = 0; f.naParede = null; f.lateral = null; f.pouso = null; f.alvoT = 0; }
   f.vz = why === 'fuga' ? (noAr ? 120 : 150) : 70;
   // a direção da fuga vem do cérebro (fugaRumo, na página); sem sinal claro, sorteada. No ar, vira uma sacada:
   // uma curva rápida até esse rumo (~0,1 s), feita pelo voo; no chão, é a direção do pulo
@@ -527,7 +555,8 @@ function sbFly(f, dt) {
     if (r) { f.pouso = { id: r.id, x: r.x + r.w / 2, y: r.y + r.h / 2, z: r.z || 0, r }; labEvent('alvoVoo', { id: r.id, t: +f.flyT.toFixed(2) }); }
     else if (!soSentidos() && (f.flyT > VOO_MAX || f.flyT > 6) || soSentidos() && f.flyT > VOO_MAX_SENTIDOS) {
       const px = f.x + Math.sin(f.th) * 40, py = f.y - Math.cos(f.th) * 40;
-      f.pouso = { id: null, x: Math.min(SB.W - 20, Math.max(20, px)), y: Math.min(SB.H - 20, Math.max(20, py)), z: sbSurface(px, py) };
+      const [x0, y0, x1, y1] = sbLim();
+      f.pouso = { id: null, x: Math.min(x1 - 20, Math.max(x0 + 20, px)), y: Math.min(y1 - 20, Math.max(y0 + 20, py)), z: sbSurface(px, py) };
     }
   }
   if (f.flyT > 6 && f.pouso && f.pouso.id) f.pouso = null;   // não chegou em 6 s: pousa onde estiver (abaixo)
@@ -562,8 +591,9 @@ function sbFly(f, dt) {
   // (freia até quase parar: com velocidade mínima alta, o raio de curva fica maior que o alvo e ela orbita)
   // (só sentidos: com uma coisa embaixo, desacelera para poder pousar nela, como moscas se aproximando para pousar)
   const v = (f.vVoo || SB_FLY_SPEED) * (P ? clamp(dist / 120, 0.06, 1) : soSentidos() && sbSurface(f.x, f.y) > SB_STEP ? 0.35 : 1);
-  f.x = Math.min(SB.W - 10, Math.max(10, f.x + Math.sin(f.th) * Math.min(v * dt, P ? dist : Infinity)));
-  f.y = Math.min(SB.H - 10, Math.max(10, f.y - Math.cos(f.th) * Math.min(v * dt, P ? dist : Infinity)));
+  const [lx0, ly0, lx1, ly1] = sbLim();
+  f.x = Math.min(lx1 - 10, Math.max(lx0 + 10, f.x + Math.sin(f.th) * Math.min(v * dt, P ? dist : Infinity)));
+  f.y = Math.min(ly1 - 10, Math.max(ly0 + 10, f.y - Math.cos(f.th) * Math.min(v * dt, P ? dist : Infinity)));
   // o que cresce à frente em voo: a parede do mundo ou uma coisa mais alta que ela, na direção do voo. O crescimento
   // do tamanho aparente liga os detectores de ameaça (LPLC2, LC4); se a fibra gigante disparar, ela faz uma sacada.
   // (Não conta o alvo do pouso: é para ele que ela vai)
@@ -574,7 +604,7 @@ function sbFly(f, dt) {
   const aproxima = !P && soSentidos() && sbSurface(f.x, f.y) > SB_STEP;
   for (let d = 15; d <= 420; d += 15) {
     const px = f.x + Math.sin(f.th) * d, py = f.y - Math.cos(f.th) * d;
-    const fora = px < 0 || px > SB.W || py < 0 || py > SB.H;
+    const fora = px < lx0 || px > lx1 || py < ly0 || py > ly1;
     if (aproxima && d < 60) continue;
     if (fora || (sbSurface(px, py) > f.z - 4 && !(P && Math.hypot(px - P.x, py - P.y) < 60))) { dObst = d; break; }
   }
@@ -1560,6 +1590,14 @@ function sbSyncWorld() {
   sbTema(!!APP.mundo);
   if (APP.mundo) {
     SBR.rotulos = new THREE.Group(); add(SBR.rotulos);
+    if (APP.bandeja) {
+      const [x0, y0, x1, y1] = sbLim(), e = 3 * CORPO.S, h = 4 * CORPO.S, mat = sbMat('#9a6a3c', { roughness: 0.7 });
+      const fundo = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, y1 - y0), sbMat('#d9c7a4', { roughness: 0.85 }));
+      fundo.rotation.x = -Math.PI / 2; const [fx, fz] = sbTo3((x0 + x1) / 2, (y0 + y1) / 2); fundo.position.set(fx, 0.3, fz); add(fundo);
+      for (const [cx, cy, w, d] of [[(x0 + x1) / 2, y0 - e / 2, x1 - x0 + 2 * e, e], [(x0 + x1) / 2, y1 + e / 2, x1 - x0 + 2 * e, e], [x0 - e / 2, (y0 + y1) / 2, e, y1 - y0], [x1 + e / 2, (y0 + y1) / 2, e, y1 - y0]]) {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); const [x, z] = sbTo3(cx, cy); m.position.set(x, h / 2, z); add(m);
+      }
+    }
     for (const [id, o] of Object.entries(APP.objetos)) {
       const L = SB.layout[id];
       if (!L) continue;
