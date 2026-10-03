@@ -525,3 +525,18 @@ com 420 s por versão de treino (891–893). O degrau escolhido vale para o pilo
 **03/10, rotina do mundo, calibração c1 (bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 841, 842, 843. Achou o bug em 0 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug null s de cérebro; 5,56 provas por versão. Por sessão: 843 000, 842 000, 841 000. `docs/medicoes/qa-mundo-calib-c1.json`.
 
 **03/10, rotina do mundo, calibração c2 (como c1, com plaquinhas de 13 × 8,5 mm e cheiro com alcance de 20 mm): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 881, 882, 883. Achou o bug em 0 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug null s de cérebro; 5,67 provas por versão. Por sessão: 881 000, 882 000, 883 000. `docs/medicoes/qa-mundo-calib-c2.json`.
+
+**03/10, 14h50: c2 também negativo; a causa era o mapa; escada nova (d1, d2), antes de rodar.** c2 (plaquinhas de 13 mm,
+alcance de 20 mm; sementes 881–883): 0 de 9 versões de treino com bug, 5,7 provas por versão. Contando as ações
+provadas em c1 e c2: só carrinho, estoque e cupom; **nenhuma prova nas plataformas do pagamento e do cancelamento**, que
+são justamente as famílias com os defeitos do treino (`VERSOES2.treino`) e ficavam do lado oposto ao ponto de partida.
+Sem chance de recompensa: negativo do mapa, não do cérebro. Primeiro teste com as plataformas em círculo em volta do
+início (todas a 38 mm; semente 935, 134 s de cérebro): 8 provas, mas de novo só em três plataformas (ela vai mais para
+uns lados, pela luz da janela e pelo que é mais claro: a regra dos olhos "claro = objeto"). Regra nova do mundo,
+declarada: **a cada versão do sistema, as plataformas trocam de lugar no círculo, por sorteio** (`&lugares=fixos`
+desliga). Assim o lugar não indica onde está o defeito; só o cheiro indica, que é o que se quer medir. Teste (semente
+936, ~150 s de cérebro, versões curtas de 120 s só para o teste): visitou as cinco plataformas, 16 provas, achou bug
+no treino ("Cancelar duas vezes") com recompensa, 9 sinais de atração aprendida. A c3 (ainda com os lugares fixos)
+foi descartada logo no início, sem resultado. Escada nova, 3 sementes por degrau, critério de ≥ 6 de 9 versões de
+treino com bug: d1 = círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão (sementes 931–933);
+d2 = como d1, 420 s por versão (941–943). Piloto, série e replicação seguem como escrito.

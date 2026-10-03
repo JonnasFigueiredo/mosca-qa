@@ -34,12 +34,17 @@
   // diferentes; em cima de cada um, as plaquinhas das ações daquela família. Ir de uma plataforma a outra pede subir a
   // parede ou voar (os comportamentos da Cozinha). Cheiro só nas plaquinhas; as plataformas não cheiram nem têm gosto
   const PLATAFORMAS = {
-    carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', x: 70, y: 88, raio: 18, h: 5 },
-    estoque: { forma: 'plat-prato', r: 'Estoque · pires', x: 130, y: 86.5, raio: 17, h: 8 },
-    pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', x: 136, y: 131.5, raio: 16, h: 12 },
-    cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', x: 100, y: 149.5, raio: 15, h: 9 },
-    cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', x: 64, y: 131.5, raio: 17, h: 3.5 },
+    carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', raio: 18, h: 5 },
+    estoque: { forma: 'plat-prato', r: 'Estoque · pires', raio: 17, h: 8 },
+    pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', raio: 16, h: 12 },
+    cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', raio: 15, h: 9 },
+    cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', raio: 17, h: 3.5 },
   };
+  // em círculo, a 38 mm de onde ela começa (o centro de SB.start, 100 × 108,6 mm), uma a cada 72° (03/10): todas igualmente
+  // perto. Antes, as plataformas do treino (pagamento, cancelamento) ficavam do lado oposto ao início e, em 18 versões de
+  // treino da calibração, ela não provou nenhuma plaquinha delas (só carrinho, estoque e cupom): sem recompensa possível
+  const LUGARES = [0, 1, 2, 3, 4].map(i => { const a = i * 2 * Math.PI / 5; return [100 + 38 * Math.sin(a), 108.6 - 38 * Math.cos(a)]; });
+  Object.values(PLATAFORMAS).forEach((p, i) => { [p.x, p.y] = LUGARES[i]; });
   // a bandeja (03/10): as plataformas ficam numa bandeja de madeira, 14 mm além delas, e não soltas na bancada de 20 cm.
   // Na bancada inteira ela passava minutos longe de tudo (diagnóstico com _diag_mundo.mjs): numa área menor, encontra
   // as plataformas com mais frequência. Regra do mundo, declarada; a borda aparece no 3D e ela se afasta dela
@@ -55,6 +60,8 @@
   const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
   // &placa=N: largura das plaquinhas (mm; padrão 10, profundidade 0,65 × a largura)
   const PLACA = Math.min(16, Math.max(6, +QS.get('placa') || 10));
+  // &lugares=fixos: sem o sorteio dos lugares a cada versão (para comparar)
+  const SEM_SORTEIO = QS.get('lugares') === 'fixos';
   const idDe = a => 'q-' + a.id.replace(':', '-');
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
@@ -68,6 +75,25 @@
     });
   }
   const objetos = { ...plataformas, ...placas };
+  // a cada versão do sistema, as plataformas trocam de lugar no círculo, por sorteio (03/10, regra do mundo, declarada):
+  // ela vai mais para uns lados que para outros (a luz da janela, o que é mais claro), e com lugares fixos as famílias
+  // do treino ficavam onde ela quase não ia. Sorteando, o lugar não diz onde está o defeito: só o cheiro diz
+  const posPlaca = {};
+  for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[o.acao.familia]; posPlaca[id] = [o.x - p.x, o.y - p.y]; }
+  function sortearLugares() {
+    const ordem = [0, 1, 2, 3, 4];
+    for (let i = 4; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ordem[i], ordem[j]] = [ordem[j], ordem[i]]; }
+    Object.entries(PLATAFORMAS).forEach(([fam, p], i) => {
+      [p.x, p.y] = LUGARES[ordem[i]];
+      Object.assign(plataformas['p-' + fam], { x: p.x, y: p.y });
+    });
+    for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[o.acao.familia]; o.x = p.x + posPlaca[id][0]; o.y = p.y + posPlaca[id][1]; }
+    if (typeof SB !== 'undefined') {
+      SB.app = null; if (typeof SBR !== 'undefined') SBR.built = '';   // refaz o mundo (sbBuild) e o desenho
+      if (APP.id === 'caca' && typeof sbBuild === 'function') sbBuild();
+      if (SB.on && fly && !fly.flying) { fly.lateral = null; fly.z = Math.max(0, sbSurface(fly.x, fly.y)); }
+    }
+  }
   // o que ela já provou nesta versão fica fosco, e o que não provou continua claro: a regra da página "o que ela ainda
   // não provou brilha mais", que chega ao cérebro pelos olhos (o LC10a responde ao que é mais claro que o resto do olho)
   function apaga(id, fosca) {
@@ -131,6 +157,7 @@
   const C = { fase: 'livre', car: 'repetida', versoes: [], vi: -1, sis: null, achados: new Set(), provas: 0, t0: 0, bugs: [], teste: [], treino: [], iv: 0, recompensa: true };
   const agoraS = () => brainT / 1000;
   function novaVersao(defeitos, rotulo) {
+    if (!SEM_SORTEIO) sortearLugares();
     C.sis = Q.criar(defeitos, { bancada: 2 }); C.achados = new Set(); C.provas = 0; C.t0 = agoraS(); C.rotulo = rotulo; C.defeitos = defeitos; C.bugs = []; C.provadas = []; C.encerrada = false;
     // sistema novo: tudo pode ter mudado, então tudo volta a ser novo para ela
     for (const id of Object.keys(placas)) { el(id).novelty = 1; el(id).bug = false; apaga(id, false); }
