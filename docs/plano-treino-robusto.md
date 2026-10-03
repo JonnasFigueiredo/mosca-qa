@@ -540,3 +540,12 @@ no treino ("Cancelar duas vezes") com recompensa, 9 sinais de atração aprendid
 foi descartada logo no início, sem resultado. Escada nova, 3 sementes por degrau, critério de ≥ 6 de 9 versões de
 treino com bug: d1 = círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão (sementes 931–933);
 d2 = como d1, 420 s por versão (941–943). Piloto, série e replicação seguem como escrito.
+
+**03/10, 15h10: d1 descartada por um artefato do sorteio; refeita com sementes novas.** Na semente 931 (a primeira
+sessão concluída da d1), o bug foi achado na primeira prova, 4,4 s depois do início da versão, em duas versões
+seguidas: na troca de lugares, uma plataforma podia aparecer embaixo dela, e ela começava a versão já em cima das
+plaquinhas de outra família. Atalho do mapa, não comportamento. Correção (regra do mundo, declarada): a cada versão
+nova, ela volta ao centro da bandeja, no chão, virada para um lado sorteado (como um experimentador recolocando a
+mosca). Os dados da d1 (931–933, incompleta) ficam fora das medições (`_tmp/_descartado-calib-d1.json`, não versionado).
+Teste depois (semente 937, versões de 60 s só para o teste): volta ao centro em cada versão; achou o bug do treino 1 no
+pagamento em ~33 s e o do treino 3 no cancelamento. Escada: d1 com as sementes 971–973, d2 com 981–983; o resto, igual.

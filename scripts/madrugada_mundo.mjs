@@ -37,9 +37,10 @@ const ESCADA = [
   // Histórico (ver as notas no plano): m0 interrompido; c1 (bandeja, subida, 841–843) e c2 (plaquinhas de 13 mm,
   // alcance 20 mm, 881–883) não passaram: ela nunca chegava às plataformas das famílias do treino (pagamento,
   // cancelamento), do lado oposto ao início. (03/10, 14h50) escada nova, escrita antes de rodar: as plataformas em
-  // círculo em volta do início, todas a 38 mm, trocando de lugar por sorteio a cada versão
-  { id: 'd1', extra: '&placa=13&alcance=20', desc: 'plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino', sementes: seq(931, 3) },
-  { id: 'd2', extra: '&placa=13&alcance=20&limtreino=420', desc: 'como d1, com 420 s por versão de treino', sementes: seq(941, 3) },
+  // círculo em volta do início, todas a 38 mm, trocando de lugar por sorteio a cada versão. (15h10) d1 refeito com
+  // sementes novas: ela volta ao centro a cada versão (a d1 de 931–933 foi descartada, ver o plano)
+  { id: 'd1', extra: '&placa=13&alcance=20', desc: 'plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino', sementes: seq(971, 3) },
+  { id: 'd2', extra: '&placa=13&alcance=20&limtreino=420', desc: 'como d1, com 420 s por versão de treino', sementes: seq(981, 3) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 

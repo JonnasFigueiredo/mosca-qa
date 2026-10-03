@@ -91,7 +91,13 @@
     if (typeof SB !== 'undefined') {
       SB.app = null; if (typeof SBR !== 'undefined') SBR.built = '';   // refaz o mundo (sbBuild) e o desenho
       if (APP.id === 'caca' && typeof sbBuild === 'function') sbBuild();
-      if (SB.on && fly && !fly.flying) { fly.lateral = null; fly.z = Math.max(0, sbSurface(fly.x, fly.y)); }
+      // ela volta ao centro da bandeja, no chão, virada para um lado sorteado (03/10): sem isso, uma plataforma podia
+      // aparecer embaixo dela na troca de lugares e ela já começava a versão em cima das plaquinhas (achou o bug na
+      // primeira prova, 4 s depois do início, duas vezes na calibração d1, que foi descartada)
+      if (SB.on && fly) {
+        Object.assign(fly, { x: SB.start[0], y: SB.start[1], z: 0, th: Math.random() * 2 * Math.PI, flying: false, jumping: false, vz: 0,
+          lateral: null, pouso: null, naParede: null, landing: false, speed: 0 });
+      }
     }
   }
   // o que ela já provou nesta versão fica fosco, e o que não provou continua claro: a regra da página "o que ela ainda
