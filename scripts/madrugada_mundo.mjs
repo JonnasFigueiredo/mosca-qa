@@ -9,10 +9,21 @@
 // Cada etapa anota no plano, grava em docs/medicoes e commita (autor: o dono do repositório).
 //   node scripts/madrugada_mundo.mjs [--paralelos 3] [--desde confirmatoria]
 import { spawn, execSync } from 'node:child_process';
-import { readFileSync, existsSync, appendFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, writeFileSync, cpSync } from 'node:fs';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const PARALELOS = +arg('paralelos', 3);
+// a rotina mede uma cópia congelada de web/ (_tmp/_web_mundo, servida na porta 8767): mudanças na página durante a
+// série não entram na medida. A cópia é feita uma vez, no início (ou reaproveitada ao retomar)
+const PORTA = '8767', COPIA = '_tmp/_web_mundo';
+if (!existsSync(COPIA)) { cpSync('web', COPIA, { recursive: true }); }
+let servidor = null;
+async function garanteServidor() {
+  try { if ((await fetch(`http://localhost:${PORTA}/index.html`)).ok) return; } catch { /* sobe abaixo */ }
+  servidor = spawn('python', ['scripts/servir.py', PORTA, COPIA], { stdio: 'ignore' });
+  for (let i = 0; i < 30; i++) { await new Promise(r => setTimeout(r, 1000)); try { if ((await fetch(`http://localhost:${PORTA}/index.html`)).ok) return; } catch { /* esperando */ } }
+  throw new Error('o servidor da cópia congelada não subiu');
+}
 const LOG = '_tmp/_madrugada_mundo.log', ESTADO = '_tmp/_madrugada_mundo.json';
 const log = m => { const l = new Date().toLocaleString('pt-BR') + ' ' + m; console.log(l); appendFileSync(LOG, l + '\n'); };
 const seq = (a, n) => Array.from({ length: n }, (_, i) => a + i);
@@ -32,7 +43,7 @@ const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 function roda(saida, sementes, condicoes, extra, outros = []) {
   return new Promise(ok => {
     const args = ['scripts/qa_mundo.mjs', '--sementes', sementes.join(','), '--condicoes', condicoes, '--paralelos', String(PARALELOS),
-      '--timeout-min', '150', '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
+      '--timeout-min', '150', '--porta', PORTA, '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
     log('roda: node ' + args.join(' '));
     const p = spawn('node', args, { stdio: ['ignore', 'pipe', 'pipe'] });
     p.stdout.on('data', d => appendFileSync(LOG, d));
@@ -42,6 +53,7 @@ function roda(saida, sementes, condicoes, extra, outros = []) {
 }
 // sessões com erro (Chrome que não abriu, tempo limite) são refeitas uma vez (o runner pula as que já deram certo)
 async function rodaCompleto(saida, sementes, condicoes, extra, outros) {
+  await garanteServidor();
   for (let t = 0; t < 2; t++) await roda(saida, sementes, condicoes, extra, outros);
 }
 const resumo = (prefixo, calib = false) => JSON.parse(execSync(`node scripts/qa_mundo_resumo.mjs --prefixo ${prefixo}${calib ? ' --calibracao' : ''}`, { encoding: 'utf8', maxBuffer: 1 << 24 }));
@@ -55,6 +67,7 @@ function anota(texto, arquivos, msg) {
 }
 const dia = () => new Date().toLocaleDateString('pt-BR').slice(0, 5);
 
+if (!existsSync(COPIA + '/VERSAO.txt')) try { execSync('git rev-parse --short HEAD > ' + COPIA + '/VERSAO.txt'); } catch { /* sem git */ }
 log('início da rotina do mundo' + (est.etapa ? ` (retomando depois de "${est.etapa}")` : ''));
 
 // 1. calibração
@@ -139,3 +152,4 @@ for (const s of SERIES) {
 }
 est.etapa = 'fim'; salva();
 log('fim da rotina do mundo');
+servidor?.kill();

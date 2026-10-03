@@ -3,7 +3,7 @@
 Com o `python -m http.server` comum, o navegador guarda os .js por um tempo e, depois de uma mudança, pode
 continuar rodando a versão antiga mesmo recarregando a página.
 
-uso: python scripts/servir.py [porta]      (padrão 8765; abre em http://localhost:8765/)
+uso: python scripts/servir.py [porta] [pasta]      (padrão 8765 e web/; abre em http://localhost:8765/)
 """
 import sys
 from functools import partial
@@ -11,7 +11,8 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 PORTA = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
-WEB = Path(__file__).resolve().parent.parent / "web"
+# segundo argumento opcional: outra pasta (uma cópia congelada de web/ para uma série medida)
+WEB = Path(sys.argv[2]).resolve() if len(sys.argv) > 2 else Path(__file__).resolve().parent.parent / "web"
 
 
 class SemCache(SimpleHTTPRequestHandler):
