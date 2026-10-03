@@ -26,7 +26,7 @@ function sbBuild() {
     const S = CORPO.S;
     SB.platforms = []; SB.layout = {}; SB.formas = [];
     for (const [id, o] of Object.entries(APP.objetos)) {
-      const p = { x: (o.x - o.w / 2) * S, y: (o.y - o.d / 2) * S, w: o.w * S, h: o.d * S, z: o.h * S, id };
+      const p = { x: (o.x - o.w / 2) * S, y: (o.y - o.d / 2) * S, w: o.w * S, h: o.d * S, z: ((o.base || 0) + o.h) * S, id };
       SB.platforms.push(p);
       SB.layout[id] = { x: p.x, y: p.y, w: p.w, h: p.h, z: p.z };
       for (const f of sbFormas(o)) SB.formas.push({ id, tipo: f.tipo, x: (o.x + f.dx) * S, y: (o.y + f.dy) * S, z: f.z * S, a: f.a * S, b: f.b * S, c: f.c * S });
@@ -71,18 +71,18 @@ function sbRects() {
 // chão não fazem isso. O que tem menos de 1 mm (açúcar, água, folhas) é um retângulo plano, fora da física
 function sbFormas(o) {
   const { w, d, h } = o;
-  if (h < 1) return [{ tipo: 'plano', dx: 0, dy: 0, z: 0, a: w / 2, b: d / 2, c: h }];
+  if (h < 1) return [{ tipo: 'plano', dx: 0, dy: 0, z: o.base || 0, a: w / 2, b: d / 2, c: h }];
   if (o.forma === 'uvas') {
     const r = h;
     return [[-w / 2 + r, d / 2 - r], [0, -d / 2 + r], [w / 2 - r, d / 2 - r]].map(([dx, dy]) => ({ tipo: 'esfera', dx, dy, z: 0, a: r, b: r, c: r }));
   }
-  if (o.forma === 'vinagre') return [{ tipo: 'cilindro', dx: 0, dy: 0, z: h / 2, a: w / 2, b: h / 2, c: 0 }];
+  if (o.forma === 'vinagre' || /^plat-/.test(o.forma)) return [{ tipo: 'cilindro', dx: 0, dy: 0, z: (o.base || 0) + h / 2, a: w / 2, b: h / 2, c: 0 }];
   return [{ tipo: 'elipsoide', dx: 0, dy: 0, z: 0, a: w / 2, b: d / 2, c: h }];
 }
 // altura do topo de uma forma (px) no ponto (x, y) da página, ou -Infinity fora dela
 function sbAlturaForma(f, x, y) {
   const dx = x - f.x, dy = y - f.y;
-  if (f.tipo === 'plano') return Math.abs(dx) <= f.a && Math.abs(dy) <= f.b ? f.c : -Infinity;
+  if (f.tipo === 'plano') return Math.abs(dx) <= f.a && Math.abs(dy) <= f.b ? f.z + f.c : -Infinity;
   if (f.tipo === 'cilindro') return dx * dx + dy * dy <= f.a * f.a ? f.z + f.b : -Infinity;
   const u = (dx / f.a) ** 2 + (dy / f.b) ** 2;   // esfera e elipsoide (na esfera, b = c = a)
   return u <= 1 ? f.z + f.c * Math.sqrt(1 - u) : -Infinity;
@@ -1463,21 +1463,47 @@ function sbObjeto(o) {
     const liquido = new THREE.Mesh(new THREE.CircleGeometry(r - 0.5, 32), sbMat('#c07a1c', { roughness: 0.1, transparent: true, opacity: 0.9 }));
     liquido.rotation.x = -Math.PI / 2; liquido.position.y = alt - 0.3; g.add(liquido);
   } else if (o.forma === 'placa') {
-    // caça a bugs no mundo (caca-mundo.js): uma plaquinha com o nome da ação; o cheiro é das características dela
-    const cv = document.createElement('canvas'); cv.width = 512; cv.height = 320;
-    const c2 = cv.getContext('2d');
-    c2.fillStyle = '#fbf8f2'; c2.fillRect(0, 0, 512, 320); c2.strokeStyle = '#b9ab95'; c2.lineWidth = 12; c2.strokeRect(6, 6, 500, 308);
-    c2.font = '500 34px ui-monospace, Consolas, monospace'; c2.textBaseline = 'top';
-    let tx = 28;
-    for (const t of [o.acao?.familia, o.acao?.entrada].filter(Boolean)) { const tw = c2.measureText(t).width + 22; c2.fillStyle = '#dce0de'; c2.fillRect(tx, 26, tw, 46); c2.fillStyle = '#3c4650'; c2.fillText(t, tx + 11, 33); tx += tw + 12; }
-    c2.font = '600 48px system-ui, "Segoe UI", sans-serif'; c2.fillStyle = '#1c2127';
-    let linha = '', ly = 100;
-    for (const p of o.r.split(' ')) { const t = linha ? linha + ' ' + p : p; if (c2.measureText(t).width > 456 && linha) { c2.fillText(linha, 28, ly); ly += 56; linha = p; } else linha = t; }
-    if (linha) c2.fillText(linha, 28, ly);
-    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
+    // caça a bugs no mundo (caca-mundo.js): uma plaquinha com o ícone da família e o nome da ação (para quem assiste);
+    // o que a mosca percebe dela é o cheiro (das características da ação), a forma e o brilho
+    const cv = document.createElement('canvas'); cv.width = 512; cv.height = 332;
+    const c2 = cv.getContext('2d'), fam = o.acao?.familia, ent = o.acao?.entrada;
+    const CORES = { carrinho: '#2f6db5', estoque: '#8a5a2b', pagamento: '#2e8b57', cancelamento: '#b3261e', cupom: '#9b4dca' };
+    const cf = CORES[fam] || '#3c4650';
+    c2.fillStyle = '#fbf8f2'; c2.fillRect(0, 0, 512, 332);
+    c2.fillStyle = cf; c2.fillRect(0, 0, 512, 22);
+    c2.strokeStyle = '#b9ab95'; c2.lineWidth = 10; c2.strokeRect(5, 5, 502, 322);
+    // ícone da família
+    c2.save(); c2.translate(82, 130); c2.strokeStyle = cf; c2.fillStyle = cf; c2.lineWidth = 10; c2.lineJoin = 'round'; c2.lineCap = 'round';
+    if (fam === 'carrinho') { c2.beginPath(); c2.moveTo(-50, -40); c2.lineTo(-34, -40); c2.lineTo(-18, 22); c2.lineTo(40, 22); c2.lineTo(50, -22); c2.lineTo(-26, -22); c2.stroke(); for (const x of [-10, 32]) { c2.beginPath(); c2.arc(x, 42, 9, 0, 7); c2.fill(); } }
+    else if (fam === 'estoque') { c2.strokeRect(-44, -30, 88, 70); c2.beginPath(); c2.moveTo(-44, -30); c2.lineTo(-30, -50); c2.lineTo(30, -50); c2.lineTo(44, -30); c2.moveTo(-14, -30); c2.lineTo(-14, 0); c2.lineTo(14, 0); c2.lineTo(14, -30); c2.stroke(); }
+    else if (fam === 'pagamento') { c2.strokeRect(-50, -34, 100, 68); c2.fillRect(-50, -18, 100, 14); c2.fillRect(-36, 14, 34, 8); }
+    else if (fam === 'cancelamento') { c2.beginPath(); c2.arc(0, 0, 44, 0, 7); c2.stroke(); c2.beginPath(); c2.moveTo(-22, -22); c2.lineTo(22, 22); c2.moveTo(22, -22); c2.lineTo(-22, 22); c2.stroke(); }
+    else if (fam === 'cupom') { c2.beginPath(); c2.moveTo(-50, -30); c2.lineTo(50, -30); c2.lineTo(50, -8); c2.arc(50, 0, 8, -Math.PI / 2, Math.PI / 2, true); c2.lineTo(50, 30); c2.lineTo(-50, 30); c2.lineTo(-50, 8); c2.arc(-50, 0, 8, Math.PI / 2, -Math.PI / 2, true); c2.closePath(); c2.stroke(); c2.font = '700 40px system-ui, sans-serif'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; c2.fillText('%', 0, 2); }
+    c2.restore();
+    // a entrada (normal, zero, limite, negativa, repetida) numa etiqueta, e o nome da ação
+    c2.font = '600 30px ui-monospace, Consolas, monospace'; c2.textBaseline = 'top';
+    const tw = c2.measureText(ent || '').width + 24; c2.fillStyle = '#e6e2da'; c2.fillRect(166, 48, tw, 44); c2.fillStyle = '#3c4650'; c2.fillText(ent || '', 178, 55);
+    c2.font = '600 40px system-ui, "Segoe UI", sans-serif'; c2.fillStyle = '#1c2127';
+    let linha = '', ly = 110;
+    for (const pal of o.r.split(' ')) { const t = linha ? linha + ' ' + pal : pal; if (c2.measureText(t).width > 320 && linha) { c2.fillText(linha, 166, ly); ly += 48; linha = pal; } else linha = t; }
+    if (linha) c2.fillText(linha, 166, ly);
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8;
     const lado = sbMat('#efe9df');
-    const m = new THREE.Mesh(new THREE.BoxGeometry(W, Hh, D), [lado, lado, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 }), lado, lado, lado]);
+    const m = new THREE.Mesh(new THREE.BoxGeometry(W, Hh, D), [lado, lado, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55 }), lado, lado, lado]);
     m.position.y = Hh / 2; g.add(m);
+  } else if (/^plat-/.test(o.forma)) {
+    // as plataformas da caça a bugs: objetos de cozinha (cilindros, a mesma forma da física e da altura em sbFormas)
+    const r = W / 2, alt = o.h * S, k = o.forma.slice(5);
+    const LOOK = {
+      tabua: { lado: sbMat('#a9773f', { roughness: 0.8 }), topo: sbMat('#ffffff', { map: sbTex('#c9995e', [['#b9884f', 18, 10, 40]], 256, 256, 'rgba(120, 80, 40, 0.35)'), roughness: 0.75 }) },
+      prato: { lado: sbMat('#f2efe8', { roughness: 0.25 }), topo: sbMat('#f7f5f0', { roughness: 0.2 }), aro: '#3d6fb0' },
+      lata: { lado: sbMat('#ffffff', { map: sbTex('#d8dde2', [['#2e7d4f', 1, 120, 120]], 256, 64), metalness: 0.55, roughness: 0.3 }), topo: sbMat('#c7ccd1', { metalness: 0.7, roughness: 0.25 }), aro: '#9aa1a8' },
+      tampa: { lado: sbMat('#c9a447', { metalness: 0.6, roughness: 0.3 }), topo: sbMat('#d6b356', { metalness: 0.55, roughness: 0.3 }), aro: '#a8862f' },
+      cortica: { lado: sbMat('#a4733f', { roughness: 0.95 }), topo: sbMat('#ffffff', { map: sbTex('#c19260', [['#8d5f33', 120, 1, 3], ['#d2a676', 60, 2, 5]]), roughness: 0.95 }) },
+    }[k] || { lado: sbMat('#cccccc'), topo: sbMat('#dddddd') };
+    const cil = new THREE.Mesh(new THREE.CylinderGeometry(r, r, alt, 48, 1, false), [LOOK.lado, LOOK.topo, LOOK.lado]);
+    cil.position.y = alt / 2; g.add(cil);
+    if (LOOK.aro) { const aro = new THREE.Mesh(new THREE.TorusGeometry(r * 0.97, Math.max(0.6, r * 0.025), 8, 64), sbMat(LOOK.aro, { metalness: 0.4, roughness: 0.4 })); aro.rotation.x = Math.PI / 2; aro.position.y = alt; g.add(aro); }
   } else if (o.forma === 'pista') {
     const base=new THREE.Mesh(new THREE.CircleGeometry(W/2,32),sbMat('#eeeece'));
     base.rotation.x=-Math.PI/2;base.scale.y=D/W;base.position.y=.6;g.add(base);
@@ -1531,7 +1557,7 @@ function sbSyncWorld() {
       if (!L) continue;
       const [x, z] = sbTo3(L.x + L.w / 2, L.y + L.h / 2);
       const g = sbObjeto(o);
-      g.position.set(x, 0, z);
+      g.position.set(x, (o.base || 0) * CORPO.S, z);
       add(g);
       // as plaquinhas da caça a bugs já trazem o nome escrito: sem o rótulo flutuante, que tapava a vista
       if (o.forma !== 'placa') { const rot = sbRotulo(o.r); rot.position.set(x, L.z + 55, z); SBR.rotulos.add(rot); }

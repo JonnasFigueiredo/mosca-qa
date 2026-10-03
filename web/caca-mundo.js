@@ -30,20 +30,40 @@
     'quantidade-negativa': 'quantidade negativa', 'cobra-zero': 'cobrança zero', 'estorno-a-mais': 'estorno a mais', 'cupom-em-porcentagem': 'cupom de 10% vira 40%', 'baixa-sem-reserva': 'baixa sem reserva' };
   const nomeVersao = d => d.map(x => DEFEITO_TXT[x] || x).join(' + ');
 
-  // as plaquinhas: grade de 5 × 3 na bancada de 20 × 20 cm, com um pouco de sorte (fixa), 16 × 10 mm, planas
+  // o mundo (02/10, para a apresentação): cinco objetos de cozinha na bancada, um por família de ações, em alturas
+  // diferentes; em cima de cada um, as plaquinhas das ações daquela família. Ir de uma plataforma a outra pede subir a
+  // parede ou voar (os comportamentos da Cozinha). Cheiro só nas plaquinhas; as plataformas não cheiram nem têm gosto
+  const PLATAFORMAS = {
+    carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', x: 60, y: 80, raio: 18, h: 5 },
+    estoque: { forma: 'plat-prato', r: 'Estoque · pires', x: 140, y: 78, raio: 17, h: 8 },
+    pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', x: 148, y: 138, raio: 16, h: 12 },
+    cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', x: 100, y: 162, raio: 15, h: 9 },
+    cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', x: 52, y: 138, raio: 17, h: 3.5 },
+  };
   const idDe = a => 'q-' + a.id.replace(':', '-');
-  const objetos = {};
-  {
-    let h = 4242; const r = () => (h = (Math.imul(h, 1664525) + 1013904223) >>> 0) / 4294967296;
-    const ordem = [...Q.ACOES]; for (let k = ordem.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [ordem[k], ordem[j]] = [ordem[j], ordem[k]]; }
-    ordem.forEach((a, i) => {
-      objetos[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: 40 + (i % 5) * 30 + (r() - 0.5) * 8, y: 62 + Math.floor(i / 5) * 40 + (r() - 0.5) * 8,
-        w: 16, d: 10, h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: 14, cheiro: {} };
+  const placas = {}, plataformas = {};
+  for (const [fam, p] of Object.entries(PLATAFORMAS)) {
+    plataformas['p-' + fam] = { r: p.r, familia: fam, x: p.x, y: p.y, w: 2 * p.raio, d: 2 * p.raio, h: p.h, forma: p.forma, gosto: null, porcoes: 0, alcance: 0, cheiro: {} };
+    const acoes = Q.ACOES.filter(a => a.familia === fam), n = acoes.length;
+    // as plaquinhas num anel em cima da plataforma (10 × 6,5 mm), viradas para fora
+    acoes.forEach((a, i) => {
+      const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * 0.52;
+      placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: p.x + Math.cos(ang) * rr, y: p.y + Math.sin(ang) * rr, base: p.h,
+        w: 10, d: 6.5, h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: 14, cheiro: {} };
     });
   }
+  const objetos = { ...plataformas, ...placas };
+  // o que ela já provou nesta versão fica fosco, e o que não provou continua claro: a regra da página "o que ela ainda
+  // não provou brilha mais", que chega ao cérebro pelos olhos (o LC10a responde ao que é mais claro que o resto do olho)
+  function apaga(id, fosca) {
+    const b = typeof SBR !== 'undefined' && SBR.boxes?.get(id);
+    if (!b) return;
+    b.mesh.traverse(m => { for (const mt of [].concat(m.material || [])) { if (mt.userData.cor0 == null) mt.userData.cor0 = mt.color.getHex(); mt.color.setHex(mt.userData.cor0); if (fosca) mt.color.multiplyScalar(0.55); } });
+  }
+  for (const id of Object.keys(plataformas)) { ODORS[id] = []; ODOR_PESO[id] = {}; }
   function usarCheiros(car) {
     const mapa = MAPAS[car];
-    for (const [id, o] of Object.entries(objetos)) {
+    for (const [id, o] of Object.entries(placas)) {
       o.cheiro = Object.fromEntries([...mapa[o.acao.familia], ...mapa[o.acao.entrada]].map(g => [g, PESO]));
       ODORS[id] = Object.keys(o.cheiro); ODOR_PESO[id] = o.cheiro;
     }
@@ -56,7 +76,7 @@
     // página 2D: a bancada vista de cima, com as plaquinhas (2,8 px por mm)
     render() {
       const k = 2.8, top = 64;
-      const obj = Object.entries(objetos).map(([id, o]) => `<button data-el="${id}" class="k-obj k-placa${el(id).bug ? ' k-bug' : ''}" tabindex="-1" style="left:${((o.x - o.w / 2) * k).toFixed(1)}px;top:${(top + (o.y - o.d / 2) * k).toFixed(1)}px;width:${(o.w * k).toFixed(1)}px;height:${(o.d * k).toFixed(1)}px"><span>${o.r}</span></button>`).join('');
+      const obj = Object.entries(objetos).map(([id, o]) => `<button data-el="${id}" class="k-obj ${o.acao ? 'k-placa' : 'k-plat'}${el(id).bug ? ' k-bug' : ''}" tabindex="-1" style="left:${((o.x - o.w / 2) * k).toFixed(1)}px;top:${(top + (o.y - o.d / 2) * k).toFixed(1)}px;width:${(o.w * k).toFixed(1)}px;height:${(o.d * k).toFixed(1)}px"><span>${o.r}</span></button>`).join('');
       return `<div class="sx sx-cozinha"><div class="k-janela"><span>janela</span></div>${obj}<div class="k-escala"><i></i>1 cm</div></div>`;
     },
     provar: id => CacaMundo.provar(id),
@@ -67,7 +87,7 @@
   botao.onclick = () => { if (!LAB.busy) { switchApp('caca'); sbSet(true); CacaMundo.mostrar(); } };
   $('#appTabs').append(botao);
   const estilo = document.createElement('style');
-  estilo.textContent = `.sx .k-obj.k-placa{border-radius:4px;background:#fbf8f2;border:1px solid #b9ab95}.sx .k-obj.k-placa.k-bug{background:#ffe2b3;border-color:#9a6200}.sx .k-obj.k-placa span{font-size:9px}
+  estilo.textContent = `.sx .k-obj.k-placa{border-radius:4px;background:#fbf8f2;border:1px solid #b9ab95}.sx .k-obj.k-placa.k-bug{background:#ffe2b3;border-color:#9a6200}.sx .k-obj.k-placa span{font-size:9px}.sx .k-obj.k-plat{background:#d8c9ad;border:1px solid #9c8a6a}.sx .k-obj.k-plat span{bottom:-14px}
     #cacaPainel table{border-collapse:collapse;font-size:13px;margin-top:6px}#cacaPainel td,#cacaPainel th{padding:3px 8px;border-bottom:1px solid var(--line);text-align:right}#cacaPainel td:first-child,#cacaPainel th:first-child{text-align:left}`;
   document.head.append(estilo);
   const painel = document.createElement('div'); painel.id = 'cacaPainel'; painel.hidden = true;
@@ -84,7 +104,7 @@
       <button id="cacaTreinar">Treinar</button><button id="cacaTestar">Testar no sistema novo</button><button id="cacaParar" disabled>Parar</button>
       <a href="caca.html" style="margin-left:auto">O protocolo medido, passo a passo →</a>
     </div>
-    <p id="cacaStatus" role="status">Pronta. "Treinar" troca a versão do sistema a cada 12 provas ou 90 s; "Testar" usa 3 versões novas, sem recompensa, até o primeiro bug (ou 15 provas, ou 2 min).</p>
+    <p id="cacaStatus" role="status">Pronta. "Treinar": cada versão do sistema vai até ela achar o bug (ou 4 min); "Testar": 3 versões novas, sem recompensa, até o primeiro bug (ou 3 min).</p>
     <progress id="cacaProgresso" max="1" value="0" style="width:100%"></progress>
     <div id="cacaResultados"></div>
     <small>Regras nossas: a plaquinha ainda não provada nesta versão tem "gosto doce" para as patas (é o que faz a probóscide
@@ -98,7 +118,7 @@
   function novaVersao(defeitos, rotulo) {
     C.sis = Q.criar(defeitos, { bancada: 2 }); C.achados = new Set(); C.provas = 0; C.t0 = agoraS(); C.rotulo = rotulo; C.defeitos = defeitos; C.bugs = []; C.provadas = []; C.encerrada = false;
     // sistema novo: tudo pode ter mudado, então tudo volta a ser novo para ela
-    for (const id of Object.keys(objetos)) { el(id).novelty = 1; el(id).bug = false; }
+    for (const id of Object.keys(placas)) { el(id).novelty = 1; el(id).bug = false; apaga(id, false); }
     renderShop(); requestAnimationFrame(measure);
     logEvent(`${rotulo}: versão nova do sistema (${nomeVersao(defeitos)}).`);
   }
@@ -121,7 +141,10 @@
   function vigia() {
     if (C.fase !== 'treino' && C.fase !== 'teste') return;
     // limites de cada versão; &curto=1 (só para testar a automação) usa versões bem curtas
-    const lim = C.curto ? { provas: 3, s: 25 } : C.fase === 'treino' ? { provas: 12, s: 90 } : { provas: 15, s: 120 };
+    // treino: a versão vai até ela achar o bug (e mais 10 s, para a dopamina parear com o cheiro), ou 4 min de cérebro;
+    // teste: até o primeiro bug ou 3 min. Antes (12 provas ou 90 s) quase não havia recompensa no treino (piloto de 02/10)
+    const lim = C.curto ? { provas: 3, s: 25 } : C.fase === 'treino' ? { provas: Infinity, s: 240 } : { provas: Infinity, s: 180 };
+    if (C.fase === 'treino' && !C.curto && C.bugs.length && agoraS() - C.bugs.at(-1).t > 10) { fimVersao(); return; }
     const dt = agoraS() - C.t0;
     $('#cacaProgresso').value = Math.min(1, (C.vi + Math.min(1, Math.max(C.provas / lim.provas, dt / lim.s))) / C.versoes.length);
     status(`${C.rotulo} · ${nomeVersao(C.defeitos)} · ${C.provas} provas · ${dt.toFixed(0)} s · ${C.bugs.length} bug${C.bugs.length === 1 ? '' : 's'}${C.recompensa ? '' : ' · sem recompensa'}`);
@@ -153,8 +176,8 @@
     mostrar() { $('#cacaPainel').hidden = APP.id !== 'caca'; },
     // provar uma plaquinha = executar a ação no sistema e conferir os contratos
     provar(id) {
-      const o = objetos[id];
-      if (!o) return;
+      const o = placas[id];
+      if (!o) return;   // as plataformas não se provam
       if (!C.sis) novaVersao(C.V?.treino?.[0] || Q.VERSOES2.treino[0], 'Livre');
       C.provas++;
       C.provadas.push({ acao: o.acao.id, t: agoraS() });
@@ -162,6 +185,7 @@
       // cada mordida, como na página), a probóscide seguia ativa e ela ficava parada provando a mesma plaquinha ~20 s.
       // Como uma mosca que prova algo que não é comida: não insiste
       el(id).novelty = 0;
+      apaga(id, true);
       C.sis.executar(o.acao.id);
       const novos = Q.verificar(C.sis).filter(x => !C.achados.has(x));
       labEvent('clique', { id, bug: novos[0] || null, arriscado: false });
@@ -226,7 +250,7 @@
   window.__mundo = {
     pronto: () => typeof brainReady !== 'undefined' && brainReady && APP.id === 'caca',
     worker: () => worker,
-    objetos: () => Object.entries(objetos).map(([id, o]) => ({ id, acao: o.acao.id, entrada: o.acao.entrada, familia: o.acao.familia, nome: o.r, x: o.x, y: o.y })),
+    objetos: () => Object.entries(placas).map(([id, o]) => ({ id, acao: o.acao.id, entrada: o.acao.entrada, familia: o.acao.familia, nome: o.r, x: o.x, y: o.y })),
     estado: () => ({
       t: brainT / 1000, rodando: typeof running !== 'undefined' ? running : true,
       fase: C.fase, rotulo: C.rotulo, defeitos: C.defeitos, provas: C.provas, bugs: C.bugs.length, recompensa: C.recompensa,

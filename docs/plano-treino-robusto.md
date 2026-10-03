@@ -458,3 +458,14 @@ medido na Cozinha); na outra, 57%, presa ~20 s numa só plaquinha, provando de n
 gosto doce" só enfraquecia a cada mordida (×0,35, como na página), a probóscide seguia ativa e a atividade dela ainda
 freava o andar. Correção: provada nesta versão, a plaquinha deixa de ter gosto de novidade (como uma mosca que prova algo
 que não é comida e não insiste). O piloto tinha ~10 min e nenhuma sessão concluída; recomeçou do zero.
+
+**03/10, o mundo da apresentação (pedido do usuário: plataformas como no mundo dos ícones, com a estética da Cozinha; os
+sentidos como guia; o treino tem de ser eficaz).** Piloto do mundo antigo (interrompido com o PC, 4 sessões): 0–1 bug em
+6 versões de treino por sessão; no teste, quase nada (1 bug em 12 versões). Sem recompensa no treino não há o que
+transferir: negativo exploratório, motivo da mudança. Mundo novo (`caca-mundo.js`): cinco objetos de cozinha como
+plataformas, um por família (tábua de corte, pires, lata de atum, tampa de pote, porta-copo de cortiça; cilindros, a
+mesma forma no desenho, na altura e na física, com `o.base` para o que fica em cima), alturas de 3,5 a 12 mm; as
+plaquinhas da família em cima de cada uma, com ícone (para quem assiste). Treino: cada versão vai até ela achar o bug
+(+10 s) ou 4 min; teste: até o primeiro bug ou 3 min. Regra da página aplicada às plaquinhas: o que ela já provou fica
+fosco (chega ao cérebro pelos olhos, LC10a). Primeira sessão: 9 voos entre plataformas e o bug da versão 1 em 9 provas
+(183 s); a atração aprendida ao cheiro premiado foi a 1,0. Uma sessão completa leva ~25 min de cérebro.
