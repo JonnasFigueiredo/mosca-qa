@@ -523,3 +523,5 @@ degrau (9 versões de treino; o critério de 60% vira ≥ 6 de 9): c1 fica com a
 com 420 s por versão de treino (891–893). O degrau escolhido vale para o piloto e as séries.
 
 **03/10, rotina do mundo, calibração c1 (bandeja, subida pela lateral, cheiro com alcance de 14 mm, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 841, 842, 843. Achou o bug em 0 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug null s de cérebro; 5,56 provas por versão. Por sessão: 843 000, 842 000, 841 000. `docs/medicoes/qa-mundo-calib-c1.json`.
+
+**03/10, rotina do mundo, calibração c2 (como c1, com plaquinhas de 13 × 8,5 mm e cheiro com alcance de 20 mm): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 881, 882, 883. Achou o bug em 0 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug null s de cérebro; 5,67 provas por versão. Por sessão: 881 000, 882 000, 883 000. `docs/medicoes/qa-mundo-calib-c2.json`.

@@ -1,0 +1,203 @@
+{
+ "metodo": "Caça a bugs no mundo da mosca (web/caca-mundo.js). Página num Chrome sem janela com os olhos reais amostrados; modo automático: treino com as versões de treino da bancada 2 (cada versão até achar o bug, +10 s, ou 240 s de cérebro; bug novo = açúcar + PAM) e teste com as 3 versões de teste (sem recompensa; cada versão até o primeiro bug ou 180 s). Mundo: cinco plataformas de cozinha por família, plaquinhas em cima. Semente fixa para o cérebro, o mapa e os sorteios da página; o relógio de parede ainda varia. \"provadas\" = ações provadas na ordem.",
+ "sessoes": [
+  {
+   "semente": 881,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 5,
+     "tempo": 240.05,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:negativa"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 5,
+     "tempo": 240.06,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:limite",
+      "estoque:repetida",
+      "carrinho:zero",
+      "carrinho:negativa"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 4,
+     "tempo": 240.03000000000003,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:limite"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 720.4499999999999,
+   "olhosReais": true,
+   "data": "2026-10-03T17:28:47.232Z",
+   "erros": [],
+   "minutosParede": 43.4,
+   "extra": "&placa=13&alcance=20",
+   "so": "treino"
+  },
+  {
+   "semente": 882,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 5,
+     "tempo": 240,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:normal",
+      "estoque:normal",
+      "carrinho:limite",
+      "carrinho:negativa"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 6,
+     "tempo": 240.01000000000002,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "estoque:limite",
+      "estoque:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 6,
+     "tempo": 240.01999999999998,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "estoque:limite",
+      "estoque:repetida"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 720.3299999999999,
+   "olhosReais": true,
+   "data": "2026-10-03T17:29:38.019Z",
+   "erros": [],
+   "minutosParede": 44.1,
+   "extra": "&placa=13&alcance=20",
+   "so": "treino"
+  },
+  {
+   "semente": 883,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 6,
+     "tempo": 240.05,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "estoque:limite",
+      "estoque:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 9,
+     "tempo": 240.01999999999998,
+     "tBug": null,
+     "provadas": [
+      "estoque:repetida",
+      "estoque:normal",
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "cupom:repetida",
+      "cupom:limite",
+      "estoque:limite",
+      "carrinho:zero"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 5,
+     "tempo": 240.07000000000005,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:normal"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 720.27,
+   "olhosReais": true,
+   "data": "2026-10-03T17:30:02.392Z",
+   "erros": [],
+   "minutosParede": 44.6,
+   "extra": "&placa=13&alcance=20",
+   "so": "treino"
+  }
+ ]
+}
