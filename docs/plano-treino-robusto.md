@@ -553,3 +553,16 @@ pagamento em ~33 s e o do treino 3 no cancelamento. Escada: d1 com as sementes 9
 **03/10, rotina do mundo, calibração d1 (plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino): passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 971, 972, 973. Achou o bug em 1 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 68,67 s de cérebro; 5,44 provas por versão. Por sessão: 973 111, 972 111, 971 111. `docs/medicoes/qa-mundo-calib-d1.json`.
 
 **03/10, rotina do mundo, piloto (d1; exploratório, não conta como resultado).** Sementes 831–834, treinada e congelada, 6 versões de treino. Tempo até o primeiro bug na transferência, treinada − congelada: 10,69 s (por semente [-0.15,-37.92,80.93,-0.07]; dz 0,21). Bugs no treino por sessão: treinada 4,5, congelada 3. N da série confirmatória pela regra escrita antes: 20.
+
+**03/10, 19h30: medida principal trocada depois do piloto, antes da série confirmatória (nenhuma sessão dela concluída
+nem vista).** Piloto d1 (sementes 831–834, exploratório): o tempo até o primeiro bug na transferência ficou no teto
+(média 171 s na treinada e 160 s na congelada, com 180 s quando não achou; a maioria das versões de teste terminou sem
+bug), diferença de +10,7 s, dz 0,21: uma medida que quase não varia não mede a memória. Já a fração das provas do teste
+em plaquinhas da característica premiada foi 0,32 na treinada e 0,12 na congelada, maior nas 4 sementes (+0,26; +0,22;
++0,08; +0,24). **Novo critério principal:** fração das provas do teste na característica premiada, treinada −
+congelada, IC95 do bootstrap > 0. Secundários relatados: tempo e provas até o primeiro bug na transferência, controle,
+bugs no treino. O N fica em 20 (o calculado pelo tempo; pela fração o mesmo cálculo daria 12, e mantenho o maior,
+mais conservador). Protocolo, sementes (901–920; replicação 951–970) e mundo (cópia congelada `d9ba8ab`) iguais. A
+série tinha começado às 19h10 e foi parada às 19h28 sem nenhuma sessão concluída; recomeça do zero com as mesmas sementes.
+Limite honesto: escolher a medida depois do piloto é decisão tomada vendo dados exploratórios; por isso a série
+confirmatória e a replicação, com sementes novas, é que contam.

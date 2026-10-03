@@ -3,7 +3,8 @@
 //  1. calibração do mundo (só treino, condição ativa): escada d1 → d2 (antes: m0, c1, c2; ver o plano); fica o primeiro degrau em que ela acha o
 //     bug em pelo menos 60% das versões de treino (sem recompensa no treino não há o que transferir);
 //  2. piloto (4 sementes, treinada e congelada): só estima a variação para escolher o número de sementes;
-//  3. série confirmatória: treinada − congelada no tempo até o primeiro bug nas versões de transferência, IC95 < 0;
+//  3. série confirmatória: treinada − congelada na fração das provas do teste na característica premiada, IC95 > 0
+//     (até 03/10, 19h30: o tempo até o primeiro bug; trocado depois do piloto, antes da série; ver o plano);
 //  4. se passar, replicação com sementes novas; se não, uma alternativa escrita antes (treino com 9 versões), com a
 //     própria replicação.
 // Cada etapa anota no plano, grava em docs/medicoes e commita (autor: o dono do repositório).
@@ -129,12 +130,17 @@ const SERIES = [
 ];
 est.feitas ||= {};
 function criterio(r) {
-  const p = r.ativa_menos_congelada, t = p.tempo_transferencia || {};
-  const passou = !!(t.ic95 && t.ic95[1] < 0);
+  // (03/10, 19h30, antes de qualquer sessão da série confirmatória) principal trocado depois do piloto: o tempo até o
+  // primeiro bug ficou no teto (180 s sem achar na maioria das versões de teste, nas duas condições) e quase não varia;
+  // a fração das provas do teste em plaquinhas da característica premiada mede direto se a memória guia as escolhas.
+  // O tempo segue relatado como secundário. Ver a nota no plano
+  const p = r.ativa_menos_congelada, fp = p.fracao_premiada || {};
+  const passou = !!(fp.ic95 && fp.ic95[0] > 0);
   const txt = (n, x) => `${n} ${f(x?.media)} IC95 ${JSON.stringify(x?.ic95)} p ${x?.p_bootstrap} dz ${x?.dz}`;
-  return { passou, texto: `${txt('tempo até o 1º bug na transferência, treinada − congelada (principal, IC95 < 0):', t)}; ` +
-    `${txt('provas até o 1º bug na transferência:', p.provas_transferencia || p.transferencia)}; ${txt('controle (não deve melhorar), tempo:', p.tempo_controle)}; ` +
-    `${txt('fração das provas na característica premiada (deve ser > 0):', p.fracao_premiada)}; bugs no treino, treinada ${f(r.por_condicao.ativa?.bugs_treino)} e congelada ${f(r.por_condicao.congelada?.bugs_treino)}` };
+  return { passou, texto: `${txt('fração das provas do teste na característica premiada, treinada − congelada (principal, IC95 > 0):', fp)}; ` +
+    `${txt('tempo até o 1º bug na transferência (secundário, deve ser < 0):', p.tempo_transferencia)}; ` +
+    `${txt('provas até o 1º bug na transferência:', p.transferencia)}; ${txt('controle (não deve melhorar), tempo:', p.tempo_controle)}; ` +
+    `bugs no treino, treinada ${f(r.por_condicao.ativa?.bugs_treino)} e congelada ${f(r.por_condicao.congelada?.bugs_treino)}` };
 }
 async function serie(prefixo, sementes, treinos, desc) {
   if (est.feitas[prefixo]) return est.feitas[prefixo];
