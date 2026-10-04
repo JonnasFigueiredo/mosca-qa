@@ -601,3 +601,5 @@ fixado agora. Série confirmatória com sementes 1201–1220, mesmo protocolo (6
 Secundários relatados: tempo e provas até o primeiro bug na transferência, controle, bugs no treino. Se passar,
 replicação com sementes 1251–1270; se não passar, a rotina para e o negativo é registrado (sem alternativa). Cópia
 congelada nova de `web/` (a versão do commit deste registro).
+
+**04/10, rotina do mundo, calibração e1 (mundo 2: plataformas por característica, em círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1101, 1102, 1103. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 111,61 s de cérebro; 5,67 provas por versão. Por sessão: 1101 001, 1103 011, 1102 000. `docs/medicoes/qa-mundo-calib-e1.json`.
