@@ -641,3 +641,5 @@ cheiros trocados, 240 s por versão (sementes 1151–1153); f2 = como f1, 360 s 
 calibração, série (1201–1220, N = 20), critério principal e replicação (1251–1270) iguais ao registro do mundo 2.
 
 **04/10, rotina do mundo, calibração f1 (mundo 2, plataformas iguais, cheiros trocados, ponte pelas sinapses, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1151, 1152, 1153. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 5,4 s de cérebro; 3,67 provas por versão. Por sessão: 1153 101, 1152 100, 1151 000. `docs/medicoes/qa-mundo-calib-f1.json`.
+
+**04/10, rotina do mundo, calibração f2 (como f1, com 360 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1161, 1162, 1163. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 28,03 s de cérebro; 5,56 provas por versão. Por sessão: 1163 011, 1161 100, 1162 000. `docs/medicoes/qa-mundo-calib-f2.json`.
