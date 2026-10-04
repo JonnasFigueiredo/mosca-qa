@@ -603,3 +603,16 @@ replicação com sementes 1251–1270; se não passar, a rotina para e o negativ
 congelada nova de `web/` (a versão do commit deste registro).
 
 **04/10, rotina do mundo, calibração e1 (mundo 2: plataformas por característica, em círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1101, 1102, 1103. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 111,61 s de cérebro; 5,67 provas por versão. Por sessão: 1101 001, 1103 011, 1102 000. `docs/medicoes/qa-mundo-calib-e1.json`.
+
+**04/10, 16h: e1 e e2 negativos; e3 e e4 escritos antes de rodar.** e1 (sementes 1101–1103): bug em 3 de 9 versões
+de treino; 29 das 51 provas foram na tábua da "ação normal", a plataforma maior, mais baixa e com mais plaquinhas
+(5), onde ela prova todas. e2 (420 s por versão; 1111–1113): 0 bugs nas 5 versões concluídas, parada no meio por
+estar claramente abaixo do critério. O formato das plataformas decidia para onde ela ia. Teste rápido com plataformas
+iguais (semente 1121, 138 s de cérebro): ainda só tábua e tampa (uma rodada, ruidosa). Duas mudanças para e3:
+(1) **plataformas iguais** (21 mm de raio, 7 mm de altura; `&iguais=1`), só a aparência muda; (2) **a ponte da
+memória pelos MBONs** (`&ponte=mbon`): a atração aprendida passa a vir da valência das saídas do corpo cogumelar
+(mbon_aprox − média de mbon_evitar e mbon_evitar_rec, a mesma leitura da bancada validada, onde a treinada subiu
++1,03 Hz por neurônio no cheiro premiado), em vez da leitura direta do peso das sinapses (regra nossa). Fica mais
+perto do que vem do cérebro e do que foi medido. Escada: e3 = iguais + MBONs, 240 s por versão (sementes 1131–1133);
+e4 = como e3, 360 s por versão (1141–1143). Critério da calibração, série (1201–1220, N = 20), critério principal e
+replicação (1251–1270) iguais ao registro do mundo 2.

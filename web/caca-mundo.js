@@ -53,6 +53,10 @@
     zero: { forma: 'plat-tampa', r: 'Valor zero · tampa de pote', raio: 15, h: 9 },
     negativa: { forma: 'plat-cortica', r: 'Valor negativo · porta-copo de cortiça', raio: 13, h: 3.5 },
   };
+  // &iguais=1 (04/10): todas as plataformas por característica com o mesmo tamanho e a mesma altura (21 mm de raio, 7 mm),
+  // só a aparência muda. Na calibração e1, a tábua (a maior e mais baixa) levou 29 de 51 provas: o formato decidia para
+  // onde ela ia mais que o cheiro
+  if (QS.get('iguais') === '1') for (const p of Object.values(PLAT_CARACTERISTICA)) { p.raio = 21; p.h = 7; }
   const POR_FAMILIA = QS.get('grupos') === 'familia';
   const PLATAFORMAS = POR_FAMILIA ? PLAT_FAMILIA : PLAT_CARACTERISTICA;
   const grupoDe = a => (POR_FAMILIA ? a.familia : a.entrada);
@@ -85,7 +89,7 @@
     const acoes = Q.ACOES.filter(a => grupoDe(a) === fam), n = acoes.length;
     // as plaquinhas num anel em cima da plataforma; com 4 ou 5, um anel mais aberto para não se encostarem
     acoes.forEach((a, i) => {
-      const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * (n >= 4 ? 0.6 : 0.52);
+      const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * (n === 5 ? 0.62 : n === 4 ? 0.6 : 0.52);
       placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: p.x + Math.cos(ang) * rr, y: p.y + Math.sin(ang) * rr, base: p.h,
         w: PLACA, d: +(PLACA * 0.65).toFixed(2), h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
     });

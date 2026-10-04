@@ -37,10 +37,12 @@ const salva = () => writeFileSync(ESTADO, JSON.stringify(est, null, 1));
 
 // a escada do mundo, escrita antes
 const ESCADA = [
-  // Histórico (ver as notas no plano): m0, c1, c2 (mundo por família) e d1 (círculo sorteado: passou na calibração; série
-  // qa-mundo-d1 negativa). (04/10, 14h50) mundo 2, escrito antes de rodar: uma plataforma por característica da ação
-  { id: 'e1', extra: '', desc: 'mundo 2: plataformas por característica, em círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino', sementes: seq(1101, 3) },
-  { id: 'e2', extra: '&limtreino=420', desc: 'como e1, com 420 s por versão de treino', sementes: seq(1111, 3) },
+  // Histórico (ver as notas no plano): m0, c1, c2 (mundo por família), d1 (círculo sorteado; série qa-mundo-d1
+  // negativa), e1 e e2 (mundo 2, plataformas de tamanhos diferentes: 3/9 e 0/5 versões de treino com bug). (04/10, 16h)
+  // escrito antes de rodar: plataformas iguais e a ponte da memória pelas saídas do corpo cogumelar (MBONs), a mesma
+  // leitura da bancada validada
+  { id: 'e3', extra: '&iguais=1&ponte=mbon', desc: 'mundo 2 com plataformas iguais (21 mm, 7 mm de altura) e a atração aprendida lida nos MBONs, 240 s por versão de treino', sementes: seq(1131, 3) },
+  { id: 'e4', extra: '&iguais=1&ponte=mbon&limtreino=360', desc: 'como e3, com 360 s por versão de treino', sementes: seq(1141, 3) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 
