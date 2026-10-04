@@ -1,0 +1,274 @@
+{
+ "metodo": "Treinada (ativa) menos congelada, pareado por semente. transferencia/controle: provas até o primeiro bug nas versões de teste (as provas feitas + 1 quando não achou em 180 s). tempo_*: s de cérebro até o primeiro bug (a duração da versão quando não achou). fracao_premiada: fração das provas do teste em plaquinhas da característica premiada. IC95 percentil de bootstrap (2000; só com 5 ou mais sementes), p bilateral do mesmo bootstrap, dz = média / desvio das diferenças.",
+ "sementes": [
+  901,
+  902,
+  903,
+  904,
+  905,
+  906,
+  907,
+  908,
+  909,
+  910,
+  911,
+  912,
+  913,
+  914,
+  915,
+  916,
+  917,
+  918,
+  919,
+  920
+ ],
+ "sessoes_validas": 40,
+ "por_condicao": {
+  "ativa": {
+   "sementes": 20,
+   "transferencia": 6.17,
+   "controle": 5.35,
+   "tempo_transferencia": 152.35,
+   "tempo_controle": 160.22,
+   "fracao_premiada": 0.26,
+   "bugs_treino": 3.3,
+   "provas_teste": 15.55
+  },
+  "congelada": {
+   "sementes": 20,
+   "transferencia": 4.95,
+   "controle": 4.15,
+   "tempo_transferencia": 155.57,
+   "tempo_controle": 141.08,
+   "fracao_premiada": 0.28,
+   "bugs_treino": 3.15,
+   "provas_teste": 11.7
+  }
+ },
+ "ativa_menos_congelada": {
+  "transferencia": {
+   "n": 20,
+   "media": 1.23,
+   "ic95": [
+    0.13,
+    2.33
+   ],
+   "p_bootstrap": 0.03,
+   "dz": 0.49,
+   "por_semente": [
+    2,
+    -3.5,
+    2.5,
+    -2,
+    7,
+    4.5,
+    2.5,
+    0.5,
+    1,
+    0.5,
+    2,
+    2.5,
+    -0.5,
+    3,
+    -2,
+    3.5,
+    2.5,
+    -2,
+    -0.5,
+    1
+   ]
+  },
+  "controle": {
+   "n": 20,
+   "media": 1.2,
+   "ic95": [
+    -0.15,
+    2.55
+   ],
+   "p_bootstrap": 0.091,
+   "dz": 0.38,
+   "por_semente": [
+    1,
+    1,
+    -2,
+    0,
+    2,
+    -1,
+    0,
+    3,
+    2,
+    -5,
+    2,
+    3,
+    6,
+    0,
+    6,
+    -1,
+    3,
+    8,
+    -2,
+    -2
+   ]
+  },
+  "tempo_transferencia": {
+   "n": 20,
+   "media": -3.22,
+   "ic95": [
+    -31.44,
+    24.11
+   ],
+   "p_bootstrap": 0.829,
+   "dz": -0.05,
+   "por_semente": [
+    -15.84,
+    -138.61,
+    0.04,
+    -52.06,
+    -4.99,
+    -26.72,
+    -0.05,
+    0.03,
+    -0.01,
+    -0.04,
+    85.23,
+    88.1,
+    15.12,
+    -67.09,
+    -146.35,
+    86.6,
+    91.54,
+    0.1,
+    20.63,
+    -0.04
+   ]
+  },
+  "tempo_controle": {
+   "n": 20,
+   "media": 19.14,
+   "ic95": [
+    -13.99,
+    50.58
+   ],
+   "p_bootstrap": 0.263,
+   "dz": 0.25,
+   "por_semente": [
+    -0.01,
+    55.35,
+    -51.79,
+    0.01,
+    0.03,
+    -0.08,
+    0.06,
+    -15.95,
+    0.02,
+    -160.45,
+    177.01,
+    -0.08,
+    172.4,
+    -0.05,
+    133.31,
+    0.04,
+    -18.33,
+    0.05,
+    0.09,
+    91.09
+   ]
+  },
+  "fracao_premiada": {
+   "n": 20,
+   "media": -0.02,
+   "ic95": [
+    -0.09,
+    0.05
+   ],
+   "p_bootstrap": 0.485,
+   "dz": -0.14,
+   "por_semente": [
+    0.19,
+    0.24,
+    -0.11,
+    0.11,
+    0.05,
+    -0.13,
+    -0.05,
+    0.04,
+    -0.12,
+    0.03,
+    0.01,
+    -0.37,
+    -0.03,
+    -0.01,
+    -0.01,
+    -0.09,
+    -0.25,
+    0.3,
+    -0.17,
+    -0.1
+   ]
+  },
+  "bugs_treino": {
+   "n": 20,
+   "media": 0.15,
+   "ic95": [
+    -0.8,
+    1.15
+   ],
+   "p_bootstrap": 0.828,
+   "dz": 0.07,
+   "por_semente": [
+    0,
+    0,
+    0,
+    4,
+    6,
+    -3,
+    0,
+    -2,
+    -2,
+    -4,
+    1,
+    -1,
+    0,
+    1,
+    -1,
+    1,
+    -1,
+    3,
+    1,
+    0
+   ]
+  },
+  "provas_teste": {
+   "n": 20,
+   "media": 3.85,
+   "ic95": [
+    1.6,
+    6
+   ],
+   "p_bootstrap": 0,
+   "dz": 0.76,
+   "por_semente": [
+    6,
+    -5,
+    3,
+    -3,
+    17,
+    9,
+    5,
+    5,
+    4,
+    -3,
+    4,
+    7,
+    4,
+    7,
+    4,
+    5,
+    8,
+    4,
+    -3,
+    -1
+   ]
+  }
+ }
+}

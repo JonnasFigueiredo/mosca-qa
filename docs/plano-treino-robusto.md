@@ -566,3 +566,5 @@ mais conservador). Protocolo, sementes (901–920; replicação 951–970) e mun
 série tinha começado às 19h10 e foi parada às 19h28 sem nenhuma sessão concluída; recomeça do zero com as mesmas sementes.
 Limite honesto: escolher a medida depois do piloto é decisão tomada vendo dados exploratórios; por isso a série
 confirmatória e a replicação, com sementes novas, é que contam.
+
+**04/10, rotina do mundo: qa-mundo-d1 (mundo d1 (plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino), 6 versões de treino): negativo.** Sementes 901–920 (40 sessões válidas). fração das provas do teste na característica premiada, treinada − congelada (principal, IC95 > 0): -0,02 IC95 [-0.09,0.05] p 0.485 dz -0.14; tempo até o 1º bug na transferência (secundário, deve ser < 0): -3,22 IC95 [-31.44,24.11] p 0.829 dz -0.05; provas até o 1º bug na transferência: 1,23 IC95 [0.13,2.33] p 0.03 dz 0.49; controle (não deve melhorar), tempo: 19,14 IC95 [-13.99,50.58] p 0.263 dz 0.25; bugs no treino, treinada 3,3 e congelada 3,15. Resumo: `docs/medicoes/qa-mundo-d1-resumo.json`.
