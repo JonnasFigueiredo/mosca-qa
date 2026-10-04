@@ -616,3 +616,5 @@ memória pelos MBONs** (`&ponte=mbon`): a atração aprendida passa a vir da val
 perto do que vem do cérebro e do que foi medido. Escada: e3 = iguais + MBONs, 240 s por versão (sementes 1131–1133);
 e4 = como e3, 360 s por versão (1141–1143). Critério da calibração, série (1201–1220, N = 20), critério principal e
 replicação (1251–1270) iguais ao registro do mundo 2.
+
+**04/10, rotina do mundo, calibração e3 (mundo 2 com plataformas iguais (21 mm, 7 mm de altura) e a atração aprendida lida nos MBONs, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1131, 1132, 1133. Achou o bug em 0,11 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 142,81 s de cérebro; 5,89 provas por versão. Por sessão: 1131 000, 1132 100, 1133 000. `docs/medicoes/qa-mundo-calib-e3.json`.
