@@ -1,0 +1,185 @@
+{
+ "metodo": "Caça a bugs no mundo da mosca (web/caca-mundo.js). Página num Chrome sem janela com os olhos reais amostrados; modo automático: treino com as versões de treino da bancada 2 (cada versão até achar o bug, +10 s, ou 240 s de cérebro; bug novo = açúcar + PAM) e teste com as 3 versões de teste (sem recompensa; cada versão até o primeiro bug ou 180 s). Mundo: cinco plataformas de cozinha por família, plaquinhas em cima. Semente fixa para o cérebro, o mapa e os sorteios da página; o relógio de parede ainda varia. \"provadas\" = ações provadas na ordem.",
+ "sessoes": [
+  {
+   "semente": 1153,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 1,
+     "tempo": 22.37,
+     "tBug": 12.34,
+     "provadas": [
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 7,
+     "tempo": 240,
+     "tBug": null,
+     "provadas": [
+      "pagamento:zero",
+      "pagamento:repetida",
+      "estoque:repetida",
+      "estoque:limite",
+      "carrinho:limite",
+      "carrinho:zero",
+      "cupom:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 2,
+     "tempo": 13.519999999999982,
+     "tBug": 3.5,
+     "provadas": [
+      "cancelamento:repetida",
+      "cupom:repetida"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 275.9,
+   "olhosReais": true,
+   "data": "2026-10-04T21:55:39.524Z",
+   "erros": [],
+   "minutosParede": 22,
+   "extra": "&iguais=1&cheiros=trocados",
+   "so": "treino"
+  },
+  {
+   "semente": 1152,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 1,
+     "tempo": 15.430000000000001,
+     "tBug": 5.3999999999999995,
+     "provadas": [
+      "pagamento:repetida"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 3,
+     "tempo": 240.01,
+     "tBug": null,
+     "provadas": [
+      "cupom:limite",
+      "carrinho:limite",
+      "carrinho:negativa"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 4,
+     "tempo": 240.06,
+     "tBug": null,
+     "provadas": [
+      "carrinho:limite",
+      "estoque:limite",
+      "cupom:limite",
+      "carrinho:negativa"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 496.01,
+   "olhosReais": true,
+   "data": "2026-10-04T22:04:03.993Z",
+   "erros": [],
+   "minutosParede": 31.8,
+   "extra": "&iguais=1&cheiros=trocados",
+   "so": "treino"
+  },
+  {
+   "semente": 1151,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 2,
+     "tempo": 240.04999999999998,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "pagamento:zero"
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 6,
+     "tempo": 240.06000000000003,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "pagamento:zero",
+      "cupom:repetida",
+      "estoque:limite",
+      "carrinho:limite",
+      "cupom:limite"
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 7,
+     "tempo": 240.04999999999995,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "cupom:normal",
+      "cancelamento:normal",
+      "pagamento:normal",
+      "estoque:normal",
+      "carrinho:zero",
+      "pagamento:zero"
+     ]
+    }
+   ],
+   "teste": [],
+   "tempoCerebro": 720.43,
+   "olhosReais": true,
+   "data": "2026-10-04T22:11:19.795Z",
+   "erros": [],
+   "minutosParede": 40.6,
+   "extra": "&iguais=1&cheiros=trocados",
+   "so": "treino"
+  }
+ ]
+}

@@ -639,3 +639,5 @@ o mesmo controle sensorial que na bancada deu positivo e replicou) e a **ponte p
 lê quanto as sinapses do cheiro atual mudaram, zero para cheiros nunca premiados). Escada: f1 = plataformas iguais,
 cheiros trocados, 240 s por versão (sementes 1151–1153); f2 = como f1, 360 s por versão (1161–1163). Critério da
 calibração, série (1201–1220, N = 20), critério principal e replicação (1251–1270) iguais ao registro do mundo 2.
+
+**04/10, rotina do mundo, calibração f1 (mundo 2, plataformas iguais, cheiros trocados, ponte pelas sinapses, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1151, 1152, 1153. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 5,4 s de cérebro; 3,67 provas por versão. Por sessão: 1153 101, 1152 100, 1151 000. `docs/medicoes/qa-mundo-calib-f1.json`.
