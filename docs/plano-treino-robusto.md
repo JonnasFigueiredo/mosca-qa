@@ -622,3 +622,20 @@ replicação (1251–1270) iguais ao registro do mundo 2.
 **04/10, rotina do mundo, calibração e4 (como e3, com 360 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1141, 1142, 1143. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 17,91 s de cérebro; 5 provas por versão. Por sessão: 1141 001, 1142 010, 1143 001. `docs/medicoes/qa-mundo-calib-e4.json`.
 
 **04/10, rotina do mundo: parou na calibração.** Nenhum degrau da escada chegou a 0,4 das versões de treino com bug (melhor: e4, 0,33). Sem recompensa no treino, a série não mediria aprendizado: negativo do mundo, não do cérebro.
+
+**04/10, 18h50: e3 e e4 negativos; a causa achada; f1 e f2 escritos antes de rodar.** e3 (plataformas iguais, ponte
+pelos MBONs; 1131–1133): bug em 1 de 9 versões de treino; só 3 das 53 provas na plataforma da repetição. e4 (360 s por
+versão; 1141–1143): 3 de 9. A rotina parou sozinha (nenhum degrau ≥ 0,4), como escrito. Dois diagnósticos:
+(1) `_diag_ponte.mjs`, uma sessão treinada (semente 1191, plataformas iguais, ponte MBON): a valência dos MBONs fica
+entre 0,4 e 0,8 Hz em todo lugar, inclusive longe de tudo (0,68): lida em valor absoluto, a atração liga em qualquer
+lugar e não aponta para o cheiro aprendido (na bancada o que mudava era a valência *depois* do treino, +1,03 no cheiro
+premiado). Tempo perto da plataforma da repetição: 4% no treino. (2) Cheiros trocados, moscas congeladas (semente 1195,
+600 s de cérebro): com o mapa original, a plataforma com DC1+VA6 (a repetição) teve **0%** do tempo e a da ação normal
+39%; com o mapa trocado, a plataforma com DC1+VA6 (agora a normal) caiu para 14% e a da repetição (agora VL2a+VM6v) subiu
+para 16%. **A mosca com corpo evita o par DC1+VA6 sem ter aprendido nada**: vem do cérebro (o cheiro entra pelas
+antenas e muda a direção pelos neurônios descendentes), não de regra nossa. Na bancada, sem corpo, isso não aparecia.
+Duas rodadas, uma de cada mapa: indicativo, não medida. Mudanças para f1: **mapa de cheiros trocado** (`&cheiros=trocados`;
+o mesmo controle sensorial que na bancada deu positivo e replicou) e a **ponte pelas sinapses** de volta (o padrão:
+lê quanto as sinapses do cheiro atual mudaram, zero para cheiros nunca premiados). Escada: f1 = plataformas iguais,
+cheiros trocados, 240 s por versão (sementes 1151–1153); f2 = como f1, 360 s por versão (1161–1163). Critério da
+calibração, série (1201–1220, N = 20), critério principal e replicação (1251–1270) iguais ao registro do mundo 2.

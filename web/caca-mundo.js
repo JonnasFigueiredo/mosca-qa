@@ -128,8 +128,13 @@
     b.mesh.traverse(m => { for (const mt of [].concat(m.material || [])) { if (mt.userData.cor0 == null) mt.userData.cor0 = mt.color.getHex(); mt.color.setHex(mt.userData.cor0); if (fosca) mt.color.multiplyScalar(0.55); } });
   }
   for (const id of Object.keys(plataformas)) { ODORS[id] = []; ODOR_PESO[id] = {}; }
+  // &cheiros=trocados (04/10): a característica premiada com o par de glomérulos da outra (o mapa trocado, o mesmo controle
+  // da bancada, que deu positivo e replicou). No mundo, a mosca com corpo evita o par DC1+VA6 sem ter aprendido nada
+  // (diagnóstico com cheiros trocados: a plataforma com esse cheiro ficou com 0% e 14% do tempo), e a plataforma da
+  // repetição ficava vazia; com o mapa trocado, a repetição cheira a VL2a+VM6v
+  const CHEIROS_TROCADOS = QS.get('cheiros') === 'trocados';
   function usarCheiros(car) {
-    const mapa = MAPAS[car];
+    const mapa = MAPAS[CHEIROS_TROCADOS ? (car === 'normal' ? 'repetida' : 'normal') : car];
     for (const [id, o] of Object.entries(placas)) {
       o.cheiro = Object.fromEntries([...mapa[o.acao.familia], ...mapa[o.acao.entrada]].map(g => [g, PESO]));
       ODORS[id] = Object.keys(o.cheiro); ODOR_PESO[id] = o.cheiro;

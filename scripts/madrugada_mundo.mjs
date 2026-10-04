@@ -37,12 +37,12 @@ const salva = () => writeFileSync(ESTADO, JSON.stringify(est, null, 1));
 
 // a escada do mundo, escrita antes
 const ESCADA = [
-  // Histórico (ver as notas no plano): m0, c1, c2 (mundo por família), d1 (círculo sorteado; série qa-mundo-d1
-  // negativa), e1 e e2 (mundo 2, plataformas de tamanhos diferentes: 3/9 e 0/5 versões de treino com bug). (04/10, 16h)
-  // escrito antes de rodar: plataformas iguais e a ponte da memória pelas saídas do corpo cogumelar (MBONs), a mesma
-  // leitura da bancada validada
-  { id: 'e3', extra: '&iguais=1&ponte=mbon', desc: 'mundo 2 com plataformas iguais (21 mm, 7 mm de altura) e a atração aprendida lida nos MBONs, 240 s por versão de treino', sementes: seq(1131, 3) },
-  { id: 'e4', extra: '&iguais=1&ponte=mbon&limtreino=360', desc: 'como e3, com 360 s por versão de treino', sementes: seq(1141, 3) },
+  // Histórico (ver as notas no plano): m0, c1, c2 (mundo por família), d1 (série qa-mundo-d1 negativa), e1–e4 (mundo 2:
+  // a plataforma da repetição quase sem visitas). (04/10, 18h50) escrito antes de rodar: o mapa de cheiros trocado (a
+  // repetição cheira a VL2a+VM6v; DC1+VA6 é evitado sem aprendizado) e a ponte da memória pelas sinapses (específica do
+  // cheiro aprendido; a dos MBONs dava atração em todo lugar)
+  { id: 'f1', extra: '&iguais=1&cheiros=trocados', desc: 'mundo 2, plataformas iguais, cheiros trocados, ponte pelas sinapses, 240 s por versão de treino', sementes: seq(1151, 3) },
+  { id: 'f2', extra: '&iguais=1&cheiros=trocados&limtreino=360', desc: 'como f1, com 360 s por versão de treino', sementes: seq(1161, 3) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 
