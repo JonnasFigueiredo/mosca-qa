@@ -53,13 +53,13 @@
     return [Math.min(...v.map(p => p.x - p.raio)) - m, Math.min(...v.map(p => p.y - p.raio)) - m, Math.max(...v.map(p => p.x + p.raio)) + m, Math.max(...v.map(p => p.y + p.raio)) + m];
   })();
   // variantes do mundo na URL (a escada de calibração escrita antes, scripts/madrugada_mundo.mjs):
-  // &alcance=N (mm) muda o alcance do cheiro das plaquinhas (padrão 14 mm)
+  // &alcance=N (mm) muda o alcance do cheiro das plaquinhas (padrão 20 mm, o do mundo medido d1)
   const QS = new URLSearchParams(location.search);
-  const ALCANCE = Math.max(4, +QS.get('alcance') || 14);
+  const ALCANCE = Math.max(4, +QS.get('alcance') || 20);
   // &limtreino=N: limite de cada versão de treino (s de cérebro; padrão 240)
   const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
-  // &placa=N: largura das plaquinhas (mm; padrão 10, profundidade 0,65 × a largura)
-  const PLACA = Math.min(16, Math.max(6, +QS.get('placa') || 10));
+  // &placa=N: largura das plaquinhas (mm; padrão 13, o do mundo medido d1; profundidade 0,65 × a largura)
+  const PLACA = Math.min(16, Math.max(6, +QS.get('placa') || 13));
   // &lugares=fixos: sem o sorteio dos lugares a cada versão (para comparar)
   const SEM_SORTEIO = QS.get('lugares') === 'fixos';
   const idDe = a => 'q-' + a.id.replace(':', '-');
