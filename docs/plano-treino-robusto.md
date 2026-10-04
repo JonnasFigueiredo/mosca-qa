@@ -620,3 +620,5 @@ replicação (1251–1270) iguais ao registro do mundo 2.
 **04/10, rotina do mundo, calibração e3 (mundo 2 com plataformas iguais (21 mm, 7 mm de altura) e a atração aprendida lida nos MBONs, 240 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1131, 1132, 1133. Achou o bug em 0,11 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 142,81 s de cérebro; 5,89 provas por versão. Por sessão: 1131 000, 1132 100, 1133 000. `docs/medicoes/qa-mundo-calib-e3.json`.
 
 **04/10, rotina do mundo, calibração e4 (como e3, com 360 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1141, 1142, 1143. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 17,91 s de cérebro; 5 provas por versão. Por sessão: 1141 001, 1142 010, 1143 001. `docs/medicoes/qa-mundo-calib-e4.json`.
+
+**04/10, rotina do mundo: parou na calibração.** Nenhum degrau da escada chegou a 0,4 das versões de treino com bug (melhor: e4, 0,33). Sem recompensa no treino, a série não mediria aprendizado: negativo do mundo, não do cérebro.
