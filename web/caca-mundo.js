@@ -33,17 +33,34 @@
   // o mundo (02/10, para a apresentação): cinco objetos de cozinha na bancada, um por família de ações, em alturas
   // diferentes; em cima de cada um, as plaquinhas das ações daquela família. Ir de uma plataforma a outra pede subir a
   // parede ou voar (os comportamentos da Cozinha). Cheiro só nas plaquinhas; as plataformas não cheiram nem têm gosto
-  const PLATAFORMAS = {
+  const QS = new URLSearchParams(location.search);
+  const PLAT_FAMILIA = {
     carrinho: { forma: 'plat-tabua', r: 'Carrinho · tábua de corte', raio: 18, h: 5 },
     estoque: { forma: 'plat-prato', r: 'Estoque · pires', raio: 17, h: 8 },
     pagamento: { forma: 'plat-lata', r: 'Pagamento · lata de atum', raio: 16, h: 12 },
     cancelamento: { forma: 'plat-tampa', r: 'Cancelamento · tampa de pote', raio: 15, h: 9 },
     cupom: { forma: 'plat-cortica', r: 'Cupom · porta-copo de cortiça', raio: 17, h: 3.5 },
   };
+  // (04/10) uma plataforma por característica da ação, em vez de por família. Com plataformas por família, a
+  // característica premiada ("repetida") ficava em 4 das 5 plataformas e, em cima de cada uma, ela prova todas as
+  // plaquinhas (a novidade tem gosto doce): a memória do cheiro não tinha onde virar escolha (série qa-mundo-d1: as duas
+  // condições no acaso). Por característica, ir até a plataforma pelo cheiro é a escolha, como uma mosca que aprendeu um
+  // cheiro e vai até a fonte dele. &grupos=familia volta ao mundo anterior
+  const PLAT_CARACTERISTICA = {
+    normal: { forma: 'plat-tabua', r: 'Ação normal · tábua de corte', raio: 22, h: 5 },
+    repetida: { forma: 'plat-prato', r: 'Repetição · pires', raio: 20, h: 8 },
+    limite: { forma: 'plat-lata', r: 'No limite · lata de atum', raio: 17, h: 12 },
+    zero: { forma: 'plat-tampa', r: 'Valor zero · tampa de pote', raio: 15, h: 9 },
+    negativa: { forma: 'plat-cortica', r: 'Valor negativo · porta-copo de cortiça', raio: 13, h: 3.5 },
+  };
+  const POR_FAMILIA = QS.get('grupos') === 'familia';
+  const PLATAFORMAS = POR_FAMILIA ? PLAT_FAMILIA : PLAT_CARACTERISTICA;
+  const grupoDe = a => (POR_FAMILIA ? a.familia : a.entrada);
+  const RAIO_CIRCULO = POR_FAMILIA ? 38 : 44;   // as plataformas por característica são maiores (até 5 plaquinhas)
   // em círculo, a 38 mm de onde ela começa (o centro de SB.start, 100 × 108,6 mm), uma a cada 72° (03/10): todas igualmente
   // perto. Antes, as plataformas do treino (pagamento, cancelamento) ficavam do lado oposto ao início e, em 18 versões de
   // treino da calibração, ela não provou nenhuma plaquinha delas (só carrinho, estoque e cupom): sem recompensa possível
-  const LUGARES = [0, 1, 2, 3, 4].map(i => { const a = i * 2 * Math.PI / 5; return [100 + 38 * Math.sin(a), 108.6 - 38 * Math.cos(a)]; });
+  const LUGARES = [0, 1, 2, 3, 4].map(i => { const a = i * 2 * Math.PI / 5; return [100 + RAIO_CIRCULO * Math.sin(a), 108.6 - RAIO_CIRCULO * Math.cos(a)]; });
   Object.values(PLATAFORMAS).forEach((p, i) => { [p.x, p.y] = LUGARES[i]; });
   // a bandeja (03/10): as plataformas ficam numa bandeja de madeira, 14 mm além delas, e não soltas na bancada de 20 cm.
   // Na bancada inteira ela passava minutos longe de tudo (diagnóstico com _diag_mundo.mjs): numa área menor, encontra
@@ -54,7 +71,6 @@
   })();
   // variantes do mundo na URL (a escada de calibração escrita antes, scripts/madrugada_mundo.mjs):
   // &alcance=N (mm) muda o alcance do cheiro das plaquinhas (padrão 20 mm, o do mundo medido d1)
-  const QS = new URLSearchParams(location.search);
   const ALCANCE = Math.max(4, +QS.get('alcance') || 20);
   // &limtreino=N: limite de cada versão de treino (s de cérebro; padrão 240)
   const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
@@ -66,10 +82,10 @@
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
     plataformas['p-' + fam] = { r: p.r, familia: fam, x: p.x, y: p.y, w: 2 * p.raio, d: 2 * p.raio, h: p.h, forma: p.forma, gosto: null, porcoes: 0, alcance: 0, cheiro: {} };
-    const acoes = Q.ACOES.filter(a => a.familia === fam), n = acoes.length;
-    // as plaquinhas num anel em cima da plataforma (10 × 6,5 mm), viradas para fora
+    const acoes = Q.ACOES.filter(a => grupoDe(a) === fam), n = acoes.length;
+    // as plaquinhas num anel em cima da plataforma; com 4 ou 5, um anel mais aberto para não se encostarem
     acoes.forEach((a, i) => {
-      const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * 0.52;
+      const ang = -Math.PI / 2 + 2 * Math.PI * i / n, rr = n === 1 ? 0 : p.raio * (n >= 4 ? 0.6 : 0.52);
       placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: p.x + Math.cos(ang) * rr, y: p.y + Math.sin(ang) * rr, base: p.h,
         w: PLACA, d: +(PLACA * 0.65).toFixed(2), h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
     });
@@ -79,7 +95,7 @@
   // ela vai mais para uns lados que para outros (a luz da janela, o que é mais claro), e com lugares fixos as famílias
   // do treino ficavam onde ela quase não ia. Sorteando, o lugar não diz onde está o defeito: só o cheiro diz
   const posPlaca = {};
-  for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[o.acao.familia]; posPlaca[id] = [o.x - p.x, o.y - p.y]; }
+  for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[grupoDe(o.acao)]; posPlaca[id] = [o.x - p.x, o.y - p.y]; }
   function sortearLugares() {
     const ordem = [0, 1, 2, 3, 4];
     for (let i = 4; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ordem[i], ordem[j]] = [ordem[j], ordem[i]]; }
@@ -87,7 +103,7 @@
       [p.x, p.y] = LUGARES[ordem[i]];
       Object.assign(plataformas['p-' + fam], { x: p.x, y: p.y });
     });
-    for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[o.acao.familia]; o.x = p.x + posPlaca[id][0]; o.y = p.y + posPlaca[id][1]; }
+    for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[grupoDe(o.acao)]; o.x = p.x + posPlaca[id][0]; o.y = p.y + posPlaca[id][1]; }
     if (typeof SB !== 'undefined') {
       SB.app = null; if (typeof SBR !== 'undefined') SBR.built = '';   // refaz o mundo (sbBuild) e o desenho
       if (APP.id === 'caca' && typeof sbBuild === 'function') sbBuild();

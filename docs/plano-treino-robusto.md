@@ -568,3 +568,36 @@ Limite honesto: escolher a medida depois do piloto é decisão tomada vendo dado
 confirmatória e a replicação, com sementes novas, é que contam.
 
 **04/10, rotina do mundo: qa-mundo-d1 (mundo d1 (plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino), 6 versões de treino): negativo.** Sementes 901–920 (40 sessões válidas). fração das provas do teste na característica premiada, treinada − congelada (principal, IC95 > 0): -0,02 IC95 [-0.09,0.05] p 0.485 dz -0.14; tempo até o 1º bug na transferência (secundário, deve ser < 0): -3,22 IC95 [-31.44,24.11] p 0.829 dz -0.05; provas até o 1º bug na transferência: 1,23 IC95 [0.13,2.33] p 0.03 dz 0.49; controle (não deve melhorar), tempo: 19,14 IC95 [-13.99,50.58] p 0.263 dz 0.25; bugs no treino, treinada 3,3 e congelada 3,15. Resumo: `docs/medicoes/qa-mundo-d1-resumo.json`.
+
+## Mundo 2 (04/10, escrito antes de rodar)
+
+**O que a série qa-mundo-d1 mostrou (negativo).** 20 pares, sementes 901–920, 40 sessões válidas. Principal: fração das
+provas do teste na característica premiada, treinada 0,26 e congelada 0,28; diferença −0,02, IC95 [−0,09; 0,05],
+p 0,49. Secundários: tempo até o primeiro bug na transferência −3,2 s [−31; 24]; provas até o primeiro bug +1,2
+[0,1; 2,3] (a treinada precisou de *mais* provas); bugs no treino 3,3 e 3,15 por sessão (a recompensa aconteceu nas
+duas, em ~53% das versões). O efeito do piloto (+0,20 em 4 sementes) não se repetiu: era ruído. As duas frações
+batem com o acaso (4 das 15 ações são "repetida": 0,27).
+
+**Por quê (análise depois do resultado, declarada como tal).** No mundo por família a memória não tinha como virar
+escolha: (1) em cima de uma plataforma ela prova todas as plaquinhas, porque a regra "o que ainda não provou tem gosto
+doce" vale igual para todas, e as plaquinhas ficam a ~9 mm umas das outras, perto demais para o gradiente de cheiro
+separar; (2) a característica premiada está em 4 das 5 plataformas, então escolher a plataforma também não exprime a
+preferência. É um limite do desenho do mundo, não um resultado sobre o cérebro. A alternativa escrita antes (9
+versões de treino, sementes 1001+) foi parada logo no início, sem sessão concluída, porque mais treino não muda esse
+limite; a decisão foi tomada olhando o resultado da série e fica registrada assim.
+
+**Mundo 2.** Uma plataforma por característica da ação: ação normal (tábua, 5 plaquinhas), repetição (pires, 4),
+no limite (lata, 3), valor zero (tampa, 2), valor negativo (cortiça, 1); em círculo a 44 mm do início, lugares
+sorteados a cada versão, ela volta ao centro a cada versão; plaquinhas de 13 mm, alcance do cheiro de 20 mm
+(`&grupos=familia` volta ao mundo 1). Ir até a plataforma pelo cheiro passa a ser a escolha. Os defeitos do treino
+(cobrança dupla, estorno duplo) e os do teste de transferência (cupom duplo, reserva dupla) ficam todos na plataforma
+da repetição; a transferência é de ações de outras famílias com o mesmo cheiro de característica (DC1+VA6), e a
+plataforma muda de lugar a cada versão.
+
+**Rotina (`scripts/madrugada_mundo.mjs --n 20`), escrita antes de rodar:** calibração e1 (só treino, 3 sementes,
+1101–1103; ≥ 6 de 9 versões de treino com bug); se não passar, e2 com 420 s por versão (1111–1113). Sem piloto: N = 20
+fixado agora. Série confirmatória com sementes 1201–1220, mesmo protocolo (6 versões de treino, teste com 3 versões de
+180 s). **Critério principal:** fração das provas do teste na característica premiada, treinada − congelada, IC95 > 0.
+Secundários relatados: tempo e provas até o primeiro bug na transferência, controle, bugs no treino. Se passar,
+replicação com sementes 1251–1270; se não passar, a rotina para e o negativo é registrado (sem alternativa). Cópia
+congelada nova de `web/` (a versão do commit deste registro).

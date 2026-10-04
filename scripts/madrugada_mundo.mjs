@@ -14,6 +14,8 @@ import { readFileSync, existsSync, appendFileSync, writeFileSync, cpSync } from 
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const PARALELOS = +arg('paralelos', 3);
+// --n N: sem piloto, a série com N pares (mundo 2: N = 20, fixado antes)
+const N_FIXO = +arg('n', 0);
 // a rotina mede uma cópia congelada de web/ (_tmp/_web_mundo, servida na porta 8767): mudanças na página durante a
 // série não entram na medida. A cópia é feita uma vez, no início (ou reaproveitada ao retomar)
 const PORTA = '8767', COPIA = '_tmp/_web_mundo';
@@ -35,13 +37,10 @@ const salva = () => writeFileSync(ESTADO, JSON.stringify(est, null, 1));
 
 // a escada do mundo, escrita antes
 const ESCADA = [
-  // Histórico (ver as notas no plano): m0 interrompido; c1 (bandeja, subida, 841–843) e c2 (plaquinhas de 13 mm,
-  // alcance 20 mm, 881–883) não passaram: ela nunca chegava às plataformas das famílias do treino (pagamento,
-  // cancelamento), do lado oposto ao início. (03/10, 14h50) escada nova, escrita antes de rodar: as plataformas em
-  // círculo em volta do início, todas a 38 mm, trocando de lugar por sorteio a cada versão. (15h10) d1 refeito com
-  // sementes novas: ela volta ao centro a cada versão (a d1 de 931–933 foi descartada, ver o plano)
-  { id: 'd1', extra: '&placa=13&alcance=20', desc: 'plataformas em círculo com lugares sorteados a cada versão, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino', sementes: seq(971, 3) },
-  { id: 'd2', extra: '&placa=13&alcance=20&limtreino=420', desc: 'como d1, com 420 s por versão de treino', sementes: seq(981, 3) },
+  // Histórico (ver as notas no plano): m0, c1, c2 (mundo por família) e d1 (círculo sorteado: passou na calibração; série
+  // qa-mundo-d1 negativa). (04/10, 14h50) mundo 2, escrito antes de rodar: uma plataforma por característica da ação
+  { id: 'e1', extra: '', desc: 'mundo 2: plataformas por característica, em círculo sorteado, plaquinhas de 13 mm, alcance de 20 mm, 240 s por versão de treino', sementes: seq(1101, 3) },
+  { id: 'e2', extra: '&limtreino=420', desc: 'como e1, com 420 s por versão de treino', sementes: seq(1111, 3) },
 ];
 const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 
@@ -106,7 +105,8 @@ if (!est.degrau) {
 }
 const D = ESCADA.find(d => d.id === est.degrau);
 
-// 2. piloto
+// 2. piloto (sem piloto com --n)
+if (!est.N && N_FIXO) { est.N = N_FIXO; est.etapa = 'piloto'; salva(); log(`sem piloto: N = ${N_FIXO}, fixado antes`); }
 if (!est.N) {
   const prefixo = `qa-mundo-piloto-${D.id}`;
   await rodaCompleto(`docs/medicoes/${prefixo}.json`, seq(831, 4), 'ativa,congelada', D.extra, ['--treinos', '6']);
@@ -125,8 +125,8 @@ if (!est.N) {
 
 // 3 e 4. confirmatória e replicação (e a alternativa escrita antes, se a principal não passar)
 const SERIES = [
-  { prefixo: `qa-mundo-${D.id}`, treinos: '6', sementes: seq(901, est.N), replica: seq(951, est.N), desc: `mundo ${D.id} (${D.desc}), 6 versões de treino` },
-  { prefixo: `qa-mundo-${D.id}-t9`, treinos: '9', sementes: seq(1001, est.N), replica: seq(1051, est.N), desc: `mundo ${D.id}, 9 versões de treino (alternativa escrita antes)` },
+  // mundo 2 (04/10): uma série, a replicação se passar; sem alternativa (se não passar, para e registra)
+  { prefixo: `qa-mundo-${D.id}`, treinos: '6', sementes: seq(1201, est.N), replica: seq(1251, est.N), desc: `mundo ${D.id} (${D.desc}), 6 versões de treino` },
 ];
 est.feitas ||= {};
 function criterio(r) {
