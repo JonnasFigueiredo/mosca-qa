@@ -19,7 +19,9 @@ const SAIDA = arg('saida', 'docs/medicoes/qa-mundo-piloto.json'), TIMEOUT = +arg
 const SO = arg('so', ''), EXTRA = arg('extra', '');
 // --porta: o servidor da página (8765; numa série longa, uma cópia congelada de web/ em outra porta)
 const PORTA = arg('porta', '8765');
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+// o Chrome: o do Windows, ou CHROME_PATH (Linux, máquinas da nuvem; lá também --no-sandbox)
+const CHROME = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const LINUX = process.platform === 'linux';
 try { os.setPriority(0, os.constants.priority.PRIORITY_BELOW_NORMAL); } catch { /* sem permissão: segue normal */ }
 mkdirSync('_tmp', { recursive: true });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -41,7 +43,7 @@ async function sessao(semente, condicao) {
   // o perfil do Chrome vai para _tmp do projeto (o disco C está quase cheio), com caminho absoluto
   const porta = 9300 + Math.floor(Math.random() * 600), perfil = mkdtempSync(resolve('_tmp/mosca-mundo-'));
   const url = `http://localhost:${PORTA}/?headless=1&olhosHeadless=1&caca=auto&cond=${condicao}&car=${CAR}&semente=${semente}&treinos=${TREINOS}${CURTO ? '&curto=1' : ''}${SO ? '&so=' + SO : ''}${EXTRA}&r=${Date.now()}`;
-  const proc = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`, '--disable-background-timer-throttling',
+  const proc = spawn(CHROME, [...(LINUX ? ['--no-sandbox', '--disable-dev-shm-usage'] : []), '--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`, '--disable-background-timer-throttling',
     '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', '--enable-unsafe-swiftshader', '--window-size=1400,1000', '--hide-scrollbars', '--no-first-run', url], { stdio: 'ignore' });
   const erros = [], t0 = Date.now();
   let ws;
