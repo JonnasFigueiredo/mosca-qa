@@ -645,3 +645,18 @@ calibração, série (1201–1220, N = 20), critério principal e replicação (
 **04/10, rotina do mundo, calibração f2 (como f1, com 360 s por versão de treino): não passou.** Só o treino, condição ativa, 3 versões por sessão, sementes 1161, 1162, 1163. Achou o bug em 0,33 das 9 versões (critério: ≥ 0,6); mediana do tempo até o bug 28,03 s de cérebro; 5,56 provas por versão. Por sessão: 1163 011, 1161 100, 1162 000. `docs/medicoes/qa-mundo-calib-f2.json`.
 
 **04/10, rotina do mundo: parou na calibração.** Nenhum degrau da escada chegou a 0,4 das versões de treino com bug (melhor: f1, 0,33). Sem recompensa no treino, a série não mediria aprendizado: negativo do mundo, não do cérebro.
+
+**04/10, 21h30: f1 e f2 negativos; diagnósticos da ponte memória → movimento.** f1 (cheiros trocados, plataformas
+iguais; 1151–1153): bug em 3 de 9 versões de treino; f2 (360 s; 1161–1163): 3 de 9. A rotina parou sozinha (nenhum
+degrau ≥ 0,4). Diagnósticos (`_diag_ponte.mjs`, uma rodada cada, indicativos): (1) mosca treinada no mundo f (semente
+1197): nenhum bug no treino (3% do tempo na plataforma da repetição), atração aprendida 0 o tempo todo; (2)
+condicionamento forçado (açúcar + PAM a cada 3 s em cima de uma plaquinha da repetição; sementes 1198, ativa e
+congelada): a treinada **nem chegou a pisar numa plaquinha da repetição** no treino (0 condicionamentos; 45% do tempo
+longe de todas as plataformas), e o valor aprendido lido nas sinapses ficou **negativo** em todas as plataformas
+(−0,01 a −0,14): sem recompensa, o simples cheirar por muito tempo enfraqueceu as sinapses "a favor" (do worker, não
+mexido). Resumo do que impede o resultado no mundo de plataformas: (a) ela passa quase metade do tempo longe de tudo e
+visita as plataformas com vieses fortes (luz, cheiro inato, número de plaquinhas); (b) em cima de uma plataforma prova
+todas; (c) poucas recompensas no treino; (d) a ponte lê a atração do cheiro total, não de cada lado. Próximo passo
+proposto ao usuário: uma arena de escolha, como os testes de memória olfativa com moscas reais (T-maze e arenas de
+escolha): a cada tentativa, ela parte do centro com 3 plaquinhas em volta, sorteadas como na bancada (3 visíveis), e
+escolhe andando; a escolha é a primeira que ela prova.
