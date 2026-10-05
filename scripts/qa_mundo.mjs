@@ -6,7 +6,7 @@
 //   node scripts/qa_mundo.mjs --sementes 1,2 --condicoes ativa,congelada --saida docs/medicoes/qa-mundo-piloto.json
 //        [--car repetida] [--treinos 6] [--paralelos 1] [--timeout-min 150] [--curto]
 import { spawn } from 'node:child_process';
-import { mkdirSync, rmSync, mkdtempSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, rmSync, mkdtempSync, readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import os from 'node:os';
 import { resolve } from 'node:path';
 
@@ -94,9 +94,22 @@ const feitas = new Set(existsSync(SAIDA) ? JSON.parse(readFileSync(SAIDA, 'utf8'
 const fila = SEMENTES.flatMap(s => CONDICOES.map(c => [s, c])).filter(([s, c]) => !feitas.has(s + ':' + c));
 console.log(`${hora()} ${fila.length} sessões (${SEMENTES.length} sementes × ${CONDICOES.join('/')}), ${PARALELOS} por vez → ${SAIDA}`);
 let proxima = 0;
+// --reservas arquivo.json (05/10): lista de "semente:condicao" que outra máquina roda (a nuvem); conferida antes de cada
+// sessão, junto com o que já está gravado em qualquer parte da série (<saida sem .json>-p*.json), para não repetir
+const RESERVAS = arg('reservas', '');
+function jaTem(s, c) {
+  const k = s + ':' + c;
+  try { if (RESERVAS && existsSync(RESERVAS) && JSON.parse(readFileSync(RESERVAS, 'utf8')).includes(k)) return true; } catch { /* arquivo sendo escrito */ }
+  const base = SAIDA.replace(/\.json$/, ''), pasta = base.slice(0, base.lastIndexOf('/') + 1) || './', nome = base.slice(base.lastIndexOf('/') + 1);
+  for (const f of readdirSync(pasta).filter(f => f === nome + '.json' || new RegExp('^' + nome + '-p\\d+\\.json$').test(f))) {
+    try { if (JSON.parse(readFileSync(pasta + f, 'utf8')).sessoes.some(x => !x.erro && x.semente + ':' + x.condicao === k)) return true; } catch { /* idem */ }
+  }
+  return false;
+}
 async function trabalhador() {
   while (proxima < fila.length) {
     const [s, c] = fila[proxima++];
+    if (jaTem(s, c)) { console.log(`${hora()} pula semente ${s} ${c} (feita ou reservada)`); continue; }
     console.log(`${hora()} começa semente ${s} ${c}`);
     const r = await sessao(s, c);
     r.semente ??= s; r.condicao ??= c; r.extra = EXTRA; r.so = SO || null;

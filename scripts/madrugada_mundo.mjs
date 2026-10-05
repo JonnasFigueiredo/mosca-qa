@@ -10,7 +10,7 @@
 // Cada etapa anota no plano, grava em docs/medicoes e commita (autor: o dono do repositório).
 //   node scripts/madrugada_mundo.mjs [--paralelos 3] [--desde confirmatoria]
 import { spawn, execSync } from 'node:child_process';
-import { readFileSync, existsSync, appendFileSync, writeFileSync, cpSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, writeFileSync, cpSync, readdirSync, statSync } from 'node:fs';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const PARALELOS = +arg('paralelos', 3);
@@ -159,14 +159,31 @@ function criterio(r) {
     `${txt('provas até o 1º bug na transferência:', p.transferencia)}; ${txt('controle (não deve melhorar), tempo:', p.tempo_controle)}; ` +
     `bugs no treino, treinada ${f(r.por_condicao.ativa?.bugs_treino)} e congelada ${f(r.por_condicao.congelada?.bugs_treino)}` };
 }
+// (05/10) parte das sementes pode rodar em outra máquina (a nuvem; reservas em _tmp/_reservas_nuvem.json, resultados em
+// docs/medicoes/<prefixo>-p*.json): a série só fecha quando todas as sessões estão gravadas em alguma parte
+function sessoesGravadas(prefixo) {
+  const k = new Set();
+  for (const f of readdirSync('docs/medicoes').filter(f => f === prefixo + '.json' || new RegExp('^' + prefixo + '-p\\d+\\.json$').test(f)))
+    for (const x of JSON.parse(readFileSync('docs/medicoes/' + f, 'utf8')).sessoes) if (!x.erro) k.add(x.semente + ':' + x.condicao);
+  return k;
+}
 async function serie(prefixo, sementes, treinos, desc) {
   if (est.feitas[prefixo]) return est.feitas[prefixo];
-  await rodaCompleto(`docs/medicoes/${prefixo}.json`, sementes, 'ativa,congelada', D.extra, ['--treinos', treinos]);
+  await rodaCompleto(`docs/medicoes/${prefixo}.json`, sementes, 'ativa,congelada', D.extra, ['--treinos', treinos, '--reservas', '_tmp/_reservas_nuvem.json']);
+  for (;;) {
+    const g = sessoesGravadas(prefixo), faltam = sementes.flatMap(x => ['ativa', 'congelada'].map(c => x + ':' + c)).filter(k => !g.has(k));
+    if (!faltam.length) break;
+    // reserva vencida (a nuvem não entregou em 12 h): roda aqui mesmo
+    const venc = existsSync('_tmp/_reservas_nuvem.json') ? Date.now() - statSync('_tmp/_reservas_nuvem.json').mtimeMs > 12 * 3600e3 : true;
+    if (venc) { log(`${prefixo}: faltam ${faltam.length} sessões da nuvem; rodo aqui`); try { writeFileSync('_tmp/_reservas_nuvem.json', '[]'); } catch { /* ok */ } await rodaCompleto(`docs/medicoes/${prefixo}.json`, sementes, 'ativa,congelada', D.extra, ['--treinos', treinos]); continue; }
+    log(`${prefixo}: esperando ${faltam.length} sessões da nuvem`);
+    await new Promise(r => setTimeout(r, 10 * 60e3));
+  }
   const r = resumo(prefixo), c = criterio(r);
   log(`${prefixo}: ${c.texto} → ${c.passou ? 'PASSOU' : 'não passou'}`);
   anota(`**${dia()}, rotina do mundo: ${prefixo} (${desc}): ${c.passou ? 'PASSOU' : 'negativo'}.** Sementes ${sementes[0]}–${sementes.at(-1)} ` +
     `(${r.sessoes_validas} sessões válidas). ${c.texto}. Resumo: \`docs/medicoes/${prefixo}-resumo.json\`.`,
-    [`docs/medicoes/${prefixo}.json`, `docs/medicoes/${prefixo}-resumo.json`], `Rotina do mundo: ${prefixo} ${c.passou ? 'passou' : 'negativo'}`);
+    [`docs/medicoes/${prefixo}*.json`], `Rotina do mundo: ${prefixo} ${c.passou ? 'passou' : 'negativo'}`);
   est.feitas[prefixo] = { passou: c.passou }; salva();
   return est.feitas[prefixo];
 }
