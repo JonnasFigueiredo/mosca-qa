@@ -40,9 +40,15 @@ function estat(d) {
 // medidas de uma sessão
 function medidas(s) {
   const car = s.caracteristica || 'repetida', tr = s.teste.filter(v => !v.controle), ct = s.teste.filter(v => v.controle);
-  const provas = v => v.primeiro ?? (v.provas + 1), tempo = v => v.tempo ?? v.duracao;
+  // arena de escolha (sessões com "tentativas"): primeiro = tentativas até o primeiro bug; 31 quando não achou em 30,
+  // como as ações da bancada. escolha_premiada = fração das tentativas do teste com uma ação da característica premiada
+  // visível em que ela escolheu uma dessas (a medida de escolha da bancada)
+  const arena = !!s.teste[0]?.tentativas;
+  const provas = v => v.primeiro ?? (arena ? 31 : v.provas + 1), tempo = v => v.tempo ?? v.duracao;
   const todas = s.teste.flatMap(v => v.provadas || []), prem = todas.filter(a => a.endsWith(':' + car)).length;
+  const tent = arena ? s.teste.flatMap(v => v.tentativas).filter(t => t.escolha && t.opcoes.some(a => a.endsWith(':' + car))) : [];
   return {
+    escolha_premiada: tent.length ? tent.filter(t => t.escolha.endsWith(':' + car)).length / tent.length : null,
     transferencia: media(tr.map(provas)), controle: media(ct.map(provas)),
     tempo_transferencia: media(tr.map(tempo)), tempo_controle: media(ct.map(tempo)),
     fracao_premiada: todas.length ? prem / todas.length : null,
@@ -52,7 +58,7 @@ function medidas(s) {
 const pega = (sem, c) => sess.filter(s => s.semente === sem && s.condicao === c).at(-1);
 const sementes = [...new Set(sess.map(s => s.semente))].sort((a, b) => a - b);
 const condicoes = [...new Set(sess.map(s => s.condicao))];
-const chaves = ['transferencia', 'controle', 'tempo_transferencia', 'tempo_controle', 'fracao_premiada', 'bugs_treino', 'provas_teste'];
+const chaves = ['escolha_premiada', 'transferencia', 'controle', 'tempo_transferencia', 'tempo_controle', 'fracao_premiada', 'bugs_treino', 'provas_teste'];
 const por = Object.fromEntries(condicoes.map(c => {
   const ms = sementes.map(s => pega(s, c)).filter(Boolean).map(medidas);
   return [c, { sementes: ms.length, ...Object.fromEntries(chaves.map(k => [k, r2(media(ms.map(m => m[k]).filter(v => v != null)))])) }];

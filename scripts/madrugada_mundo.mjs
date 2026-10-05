@@ -16,6 +16,8 @@ const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ?
 const PARALELOS = +arg('paralelos', 3);
 // --n N: sem piloto, a série com N pares (mundo 2: N = 20, fixado antes)
 const N_FIXO = +arg('n', 0);
+// --arena (04/10): a arena de escolha; sem calibração do mundo e sem piloto (o protocolo é o da bancada 2); N = 20
+const ARENA = process.argv.includes('--arena');
 // a rotina mede uma cópia congelada de web/ (_tmp/_web_mundo, servida na porta 8767): mudanças na página durante a
 // série não entram na medida. A cópia é feita uma vez, no início (ou reaproveitada ao retomar)
 const PORTA = '8767', COPIA = '_tmp/_web_mundo';
@@ -49,7 +51,7 @@ const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 function roda(saida, sementes, condicoes, extra, outros = []) {
   return new Promise(ok => {
     const args = ['scripts/qa_mundo.mjs', '--sementes', sementes.join(','), '--condicoes', condicoes, '--paralelos', String(PARALELOS),
-      '--timeout-min', '150', '--porta', PORTA, '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
+      '--timeout-min', '240', '--porta', PORTA, '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
     log('roda: node ' + args.join(' '));
     const p = spawn('node', args, { stdio: ['ignore', 'pipe', 'pipe'] });
     p.stdout.on('data', d => appendFileSync(LOG, d));
@@ -76,6 +78,7 @@ const dia = () => new Date().toLocaleDateString('pt-BR').slice(0, 5);
 if (!existsSync(COPIA + '/VERSAO.txt')) try { execSync('git rev-parse --short HEAD > ' + COPIA + '/VERSAO.txt'); } catch { /* sem git */ }
 log('início da rotina do mundo' + (est.etapa ? ` (retomando depois de "${est.etapa}")` : ''));
 
+if (ARENA && !est.degrau) { est.degrau = 'arena'; est.N = N_FIXO || 20; est.etapa = 'piloto'; salva(); log(`arena de escolha: sem calibração nem piloto, N = ${est.N}`); }
 // 1. calibração
 if (!est.degrau) {
   let melhor = null;
@@ -105,7 +108,7 @@ if (!est.degrau) {
   }
   est.etapa = 'calibracao'; salva();
 }
-const D = ESCADA.find(d => d.id === est.degrau);
+const D = ARENA ? { id: 'arena', extra: '&arena=1&cheiros=trocados', desc: 'arena de escolha (3 plaquinhas por tentativa, como a bancada 2), cheiros trocados' } : ESCADA.find(d => d.id === est.degrau);
 
 // 2. piloto (sem piloto com --n)
 if (!est.N && N_FIXO) { est.N = N_FIXO; est.etapa = 'piloto'; salva(); log(`sem piloto: N = ${N_FIXO}, fixado antes`); }
@@ -126,12 +129,24 @@ if (!est.N) {
 }
 
 // 3 e 4. confirmatória e replicação (e a alternativa escrita antes, se a principal não passar)
-const SERIES = [
+const SERIES = ARENA ? [
+  { prefixo: 'qa-mundo-arena', treinos: '6', sementes: seq(1401, est.N), replica: seq(1451, est.N), desc: 'arena de escolha, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas' },
+] : [
   // mundo 2 (04/10): uma série, a replicação se passar; sem alternativa (se não passar, para e registra)
   { prefixo: `qa-mundo-${D.id}`, treinos: '6', sementes: seq(1201, est.N), replica: seq(1251, est.N), desc: `mundo ${D.id} (${D.desc}), 6 versões de treino` },
 ];
 est.feitas ||= {};
 function criterio(r) {
+  if (ARENA) {
+    // arena (escrito antes de rodar, 04/10): o critério principal da bancada 2, tentativas até o primeiro bug nas versões de
+    // transferência, treinada − congelada, IC95 < 0; secundário: escolha da característica premiada quando visível (> 0)
+    const p = r.ativa_menos_congelada, t = p.transferencia || {};
+    const passou = !!(t.ic95 && t.ic95[1] < 0);
+    const txt = (n, x) => `${n} ${f(x?.media)} IC95 ${JSON.stringify(x?.ic95)} p ${x?.p_bootstrap} dz ${x?.dz}`;
+    return { passou, texto: `${txt('tentativas até o 1º bug na transferência, treinada − congelada (principal, IC95 < 0):', t)}; ` +
+      `${txt('escolha da característica premiada quando visível (secundário, > 0):', p.escolha_premiada)}; ${txt('controle (não deve melhorar):', p.controle)}; ` +
+      `bugs no treino, treinada ${f(r.por_condicao.ativa?.bugs_treino)} e congelada ${f(r.por_condicao.congelada?.bugs_treino)}` };
+  }
   // (03/10, 19h30, antes de qualquer sessão da série confirmatória) principal trocado depois do piloto: o tempo até o
   // primeiro bug ficou no teto (180 s sem achar na maioria das versões de teste, nas duas condições) e quase não varia;
   // a fração das provas do teste em plaquinhas da característica premiada mede direto se a memória guia as escolhas.

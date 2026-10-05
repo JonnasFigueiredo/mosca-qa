@@ -660,3 +660,27 @@ todas; (c) poucas recompensas no treino; (d) a ponte lê a atração do cheiro t
 proposto ao usuário: uma arena de escolha, como os testes de memória olfativa com moscas reais (T-maze e arenas de
 escolha): a cada tentativa, ela parte do centro com 3 plaquinhas em volta, sorteadas como na bancada (3 visíveis), e
 escolhe andando; a escolha é a primeira que ela prova.
+
+## Arena de escolha (04/10, escrita antes de rodar; decisão do usuário)
+
+O usuário quer o resultado final com a mosca 3D. Proposta aceita: em vez do mundo de plataformas, uma **arena de escolha**,
+como os testes de memória olfativa com moscas reais (T-maze, arenas de escolha) e como a bancada 2 que deu positivo e
+replicou. `web/caca-mundo.js` com `&arena=1`: a cada tentativa, 3 plaquinhas no chão da bandeja, a 18 mm do centro, em
+ângulos sorteados; são as 3 ações visíveis da bancada, com o mesmo gerador e as mesmas sementes (treino i: semente × 100
++ i; teste i: semente × 100 + 50 + i), iguais nas duas condições. Ela parte do centro, anda até cada plaquinha (os
+olhos e o cérebro dirigem; **regra declarada:** soma-se uma virada para a próxima que falta, sem a qual uma tentativa
+levava ~170 s), **para 1,5 s em cima cheirando** (cheiro local, alcance de 6 mm; a valência é a média dos MBONs no
+último 1 s, a mesma leitura da bancada), e a cheirada fica fosca. Depois das três, a escolha pela **regra da bancada**
+(softmax da valência, T = 0,15) acende a escolhida e lhe dá o "gosto doce"; ela anda até lá e prova com a probóscide
+(saída `proboscide` do cérebro). Bug novo no treino: açúcar + PAM, e ela fica 2,5 s em cima (o cheiro pareia com a
+dopamina). Tentativa sem escolha em 90 s conta como tentativa sem ação. Cheiros trocados (a repetição cheira a
+VL2a+VM6v; DC1+VA6 é evitado pela mosca com corpo, ver acima). Teste de funcionamento (semente 1303, 158 s de cérebro):
+~20 s por tentativa, 7 tentativas, o bug do treino achado na quinta, com recompensa.
+
+**Protocolo e critério (os da bancada 2):** treino com 6 versões de 20 tentativas (recompensa em cada bug novo); teste
+com as 3 versões novas, sem recompensa, até o primeiro bug ou 30 tentativas. **Critério principal:** tentativas até o
+primeiro bug nas versões de transferência (31 quando não achou), treinada − congelada, IC95 do bootstrap < 0.
+Secundários relatados: escolha da característica premiada quando visível (treinada − congelada > 0), controle (não deve
+melhorar), bugs no treino. N = 20 pares (sementes 1401–1420), sem calibração nem piloto (o protocolo e os critérios são
+os da bancada); se passar, replicação com 1451–1470. Rotina: `node scripts/madrugada_mundo.mjs --arena --n 20`, cópia
+congelada nova de `web/` (a versão do commit deste registro), 3 sessões por vez, até 240 min por sessão.

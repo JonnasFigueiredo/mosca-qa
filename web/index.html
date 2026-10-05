@@ -1013,7 +1013,8 @@ function stepBody(dt, counts, destino = worker) {
   WALK = SB.on && APP.mundo ? WALK_COZINHA_3D : WALK_PAGINA;
   const fugindoCheiro = SB.on && APP.mundo && !SB.fisico && !f.flying && f.fleeDir;
   f.speed = marcha.andar * WALK * (1 - clamp(f.prob / 60, 0, 0.9)) * (fugindoCheiro ? 1 : 1 - 0.45 * f.aversion) * (1 - 0.6 * f.atrAprendida)
-    * (f.buscaR ? f.buscaR.velocidade : 1);
+    * (f.buscaR ? f.buscaR.velocidade : 1)
+    * (f.cheirando ? 0 : 1);   // arena de escolha da caça a bugs (caca-mundo.js): parada cheirando uma plaquinha
 
   // direção: desequilíbrio E/D dos descendentes (cérebro) + cheiro (corpo) + ruído
   const dnDiff = outRate.dn_L - outRate.dn_R;
@@ -1069,6 +1070,9 @@ function stepBody(dt, counts, destino = worker) {
       if (Math.abs(d) > 0.4) turn += 8 * perto * Math.sign(d);
     }
   }
+  // arena de escolha da caça a bugs (caca-mundo.js, regra declarada): o caminho até a próxima plaquinha soma uma virada
+  // para ela; a direção do cérebro, o cheiro e o ruído continuam somando
+  if (f.alvoArena && !f.flying) { let d = Math.atan2(f.alvoArena[0] - f.x, -(f.alvoArena[1] - f.y)) - f.th; d = Math.atan2(Math.sin(d), Math.cos(d)); turn += 4 * d; }
   turn *= marcha.girar;
   f.giroCorpo = turn;
   if (SB.on && APP.mundo) f.fasePatas = (f.fasePatas || 0) + dt * 2 * Math.PI * 9 * Math.min(1.5, f.speed / WALK + 0.15 * Math.abs(turn));

@@ -58,7 +58,15 @@
   // onde ela ia mais que o cheiro
   if (QS.get('iguais') === '1') for (const p of Object.values(PLAT_CARACTERISTICA)) { p.raio = 21; p.h = 7; }
   const POR_FAMILIA = QS.get('grupos') === 'familia';
-  const PLATAFORMAS = POR_FAMILIA ? PLAT_FAMILIA : PLAT_CARACTERISTICA;
+  // &arena=1 (04/10): a arena de escolha, como os testes de memória olfativa com moscas reais (T-maze, arenas de escolha)
+  // e como a bancada sem corpo que deu positivo: a cada tentativa, 3 plaquinhas no chão em volta do centro (as 3 ações
+  // visíveis da bancada, sorteadas antes e iguais nas duas condições); ela anda até cada uma (os olhos a levam ao que é
+  // claro), para 1 s em cima cheirando (a valência dos MBONs nesse segundo é a do cérebro), a cheirada fica fosca; depois
+  // das três, a escolha pela mesma regra da bancada (softmax da valência, T = 0,15) acende a escolhida e lhe dá o "gosto
+  // doce"; ela anda até lá e prova com a probóscide. Sem plataformas
+  const ARENA = QS.get('arena') === '1';
+  const PLATAFORMAS = ARENA ? {} : POR_FAMILIA ? PLAT_FAMILIA : PLAT_CARACTERISTICA;
+  const CENTRO = [100, 108.6], ARENA_R = 18;
   const grupoDe = a => (POR_FAMILIA ? a.familia : a.entrada);
   const RAIO_CIRCULO = POR_FAMILIA ? 38 : 44;   // as plataformas por característica são maiores (até 5 plaquinhas)
   // em círculo, a 38 mm de onde ela começa (o centro de SB.start, 100 × 108,6 mm), uma a cada 72° (03/10): todas igualmente
@@ -69,13 +77,13 @@
   // a bandeja (03/10): as plataformas ficam numa bandeja de madeira, 14 mm além delas, e não soltas na bancada de 20 cm.
   // Na bancada inteira ela passava minutos longe de tudo (diagnóstico com _diag_mundo.mjs): numa área menor, encontra
   // as plataformas com mais frequência. Regra do mundo, declarada; a borda aparece no 3D e ela se afasta dela
-  const BANDEJA = (() => {
+  const BANDEJA = ARENA ? [CENTRO[0] - 40, CENTRO[1] - 40, CENTRO[0] + 40, CENTRO[1] + 40] : (() => {
     const v = Object.values(PLATAFORMAS), m = 14;
     return [Math.min(...v.map(p => p.x - p.raio)) - m, Math.min(...v.map(p => p.y - p.raio)) - m, Math.max(...v.map(p => p.x + p.raio)) + m, Math.max(...v.map(p => p.y + p.raio)) + m];
   })();
   // variantes do mundo na URL (a escada de calibração escrita antes, scripts/madrugada_mundo.mjs):
   // &alcance=N (mm) muda o alcance do cheiro das plaquinhas (padrão 20 mm, o do mundo medido d1)
-  const ALCANCE = Math.max(4, +QS.get('alcance') || 20);
+  const ALCANCE = Math.max(4, +QS.get('alcance') || (ARENA ? 6 : 20));   // na arena, cheiro local: em cima de uma plaquinha, ela sente essa
   // &limtreino=N: limite de cada versão de treino (s de cérebro; padrão 240)
   const LIM_TREINO = Math.max(30, +QS.get('limtreino') || 240);
   // &placa=N: largura das plaquinhas (mm; padrão 13, o do mundo medido d1; profundidade 0,65 × a largura)
@@ -94,12 +102,15 @@
         w: PLACA, d: +(PLACA * 0.65).toFixed(2), h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} };
     });
   }
+  // na arena, as plaquinhas fora da tentativa ficam longe da bandeja (fora do mundo dela)
+  if (ARENA) Q.ACOES.forEach((a, i) => { placas[idDe(a)] = { r: ACAO_TXT[a.id], acao: a, x: 2000 + 40 * i, y: 2000, base: 0,
+    w: PLACA, d: +(PLACA * 0.65).toFixed(2), h: 0.4, forma: 'placa', gosto: 'teste', porcoes: 0, alcance: ALCANCE, cheiro: {} }; });
   const objetos = { ...plataformas, ...placas };
   // a cada versão do sistema, as plataformas trocam de lugar no círculo, por sorteio (03/10, regra do mundo, declarada):
   // ela vai mais para uns lados que para outros (a luz da janela, o que é mais claro), e com lugares fixos as famílias
   // do treino ficavam onde ela quase não ia. Sorteando, o lugar não diz onde está o defeito: só o cheiro diz
   const posPlaca = {};
-  for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[grupoDe(o.acao)]; posPlaca[id] = [o.x - p.x, o.y - p.y]; }
+  if (!ARENA) for (const [id, o] of Object.entries(placas)) { const p = PLATAFORMAS[grupoDe(o.acao)]; posPlaca[id] = [o.x - p.x, o.y - p.y]; }
   function sortearLugares() {
     const ordem = [0, 1, 2, 3, 4];
     for (let i = 4; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ordem[i], ordem[j]] = [ordem[j], ordem[i]]; }
@@ -187,13 +198,84 @@
 
   const C = { fase: 'livre', car: 'repetida', versoes: [], vi: -1, sis: null, achados: new Set(), provas: 0, t0: 0, bugs: [], teste: [], treino: [], iv: 0, recompensa: true };
   const agoraS = () => brainT / 1000;
+
+  // ── arena de escolha (&arena=1) ──
+  const gerador = semente => { let s = semente >>> 0; return () => (s = (Math.imul(s, 1664525) + 1013904223) >>> 0) / 4294967296; };
+  // as 3 ações visíveis de cada tentativa, sorteadas antes com o mesmo gerador e as mesmas sementes da bancada
+  // (scripts/qa_abstrato.mjs, visiveis): iguais nas duas condições e iguais às da bancada para a mesma semente
+  function visiveis(semente, n) {
+    const r = gerador(semente), out = [];
+    for (let i = 0; i < n; i++) { const ids = [...Q.ACOES]; for (let k = ids.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [ids[k], ids[j]] = [ids[j], ids[k]]; } out.push(ids.slice(0, 3)); }
+    return out;
+  }
+  const ARENA_TREINO = +QS.get('tentativas') || 20, ARENA_TESTE = 30, T_SOFTMAX = 0.15;   // os orçamentos da bancada 2
+  const A = { semente: 1, k: 0, vistas: [], opcoes: [], amostra: {}, fase: 'livre', escolhida: null, t0: 0, ultimo: 0, cheirando: null, tentativas: [], fimEm: 0 };
+  function reconstruir() {
+    SB.app = null; if (typeof SBR !== 'undefined') SBR.built = '';
+    if (APP.id === 'caca' && typeof sbBuild === 'function') sbBuild();
+    renderShop(); requestAnimationFrame(measure);
+  }
+  function novaTentativa() {
+    if (A.k >= (C.fase === 'treino' ? ARENA_TREINO : ARENA_TESTE)) { fimVersao(); return; }
+    A.opcoes = A.vistas[A.k].map(idDe); A.amostra = {}; A.fase = 'cheirar'; A.escolhida = null; A.cheirando = null; A.fimEm = 0; A.t0 = A.ultimo = agoraS();
+    Q.ACOES.forEach((a, i) => { const o = placas[idDe(a)]; o.x = 2000 + 40 * i; o.y = 2000; });
+    const rot = Math.random() * 2 * Math.PI;
+    A.opcoes.forEach((id, j) => { const a = rot + j * 2 * Math.PI / 3, o = placas[id]; o.x = CENTRO[0] + ARENA_R * Math.sin(a); o.y = CENTRO[1] - ARENA_R * Math.cos(a); el(id).novelty = 0; el(id).bug = false; });
+    reconstruir();
+    for (const id of A.opcoes) apaga(id, false);
+    // ela começa cada tentativa no centro, no chão, virada para um lado sorteado
+    if (SB.on && fly) Object.assign(fly, { x: SB.start[0], y: SB.start[1], z: 0, th: Math.random() * 2 * Math.PI, flying: false, jumping: false, vz: 0,
+      lateral: null, pouso: null, naParede: null, landing: false, speed: 0, cheirando: false });
+  }
+  function registrarTentativa(escolha, bug) {
+    A.tentativas.push({ opcoes: A.opcoes.map(id => placas[id].acao.id), v: A.opcoes.map(id => A.amostra[id] ? +(A.amostra[id].soma / A.amostra[id].n).toFixed(3) : null),
+      escolha, bug, t: +(agoraS() - A.t0).toFixed(1) });
+  }
+  function escolherArena() {
+    const ids = A.opcoes.filter(id => A.amostra[id]), v = ids.map(id => A.amostra[id].soma / A.amostra[id].n);
+    let k = 0;
+    if (ids.length) { const e = v.map(x => Math.exp(x / T_SOFTMAX)), soma = e.reduce((a, b) => a + b, 0); let u = Math.random() * soma; while (k < e.length - 1 && (u -= e[k]) > 0) k++; }
+    A.escolhida = ids.length ? ids[k] : A.opcoes[Math.floor(Math.random() * A.opcoes.length)];
+    A.fase = 'provar'; A.ultimo = agoraS();
+    for (const id of A.opcoes) apaga(id, id !== A.escolhida);
+    el(A.escolhida).novelty = 1;   // o "gosto doce" da regra da página: pisando nela, a probóscide estende e ela prova
+    logEvent(`Cheirou as três (valência ${ids.map((id, i) => placas[id].r + ' ' + v[i].toFixed(2)).join(', ')}): vai provar "${placas[A.escolhida].r}".`);
+  }
+  function vigiaArena() {
+    const t = agoraS(), on = fly?.patasEl?.id, S = CORPO.S;
+    if (A.fimEm || A.cheirando) fly.alvoArena = null;
+    if (A.fimEm) { if (t >= A.fimEm) { fly.cheirando = false; A.k++; novaTentativa(); } return; }
+    if (A.cheirando) {
+      // 1,5 s parada em cima da plaquinha; a valência é a média do último 1 s (o primeiro meio segundo é o cheiro chegando)
+      if (t > A.cheirando.ate - 1) { A.cheirando.soma += fly.valencia || 0; A.cheirando.n++; }
+      if (t >= A.cheirando.ate) {
+        const c = A.cheirando; A.amostra[c.id] = { soma: c.soma, n: Math.max(1, c.n) }; A.cheirando = null; fly.cheirando = false; apaga(c.id, true); A.ultimo = t;
+        if (A.opcoes.every(id => A.amostra[id])) escolherArena();
+      }
+      return;
+    }
+    if (A.fase === 'cheirar' && on && A.opcoes.includes(on) && !A.amostra[on]) { A.cheirando = { id: on, ate: t + 1.5, soma: 0, n: 0 }; fly.cheirando = true; return; }
+    // o caminho (regra declarada): ela vai de plaquinha em plaquinha, virando para a mais perto que falta cheirar (ou para a
+    // escolhida); a direção do cérebro e o ruído continuam somando. Sem isso, uma tentativa levava ~170 s (teste de 04/10)
+    if (fly) {
+      let alvo = null, dm = Infinity;
+      if (t - A.ultimo > 0.5) for (const id of A.fase === 'cheirar' ? A.opcoes.filter(id => !A.amostra[id]) : [A.escolhida]) { const o = placas[id], d = Math.hypot(o.x * S - fly.x, o.y * S - fly.y); if (d < dm) { dm = d; alvo = o; } }
+      fly.alvoArena = alvo ? [alvo.x * S, alvo.y * S] : null;   // a virada é somada a cada quadro, em stepBody (index.html)
+    }
+    if (t - A.t0 > 90) { registrarTentativa(null, false); A.k++; novaTentativa(); }   // tentativa sem escolha em 90 s
+  }
   function novaVersao(defeitos, rotulo) {
-    if (!SEM_SORTEIO) sortearLugares();
+    if (!SEM_SORTEIO && !ARENA) sortearLugares();
     C.sis = Q.criar(defeitos, { bancada: 2 }); C.achados = new Set(); C.provas = 0; C.t0 = agoraS(); C.rotulo = rotulo; C.defeitos = defeitos; C.bugs = []; C.provadas = []; C.encerrada = false;
     // sistema novo: tudo pode ter mudado, então tudo volta a ser novo para ela
     for (const id of Object.keys(placas)) { el(id).novelty = 1; el(id).bug = false; apaga(id, false); }
     renderShop(); requestAnimationFrame(measure);
     logEvent(`${rotulo}: versão nova do sistema (${nomeVersao(defeitos)}).`);
+    if (ARENA) {
+      // as sementes das ações visíveis da bancada: treino i → semente × 100 + i; teste i → semente × 100 + 50 + i
+      A.vistas = visiveis(A.semente * 100 + (C.fase === 'teste' ? 50 : 0) + Math.max(0, C.vi), C.fase === 'teste' ? ARENA_TESTE : ARENA_TREINO);
+      A.k = 0; A.tentativas = []; novaTentativa();
+    }
   }
   function status(t) { $('#cacaStatus').textContent = t; }
   function tabela() {
@@ -204,8 +286,10 @@
   function fimVersao() {
     if (C.encerrada) return; C.encerrada = true;
     const provadas = C.provadas.map(p => p.acao);
-    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas, tempo: agoraS() - C.t0, tBug: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provadas });
-    if (C.fase === 'teste') C.teste.push({ defeitos: C.defeitos, controle: C.defeitos.join('+') === C.V.controle.join('+'), primeiro: C.bugs[0]?.prova ?? null, tempo: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provas: C.provas, duracao: agoraS() - C.t0, provadas });
+    const extra = ARENA ? { tentativas: A.tentativas.slice() } : {};
+    if (C.fase === 'treino') C.treino.push({ defeitos: C.defeitos, bugs: C.bugs.length, provas: C.provas, tempo: agoraS() - C.t0, tBug: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provadas, ...extra });
+    // na arena, "primeiro" = tentativas até o primeiro bug (como as ações da bancada)
+    if (C.fase === 'teste') C.teste.push({ defeitos: C.defeitos, controle: C.defeitos.join('+') === C.V.controle.join('+'), primeiro: (ARENA ? C.bugs[0]?.tentativa : C.bugs[0]?.prova) ?? null, tempo: C.bugs[0] ? C.bugs[0].t - C.t0 : null, provas: C.provas, duracao: agoraS() - C.t0, provadas, ...extra });
     tabela();
     C.vi++;
     if (C.vi < C.versoes.length) novaVersao(C.versoes[C.vi], (C.fase === 'treino' ? 'Treino ' : 'Teste ') + (C.vi + 1));
@@ -213,6 +297,13 @@
   }
   function vigia() {
     if (C.fase !== 'treino' && C.fase !== 'teste') return;
+    if (ARENA) {
+      vigiaArena();
+      const n = C.fase === 'treino' ? ARENA_TREINO : ARENA_TESTE;
+      $('#cacaProgresso').value = Math.min(1, (C.vi + A.k / n) / C.versoes.length);
+      status(`${C.rotulo} · ${nomeVersao(C.defeitos)} · tentativa ${A.k + 1} de ${n} · ${A.fase === 'cheirar' ? 'cheirando (' + Object.keys(A.amostra).length + '/3)' : 'indo provar'} · ${C.bugs.length} bug${C.bugs.length === 1 ? '' : 's'}${C.recompensa ? '' : ' · sem recompensa'}`);
+      return;
+    }
     // limites de cada versão; &curto=1 (só para testar a automação) usa versões bem curtas
     // treino: a versão vai até ela achar o bug (e mais 10 s, para a dopamina parear com o cheiro), ou 4 min de cérebro;
     // teste: até o primeiro bug ou 3 min. Antes (12 provas ou 90 s) quase não havia recompensa no treino (piloto de 02/10)
@@ -238,6 +329,7 @@
   }
   function parar() {
     clearInterval(C.iv); C.fase = 'livre';
+    if (typeof fly !== 'undefined' && fly) { fly.alvoArena = null; fly.cheirando = false; }
     for (const id of ['cacaTreinar', 'cacaTestar', 'cacaCond', 'cacaCar', 'cacaTreinos']) $('#' + id).disabled = false;
     $('#cacaParar').disabled = true;
   }
@@ -251,6 +343,7 @@
     provar(id) {
       const o = placas[id];
       if (!o) return;   // as plataformas não se provam
+      if (ARENA && (id !== A.escolhida || A.fimEm)) return;
       if (!C.sis) novaVersao(C.V?.treino?.[0] || Q.VERSOES2.treino[0], 'Livre');
       C.provas++;
       C.provadas.push({ acao: o.acao.id, t: agoraS() });
@@ -262,9 +355,10 @@
       C.sis.executar(o.acao.id);
       const novos = Q.verificar(C.sis).filter(x => !C.achados.has(x));
       labEvent('clique', { id, bug: novos[0] || null, arriscado: false });
+      if (ARENA) { registrarTentativa(o.acao.id, novos.length > 0); fly.cheirando = true; A.fimEm = agoraS() + (novos.length && C.recompensa ? 2.5 : 1); }
       if (!novos.length) { logEvent(`Provou "${o.r}": o sistema não quebrou.`); return; }
       novos.forEach(x => C.achados.add(x));
-      C.bugs.push({ id, contratos: novos, prova: C.provas, t: agoraS() });
+      C.bugs.push({ id, contratos: novos, prova: C.provas, tentativa: A.k + 1, t: agoraS() });
       el(id).bug = true; renderShop(); requestAnimationFrame(measure);
       if (SB.on) sbGlitch(id);
       const txt = novos.map(x => CONTRATO_TXT[x] || x).join('; ');
@@ -283,6 +377,7 @@
   // (passadas, pausas, ruído da direção) ficam fixos; o que depende do relógio de parede ainda varia entre rodadas
   if (/[?&]caca=auto(&|$)/.test(location.search)) {
     const q = new URLSearchParams(location.search), sem = Math.max(1, +q.get('semente') || 1);
+    A.semente = sem;
     let sr = Math.imul(sem, 2654435761) >>> 0;
     Math.random = () => (sr = (Math.imul(sr, 1664525) + 1013904223) >>> 0) / 4294967296;
     window.__cacaFim = null; C.curto = q.get('curto') === '1';
