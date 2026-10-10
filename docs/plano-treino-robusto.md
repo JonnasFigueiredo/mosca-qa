@@ -684,3 +684,5 @@ Secundários relatados: escolha da característica premiada quando visível (tre
 melhorar), bugs no treino. N = 20 pares (sementes 1401–1420), sem calibração nem piloto (o protocolo e os critérios são
 os da bancada); se passar, replicação com 1451–1470. Rotina: `node scripts/madrugada_mundo.mjs --arena --n 20`, cópia
 congelada nova de `web/` (a versão do commit deste registro), 3 sessões por vez, até 240 min por sessão.
+
+**10/10, rotina do mundo: qa-mundo-arena (arena de escolha, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas): negativo.** Sementes 1401–1420 (40 sessões válidas). tentativas até o 1º bug na transferência, treinada − congelada (principal, IC95 < 0): 0,5 IC95 [-3.55,4.7] p 0.825 dz 0.05; escolha da característica premiada quando visível (secundário, > 0): 0,01 IC95 [-0.06,0.08] p 0.77 dz 0.07; controle (não deve melhorar): 1 IC95 [-4.45,6.6] p 0.75 dz 0.08; bugs no treino, treinada 6,1 e congelada 6. Resumo: `docs/medicoes/qa-mundo-arena-resumo.json`.
