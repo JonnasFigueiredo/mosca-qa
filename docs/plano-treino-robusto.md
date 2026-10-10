@@ -686,3 +686,17 @@ os da bancada); se passar, replicação com 1451–1470. Rotina: `node scripts/m
 congelada nova de `web/` (a versão do commit deste registro), 3 sessões por vez, até 240 min por sessão.
 
 **10/10, rotina do mundo: qa-mundo-arena (arena de escolha, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas): negativo.** Sementes 1401–1420 (40 sessões válidas). tentativas até o 1º bug na transferência, treinada − congelada (principal, IC95 < 0): 0,5 IC95 [-3.55,4.7] p 0.825 dz 0.05; escolha da característica premiada quando visível (secundário, > 0): 0,01 IC95 [-0.06,0.08] p 0.77 dz 0.07; controle (não deve melhorar): 1 IC95 [-4.45,6.6] p 0.75 dz 0.08; bugs no treino, treinada 6,1 e congelada 6. Resumo: `docs/medicoes/qa-mundo-arena-resumo.json`.
+
+**10/10: arena negativa; o aprendizado no mundo é fraco e curto.** Série qa-mundo-arena (sementes 1401–1420, 40
+sessões; 3 resgatadas da página depois de uma pausa pedida pelo usuário, `_tmp/_resgata.mjs`): principal, tentativas
+até o primeiro bug na transferência, treinada − congelada +0,5 [−3,55; 4,7], p 0,83; escolha da característica premiada
+quando visível +0,01 [−0,06; 0,08]; controle +1 [−4,45; 6,6]; bugs no treino 6,1 e 6 por sessão (a recompensa
+aconteceu). **Negativo.** Análise depois do resultado (declarada como tal), com as valências medidas em cada tentativa:
+no teste, a valência do cheiro premiado foi 0,59 na treinada e 0,55 na congelada (+0,04 Hz por neurônio; na bancada,
++1,03). No treino, logo depois de uma recompensa a diferença premiada − outras sobe +0,07 em relação à congelada
+(1 tentativa depois: −0,045 contra −0,115) e volta a zero em ~10 tentativas (~200 s): o esquecimento do modelo (τ 90 s,
+`TAU_F` em `sim-worker.js`) apaga a memória no ritmo do mundo (~20 s por tentativa), e o pareamento no mundo muda a
+valência ~15× menos que o da bancada (cheiro de 100 Hz nas duas antenas por 2 s com a PAM no fim). Próximo passo:
+medir, num condicionamento controlado na página, o cheiro nas antenas e a mudança de valência de uma recompensa no
+mundo; o esquecimento é parâmetro do modelo e só muda com decisão do usuário (moscas reais lembram de uma recompensa
+por horas).
