@@ -298,7 +298,7 @@
   function abreMundo() {
     S.mundoReal = true; S.mundo = null; S.cartas = []; S.carga = 0;
     const fr = $('ifMundo');
-    if (!fr.dataset.aberto) { fr.dataset.aberto = '1'; fr.src = 'index.html?embed=caca&r=' + Date.now(); }
+    if (!fr.dataset.aberto) { fr.dataset.aberto = '1'; fr.src = 'index.html?embed=caca' + location.search.replace(/^\?/, '&') + '&r=' + Date.now(); }   // repassa os parâmetros do mundo (&arena=1, &esquecimento=...)
     S.sit = 'Carregando o mundo e o cérebro da mosca (uns 20 s)…';
     $('btnIniciar').disabled = true; $('btnIniciar').textContent = 'Carregando o cérebro…';
     clearInterval(MUNDO.poll); MUNDO.poll = setInterval(lerMundo, 250);
