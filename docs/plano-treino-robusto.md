@@ -723,3 +723,10 @@ escolha da característica premiada quando visível, no teste, for maior na trei
 diferença média > +0,3. Se passar, a série longa (20 pares, critério principal da bancada, replicação) roda com esse
 mundo; se não passar, nada de série longa: diagnóstico primeiro. O esquecimento de 1 h é parâmetro do modelo (declarado):
 moscas reais lembram de uma recompensa de açúcar por horas.
+
+**10/10: mini-arena não passou no critério (b).** Sementes 1501–1504 (`docs/medicoes/qa-mundo-arena-rapido.json`):
+escolha da característica premiada quando visível no teste, treinada / congelada: 0,50/0,28; 0,41/0,13; 0,41/0,31;
+0,29/0,38 (maior em 3 de 4, diferença média +0,127: **(a) passou**); valência das opções premiadas no teste, treinada −
+congelada, média +0,09 (**(b) não passou**, mínimo +0,3). Tentativas até o primeiro bug na transferência: treinada 4;
+11,5; 16; 15 e congelada 16; 16; 16; 10,5. Só 2 recompensas por sessão no treino curto (3 × 10 tentativas), contra ~6
+no protocolo completo: memória fraca. Pela regra escrita, nada de série longa ainda.

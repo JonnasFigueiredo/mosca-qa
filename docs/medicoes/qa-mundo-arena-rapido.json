@@ -1,0 +1,9141 @@
+{
+ "metodo": "Caça a bugs no mundo da mosca (web/caca-mundo.js). Página num Chrome sem janela com os olhos reais amostrados; modo automático: treino com as versões de treino da bancada 2 (cada versão até achar o bug, +10 s, ou 240 s de cérebro; bug novo = açúcar + PAM) e teste com as 3 versões de teste (sem recompensa; cada versão até o primeiro bug ou 180 s). Mundo: cinco plataformas de cozinha por família, plaquinhas em cima. Semente fixa para o cérebro, o mapa e os sorteios da página; o relógio de parede ainda varia. \"provadas\" = ações provadas na ordem.",
+ "sessoes": [
+  {
+   "semente": 1501,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 206.26,
+     "tBug": 203.76,
+     "provadas": [
+      "estoque:limite",
+      "carrinho:limite",
+      "carrinho:normal",
+      "carrinho:zero",
+      "cupom:repetida",
+      "cancelamento:repetida",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "estoque:limite",
+      "pagamento:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:limite",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.033,
+        0.78,
+        0.887
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 12.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.783,
+        0.776,
+        0.363
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 14.3
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "carrinho:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.846,
+        0.671,
+        0.646
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 22.4
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.812,
+        0.776,
+        0.786
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "estoque:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.427,
+        0.688,
+        0.673
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 22.8
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.284,
+        0.406,
+        0.834
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.474,
+        0.863,
+        0.974
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 27
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        -0.166,
+        0.643,
+        1.003
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.564,
+        1.118,
+        0.381
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 17.8
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.776,
+        0.626,
+        0.263
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 18.3
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 228.13000000000002,
+     "tBug": 25.079999999999984,
+     "provadas": [
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "carrinho:negativa",
+      "estoque:limite",
+      "carrinho:zero",
+      "cupom:limite",
+      "carrinho:normal",
+      "pagamento:repetida",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.493,
+        0.874,
+        1.4
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 25.1
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.182,
+        0.776,
+        1.3
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 29.1
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cancelamento:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.285,
+        0.917,
+        0.316
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 21.1
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:negativa",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.073,
+        0.952,
+        -0.134
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 17.2
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.472,
+        1.19,
+        0.211
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 16.1
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:zero",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.229,
+        0.352,
+        0.849
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 17.7
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.319,
+        0.924,
+        -0.009
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:limite",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.693,
+        0.535,
+        0.934
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 19.1
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:limite",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.507,
+        0.332,
+        0.314
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 23.4
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        1.352,
+        0.709,
+        0.902
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 29.4
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 234.85000000000002,
+     "tBug": null,
+     "provadas": [
+      "cupom:normal",
+      "carrinho:zero",
+      "estoque:normal",
+      "carrinho:normal",
+      "carrinho:zero",
+      "pagamento:normal",
+      "estoque:limite",
+      "carrinho:limite",
+      "estoque:limite",
+      "estoque:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:negativa",
+        "cupom:normal"
+       ],
+       "v": [
+        0.268,
+        0.65,
+        0.619
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 30.3
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.805,
+        0.658,
+        0.519
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 17.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.305,
+        0.315,
+        0.577
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 23.4
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:negativa",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.663,
+        0.088,
+        0.488
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 21.9
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.696,
+        0.447,
+        0.55
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 22.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.117,
+        0.14,
+        0.465
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 23.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.225,
+        0.342,
+        0.214
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:zero",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.86,
+        0.637,
+        0.641
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 29.9
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.337,
+        0.824,
+        1.301
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 17.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.954,
+        0.075,
+        0.91
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 17.1
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": 5,
+     "tempo": 109.71000000000004,
+     "provas": 5,
+     "duracao": 109.71000000000004,
+     "provadas": [
+      "estoque:limite",
+      "estoque:normal",
+      "estoque:limite",
+      "carrinho:negativa",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "estoque:limite",
+        "cupom:limite"
+       ],
+       "v": [
+        0.252,
+        0.925,
+        0.558
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 13.8
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.562,
+        1.052,
+        0.832
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 21.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cancelamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.748,
+        -0.04,
+        1.058
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 29.3
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:negativa",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.084,
+        0.311,
+        0.299
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 15
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "estoque:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.082,
+        0.445,
+        0.866
+       ],
+       "escolha": "cupom:repetida",
+       "bug": true,
+       "t": 26
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": 3,
+     "tempo": 57.49000000000001,
+     "provas": 3,
+     "duracao": 57.49000000000001,
+     "provadas": [
+      "pagamento:repetida",
+      "estoque:normal",
+      "estoque:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.444,
+        0.162,
+        0.594
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 11.6
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.121,
+        0.49,
+        0.684
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 22.5
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.139,
+        0.05,
+        0.695
+       ],
+       "escolha": "estoque:repetida",
+       "bug": true,
+       "t": 21.4
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 8,
+     "tempo": 166.31999999999994,
+     "provas": 8,
+     "duracao": 166.31999999999994,
+     "provadas": [
+      "estoque:normal",
+      "cancelamento:repetida",
+      "pagamento:zero",
+      "carrinho:zero",
+      "cancelamento:repetida",
+      "cupom:normal",
+      "cupom:repetida",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.432,
+        0.786,
+        0.114
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 30.7
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.265,
+        0.008,
+        0.333
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 20.7
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.121,
+        0.242,
+        0.861
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 19
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:zero",
+        "cupom:normal"
+       ],
+       "v": [
+        -0.025,
+        0.895,
+        -0.01
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.253,
+        1.024,
+        0.327
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 18.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.493,
+        0.234,
+        -0.015
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.001,
+        0.239,
+        0.737
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 17
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.226,
+        0.194,
+        0.978
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": true,
+       "t": 15.5
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1002.91,
+   "olhosReais": true,
+   "data": "2026-10-10T17:02:29.287Z",
+   "erros": [],
+   "minutosParede": 76.4,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1502,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 211.39,
+     "tBug": null,
+     "provadas": [
+      "estoque:normal",
+      "cupom:normal",
+      "carrinho:negativa",
+      "carrinho:negativa",
+      "cupom:normal",
+      "carrinho:normal",
+      "cupom:normal",
+      "cupom:limite",
+      "carrinho:normal",
+      "carrinho:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.019,
+        0.811,
+        0.658
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 18.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.429,
+        0.085,
+        1.097
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 24.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.303,
+        0.25,
+        0.901
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.628,
+        0.671,
+        1.043
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 30.1
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.797,
+        0.558,
+        1.097
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 13.5
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        1.065,
+        0.193,
+        0.655
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 22.5
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.208,
+        0.896,
+        0.58
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 23.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.289,
+        0.038,
+        1.03
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 11.6
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.503,
+        1.061,
+        0.922
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 20.7
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.015,
+        0.619,
+        0.943
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 19.1
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 206.17999999999998,
+     "tBug": null,
+     "provadas": [
+      "cupom:limite",
+      "estoque:limite",
+      "cancelamento:normal",
+      "pagamento:zero",
+      "pagamento:zero",
+      "cupom:limite",
+      "cupom:repetida",
+      "cupom:repetida",
+      "pagamento:repetida",
+      "carrinho:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.145,
+        1.032,
+        0.007
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.2
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        1.06,
+        1.317,
+        0.518
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 21.8
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.685,
+        0.354,
+        0.797
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 28
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.941,
+        0.004,
+        0.061
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 22.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.145,
+        0.644,
+        0.198
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.3
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:limite",
+        "pagamento:repetida"
+       ],
+       "v": [
+        1.007,
+        0.191,
+        0.864
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.596,
+        0.672,
+        0.467
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 18.8
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.38,
+        0.346,
+        0.043
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 16.7
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.863,
+        0.844,
+        0.032
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "carrinho:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.079,
+        0.758,
+        0.074
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 15.1
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 2,
+     "provas": 10,
+     "tempo": 233.37,
+     "tBug": 17.5,
+     "provadas": [
+      "cancelamento:repetida",
+      "carrinho:negativa",
+      "carrinho:normal",
+      "cancelamento:normal",
+      "cupom:normal",
+      "pagamento:repetida",
+      "cancelamento:normal",
+      "pagamento:zero",
+      "carrinho:negativa",
+      "estoque:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.738,
+        0.231,
+        0.131
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        1.024,
+        0.856,
+        0.037
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 23.1
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.29,
+        0.772,
+        -0.052
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 23.7
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.168,
+        0.886,
+        0.637
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:zero",
+        "cupom:normal"
+       ],
+       "v": [
+        0.785,
+        0.112,
+        0.599
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 17.4
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.73,
+        0.245,
+        1.45
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.358,
+        0.859,
+        0.436
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 22.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:zero",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.977,
+        0.76,
+        1.068
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 32.4
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "carrinho:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.743,
+        0.112,
+        0.583
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 26.2
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.281,
+        1.083,
+        0.781
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 22.6
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": 7,
+     "tempo": 150.93000000000006,
+     "provas": 7,
+     "duracao": 150.93000000000006,
+     "provadas": [
+      "cupom:limite",
+      "estoque:limite",
+      "cancelamento:repetida",
+      "estoque:limite",
+      "cupom:limite",
+      "carrinho:limite",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:negativa",
+        "cupom:limite"
+       ],
+       "v": [
+        0.05,
+        0.167,
+        0.81
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 18.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.264,
+        0.923,
+        1.236
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 11.6
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:negativa",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.007,
+        0.393,
+        0.536
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 27.5
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "estoque:limite",
+        "cupom:limite"
+       ],
+       "v": [
+        0.276,
+        1.152,
+        0.312
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 15
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.233,
+        0.045,
+        0.304
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 26.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        1.266,
+        0.86,
+        0.275
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 26.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:limite",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.598,
+        0.352,
+        0.232
+       ],
+       "escolha": "cupom:repetida",
+       "bug": true,
+       "t": 19.4
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 298.53,
+     "provadas": [
+      "cancelamento:normal",
+      "cupom:repetida",
+      "cupom:repetida",
+      "estoque:normal",
+      "cancelamento:repetida",
+      "estoque:limite",
+      "carrinho:negativa",
+      "estoque:normal",
+      "pagamento:normal",
+      "carrinho:zero",
+      "pagamento:normal",
+      "cancelamento:repetida",
+      "estoque:normal",
+      "carrinho:negativa",
+      "carrinho:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.46,
+        0.415,
+        0.218
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 18.8
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.254,
+        0.653,
+        0.071
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 15.3
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.516,
+        0.4,
+        1.073
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 27.6
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.021,
+        0.102,
+        0.162
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 12.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.571,
+        0.043,
+        0.448
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.192,
+        0.587,
+        0.941
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 16.1
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "pagamento:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.973,
+        0.307,
+        0.26
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 16.8
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "estoque:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.429,
+        1.102,
+        0.436
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 24
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.719,
+        0.762,
+        0.402
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.548,
+        0.356,
+        0.781
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 18.6
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.054,
+        0.164,
+        0.294
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 16.8
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.87,
+        0.836,
+        0.644
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.45,
+        0.222,
+        0.857
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 19.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.224,
+        0.538,
+        0.133
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.382,
+        0.888,
+        0.55
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 18.2
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 10,
+     "tempo": 199.48000000000002,
+     "provas": 10,
+     "duracao": 199.48000000000002,
+     "provadas": [
+      "cancelamento:repetida",
+      "pagamento:repetida",
+      "cupom:limite",
+      "pagamento:zero",
+      "estoque:limite",
+      "estoque:limite",
+      "cancelamento:repetida",
+      "cupom:normal",
+      "pagamento:normal",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.749,
+        0.525,
+        0.091
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 16.4
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "pagamento:repetida",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.878,
+        0.979,
+        0.135
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.3
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:zero",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.873,
+        0.032,
+        0.525
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.535,
+        1.227,
+        1.167
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 17.6
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.222,
+        0.337,
+        0.545
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 26.6
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.68,
+        1.109,
+        0.695
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 18.7
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.737,
+        0.849,
+        0.8
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 16.7
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.076,
+        0.11,
+        0.119
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 16.1
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.55,
+        0.116,
+        0.93
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.817,
+        0.609,
+        0.654
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": true,
+       "t": 17.9
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1300.1000000000001,
+   "olhosReais": true,
+   "data": "2026-10-10T17:27:27.476Z",
+   "erros": [],
+   "minutosParede": 98.4,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1501,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 218.11999999999998,
+     "tBug": null,
+     "provadas": [
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:zero",
+      "carrinho:zero",
+      "estoque:normal",
+      "estoque:repetida",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "estoque:limite",
+      "carrinho:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:limite",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.976,
+        0.988,
+        0.395
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 22
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.835,
+        0.544,
+        1.072
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 17.1
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "carrinho:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        1.011,
+        0.02,
+        0.526
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 18.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.638,
+        0.527,
+        1.097
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 20.7
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "estoque:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.264,
+        0.603,
+        -0.177
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 18
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.211,
+        0.665,
+        -0.094
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 12.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.611,
+        0.323,
+        0.957
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 32.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.157,
+        0.595,
+        0.846
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.942,
+        1.368,
+        0.224
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 17.4
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.715,
+        -0.006,
+        0.454
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 29.2
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 194.32,
+     "tBug": 39.10000000000002,
+     "provadas": [
+      "estoque:limite",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "carrinho:normal",
+      "estoque:limite",
+      "carrinho:zero",
+      "cupom:limite",
+      "carrinho:normal",
+      "cancelamento:repetida",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.495,
+        0.819,
+        0.172
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 19
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.287,
+        0.059,
+        0.249
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 19.1
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cancelamento:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.03,
+        0.471,
+        0.315
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 29.9
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:negativa",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.953,
+        0.941,
+        0.16
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 12.7
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.571,
+        0.857,
+        0.627
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 12.3
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:zero",
+        "carrinho:zero"
+       ],
+       "v": [
+        -0.018,
+        0.11,
+        1.108
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 19
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.044,
+        0.963,
+        0.81
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 12.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:limite",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.26,
+        0.311,
+        0.608
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 21.6
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:limite",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.49,
+        0.246,
+        0.711
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 16
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.417,
+        0.101,
+        0.438
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 21
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 195.09000000000003,
+     "tBug": 72.94,
+     "provadas": [
+      "carrinho:negativa",
+      "pagamento:zero",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "cupom:limite",
+      "cupom:repetida",
+      "carrinho:negativa",
+      "carrinho:negativa",
+      "cupom:repetida",
+      "carrinho:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:negativa",
+        "cupom:normal"
+       ],
+       "v": [
+        0.734,
+        0.805,
+        0.304
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 12.7
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.587,
+        0.162,
+        0.758
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.357,
+        0.031,
+        0.293
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 23.6
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:negativa",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.751,
+        0.513,
+        0.056
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 15.3
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.637,
+        0.838,
+        0.221
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 18.9
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.756,
+        -0.01,
+        0.617
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 21.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.072,
+        0.652,
+        0.807
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 16.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:zero",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.805,
+        0.711,
+        1.162
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 23.9
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.639,
+        0.754,
+        0.818
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.25,
+        0.516,
+        0.818
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 13.1
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 329.56000000000006,
+     "provadas": [
+      "cancelamento:repetida",
+      "estoque:repetida",
+      "pagamento:repetida",
+      "pagamento:repetida",
+      "estoque:limite",
+      "estoque:limite",
+      "carrinho:limite",
+      "carrinho:limite",
+      "estoque:normal",
+      "estoque:repetida",
+      "estoque:limite",
+      "carrinho:normal",
+      "pagamento:zero",
+      "pagamento:zero",
+      "cupom:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "estoque:limite",
+        "cupom:limite"
+       ],
+       "v": [
+        0.687,
+        0.348,
+        0.359
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.412,
+        0.384,
+        0.726
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cancelamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.475,
+        -0.042,
+        0.282
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 18.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:negativa",
+        "pagamento:repetida"
+       ],
+       "v": [
+        -0.106,
+        0.398,
+        0.922
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 22.8
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "estoque:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.064,
+        0.536,
+        0.946
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.6
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.802,
+        0.159,
+        1.097
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 27.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        1.089,
+        0.794,
+        0.613
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 20.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.746,
+        0.083,
+        0.564
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 23.3
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.652,
+        0.102,
+        0.06
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 27.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:zero",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.271,
+        0.254,
+        0.051
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 13.4
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "estoque:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.055,
+        0.691,
+        1.187
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 24.9
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "pagamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.33,
+        0.041,
+        0.046
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cupom:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.966,
+        0.806,
+        0.418
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 22.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.791,
+        0.151,
+        0.218
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 19.9
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:zero",
+        "cupom:limite"
+       ],
+       "v": [
+        0.185,
+        0.169,
+        0.379
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.8
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 297.17999999999984,
+     "provadas": [
+      "pagamento:repetida",
+      "carrinho:normal",
+      "estoque:normal",
+      "carrinho:limite",
+      "carrinho:zero",
+      "carrinho:limite",
+      "estoque:limite",
+      "cupom:normal",
+      "carrinho:negativa",
+      "cupom:normal",
+      "carrinho:normal",
+      "carrinho:normal",
+      "pagamento:zero",
+      "cupom:limite",
+      "pagamento:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.673,
+        0.446,
+        0.316
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.791,
+        0.049,
+        0.385
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 19.2
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.114,
+        0.809,
+        0.23
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 16.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.573,
+        0.569,
+        0.746
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 18.1
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.063,
+        0.688,
+        0.937
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 18.7
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "carrinho:limite"
+       ],
+       "v": [
+        1.012,
+        0.951,
+        1.24
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 12.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.596,
+        0.894,
+        0.103
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 18.3
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.81,
+        0.076,
+        0.204
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.992,
+        0.201,
+        0.013
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 28.8
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cancelamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.305,
+        0.148,
+        1.006
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 25.9
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.469,
+        -0.017,
+        0.337
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 18.5
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.86,
+        0.987,
+        0.502
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 18.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "pagamento:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.164,
+        0.396,
+        0.2
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cupom:limite",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.506,
+        1.087,
+        0.051
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 16.8
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        -0.08,
+        0.276,
+        0.561
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 17
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 15,
+     "tempo": 292.74,
+     "provas": 15,
+     "duracao": 292.74,
+     "provadas": [
+      "pagamento:normal",
+      "cancelamento:repetida",
+      "carrinho:normal",
+      "carrinho:normal",
+      "estoque:limite",
+      "pagamento:zero",
+      "carrinho:zero",
+      "carrinho:limite",
+      "pagamento:repetida",
+      "cupom:limite",
+      "pagamento:normal",
+      "cupom:limite",
+      "cancelamento:normal",
+      "cupom:normal",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.01,
+        0.448,
+        0.585
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 17
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.478,
+        0.448,
+        0.509
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 17.6
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.771,
+        0.367,
+        0.095
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 22.3
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:zero",
+        "cupom:normal"
+       ],
+       "v": [
+        0.819,
+        0.116,
+        0.801
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 24.7
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.304,
+        0.596,
+        0.987
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 14.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.156,
+        0.242,
+        0.246
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.7
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.357,
+        0.102,
+        1.13
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.745,
+        1.233,
+        1.1
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 12.8
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "pagamento:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.355,
+        0.386,
+        0.113
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 16.1
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "carrinho:negativa",
+        "cupom:limite"
+       ],
+       "v": [
+        0.447,
+        0.922,
+        0.629
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 20.3
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.973,
+        0.725,
+        0.477
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.521,
+        0.527,
+        0.28
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 20.9
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "estoque:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.828,
+        0.481,
+        0.669
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 21.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cupom:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.814,
+        0.788,
+        0.417
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 18.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "cupom:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        1.178,
+        -0.027,
+        0.007
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": true,
+       "t": 13.8
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1527.41,
+   "olhosReais": true,
+   "data": "2026-10-10T17:34:21.414Z",
+   "erros": [],
+   "minutosParede": 106.9,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1502,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 225.31,
+     "tBug": 29.060000000000002,
+     "provadas": [
+      "pagamento:repetida",
+      "cancelamento:repetida",
+      "carrinho:negativa",
+      "estoque:limite",
+      "cancelamento:normal",
+      "cupom:normal",
+      "cupom:normal",
+      "estoque:normal",
+      "carrinho:normal",
+      "carrinho:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.979,
+        0.756,
+        0.106
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 29.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        -0.045,
+        0.683,
+        0.175
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 24.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.122,
+        0.735,
+        0.936
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.842,
+        0.445,
+        -0.085
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 15.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.192,
+        0.033,
+        0.15
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 23
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.092,
+        0.764,
+        0.778
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 15.4
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.404,
+        0.637,
+        0.588
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 28.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.061,
+        0.841,
+        0.328
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 19.6
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.023,
+        0.875,
+        0.319
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 25
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.453,
+        0.041,
+        0.649
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 16.3
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 198.48999999999998,
+     "tBug": 100.61999999999998,
+     "provadas": [
+      "pagamento:normal",
+      "cupom:normal",
+      "estoque:limite",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "carrinho:limite",
+      "estoque:limite",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "carrinho:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.95,
+        0.278,
+        0.226
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 15.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.674,
+        0.539,
+        0.981
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 17.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.103,
+        0.299,
+        1.019
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 24.1
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.194,
+        0.838,
+        1.042
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 18.6
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.621,
+        0.329,
+        0.336
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 20.1
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:limite",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.331,
+        1.028,
+        0.071
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 15.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.382,
+        0.266,
+        0.326
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 19.5
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.719,
+        0.432,
+        0.806
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.631,
+        0.288,
+        0.056
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "carrinho:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.084,
+        0.945,
+        0.348
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 19.6
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 208.8,
+     "tBug": null,
+     "provadas": [
+      "carrinho:normal",
+      "carrinho:negativa",
+      "carrinho:normal",
+      "carrinho:negativa",
+      "estoque:normal",
+      "estoque:normal",
+      "estoque:limite",
+      "carrinho:zero",
+      "estoque:limite",
+      "cupom:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        -0.016,
+        0.799,
+        1.133
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 16.6
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.671,
+        0.363,
+        0.294
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 13.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.46,
+        0.745,
+        0.283
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        1.116,
+        0.804,
+        0.342
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 22.2
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:zero",
+        "cupom:normal"
+       ],
+       "v": [
+        0.294,
+        0.714,
+        0.691
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 21.1
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.984,
+        0.238,
+        0.112
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 18.7
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.253,
+        0.037,
+        0.68
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 27.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:zero",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.561,
+        1.036,
+        -0.037
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 23.9
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "carrinho:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.844,
+        0.249,
+        0.035
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 18.4
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.791,
+        0.456,
+        0.859
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 19
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 318.5799999999999,
+     "provadas": [
+      "pagamento:zero",
+      "estoque:limite",
+      "carrinho:negativa",
+      "estoque:limite",
+      "cupom:limite",
+      "cupom:limite",
+      "carrinho:normal",
+      "pagamento:repetida",
+      "carrinho:normal",
+      "cupom:limite",
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "estoque:repetida",
+      "estoque:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:negativa",
+        "cupom:limite"
+       ],
+       "v": [
+        0.245,
+        0.356,
+        0.415
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 17.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.027,
+        0.814,
+        0.183
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.7
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:negativa",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.116,
+        1.104,
+        0.529
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 14.3
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "estoque:limite",
+        "cupom:limite"
+       ],
+       "v": [
+        0.583,
+        0.665,
+        0.31
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.5
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.955,
+        0.713,
+        0.809
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 14.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.633,
+        0.224,
+        1.203
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:limite",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.311,
+        0.711,
+        0.51
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.426,
+        0.013,
+        0.643
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 29.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.8,
+        -0.057,
+        0.132
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 12.8
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.673,
+        0.576,
+        -0.032
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.049,
+        -0.024,
+        0.234
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 28.6
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.579,
+        0.366,
+        -0.002
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 20
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.643,
+        0.185,
+        1.02
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 27
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.653,
+        0.364,
+        0.4
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        1.065,
+        0.515,
+        0.406
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 25.4
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 352.7600000000001,
+     "provadas": [
+      "cancelamento:normal",
+      "cupom:limite",
+      "cupom:limite",
+      "cupom:normal",
+      "pagamento:normal",
+      "estoque:limite",
+      "pagamento:normal",
+      "carrinho:normal",
+      "pagamento:normal",
+      "carrinho:zero",
+      "carrinho:negativa",
+      "cupom:limite",
+      "estoque:normal",
+      "carrinho:negativa",
+      "cancelamento:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.021,
+        0.386,
+        0.043
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.841,
+        0.55,
+        0.084
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 32.7
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        1.236,
+        0.852,
+        0.12
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.976,
+        0.261,
+        0.556
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 24
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.736,
+        0.465,
+        0.272
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 16.7
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.298,
+        -0.041,
+        1.258
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 14.8
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "pagamento:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.122,
+        0.627,
+        0.074
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 34.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "estoque:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.501,
+        0.518,
+        0.2
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.667,
+        0.707,
+        0.657
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 19.6
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.085,
+        0.669,
+        0.776
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 27.2
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.031,
+        0.851,
+        0.145
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 21.8
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cancelamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.499,
+        0.712,
+        0.252
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 29.5
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.37,
+        0.167,
+        0.715
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.166,
+        1.026,
+        0.023
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 23.3
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.647,
+        0.098,
+        0.696
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 15.6
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 305.46000000000004,
+     "provadas": [
+      "cancelamento:normal",
+      "carrinho:normal",
+      "cupom:limite",
+      "pagamento:zero",
+      "estoque:limite",
+      "estoque:limite",
+      "cupom:normal",
+      "cupom:normal",
+      "pagamento:repetida",
+      "pagamento:zero",
+      "cupom:limite",
+      "pagamento:normal",
+      "carrinho:zero",
+      "estoque:repetida",
+      "cupom:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.003,
+        0.211,
+        0.048
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 21.9
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "pagamento:repetida",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.947,
+        0.274,
+        0.96
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 27.7
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:zero",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        1.242,
+        0.249,
+        0.736
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 15.3
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.353,
+        0.674,
+        1.073
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 21.6
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.667,
+        0.346,
+        0.865
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.035,
+        1.071,
+        0.751
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.709,
+        0.704,
+        0.027
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 18.8
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.824,
+        1.102,
+        0.215
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 23
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.56,
+        0.167,
+        0.603
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 20.7
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.145,
+        0.587,
+        1.108
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 12.3
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cancelamento:repetida",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.514,
+        0.306,
+        0.256
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.2
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.387,
+        0.076,
+        0.48
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 15.8
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "estoque:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.688,
+        0.086,
+        0.723
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 15.9
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.298,
+        0.438,
+        0.002
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 17.7
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        -0.094,
+        0.84,
+        0.616
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 21
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1609.56,
+   "olhosReais": true,
+   "data": "2026-10-10T17:44:32.422Z",
+   "erros": [],
+   "minutosParede": 114.2,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1503,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 205.97,
+     "tBug": null,
+     "provadas": [
+      "cupom:normal",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:limite",
+      "cupom:limite",
+      "pagamento:normal",
+      "cupom:limite",
+      "pagamento:zero",
+      "estoque:repetida",
+      "carrinho:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.93,
+        0.128,
+        1.102
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 31.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "carrinho:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.856,
+        0.826,
+        -0.005
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 11
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "pagamento:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.714,
+        0.549,
+        0.854
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        1.313,
+        1.066,
+        0.487
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 13.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        0.844,
+        0.567,
+        1.121
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 19.2
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.203,
+        0.119,
+        0.856
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.795,
+        0.986,
+        0.132
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 33.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.415,
+        0.536,
+        1.051
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 19.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.658,
+        0.323,
+        0.755
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 12.4
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.647,
+        0.417,
+        0.963
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 20.7
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 2,
+     "provas": 10,
+     "tempo": 217.67000000000002,
+     "tBug": 62.02999999999997,
+     "provadas": [
+      "pagamento:repetida",
+      "estoque:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "estoque:limite",
+      "estoque:repetida",
+      "cancelamento:repetida",
+      "carrinho:zero",
+      "pagamento:zero",
+      "cancelamento:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:zero",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.641,
+        0.89,
+        0.76
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 20.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.961,
+        0.443,
+        0.281
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 16.5
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.257,
+        0.957,
+        0.126
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 22.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        1.241,
+        1.182,
+        0.379
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 18.9
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "estoque:limite"
+       ],
+       "v": [
+        0.4,
+        0.255,
+        0.55
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 26.9
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.155,
+        0.931,
+        0.092
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 16.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.258,
+        0.311,
+        0.46
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 20.3
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.114,
+        1.001,
+        0.344
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 15.8
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:zero",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.662,
+        0.82,
+        0.023
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 24.8
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.459,
+        0.172,
+        0.547
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 21.3
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 245.38999999999993,
+     "tBug": null,
+     "provadas": [
+      "pagamento:zero",
+      "carrinho:limite",
+      "pagamento:normal",
+      "cupom:normal",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "pagamento:zero",
+      "estoque:limite",
+      "pagamento:zero",
+      "estoque:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.744,
+        0.534,
+        0.705
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.804,
+        1.096,
+        0.716
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 14.4
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.595,
+        0.271,
+        0.902
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 21.2
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.968,
+        0.541,
+        0.606
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 36.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.401,
+        0.9,
+        0.643
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 26.6
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.146,
+        0.491,
+        0.601
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 13
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.899,
+        0.768,
+        0.867
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 30.4
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.969,
+        0.036,
+        0.852
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 30.6
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "pagamento:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.569,
+        0.147,
+        0.106
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.777,
+        0.952,
+        0.377
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 24.3
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 379.0200000000001,
+     "provadas": [
+      "carrinho:limite",
+      "pagamento:repetida",
+      "estoque:repetida",
+      "pagamento:repetida",
+      "carrinho:zero",
+      "estoque:repetida",
+      "carrinho:negativa",
+      "pagamento:repetida",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "estoque:limite",
+      "carrinho:limite",
+      "pagamento:normal",
+      "pagamento:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.367,
+        0.485,
+        0.25
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 25.8
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.381,
+        0.733,
+        0.092
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.5
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "estoque:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.399,
+        0.519,
+        0.693
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 25.7
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "estoque:repetida"
+       ],
+       "v": [
+        1.046,
+        0.34,
+        0.564
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.177,
+        0.136,
+        0.151
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 28.4
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.644,
+        0.074,
+        0.134
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 24.9
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "cupom:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.95,
+        0.813,
+        0.142
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 30.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.576,
+        0.973,
+        0.798
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.4
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.191,
+        0.821,
+        0.14
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 44.7
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.325,
+        1.037,
+        0.317
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 28.6
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cancelamento:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.715,
+        0.764,
+        1.135
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 27.4
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.399,
+        0.23,
+        1.204
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 14.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.248,
+        1.019,
+        0.129
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 16.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.219,
+        1.185,
+        0.746
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 20.5
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "pagamento:zero",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.951,
+        1.164,
+        -0.009
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 21.7
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 317.1199999999999,
+     "provadas": [
+      "cupom:limite",
+      "cupom:repetida",
+      "cancelamento:repetida",
+      "carrinho:limite",
+      "pagamento:normal",
+      "carrinho:negativa",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "estoque:limite",
+      "estoque:limite",
+      "pagamento:zero",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "cupom:normal",
+      "carrinho:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        0.11,
+        0.377,
+        0.461
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 25.7
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.742,
+        0.218,
+        0.513
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 17.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cancelamento:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.99,
+        0.099,
+        0.742
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 13.1
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        -0.019,
+        1.012,
+        0.8
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 21.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.926,
+        0.377,
+        0.37
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 18.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.224,
+        0.873,
+        0.941
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.9
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        1.091,
+        1.136,
+        0.121
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 22.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.67,
+        0.2,
+        1.006
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 22.2
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.206,
+        0.297,
+        0.971
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.138,
+        0.033,
+        0.984
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 21.7
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.436,
+        0.397,
+        0.992
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 21.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.361,
+        0.896,
+        0.467
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 13.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.411,
+        0.393,
+        0.953
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "carrinho:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.816,
+        0.784,
+        0.914
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 34
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.535,
+        0.113,
+        0.417
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 16.7
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 2,
+     "tempo": 32.63000000000011,
+     "provas": 2,
+     "duracao": 32.63000000000011,
+     "provadas": [
+      "pagamento:repetida",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:limite",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.199,
+        0.369,
+        0.517
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 14.6
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.237,
+        0.55,
+        1.008
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": true,
+       "t": 17
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1398.07,
+   "olhosReais": true,
+   "data": "2026-10-10T18:13:28.270Z",
+   "erros": [],
+   "minutosParede": 71,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1503,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 225.47,
+     "tBug": 58.550000000000004,
+     "provadas": [
+      "estoque:normal",
+      "carrinho:limite",
+      "pagamento:repetida",
+      "cupom:limite",
+      "pagamento:zero",
+      "estoque:repetida",
+      "cupom:limite",
+      "estoque:limite",
+      "pagamento:zero",
+      "cupom:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.093,
+        0.872,
+        0.102
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 27
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "carrinho:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        1.206,
+        0.46,
+        0.247
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 15.2
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "pagamento:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.472,
+        0.21,
+        0.453
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 14.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.484,
+        0.853,
+        0.277
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 30
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        1.01,
+        0.6,
+        0.392
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 17.9
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.47,
+        0.494,
+        0.118
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 29.9
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "cupom:limite",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.446,
+        0.223,
+        0.143
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 20.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.386,
+        1.053,
+        1.029
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 22.1
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "estoque:repetida"
+       ],
+       "v": [
+        1.156,
+        0.893,
+        0.251
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cupom:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.307,
+        0.242,
+        -0.018
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 16.3
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 192.82999999999998,
+     "tBug": 121.73000000000002,
+     "provadas": [
+      "estoque:normal",
+      "estoque:normal",
+      "pagamento:zero",
+      "carrinho:limite",
+      "cupom:limite",
+      "pagamento:zero",
+      "cancelamento:repetida",
+      "carrinho:negativa",
+      "pagamento:normal",
+      "cancelamento:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:zero",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.795,
+        0.305,
+        0.484
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 14.5
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.692,
+        0.559,
+        0.367
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 14.8
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.955,
+        0.549,
+        0.565
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.359,
+        0.224,
+        0.043
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 21
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "estoque:limite"
+       ],
+       "v": [
+        0.51,
+        0.974,
+        0.344
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 12.2
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.45,
+        0.045,
+        0.983
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 16.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        1.058,
+        0.877,
+        0.361
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "carrinho:negativa",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.452,
+        0.806,
+        0.513
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 28
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:zero",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.116,
+        0.265,
+        0.645
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 20.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.615,
+        0.738,
+        0.86
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 17.1
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 196.08000000000004,
+     "tBug": 162.02999999999997,
+     "provadas": [
+      "pagamento:zero",
+      "carrinho:limite",
+      "pagamento:zero",
+      "cupom:normal",
+      "carrinho:negativa",
+      "cupom:limite",
+      "cupom:repetida",
+      "pagamento:repetida",
+      "pagamento:normal",
+      "estoque:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.779,
+        0.125,
+        -0.017
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 14.6
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.76,
+        1.314,
+        0.682
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 27
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.82,
+        0.383,
+        0.426
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 22.5
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "estoque:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        1.027,
+        0.587,
+        0.417
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 22.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.873,
+        1.233,
+        0.445
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.6
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.611,
+        0.642,
+        0.231
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 16.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        -0.03,
+        0.807,
+        0.222
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 16.4
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.274,
+        0.141,
+        0.665
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 14.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "pagamento:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.814,
+        0.929,
+        0.046
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 17.5
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.3,
+        0.058,
+        0.613
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 12
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 287.43000000000006,
+     "provadas": [
+      "carrinho:limite",
+      "pagamento:repetida",
+      "estoque:limite",
+      "pagamento:repetida",
+      "carrinho:zero",
+      "carrinho:normal",
+      "carrinho:negativa",
+      "carrinho:limite",
+      "carrinho:limite",
+      "cupom:normal",
+      "estoque:repetida",
+      "estoque:limite",
+      "carrinho:zero",
+      "pagamento:normal",
+      "carrinho:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        1.154,
+        0.642,
+        0.229
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 28.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:normal",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.754,
+        0.731,
+        0.433
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 16.8
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "estoque:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        1.229,
+        0.887,
+        0.673
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 13.2
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:limite",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.01,
+        0.923,
+        0.616
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 15.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.209,
+        0.644,
+        0.911
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.056,
+        0.836,
+        0.157
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 12.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "cupom:repetida",
+        "pagamento:normal"
+       ],
+       "v": [
+        1.003,
+        0.088,
+        0.766
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 31.7
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.124,
+        0.785,
+        0.681
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 17.2
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.132,
+        0.109,
+        0.242
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 12.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.745,
+        0.857,
+        0.687
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 18.2
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cancelamento:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.378,
+        -0.019,
+        1.039
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 15.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.726,
+        0.148,
+        1.194
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 16.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.606,
+        0.507,
+        0.939
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 19.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.399,
+        0.921,
+        0.356
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "pagamento:zero",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.098,
+        0.33,
+        0.879
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 16.4
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 276.17999999999995,
+     "provadas": [
+      "cupom:normal",
+      "cupom:repetida",
+      "estoque:normal",
+      "cupom:limite",
+      "cancelamento:repetida",
+      "carrinho:negativa",
+      "estoque:limite",
+      "cancelamento:repetida",
+      "estoque:limite",
+      "estoque:limite",
+      "carrinho:limite",
+      "carrinho:normal",
+      "pagamento:repetida",
+      "cupom:normal",
+      "cancelamento:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        0.719,
+        0.794,
+        0.931
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 14.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.575,
+        0.051,
+        0.636
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 14.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cancelamento:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.394,
+        0.043,
+        1.084
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 22.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:limite",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.444,
+        0.91,
+        0.364
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 20.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.935,
+        0.744,
+        0.615
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 15.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.683,
+        0.84,
+        0.813
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 25.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.424,
+        1.288,
+        0.796
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 18.8
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cancelamento:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.025,
+        0.536,
+        0.466
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cancelamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        1.049,
+        0.813,
+        1.352
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.513,
+        0.285,
+        0.327
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 12.6
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.059,
+        0.502,
+        0.372
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 15.1
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.522,
+        0.587,
+        0.794
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 11.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.054,
+        0.991,
+        1.097
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 15
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "carrinho:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.412,
+        0.849,
+        0.889
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 21.6
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        -0.069,
+        0.873,
+        0.705
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 23.6
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 324.72,
+     "provadas": [
+      "carrinho:limite",
+      "carrinho:normal",
+      "carrinho:normal",
+      "pagamento:zero",
+      "pagamento:repetida",
+      "estoque:repetida",
+      "cupom:limite",
+      "cupom:repetida",
+      "carrinho:limite",
+      "pagamento:zero",
+      "cupom:limite",
+      "estoque:limite",
+      "cupom:limite",
+      "cancelamento:normal",
+      "cupom:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:limite",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.078,
+        1.02,
+        0.621
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 20.4
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.993,
+        0.915,
+        0.997
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 14.8
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.609,
+        0.438,
+        1.047
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.606,
+        0.509,
+        1.034
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 37
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.677,
+        0.039,
+        0.4
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 25.8
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.806,
+        0.811,
+        0.798
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 13.6
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.207,
+        0.906,
+        0.956
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.143,
+        0.926,
+        1.207
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 14.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.016,
+        0.268,
+        1.198
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 27.9
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.515,
+        0.207,
+        0.49
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 20.6
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "cancelamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.866,
+        0.607,
+        0.795
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 16.7
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cancelamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        0.249,
+        0.132,
+        1.07
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 11.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.552,
+        0.867,
+        0.325
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 39.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:repetida",
+        "estoque:normal"
+       ],
+       "v": [
+        0.874,
+        0.56,
+        0.742
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 13.2
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "pagamento:normal",
+        "estoque:limite"
+       ],
+       "v": [
+        1.406,
+        0.847,
+        1.061
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 18.5
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1502.85,
+   "olhosReais": true,
+   "data": "2026-10-10T18:32:59.823Z",
+   "erros": [],
+   "minutosParede": 65.7,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1504,
+   "condicao": "ativa",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 233.78,
+     "tBug": 49.330000000000005,
+     "provadas": [
+      "pagamento:zero",
+      "pagamento:repetida",
+      "cancelamento:normal",
+      "cancelamento:repetida",
+      "estoque:limite",
+      "pagamento:normal",
+      "estoque:limite",
+      "pagamento:repetida",
+      "carrinho:zero",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.866,
+        0.369,
+        0.568
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 28.5
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cupom:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.101,
+        0.369,
+        0.535
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "pagamento:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.817,
+        0.361,
+        0.744
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 24.8
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "pagamento:zero",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.302,
+        1.028,
+        0.954
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 29.1
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.19,
+        -0.044,
+        0.111
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 21.3
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.883,
+        0.089,
+        0.834
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 18.4
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        1.211,
+        0.689,
+        0.059
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:zero",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.91,
+        1.008,
+        0.35
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:zero",
+        "estoque:limite"
+       ],
+       "v": [
+        0.176,
+        0.872,
+        0.873
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 18.7
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.306,
+        0.163,
+        0.65
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 21.9
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 243.82999999999998,
+     "tBug": 59.72000000000003,
+     "provadas": [
+      "cupom:limite",
+      "cancelamento:repetida",
+      "pagamento:repetida",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:normal",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:limite",
+      "pagamento:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.406,
+        1.098,
+        0.698
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 40.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.485,
+        0.717,
+        0.582
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": true,
+       "t": 17.8
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        1.07,
+        0.571,
+        0.648
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 19.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.421,
+        0.359,
+        0.606
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 24.4
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:limite",
+        "estoque:limite"
+       ],
+       "v": [
+        0.08,
+        1.224,
+        0.411
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 23.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.182,
+        0.163,
+        0.779
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 25.8
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.702,
+        0.582,
+        0.158
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 14.4
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.954,
+        0.51,
+        0.548
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 24.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        1.226,
+        0.597,
+        0.491
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 16.7
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "estoque:normal"
+       ],
+       "v": [
+        0.85,
+        0.077,
+        0.788
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 25
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 218.85000000000008,
+     "tBug": null,
+     "provadas": [
+      "estoque:repetida",
+      "carrinho:zero",
+      "carrinho:limite",
+      "estoque:limite",
+      "carrinho:limite",
+      "cancelamento:normal",
+      "cupom:repetida",
+      "pagamento:normal",
+      "pagamento:zero",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.355,
+        0.547,
+        0.538
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 14.4
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.854,
+        0.191,
+        0.475
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 30.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        1.225,
+        0.485,
+        0.122
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 11.8
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.905,
+        0.226,
+        0.942
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 32.9
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.937,
+        0.514,
+        0.748
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 21.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "pagamento:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.756,
+        0.868,
+        0.229
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 24.1
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.64,
+        0.874,
+        0.874
+       ],
+       "escolha": "cupom:repetida",
+       "bug": false,
+       "t": 12.4
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.682,
+        0.084,
+        0.705
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 12.8
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.765,
+        0.644,
+        0.858
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 26.9
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.167,
+        0.735,
+        0.624
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 21.3
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": 14,
+     "tempo": 259.80999999999995,
+     "provas": 14,
+     "duracao": 259.80999999999995,
+     "provadas": [
+      "carrinho:limite",
+      "cupom:limite",
+      "carrinho:limite",
+      "cancelamento:normal",
+      "carrinho:normal",
+      "carrinho:negativa",
+      "pagamento:normal",
+      "carrinho:limite",
+      "estoque:limite",
+      "cupom:normal",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "estoque:repetida",
+      "cupom:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.866,
+        0.887,
+        0.87
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 12.5
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        1.193,
+        0.661,
+        0.291
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 14.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.784,
+        0.477,
+        0.937
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 13.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.861,
+        0.564,
+        0.245
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 21.3
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.72,
+        0.898,
+        0.81
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 16.6
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:negativa",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.999,
+        1.128,
+        0.562
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.965,
+        1.12,
+        0.083
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 21.2
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.951,
+        0.978,
+        1.205
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 16
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.069,
+        1.115,
+        0.702
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 19.7
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.373,
+        0.672,
+        1.078
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 15.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        1.02,
+        0.488,
+        0.67
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 20.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:repetida",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.037,
+        0.705,
+        0.718
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 21.8
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.697,
+        0.966,
+        0.721
+       ],
+       "escolha": "estoque:repetida",
+       "bug": false,
+       "t": 16
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.103,
+        0.815,
+        0.111
+       ],
+       "escolha": "cupom:repetida",
+       "bug": true,
+       "t": 16
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 294.56999999999994,
+     "provadas": [
+      "carrinho:normal",
+      "pagamento:zero",
+      "pagamento:zero",
+      "cupom:limite",
+      "carrinho:limite",
+      "pagamento:repetida",
+      "cupom:limite",
+      "pagamento:zero",
+      "cancelamento:repetida",
+      "carrinho:zero",
+      "carrinho:limite",
+      "carrinho:negativa",
+      "pagamento:zero",
+      "carrinho:limite",
+      "cupom:limite"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.825,
+        0.467,
+        0.36
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 22.3
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.883,
+        0.77,
+        0.802
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18.6
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.163,
+        0.591,
+        0.89
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 19.9
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.727,
+        1.021,
+        -0.097
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 13.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.734,
+        0.905,
+        0.394
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 16.1
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "pagamento:zero"
+       ],
+       "v": [
+        1.055,
+        1.027,
+        0.849
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 24.7
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cupom:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.367,
+        1.176,
+        0.336
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 24.1
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.863,
+        0.743,
+        0.723
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 18
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "estoque:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.208,
+        0.65,
+        0.686
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 11.6
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "estoque:limite",
+        "cupom:limite"
+       ],
+       "v": [
+        0.968,
+        0.384,
+        0.607
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 13.1
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:repetida",
+        "cupom:repetida"
+       ],
+       "v": [
+        1.434,
+        0.821,
+        0.559
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 27
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.413,
+        0.959,
+        1.272
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 16.4
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "pagamento:zero",
+        "estoque:limite"
+       ],
+       "v": [
+        0.741,
+        0.9,
+        0.547
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 15.9
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "estoque:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.098,
+        0.407,
+        1.123
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 22.3
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:repetida",
+        "cupom:limite"
+       ],
+       "v": [
+        0.182,
+        0.344,
+        0.983
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 15.7
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": 3,
+     "tempo": 62.25999999999999,
+     "provas": 3,
+     "duracao": 62.25999999999999,
+     "provadas": [
+      "pagamento:repetida",
+      "cupom:limite",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.115,
+        0.403,
+        0.182
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 28.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.756,
+        1.086,
+        0.604
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 15.4
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.404,
+        0.102,
+        0.127
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": true,
+       "t": 16.4
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1313.5,
+   "olhosReais": true,
+   "data": "2026-10-10T18:33:20.895Z",
+   "erros": [],
+   "minutosParede": 58.9,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  },
+  {
+   "semente": 1504,
+   "condicao": "congelada",
+   "caracteristica": "repetida",
+   "treino": [
+    {
+     "defeitos": [
+      "cobranca-dupla"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 170.75,
+     "tBug": 18.479999999999997,
+     "provadas": [
+      "pagamento:repetida",
+      "pagamento:repetida",
+      "cancelamento:normal",
+      "estoque:limite",
+      "estoque:limite",
+      "pagamento:normal",
+      "estoque:limite",
+      "carrinho:zero",
+      "estoque:limite",
+      "cupom:normal"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.129,
+        -0.004,
+        0.792
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 18.5
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cupom:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.817,
+        0.202,
+        0.884
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 16.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "pagamento:normal",
+        "estoque:normal"
+       ],
+       "v": [
+        0.822,
+        0.596,
+        0.061
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 14.5
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "pagamento:zero",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        1.386,
+        1.031,
+        0.17
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 12
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        1.307,
+        1.003,
+        0.788
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 11.5
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:normal",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.149,
+        0.552,
+        0.607
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 12.8
+      },
+      {
+       "opcoes": [
+        "estoque:limite",
+        "cancelamento:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        1.069,
+        0.169,
+        0.399
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 12.4
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:zero",
+        "pagamento:normal"
+       ],
+       "v": [
+        0.455,
+        0.885,
+        0.664
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 23.2
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "carrinho:zero",
+        "estoque:limite"
+       ],
+       "v": [
+        0.205,
+        0.484,
+        0.439
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.8
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:negativa",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.411,
+        1.06,
+        0.138
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 16.9
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cancelamento-duplo"
+     ],
+     "bugs": 0,
+     "provas": 10,
+     "tempo": 173.30000000000004,
+     "tBug": null,
+     "provadas": [
+      "carrinho:zero",
+      "carrinho:zero",
+      "pagamento:repetida",
+      "carrinho:limite",
+      "estoque:normal",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:limite",
+      "carrinho:limite",
+      "pagamento:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "estoque:normal",
+        "cupom:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.38,
+        0.769,
+        0.93
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 14
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:normal",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.065,
+        -0.126,
+        0.206
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 12.5
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.872,
+        -0.031,
+        0.934
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 11.4
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.981,
+        0.577,
+        0.748
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 21.4
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "carrinho:limite",
+        "estoque:limite"
+       ],
+       "v": [
+        0.911,
+        0.692,
+        0.875
+       ],
+       "escolha": "estoque:normal",
+       "bug": false,
+       "t": 19
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:normal",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.949,
+        0.859,
+        0.812
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 12.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "estoque:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.99,
+        0.621,
+        1.017
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.725,
+        0.508,
+        0.57
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 13.5
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        1.181,
+        0.338,
+        0.242
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 23.8
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "estoque:normal"
+       ],
+       "v": [
+        0.883,
+        0.988,
+        0.107
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 17.5
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "cobranca-dupla",
+      "cancelamento-duplo"
+     ],
+     "bugs": 1,
+     "provas": 10,
+     "tempo": 200.80999999999995,
+     "tBug": 110.66999999999996,
+     "provadas": [
+      "cupom:normal",
+      "pagamento:normal",
+      "carrinho:negativa",
+      "estoque:limite",
+      "pagamento:repetida",
+      "cancelamento:normal",
+      "cupom:normal",
+      "carrinho:negativa",
+      "pagamento:zero",
+      "carrinho:negativa"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:normal",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.557,
+        0.568,
+        0.165
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.98,
+        0.601,
+        0.762
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 24.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cupom:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.923,
+        0.365,
+        1.128
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 31.7
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.771,
+        0.357,
+        0.993
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 15.3
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "pagamento:repetida",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.34,
+        0.562,
+        0.109
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": true,
+       "t": 19.3
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "pagamento:repetida",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        1.094,
+        0.777,
+        0.587
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 16.8
+      },
+      {
+       "opcoes": [
+        "estoque:repetida",
+        "cupom:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.507,
+        0.383,
+        0.714
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 16.3
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        -0.02,
+        0.887,
+        1.08
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 12.2
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        -0.03,
+        0.098,
+        0.3
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 16
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "carrinho:limite",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.205,
+        0.481,
+        0.814
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 21.2
+      }
+     ]
+    }
+   ],
+   "teste": [
+    {
+     "defeitos": [
+      "cupom-duplo"
+     ],
+     "controle": false,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 315.76,
+     "provadas": [
+      "carrinho:normal",
+      "cupom:limite",
+      "cancelamento:repetida",
+      "cancelamento:repetida",
+      "pagamento:repetida",
+      "cupom:limite",
+      "cupom:normal",
+      "carrinho:limite",
+      "cancelamento:normal",
+      "cupom:limite",
+      "cancelamento:repetida",
+      "pagamento:repetida",
+      "carrinho:negativa",
+      "carrinho:normal",
+      "cancelamento:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "carrinho:limite",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.939,
+        0.49,
+        0.817
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 17.8
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.7,
+        0.025,
+        0.41
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 19.4
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.746,
+        0.843,
+        1.066
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 14.5
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "estoque:normal",
+        "cancelamento:repetida"
+       ],
+       "v": [
+        0.271,
+        0.211,
+        0.704
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 19
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "carrinho:normal",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.816,
+        0.334,
+        0.837
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "cupom:limite",
+        "carrinho:negativa",
+        "pagamento:repetida"
+       ],
+       "v": [
+        1.028,
+        0.901,
+        0.969
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 26.5
+      },
+      {
+       "opcoes": [
+        "estoque:normal",
+        "pagamento:normal",
+        "cupom:normal"
+       ],
+       "v": [
+        0.149,
+        0.126,
+        0.568
+       ],
+       "escolha": "cupom:normal",
+       "bug": false,
+       "t": 25.1
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "cancelamento:normal",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.897,
+        0.512,
+        0.994
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 22.2
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "estoque:limite",
+        "cancelamento:normal"
+       ],
+       "v": [
+        1.046,
+        0.272,
+        0.953
+       ],
+       "escolha": "cancelamento:normal",
+       "bug": false,
+       "t": 21.2
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:normal",
+        "cupom:limite"
+       ],
+       "v": [
+        0.659,
+        0.405,
+        0.82
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 19.8
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "cupom:repetida",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.543,
+        0.587,
+        0.237
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 20
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:repetida",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.389,
+        0.852,
+        0.69
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 21.1
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:repetida",
+        "cupom:normal"
+       ],
+       "v": [
+        0.882,
+        -0.018,
+        0.832
+       ],
+       "escolha": "carrinho:negativa",
+       "bug": false,
+       "t": 11.8
+      },
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.574,
+        0.315,
+        0.132
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 26.1
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "cancelamento:repetida",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.33,
+        0.579,
+        0.466
+       ],
+       "escolha": "cancelamento:repetida",
+       "bug": false,
+       "t": 18.3
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "reserva-dupla"
+     ],
+     "controle": false,
+     "primeiro": 5,
+     "tempo": 115.44999999999993,
+     "provas": 5,
+     "duracao": 115.44999999999993,
+     "provadas": [
+      "carrinho:limite",
+      "pagamento:zero",
+      "pagamento:zero",
+      "cupom:limite",
+      "estoque:repetida"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "carrinho:normal",
+        "cupom:repetida",
+        "carrinho:limite"
+       ],
+       "v": [
+        0.548,
+        0.027,
+        0.978
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 18.6
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "carrinho:zero",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.606,
+        0.41,
+        0.646
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 25.6
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "cupom:repetida",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.721,
+        0.113,
+        1.039
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 22.8
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cupom:limite",
+        "cupom:normal"
+       ],
+       "v": [
+        0.451,
+        0.826,
+        0.316
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 21.2
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "carrinho:limite",
+        "estoque:repetida"
+       ],
+       "v": [
+        0.396,
+        0.438,
+        0.691
+       ],
+       "escolha": "estoque:repetida",
+       "bug": true,
+       "t": 22.9
+      }
+     ]
+    },
+    {
+     "defeitos": [
+      "quantidade-negativa"
+     ],
+     "controle": true,
+     "primeiro": null,
+     "tempo": null,
+     "provas": 15,
+     "duracao": 340.44999999999993,
+     "provadas": [
+      "carrinho:zero",
+      "cupom:limite",
+      "pagamento:repetida",
+      "pagamento:normal",
+      "pagamento:repetida",
+      "estoque:limite",
+      "pagamento:zero",
+      "carrinho:normal",
+      "pagamento:repetida",
+      "estoque:limite",
+      "carrinho:limite",
+      "pagamento:zero",
+      "carrinho:normal",
+      "pagamento:zero",
+      "pagamento:zero"
+     ],
+     "tentativas": [
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "pagamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.013,
+        0.878,
+        0.398
+       ],
+       "escolha": "carrinho:zero",
+       "bug": false,
+       "t": 30.7
+      },
+      {
+       "opcoes": [
+        "pagamento:repetida",
+        "cupom:limite",
+        "estoque:normal"
+       ],
+       "v": [
+        0.078,
+        0.883,
+        0.607
+       ],
+       "escolha": "cupom:limite",
+       "bug": false,
+       "t": 17.3
+      },
+      {
+       "opcoes": [
+        "carrinho:negativa",
+        "estoque:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.168,
+        0.623,
+        0.642
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 21.3
+      },
+      {
+       "opcoes": [
+        "pagamento:normal",
+        "estoque:repetida",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.283,
+        0.452,
+        -0.013
+       ],
+       "escolha": "pagamento:normal",
+       "bug": false,
+       "t": 16.3
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "cancelamento:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.72,
+        0.776,
+        0.89
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 13.9
+      },
+      {
+       "opcoes": [
+        "cancelamento:normal",
+        "cupom:limite",
+        "estoque:limite"
+       ],
+       "v": [
+        0.618,
+        0.829,
+        1.34
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 20.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "pagamento:zero",
+        "cupom:repetida"
+       ],
+       "v": [
+        0.081,
+        1.019,
+        0.525
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 14.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "carrinho:normal",
+        "carrinho:negativa"
+       ],
+       "v": [
+        0.537,
+        0.95,
+        0.211
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 14.1
+      },
+      {
+       "opcoes": [
+        "cupom:normal",
+        "carrinho:negativa",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.521,
+        0.221,
+        0.307
+       ],
+       "escolha": "pagamento:repetida",
+       "bug": false,
+       "t": 25.1
+      },
+      {
+       "opcoes": [
+        "cupom:repetida",
+        "estoque:repetida",
+        "estoque:limite"
+       ],
+       "v": [
+        0.213,
+        0.15,
+        0.805
+       ],
+       "escolha": "estoque:limite",
+       "bug": false,
+       "t": 21.7
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "cancelamento:repetida",
+        "carrinho:zero"
+       ],
+       "v": [
+        0.76,
+        0.701,
+        0.494
+       ],
+       "escolha": "carrinho:limite",
+       "bug": false,
+       "t": 27.9
+      },
+      {
+       "opcoes": [
+        "carrinho:zero",
+        "pagamento:zero",
+        "cancelamento:normal"
+       ],
+       "v": [
+        0.183,
+        0.666,
+        0.056
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 15.6
+      },
+      {
+       "opcoes": [
+        "cancelamento:repetida",
+        "pagamento:zero",
+        "carrinho:normal"
+       ],
+       "v": [
+        0.393,
+        0.01,
+        0.84
+       ],
+       "escolha": "carrinho:normal",
+       "bug": false,
+       "t": 26.7
+      },
+      {
+       "opcoes": [
+        "pagamento:zero",
+        "estoque:normal",
+        "pagamento:repetida"
+       ],
+       "v": [
+        0.997,
+        0.757,
+        0.682
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 31.1
+      },
+      {
+       "opcoes": [
+        "carrinho:limite",
+        "carrinho:zero",
+        "pagamento:zero"
+       ],
+       "v": [
+        0.253,
+        0.675,
+        1.02
+       ],
+       "escolha": "pagamento:zero",
+       "bug": false,
+       "t": 27.2
+      }
+     ]
+    }
+   ],
+   "tempoCerebro": 1316.86,
+   "olhosReais": true,
+   "data": "2026-10-10T18:35:40.364Z",
+   "erros": [],
+   "minutosParede": 51.1,
+   "extra": "&arena=1&esquecimento=3600&tentativas=10&teste=15",
+   "so": null
+  }
+ ]
+}
