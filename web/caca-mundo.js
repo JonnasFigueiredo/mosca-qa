@@ -408,7 +408,11 @@
   const estiloMundo = document.createElement('style');
   estiloMundo.textContent = `body.mundo-caca #predBtn, body.mundo-caca #sbModes button[data-mode="pred"], body.mundo-caca #predHelp, body.mundo-caca #predHud { display: none !important; }
     body.embed-caca { overflow: hidden; } body.embed-caca #worldBox { position: fixed !important; inset: 0; z-index: 50; width: 100vw; height: 100vh; border-radius: 0; margin: 0; }
-    body.embed-caca #cacaPainel, body.embed-caca #treinoPainel { display: none !important; }`;
+    body.embed-caca #cacaPainel, body.embed-caca #treinoPainel { display: none !important; }
+    body.embed-caca #brain { display: none !important; }
+    body.embed-caca #worldBox #world { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }`;
+  // (10/10) embutida, o cérebro 3D desta página não é desenhado (a tela de fora desenha o dela): o canvas dele aparecia
+  // como um bloco preto; e o mundo ocupa a altura toda do quadro (antes ficava uma faixa escura embaixo)
   document.head.append(estiloMundo);
   const mostrarOriginal = CacaMundo.mostrar;
   CacaMundo.mostrar = () => { mostrarOriginal(); document.body.classList.toggle('mundo-caca', APP.id === 'caca'); };
