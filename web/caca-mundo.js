@@ -90,6 +90,10 @@
   const PLACA = Math.min(16, Math.max(6, +QS.get('placa') || 13));
   // &lugares=fixos: sem o sorteio dos lugares a cada versão (para comparar)
   const SEM_SORTEIO = QS.get('lugares') === 'fixos';
+  // &esquecimento=N (10/10): constante de esquecimento do aprendizado em segundos (o worker usa 90 s por padrão). No ritmo
+  // do mundo (~20 s por tentativa na arena), 90 s apagava a memória entre a recompensa e o teste; moscas reais lembram de
+  // uma recompensa de açúcar por horas. Parâmetro do modelo, declarado em cada medida que o usa
+  const ESQUECIMENTO_S = +QS.get('esquecimento') || 0;
   const idDe = a => 'q-' + a.id.replace(':', '-');
   const placas = {}, plataformas = {};
   for (const [fam, p] of Object.entries(PLATAFORMAS)) {
@@ -208,7 +212,8 @@
     for (let i = 0; i < n; i++) { const ids = [...Q.ACOES]; for (let k = ids.length - 1; k > 0; k--) { const j = Math.floor(r() * (k + 1)); [ids[k], ids[j]] = [ids[j], ids[k]]; } out.push(ids.slice(0, 3)); }
     return out;
   }
-  const ARENA_TREINO = +QS.get('tentativas') || 20, ARENA_TESTE = 30, T_SOFTMAX = 0.15;   // os orçamentos da bancada 2
+  // os orçamentos da bancada 2; &tentativas= e &teste= encurtam (testes rápidos de validação antes das séries longas)
+  const ARENA_TREINO = +QS.get('tentativas') || 20, ARENA_TESTE = +QS.get('teste') || 30, T_SOFTMAX = 0.15;
   const A = { semente: 1, k: 0, vistas: [], opcoes: [], amostra: {}, fase: 'livre', escolhida: null, t0: 0, ultimo: 0, cheirando: null, tentativas: [], fimEm: 0 };
   function reconstruir() {
     SB.app = null; if (typeof SBR !== 'undefined') SBR.built = '';
@@ -317,7 +322,7 @@
   function iniciar(fase) {
     if (APP.id !== 'caca') { switchApp('caca'); sbSet(true); }
     C.car = $('#cacaCar').value; usarCheiros(C.car); C.V = C.car === 'normal' ? Q.VERSOES2N : Q.VERSOES2;
-    worker.postMessage({ type: 'params', plasticidade: $('#cacaCond').value !== 'congelada' });
+    worker.postMessage({ type: 'params', plasticidade: $('#cacaCond').value !== 'congelada', ...(ESQUECIMENTO_S ? { tauF: ESQUECIMENTO_S * 1000 } : {}) });
     C.fase = fase; C.recompensa = fase === 'treino'; C.vi = 0;
     if (fase === 'treino') { const n = +$('#cacaTreinos').value; C.versoes = Array.from({ length: n }, (_, i) => C.V.treino[i % C.V.treino.length]); C.treino = []; }
     else { C.versoes = C.V.teste; C.teste = []; }

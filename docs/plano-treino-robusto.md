@@ -700,3 +700,26 @@ valência ~15× menos que o da bancada (cheiro de 100 Hz nas duas antenas por 2 
 medir, num condicionamento controlado na página, o cheiro nas antenas e a mudança de valência de uma recompensa no
 mundo; o esquecimento é parâmetro do modelo e só muda com decisão do usuário (moscas reais lembram de uma recompensa
 por horas).
+
+**10/10: testes curtos de condicionamento acharam a causa (antes de qualquer série nova).** `scripts/qa_condicionamento.mjs`
+(página com olhos reais, arena; a mosca parada em cima de uma plaquinha premiada R e de uma de controle O; valência dos
+MBONs medida 3 vezes alternando, antes e 20 s e 200 s depois de 3 pareamentos como os da bancada; `docs/medicoes/qa-condicionamento.json`):
+(1) o cheiro nas antenas no pareamento é o da bancada (98 Hz nos 4 glomérulos, dos dois lados); (2) com o mapa
+**trocado** (repetição = VL2a+VM6v, o usado na arena), a valência quase não muda (−0,23 a +0,11, igual à congelada), e o
+mesmo pareamento no worker sem corpo também quase não muda (+0,03; na série da bancada com cheiros trocados a valência
+do premiado subiu só +0,27, contra +1,03 com os cheiros fortes): **o mapa trocado era o problema da arena**; (3) com os
+**cheiros fortes** (repetição = DC1+VA6), a valência sobe como na bancada: +0,68 e +0,53 aos 20 s com o esquecimento de
+90 s (+0,24 e +0,26 aos 200 s) e +0,83 e +0,93 aos 20 s com 1 h (+0,57 e +0,86 aos 200 s); congelada −0,16 a +0,15.
+Descartados também: a visão (com os olhos desligados a atividade de fundo das KCs cai de 140 para 1–2 Hz e a valência
+continua sem mudar com o mapa trocado) e o gosto doce de novidade (12 s em cima de uma plaquinha doce não mudam as
+sinapses). Na arena o caminho até as plaquinhas é guiado, então a evitação inata do DC1+VA6 (vista no mundo de
+plataformas) não impede a amostragem.
+
+**Mini-arena (validação curta, escrita antes de rodar).** Arena com cheiros fortes e esquecimento de 1 h
+(`&arena=1&esquecimento=3600&tentativas=10&teste=15`, 3 versões de treino de 10 tentativas, teste com as 3 versões de
+15 tentativas, até o primeiro bug), sementes 1501–1504, treinada e congelada, 4 por vez (~1 h). **Passa se:** (a) a
+escolha da característica premiada quando visível, no teste, for maior na treinada que na congelada em pelo menos 3 das
+4 sementes, com diferença média > +0,10; e (b) a valência medida das opções premiadas no teste for maior na treinada,
+diferença média > +0,3. Se passar, a série longa (20 pares, critério principal da bancada, replicação) roda com esse
+mundo; se não passar, nada de série longa: diagnóstico primeiro. O esquecimento de 1 h é parâmetro do modelo (declarado):
+moscas reais lembram de uma recompensa de açúcar por horas.

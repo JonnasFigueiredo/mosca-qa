@@ -1,0 +1,911 @@
+{
+ "metodo": "Condicionamento no mundo (scripts/qa_condicionamento.mjs): valência dos MBONs (mbon_aprox − média de mbon_evitar e mbon_evitar_rec, Hz por neurônio) com a mosca parada 1,5 s em cima de cada plaquinha (média do último 1 s), antes e 20 s e 200 s depois dos pareamentos (cada valência: média de REP medidas alternando R e O) (1,5 s em cima da premiada, depois açúcar + PAM por 0,5 s, 2 s em cima). mudanca = (R − O) depois − (R − O) antes. Na bancada, o mesmo tipo de pareamento muda a valência do cheiro premiado em +1,03. Página com olhos reais, arena (&arena=1), cheiros fortes (repetição = DC1+VA6) salvo indicação; 3 pareamentos; 10/10/2026.",
+ "rodadas": [
+  {
+   "cond": "ativa",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 3600,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.706,
+    "O": 0.648
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 1.498,
+    "O": 0.613
+   },
+   "d200": {
+    "R": 1.402,
+    "O": 0.77
+   },
+   "kc": 1,
+   "tempoCerebro": 279,
+   "mudanca_20s": 0.827,
+   "mudanca_200s": 0.574
+  },
+  {
+   "cond": "ativa",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 3600,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.601,
+    "O": 0.701
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 1.443,
+    "O": 0.612
+   },
+   "d200": {
+    "R": 1.465,
+    "O": 0.702
+   },
+   "kc": 0,
+   "tempoCerebro": 282,
+   "mudanca_20s": 0.931,
+   "mudanca_200s": 0.863
+  },
+  {
+   "cond": "ativa",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.661,
+    "O": 0.628
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 1.408,
+    "O": 0.699
+   },
+   "d200": {
+    "R": 1.035,
+    "O": 0.765
+   },
+   "kc": 0,
+   "tempoCerebro": 281,
+   "mudanca_20s": 0.676,
+   "mudanca_200s": 0.237
+  },
+  {
+   "cond": "ativa",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.623,
+    "O": 0.637
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 1.314,
+    "O": 0.796
+   },
+   "d200": {
+    "R": 1.081,
+    "O": 0.84
+   },
+   "kc": 1,
+   "tempoCerebro": 280,
+   "mudanca_20s": 0.532,
+   "mudanca_200s": 0.255
+  },
+  {
+   "cond": "congelada",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.783,
+    "O": 0.651
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.547,
+    "O": 0.579
+   },
+   "d200": {
+    "R": 0.844,
+    "O": 0.565
+   },
+   "kc": 1,
+   "tempoCerebro": 279,
+   "mudanca_20s": -0.164,
+   "mudanca_200s": 0.147
+  },
+  {
+   "cond": "congelada",
+   "cheiros": "fortes",
+   "olhos": true,
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.719,
+    "O": 0.624
+   },
+   "antenas": [
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    },
+    {
+     "ORN_DC1_L": 98,
+     "ORN_DC1_R": 98,
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VA6_L": 98,
+     "ORN_VA6_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.688,
+    "O": 0.541
+   },
+   "d200": {
+    "R": 0.778,
+    "O": 0.617
+   },
+   "kc": 0,
+   "tempoCerebro": 281,
+   "mudanca_20s": 0.052,
+   "mudanca_200s": 0.066
+  },
+  {
+   "cond": "ativa",
+   "esquecimento_s": 3600,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.725,
+    "O": 0.301
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.845,
+    "O": 0.542
+   },
+   "d200": {
+    "R": 0.857,
+    "O": 0.365
+   },
+   "tempoCerebro": 279,
+   "mudanca_20s": -0.121,
+   "mudanca_200s": 0.068
+  },
+  {
+   "cond": "ativa",
+   "esquecimento_s": 3600,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.777,
+    "O": 0.305
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.835,
+    "O": 0.596
+   },
+   "d200": {
+    "R": 0.855,
+    "O": 0.396
+   },
+   "tempoCerebro": 281,
+   "mudanca_20s": -0.233,
+   "mudanca_200s": -0.013
+  },
+  {
+   "cond": "ativa",
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.73,
+    "O": 0.316
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.93,
+    "O": 0.407
+   },
+   "d200": {
+    "R": 0.744,
+    "O": 0.455
+   },
+   "tempoCerebro": 280,
+   "mudanca_20s": 0.109,
+   "mudanca_200s": -0.125
+  },
+  {
+   "cond": "ativa",
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.704,
+    "O": 0.403
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.868,
+    "O": 0.49
+   },
+   "d200": {
+    "R": 0.786,
+    "O": 0.511
+   },
+   "tempoCerebro": 282,
+   "mudanca_20s": 0.077,
+   "mudanca_200s": -0.026
+  },
+  {
+   "cond": "congelada",
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.759,
+    "O": 0.336
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.708,
+    "O": 0.344
+   },
+   "d200": {
+    "R": 0.7,
+    "O": 0.291
+   },
+   "tempoCerebro": 280,
+   "mudanca_20s": -0.059,
+   "mudanca_200s": -0.014
+  },
+  {
+   "cond": "congelada",
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.747,
+    "O": 0.282
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.727,
+    "O": 0.313
+   },
+   "d200": {
+    "R": 0.778,
+    "O": 0.369
+   },
+   "tempoCerebro": 280,
+   "mudanca_20s": -0.051,
+   "mudanca_200s": -0.056
+  },
+  {
+   "cond": "ativa",
+   "olhos": false,
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.051,
+    "O": 0.165
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.199,
+    "O": 0.124
+   },
+   "d200": {
+    "R": 0.147,
+    "O": 0.134
+   },
+   "kc": 1,
+   "tempoCerebro": 282,
+   "mudanca_20s": 0.189,
+   "mudanca_200s": 0.127
+  },
+  {
+   "cond": "ativa",
+   "olhos": false,
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.166,
+    "O": 0.151
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.182,
+    "O": 0.107
+   },
+   "d200": {
+    "R": 0.169,
+    "O": 0.207
+   },
+   "kc": 2,
+   "tempoCerebro": 284,
+   "mudanca_20s": 0.06,
+   "mudanca_200s": -0.053
+  },
+  {
+   "cond": "congelada",
+   "olhos": false,
+   "esquecimento_s": 90,
+   "semente": 11,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.108,
+    "O": 0.171
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.024,
+    "O": 0.118
+   },
+   "d200": {
+    "R": 0.055,
+    "O": 0.111
+   },
+   "kc": 2,
+   "tempoCerebro": 283,
+   "mudanca_20s": -0.031,
+   "mudanca_200s": 0.007
+  },
+  {
+   "cond": "congelada",
+   "olhos": false,
+   "esquecimento_s": 90,
+   "semente": 12,
+   "premiada": "q-pagamento-repetida",
+   "controle": "q-carrinho-normal",
+   "pareamentos": 3,
+   "antes": {
+    "R": 0.114,
+    "O": 0.126
+   },
+   "antenas": [
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    },
+    {
+     "ORN_DC2_L": 64,
+     "ORN_DC2_R": 64,
+     "ORN_VL2a_L": 64,
+     "ORN_VL2a_R": 64,
+     "ORN_VM1_L": 64,
+     "ORN_VM1_R": 64,
+     "ORN_VM6v_L": 64,
+     "ORN_VM6v_R": 64
+    },
+    {
+     "ORN_DC2_L": 98,
+     "ORN_DC2_R": 98,
+     "ORN_VL2a_L": 98,
+     "ORN_VL2a_R": 98,
+     "ORN_VM1_L": 98,
+     "ORN_VM1_R": 98,
+     "ORN_VM6v_L": 98,
+     "ORN_VM6v_R": 98
+    }
+   ],
+   "d20": {
+    "R": 0.203,
+    "O": 0.149
+   },
+   "d200": {
+    "R": 0.091,
+    "O": 0.169
+   },
+   "kc": 2,
+   "tempoCerebro": 283,
+   "mudanca_20s": 0.066,
+   "mudanca_200s": -0.066
+  }
+ ]
+}
