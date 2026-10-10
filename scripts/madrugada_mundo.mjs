@@ -78,7 +78,7 @@ const dia = () => new Date().toLocaleDateString('pt-BR').slice(0, 5);
 if (!existsSync(COPIA + '/VERSAO.txt')) try { execSync('git rev-parse --short HEAD > ' + COPIA + '/VERSAO.txt'); } catch { /* sem git */ }
 log('início da rotina do mundo' + (est.etapa ? ` (retomando depois de "${est.etapa}")` : ''));
 
-if (ARENA && !est.degrau) { est.degrau = 'arena'; est.N = N_FIXO || 20; est.etapa = 'piloto'; salva(); log(`arena de escolha: sem calibração nem piloto, N = ${est.N}`); }
+if (ARENA && !est.degrau) { est.degrau = 'arena2'; est.N = N_FIXO || 20; est.etapa = 'piloto'; salva(); log(`arena de escolha: sem calibração nem piloto, N = ${est.N}`); }
 // 1. calibração
 if (!est.degrau) {
   let melhor = null;
@@ -108,7 +108,8 @@ if (!est.degrau) {
   }
   est.etapa = 'calibracao'; salva();
 }
-const D = ARENA ? { id: 'arena', extra: '&arena=1&cheiros=trocados', desc: 'arena de escolha (3 plaquinhas por tentativa, como a bancada 2), cheiros trocados' } : ESCADA.find(d => d.id === est.degrau);
+// (10/10) arena 2: cheiros fortes (os da bancada) e esquecimento de 1 h; a arena 1 (cheiros trocados, 90 s) foi negativa
+const D = ARENA ? { id: 'arena2', extra: '&arena=1&esquecimento=3600', desc: 'arena de escolha, cheiros fortes, esquecimento de 1 h' } : ESCADA.find(d => d.id === est.degrau);
 
 // 2. piloto (sem piloto com --n)
 if (!est.N && N_FIXO) { est.N = N_FIXO; est.etapa = 'piloto'; salva(); log(`sem piloto: N = ${N_FIXO}, fixado antes`); }
@@ -130,7 +131,7 @@ if (!est.N) {
 
 // 3 e 4. confirmatória e replicação (e a alternativa escrita antes, se a principal não passar)
 const SERIES = ARENA ? [
-  { prefixo: 'qa-mundo-arena', treinos: '6', sementes: seq(1401, est.N), replica: seq(1451, est.N), desc: 'arena de escolha, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas' },
+  { prefixo: 'qa-mundo-arena2', treinos: '6', sementes: seq(1601, est.N), replica: seq(1651, est.N), desc: 'arena de escolha com cheiros fortes e esquecimento de 1 h, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas' },
 ] : [
   // mundo 2 (04/10): uma série, a replicação se passar; sem alternativa (se não passar, para e registra)
   { prefixo: `qa-mundo-${D.id}`, treinos: '6', sementes: seq(1201, est.N), replica: seq(1251, est.N), desc: `mundo ${D.id} (${D.desc}), 6 versões de treino` },

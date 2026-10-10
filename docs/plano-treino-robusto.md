@@ -730,3 +730,14 @@ escolha da característica premiada quando visível no teste, treinada / congela
 congelada, média +0,09 (**(b) não passou**, mínimo +0,3). Tentativas até o primeiro bug na transferência: treinada 4;
 11,5; 16; 15 e congelada 16; 16; 16; 10,5. Só 2 recompensas por sessão no treino curto (3 × 10 tentativas), contra ~6
 no protocolo completo: memória fraca. Pela regra escrita, nada de série longa ainda.
+
+## Arena 2 (10/10, escrita antes de rodar; decisão do usuário)
+
+O usuário viu a mosca treinada na tela e decidiu rodar a série longa mesmo com a mini-arena não tendo passado no critério
+(b) (a valência; o (a), a escolha, passou). Registro dessa decisão: a série longa é a medida que conta, e o critério dela
+é o da bancada, escrito antes. **Mundo:** arena (`&arena=1`) com os cheiros fortes (repetição = DC1+VA6) e esquecimento de
+1 h (`&esquecimento=3600`; parâmetro do modelo, declarado), cópia congelada nova de `web/`. **Protocolo:** treino com 6
+versões de 20 tentativas, teste com as 3 versões novas até o primeiro bug ou 30 tentativas. **Critério principal:**
+tentativas até o primeiro bug nas versões de transferência, treinada − congelada, IC95 < 0. Secundários: escolha da
+característica premiada quando visível (> 0), controle, bugs no treino. N = 20 pares (sementes 1601–1620); se passar,
+replicação com 1651–1670. 2 sessões por vez (o usuário usa o PC ao mesmo tempo). `qa-mundo-arena2*.json`.
