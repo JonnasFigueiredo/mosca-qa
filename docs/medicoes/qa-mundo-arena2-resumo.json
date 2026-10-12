@@ -1,0 +1,308 @@
+{
+ "metodo": "Treinada (ativa) menos congelada, pareado por semente. transferencia/controle: provas até o primeiro bug nas versões de teste (as provas feitas + 1 quando não achou em 180 s). tempo_*: s de cérebro até o primeiro bug (a duração da versão quando não achou). fracao_premiada: fração das provas do teste em plaquinhas da característica premiada. IC95 percentil de bootstrap (2000; só com 5 ou mais sementes), p bilateral do mesmo bootstrap, dz = média / desvio das diferenças.",
+ "sementes": [
+  1601,
+  1602,
+  1603,
+  1604,
+  1605,
+  1606,
+  1607,
+  1608,
+  1609,
+  1610,
+  1611,
+  1612,
+  1613,
+  1614,
+  1615,
+  1616,
+  1617,
+  1618,
+  1619,
+  1620
+ ],
+ "sessoes_validas": 40,
+ "por_condicao": {
+  "congelada": {
+   "sementes": 20,
+   "escolha_premiada": 0.26,
+   "transferencia": 19.4,
+   "controle": 7.15,
+   "tempo_transferencia": 390.24,
+   "tempo_controle": 147.65,
+   "fracao_premiada": 0.16,
+   "bugs_treino": 5.6,
+   "provas_teste": 45.15
+  },
+  "ativa": {
+   "sementes": 20,
+   "escolha_premiada": 0.36,
+   "transferencia": 18.25,
+   "controle": 9.65,
+   "tempo_transferencia": 382.16,
+   "tempo_controle": 202.76,
+   "fracao_premiada": 0.22,
+   "bugs_treino": 5.8,
+   "provas_teste": 45.55
+  }
+ },
+ "ativa_menos_congelada": {
+  "escolha_premiada": {
+   "n": 20,
+   "media": 0.1,
+   "ic95": [
+    0.05,
+    0.15
+   ],
+   "p_bootstrap": 0,
+   "dz": 0.81,
+   "por_semente": [
+    0.07,
+    0.29,
+    0.13,
+    0.08,
+    0.14,
+    0.09,
+    0.19,
+    0.08,
+    0.14,
+    0.12,
+    0.09,
+    -0.05,
+    -0.06,
+    0.04,
+    0.06,
+    0.41,
+    0.06,
+    -0.11,
+    -0.04,
+    0.18
+   ]
+  },
+  "transferencia": {
+   "n": 20,
+   "media": -1.15,
+   "ic95": [
+    -5.92,
+    3.4
+   ],
+   "p_bootstrap": 0.649,
+   "dz": -0.11,
+   "por_semente": [
+    -2,
+    -13,
+    -13,
+    -2.5,
+    13.5,
+    13.5,
+    0,
+    4.5,
+    -12,
+    -23.5,
+    -4.5,
+    2.5,
+    10.5,
+    -3,
+    13,
+    -16.5,
+    -10,
+    10.5,
+    0.5,
+    8.5
+   ]
+  },
+  "controle": {
+   "n": 20,
+   "media": 2.5,
+   "ic95": [
+    -1.95,
+    6.95
+   ],
+   "p_bootstrap": 0.31,
+   "dz": 0.24,
+   "por_semente": [
+    14,
+    11,
+    -1,
+    -1,
+    -18,
+    10,
+    0,
+    3,
+    0,
+    28,
+    1,
+    -2,
+    20,
+    0,
+    0,
+    -1,
+    0,
+    0,
+    1,
+    -15
+   ]
+  },
+  "tempo_transferencia": {
+   "n": 20,
+   "media": -8.07,
+   "ic95": [
+    -108.21,
+    85.12
+   ],
+   "p_bootstrap": 0.883,
+   "dz": -0.04,
+   "por_semente": [
+    -46.7,
+    -265.51,
+    -265,
+    -36.97,
+    257.14,
+    274.56,
+    93.91,
+    96.76,
+    -255.97,
+    -476.06,
+    -49.89,
+    98.59,
+    236.55,
+    -27.21,
+    265.47,
+    -331.59,
+    -196.84,
+    236.07,
+    42.34,
+    188.84
+   ]
+  },
+  "tempo_controle": {
+   "n": 20,
+   "media": 55.11,
+   "ic95": [
+    -36.95,
+    149.99
+   ],
+   "p_bootstrap": 0.279,
+   "dz": 0.25,
+   "por_semente": [
+    298.86,
+    243.4,
+    -7.73,
+    -57.4,
+    -357.55,
+    218.03,
+    3.21,
+    73.47,
+    9.63,
+    549.43,
+    53.69,
+    -47.99,
+    470.38,
+    -20.81,
+    1.99,
+    -35.32,
+    -7.96,
+    -0.84,
+    13.76,
+    -297.96
+   ]
+  },
+  "fracao_premiada": {
+   "n": 20,
+   "media": 0.06,
+   "ic95": [
+    0.03,
+    0.1
+   ],
+   "p_bootstrap": 0,
+   "dz": 0.75,
+   "por_semente": [
+    0.03,
+    0.2,
+    0.07,
+    0.06,
+    0.07,
+    0.05,
+    0.11,
+    0.04,
+    -0.02,
+    0.08,
+    0.06,
+    -0.02,
+    -0.03,
+    0.04,
+    0.02,
+    0.29,
+    0.04,
+    -0.03,
+    -0.01,
+    0.12
+   ]
+  },
+  "bugs_treino": {
+   "n": 20,
+   "media": 0.2,
+   "ic95": [
+    -0.95,
+    1.3
+   ],
+   "p_bootstrap": 0.74,
+   "dz": 0.08,
+   "por_semente": [
+    -2,
+    -1,
+    2,
+    1,
+    3,
+    2,
+    -3,
+    4,
+    -1,
+    -3,
+    -1,
+    1,
+    5,
+    -3,
+    2,
+    1,
+    -1,
+    0,
+    3,
+    -5
+   ]
+  },
+  "provas_teste": {
+   "n": 20,
+   "media": 0.4,
+   "ic95": [
+    -8.1,
+    8.9
+   ],
+   "p_bootstrap": 0.948,
+   "dz": 0.02,
+   "por_semente": [
+    10,
+    -13,
+    -26,
+    -6,
+    10,
+    36,
+    0,
+    12,
+    -23,
+    -18,
+    -7,
+    3,
+    40,
+    -6,
+    25,
+    -34,
+    -20,
+    20,
+    2,
+    3
+   ]
+  }
+ }
+}

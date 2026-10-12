@@ -741,3 +741,5 @@ versões de 20 tentativas, teste com as 3 versões novas até o primeiro bug ou 
 tentativas até o primeiro bug nas versões de transferência, treinada − congelada, IC95 < 0. Secundários: escolha da
 característica premiada quando visível (> 0), controle, bugs no treino. N = 20 pares (sementes 1601–1620); se passar,
 replicação com 1651–1670. 2 sessões por vez (o usuário usa o PC ao mesmo tempo). `qa-mundo-arena2*.json`.
+
+**12/10, rotina do mundo: qa-mundo-arena2 (arena de escolha com cheiros fortes e esquecimento de 1 h, 6 versões de treino de 20 tentativas, teste até o primeiro bug ou 30 tentativas): negativo.** Sementes 1601–1620 (40 sessões válidas). tentativas até o 1º bug na transferência, treinada − congelada (principal, IC95 < 0): -1,15 IC95 [-5.92,3.4] p 0.649 dz -0.11; escolha da característica premiada quando visível (secundário, > 0): 0,1 IC95 [0.05,0.15] p 0 dz 0.81; controle (não deve melhorar): 2,5 IC95 [-1.95,6.95] p 0.31 dz 0.24; bugs no treino, treinada 5,8 e congelada 5,6. Resumo: `docs/medicoes/qa-mundo-arena2-resumo.json`.
