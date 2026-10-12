@@ -51,7 +51,7 @@ const LIMIAR_CALIB = 0.6, MINIMO_CALIB = 0.4;
 function roda(saida, sementes, condicoes, extra, outros = []) {
   return new Promise(ok => {
     const args = ['scripts/qa_mundo.mjs', '--sementes', sementes.join(','), '--condicoes', condicoes, '--paralelos', String(PARALELOS),
-      '--timeout-min', '240', '--porta', PORTA, '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
+      '--timeout-min', '480', '--porta', PORTA, '--saida', saida, ...(extra ? ['--extra', extra] : []), ...outros];
     log('roda: node ' + args.join(' '));
     const p = spawn('node', args, { stdio: ['ignore', 'pipe', 'pipe'] });
     p.stdout.on('data', d => appendFileSync(LOG, d));
