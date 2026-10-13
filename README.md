@@ -10,8 +10,9 @@ com olhos compostos e cheira com as antenas. Cada ação de um sistema de softwa
 encontrado libera dopamina de recompensa. A pergunta: o cérebro aprende o "cheiro" de um tipo de defeito e passa a
 procurá-lo em partes do sistema que nunca viu?
 
-> **[Vídeo de abertura]** *Espaço reservado: a mosca na arena 3D cheirando as plaquinhas e achando um bug, com o
-> cérebro acendendo ao lado (30–60 s).*
+![A mosca se movimentando na arena, com o cérebro 3D ativo e os painéis de memória e atividade neural.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
+
+[Assista ao vídeo: funcionalidades em ação](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, 720p, modo escuro; reprodução em aproximadamente 1,5× o tempo da gravação.
 
 ![Cérebro 3D em rotação, com disparos reais dos neurônios simulados. Reprodução acelerada em aproximadamente 1,5× em relação ao tempo cerebral; as cores identificam grupos funcionais.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 

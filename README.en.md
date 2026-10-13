@@ -10,8 +10,9 @@ sees with compound eyes and smells with its antennae. Each action of a fictional
 bug found releases reward dopamine. The question: does the brain learn the "smell" of a kind of bug and start looking
 for it in parts of the system it has never seen?
 
-> **[Opening video]** *Placeholder: the fly in the 3D arena smelling the plaques and finding a bug, with the brain
-> lighting up beside it (30–60 s).*
+![The fly moving in the arena, with the active 3D brain and memory and neural activity panels.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
+
+[Watch the video: features in action](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, 720p, dark theme; playback at approximately 1.5× recorded wall time.
 
 ![Rotating 3D brain showing actual spikes from simulated neurons. Playback at approximately 1.5× simulated brain time; colors identify functional groups.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 

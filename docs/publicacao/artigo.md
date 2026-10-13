@@ -303,8 +303,9 @@ bug ou 30 tentativas), cheiros fortes, esquecimento de 1 h, sementes 1601–1620
 > **[Figura 5: escolha com corpo.]** Sugestão: pontos pareados por semente (treinada × congelada) da fração de escolha
 > da característica premiada, com a linha y = x.
 >
-> **[Vídeo 2: a mosca treinada na arena.]** Sugestão: uma sessão acelerada, do treino ao primeiro bug achado no teste,
-> com o painel de valências.
+![A mosca se movimentando na arena, com o cérebro 3D ativo e os painéis de memória e atividade neural.](videos/funcionalidades-arena-previa.gif)
+
+[Assista ao vídeo: funcionalidades em ação](videos/funcionalidades-arena.mp4) — 24 s, 720p, modo escuro; reprodução em aproximadamente 1,5× o tempo da gravação.
 
 ### 7.5 Por que o efeito é menor com corpo
 

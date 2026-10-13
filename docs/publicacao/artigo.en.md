@@ -300,8 +300,9 @@ Bench 2 protocol (training of 6 versions × 20 attempts; test on 3 new versions,
 > **[Figure 5: choice with a body.]** Suggestion: paired points per seed (trained × frozen) of the rewarded-feature
 > choice fraction, with the y = x line.
 >
-> **[Video 2: the trained fly in the arena.]** Suggestion: an accelerated session, from training to the first bug found
-> in the test, with the valence panel.
+![The fly moving in the arena, with the active 3D brain and memory and neural activity panels.](videos/funcionalidades-arena-previa.gif)
+
+[Watch the video: features in action](videos/funcionalidades-arena.mp4) — 24 s, 720p, dark theme; playback at approximately 1.5× recorded wall time.
 
 ### 7.5 Why the effect is smaller with a body
 
