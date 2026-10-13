@@ -1,17 +1,15 @@
 # Publicação
 
-Material para uma futura publicação sobre o treino da mosca simulada do conectoma.
+- [`artigo.md`](artigo.md): o artigo (versão de 12/10/2026). Resumo, modelo, método, resultados sem corpo e com corpo
+  (inclusive os negativos e as causas), discussão, ameaças à validade, reprodutibilidade e referências. Os blocos
+  "**[Figura N]**" e "**[Vídeo N]**" marcam onde entram as imagens e os vídeos.
 
-- [`artigo.md`](artigo.md): o texto no formato de artigo, com resumo, modelo (o que vem do mapa e o que é regra),
-  metodologia, validação do aprendizado, resultados na caça a bugs (inclusive os negativos), ajustes e as razões de
-  cada um, discussão, ameaças à validade, reprodutibilidade e referências.
-
-Fontes primárias, que o artigo resume:
+Fontes primárias que o artigo resume:
 - `docs/plano-treino-robusto.md`: o diário cronológico, com cada critério escrito antes de cada medida.
 - `docs/medicoes/`: os dados de cada medida, com o método dentro de cada arquivo.
-- O histórico do git, que prova que cada critério foi commitado antes do resultado.
+- O histórico do git, que prova que cada critério foi versionado antes do resultado.
 
-Antes de tornar isto público:
-1. Revisar o que deve sair do repositório.
+Antes de submeter ou tornar público:
+1. Inserir as figuras e os vídeos nos lugares marcados.
 2. Conferir as referências.
-3. Conferir o número de acertos das previsões de Shiu et al. (2024) citado na seção 2.6.
+3. Revisar o que deve sair do repositório.
