@@ -463,3 +463,22 @@ Problemas que já custaram horas neste projeto. Leia antes de mexer nas partes c
 - **Corpo:** NeuroMechFly v2 e flygym, Wang-Chen et al. 2024, *NeuroMechFly v2: simulating embodied sensorimotor control in adult Drosophila*, Nature Methods. O controlador em `corpo/terceiros/` é do repositório do flygym (Apache 2.0).
 - **Decepção:** Felsenberg et al. 2018, *Integration of parallel opposing memories underlies memory extinction*, Cell.
 - Os sistemas Pedidos e Financeiro são fictícios e os bugs foram plantados de propósito.
+
+
+## Idiomas da interface (13/10/2026)
+
+As telas principal, Caça a bugs ao vivo e Campanhas têm seletor PT/EN no topo, com bandeiras e nomes acessíveis.
+O idioma é guardado na chave `mosca-idioma-v1`; `?lang=en` ou `?lang=pt` permite compartilhar uma tela no idioma
+escolhido. A troca acontece sem recarregar o cérebro nem apagar a memória. O mundo embutido acompanha a tela pai.
+O gerenciador de campanhas, em outra porta, recebe a preferência pelo link com `lang` e guarda sua própria cópia.
+
+`web/idioma-en.js` contém o catálogo; `web/idioma.js` traduz textos e atributos de apresentação, incluindo conteúdo
+criado depois do carregamento. Valores de opções, campos editáveis, JSON, identificadores, arquivos de resultados e
+parâmetros do modelo não são traduzidos. Os rótulos de canvas usam o mesmo catálogo; as texturas registradas são
+redesenhadas na troca e retiradas do registro quando descartadas. Não há serviço externo de tradução.
+
+Verificado com Chrome: EN/PT com cérebro em execução sem reiniciar o relógio; textos dinâmicos reversíveis;
+preferência entre telas; valores de opções e JSON preservados; seletor em tela estreita; carregamento dos recursos
+pelo servidor de campanhas. As verificações unitárias de configuração e análise pareada também passaram.
+A tradução não é uma nova validação experimental. Como texto e layout fazem parte da imagem no modo visual,
+comparações com visão devem fixar o idioma (as medidas anteriores usaram português).

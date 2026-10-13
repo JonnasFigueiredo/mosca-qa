@@ -1,5 +1,7 @@
 <meta charset="utf-8">
 <title>Mosca QA</title>
+<script src="idioma-en.js"></script>
+<script src="idioma.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -594,9 +596,9 @@ let HAS_EYES = false;
 let HAS_VOO = false;   // o voo pelos motores das asas: liga se os dados trazem os grupos do voo
 // alcance do cheiro de cada elemento (px, desvio da gaussiana); ?cheiro=60 muda, para comparar
 const ODOR_SIGMA = +(location.search.match(/[?&]cheiro=(\d+)/)?.[1] || 32);
-const fmt1 = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-const fmtInt = n => Math.round(n).toLocaleString('pt-BR');
-const brl = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt1 = n => n.toLocaleString(MoscaIdioma.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const fmtInt = n => Math.round(n).toLocaleString(MoscaIdioma.locale);
+const brl = n => 'R$ ' + n.toLocaleString(MoscaIdioma.locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const ema = (prev, x, dt, tau) => prev + (x - prev) * (1 - Math.exp(-dt / tau));
 

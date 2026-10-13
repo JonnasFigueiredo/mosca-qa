@@ -86,7 +86,7 @@
 
   function quebra(ctx, txt, larg) {
     const ps = txt.split(' '), linhas = []; let l = '';
-    for (const p of ps) { const t = l ? l + ' ' + p : p; if (ctx.measureText(t).width > larg && l) { linhas.push(l); l = p; } else l = t; }
+    for (const p of ps) { const t = l ? l + ' ' + p : p; if (MoscaIdioma.medir(ctx, t).width > larg && l) { linhas.push(l); l = p; } else l = t; }
     if (l) linhas.push(l);
     return linhas.slice(0, 2);
   }
@@ -107,13 +107,13 @@
     ctx.font = `500 11px ${cor('--mono')}`; ctx.textBaseline = 'top';
     let ex = x + 10;
     for (const [t, p] of [[a.familia, false], [a.entrada, prem]]) {
-      const w = ctx.measureText(t).width + 10;
+      const w = MoscaIdioma.medir(ctx, t).width + 10;
       retangulo(ctx, ex, y + 9, w, 17, 4); ctx.fillStyle = p ? cor('--spike') : cor('--track'); ctx.fill();
-      ctx.fillStyle = p ? '#fff' : cor('--em'); ctx.fillText(t, ex + 5, y + 11.5); ex += w + 5;
+      ctx.fillStyle = p ? '#fff' : cor('--em'); MoscaIdioma.desenhar(ctx, t, ex + 5, y + 11.5); ex += w + 5;
     }
     // nome
     ctx.font = `600 14px ${cor('--sans')}`; ctx.fillStyle = cor('--ink');
-    quebra(ctx, ACAO_TXT[a.id] || a.id, tw - 20).forEach((l, i) => ctx.fillText(l, x + 10, y + 33 + i * 17));
+    quebra(ctx, MoscaIdioma.texto(ACAO_TXT[a.id] || a.id), tw - 20).forEach((l, i) => MoscaIdioma.desenhar(ctx, l, x + 10, y + 33 + i * 17));
     // valência
     const by = y + th - 24, bw = tw - 20;
     ctx.fillStyle = cor('--track'); retangulo(ctx, x + 10, by, bw, 8, 3); ctx.fill();
@@ -126,7 +126,7 @@
     ctx.fillStyle = cor('--muted'); ctx.fillRect(x + 10 + bw * 0.4, by - 2, 1, 12);
     ctx.font = `11px ${cor('--mono')}`; ctx.fillStyle = cor('--muted');
     const val = c.v == null ? 'valência —' : `valência ${c.v.toFixed(2).replace('.', ',')}`;
-    ctx.fillText(val + (c.prob != null ? ` · chance ${Math.round(c.prob * 100)}%` : ''), x + 10, by + 11);
+    MoscaIdioma.desenhar(ctx, val + (c.prob != null ? ` · chance ${Math.round(c.prob * 100)}%` : ''), x + 10, by + 11);
     ctx.globalAlpha = 1;
     // bug: a carta trinca
     if (c.bug) {
@@ -136,11 +136,11 @@
       ctx.stroke();
       const txt = 'BUG: ' + c.bug.map(b => CONTRATO_TXT[b] || b).join('; ');
       ctx.font = `600 12px ${cor('--mono')}`;
-      const w = Math.min(ctx.measureText(txt).width + 14, tw + 60);
+      const w = Math.min(MoscaIdioma.medir(ctx, txt).width + 14, tw + 60);
       retangulo(ctx, cx - w / 2, y - 26, w, 20, 5); ctx.fillStyle = cor('--bug'); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(txt, cx, y - 22, w - 10); ctx.textAlign = 'left';
+      ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; MoscaIdioma.desenhar(ctx, txt, cx, y - 22, w - 10); ctx.textAlign = 'left';
     } else if (c.nada) {
-      ctx.font = `500 11px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textAlign = 'center'; ctx.fillText('sem bug', cx, y - 16); ctx.textAlign = 'left';
+      ctx.font = `500 11px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textAlign = 'center'; MoscaIdioma.desenhar(ctx, 'sem bug', cx, y - 16); ctx.textAlign = 'left';
     }
     ctx.restore();
   }
@@ -221,12 +221,12 @@
       ctx.strokeStyle = c?.bug ? cor('--bug') : c?.estado === 'cheirando' ? cor('--spike') : c?.escolhida ? cor('--ink') : c ? cor('--muted') : cor('--line'); ctx.stroke();
       ctx.globalAlpha = c ? 1 : 0.7;
       ctx.font = `600 ${Math.max(9, Math.min(12, k * 1.3))}px ${cor('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = prem ? cor('--spike') : cor('--ink'); ctx.fillText(pl.acao.entrada, p.x, p.y - th * 0.18, tw - 6);
-      ctx.font = `${Math.max(8, Math.min(11, k * 1.15))}px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.fillText(pl.acao.familia, p.x, p.y + th * 0.12, tw - 6);
+      ctx.fillStyle = prem ? cor('--spike') : cor('--ink'); MoscaIdioma.desenhar(ctx, pl.acao.entrada, p.x, p.y - th * 0.18, tw - 6);
+      ctx.font = `${Math.max(8, Math.min(11, k * 1.15))}px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); MoscaIdioma.desenhar(ctx, pl.acao.familia, p.x, p.y + th * 0.12, tw - 6);
       if (v != null) { const bw = tw - 10, x0 = p.x - bw / 2, y0 = p.y + th / 2 - 7, pz = x => (x >= 0 ? 0.4 + 0.6 * Math.min(x, 1.5) / 1.5 : 0.4 - 0.4 * Math.min(-x, 1)), p1 = pz(v);
         ctx.fillStyle = cor('--track'); ctx.fillRect(x0, y0, bw, 4); ctx.fillStyle = prem ? cor('--spike') : cor('--em'); ctx.fillRect(x0 + bw * Math.min(0.4, p1), y0, bw * Math.abs(p1 - 0.4), 4); }
       ctx.globalAlpha = 1; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-      if (c?.bug) { const t = 'BUG: ' + c.bug.map(b => CONTRATO_TXT[b] || b).join('; '); ctx.font = `600 11px ${cor('--mono')}`; const bw = ctx.measureText(t).width + 12; retangulo(ctx, p.x - bw / 2, p.y - th / 2 - 22, bw, 18, 4); ctx.fillStyle = cor('--bug'); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(t, p.x, p.y - th / 2 - 9); ctx.textAlign = 'left'; }
+      if (c?.bug) { const t = 'BUG: ' + c.bug.map(b => CONTRATO_TXT[b] || b).join('; '); ctx.font = `600 11px ${cor('--mono')}`; const bw = MoscaIdioma.medir(ctx, t).width + 12; retangulo(ctx, p.x - bw / 2, p.y - th / 2 - 22, bw, 18, 4); ctx.fillStyle = cor('--bug'); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; MoscaIdioma.desenhar(ctx, t, p.x, p.y - th / 2 - 9); ctx.textAlign = 'left'; }
       ctx.restore();
     }
     // pluma de cheiro e dopamina
@@ -242,8 +242,8 @@
     if (M2.brilho > 0.02) { const g = ctx.createRadialGradient(M2.x, M2.y, 4, M2.x, M2.y, L * 1.8); g.addColorStop(0, rgba('--ok', 0.55 * M2.brilho)); g.addColorStop(1, rgba('--ok', 0)); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(M2.x, M2.y, L * 1.8, 0, 7); ctx.fill(); }
     desenhaMosca(ctx, M2.x, M2.y, M2.ang, L, M2.passo, M2.prob, ich >= 0 ? 1 : 0.15);
     ctx.font = `500 12px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textBaseline = 'top';
-    ctx.fillText(((S.fase || '') + ' · mapa: as 3 plaquinhas mais perto são as visíveis').toUpperCase(), 14, 10);
-    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'right'; ctx.fillText('mosca desenhada maior que a escala', W - 14, H - 12); ctx.textAlign = 'left';
+    MoscaIdioma.desenhar(ctx, ((S.fase || '') + ' · mapa: as 3 plaquinhas mais perto são as visíveis').toUpperCase(), 14, 10);
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'right'; MoscaIdioma.desenhar(ctx, 'mosca desenhada maior que a escala', W - 14, H - 12); ctx.textAlign = 'left';
   }
 
   function quadroMosca(agora) {
@@ -297,17 +297,17 @@
       g.addColorStop(1, rgba('--ok', 0));
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(pos.x, pos.y, r * 1.6, 0, 7); ctx.fill();
       ctx.globalAlpha = M.brilho; ctx.font = `600 12px ${cor('--mono')}`; ctx.fillStyle = cor('--ok'); ctx.textAlign = 'center';
-      ctx.fillText('dopamina de recompensa (PAM)', pos.x, pos.y + L * 0.95); ctx.textAlign = 'left'; ctx.globalAlpha = 1;
+      MoscaIdioma.desenhar(ctx, 'dopamina de recompensa (PAM)', pos.x, pos.y + L * 0.95); ctx.textAlign = 'left'; ctx.globalAlpha = 1;
     }
     desenhaMosca(ctx, pos.x, pos.y, M.ang, L, M.passo, M.prob, ich >= 0 ? 1 : 0.15);
     // legenda de cima: fase e passo
     ctx.font = `500 12px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textBaseline = 'top';
-    ctx.fillText((S.fase || 'Pronta para começar').toUpperCase(), 14, 12);
+    MoscaIdioma.desenhar(ctx, (S.fase || 'Pronta para começar').toUpperCase(), 14, 12);
     const ctx2 = (S.contexto || '').replace(/<[^>]+>/g, '');
-    if (ctx2) { ctx.font = `13px ${cor('--sans')}`; ctx.fillStyle = cor('--ink'); ctx.fillText(ctx2.slice(0, 110), 14, 30); }
+    if (ctx2) { ctx.font = `13px ${cor('--sans')}`; ctx.fillStyle = cor('--ink'); MoscaIdioma.desenhar(ctx, ctx2.slice(0, 110), 14, 30); }
     ctx.font = `12px ${cor('--mono')}`; ctx.fillStyle = cor('--muted'); ctx.textBaseline = 'alphabetic';
-    ctx.fillText(`bugs no treino ${S.bugsTreino} · dopamina ${S.dopas}×`, 14, H - 14);
-    ctx.textAlign = 'right'; ctx.fillText('ilustração: a escolha vem do cérebro', W - 14, H - 14); ctx.textAlign = 'left';
+    MoscaIdioma.desenhar(ctx, `bugs no treino ${S.bugsTreino} · dopamina ${S.dopas}×`, 14, H - 14);
+    ctx.textAlign = 'right'; MoscaIdioma.desenhar(ctx, 'ilustração: a escolha vem do cérebro', W - 14, H - 14); ctx.textAlign = 'left';
   }
 
   /* ───────────── O cérebro em 3D (o mesmo da página principal) ───────────── */

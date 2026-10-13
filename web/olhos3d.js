@@ -171,9 +171,9 @@ function evLabelTex(text, w, h) {
   g.fillStyle = '#1C2127';
   let fs = Math.min(cv.height * 0.5, 13 * k);
   g.font = `600 ${fs}px system-ui, sans-serif`;
-  while (g.measureText(text).width > cv.width * 0.9 && fs > 6) { fs -= 2; g.font = `600 ${fs}px system-ui, sans-serif`; }
+  while (MoscaIdioma.medir(g, text).width > cv.width * 0.9 && fs > 6) { fs -= 2; g.font = `600 ${fs}px system-ui, sans-serif`; }
   g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText(text, cv.width / 2, cv.height / 2);
+  MoscaIdioma.desenhar(g, text, cv.width / 2, cv.height / 2);
   const t = new THREE.CanvasTexture(cv);
   t.anisotropy = 4;
   return t;
