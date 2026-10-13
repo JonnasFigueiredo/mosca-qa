@@ -1,6 +1,6 @@
 # Plano: decidir só com os sentidos (parte 1) e medir o andar contra moscas reais (parte 2)
 
-Pedido do usuário (27/09/2026): melhorar a mosca antes de voltar ao treino de caça a bugs. Leia o `AGENTS.md` antes.
+Pedido do usuário (27/09/2026): melhorar a mosca antes de voltar ao treino de caça a bugs. Leia o `docs/detalhes-tecnicos.md` antes.
 Este arquivo é o guia de trabalho: **atualize a seção "Onde parei" a cada passo concluído** (o que foi feito, os
 números medidos, o que falta). Quem continuar começa por ela.
 
@@ -27,7 +27,7 @@ Atualize esta lista. `[x]` feito e medido; `[~]` começado; `[ ]` não começado
 - [x] P1.5 Validação dos dois modos: 5 rodadas de 300 s cada, olhos reais. **Negativo:** "só sentidos" não achou fruta; continua como opção, o padrão fica com os atalhos
 - [x] P2.2 Calibrar pausas, velocidades e viradas contra os alvos da literatura (corpo simples; no físico, só pausas e velocidade)
 - [ ] P2.3 (opcional) Busca local depois de comer
-- [ ] Final: README, texto da página, `AGENTS.md`, commit
+- [ ] Final: README, texto da página, `docs/detalhes-tecnicos.md`, commit
 
 Notas de cada passo, em ordem (a mais recente é a última; a lista "Próximos passos" no fim delas diz o que fazer agora):
 
@@ -190,7 +190,7 @@ sai é usar `memo` para decidir.
 ### P1.1 A chave
 
 - `const SENTIDOS = /[?&]sentidos=1\b/.test(location.search)` em `web/index.html`, perto de `HEADLESS`, com `\b`
-  escrito de verdade (ver armadilha do `\b` no `AGENTS.md`). Depois de validado (P1.5), o padrão vira "só sentidos"
+  escrito de verdade (ver armadilha do `\b` no `docs/detalhes-tecnicos.md`). Depois de validado (P1.5), o padrão vira "só sentidos"
   e `?sentidos=0` volta aos atalhos, para comparar.
 - Aplica-se só com `APP.mundo`. Nos sistemas de bugs, nada muda.
 - No laboratório e nos scripts, passar a chave pela URL.

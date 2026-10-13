@@ -1,5 +1,5 @@
 // Sistema de Pedidos em memória para o treino de caça a bugs (docs/plano-treino-robusto.md, B-abstrata).
-// Três partes separadas, como no plano do Codex: o sistema (com defeitos injetáveis por versão), o executor (traduz a
+// Três partes separadas, como no plano inicial: o sistema (com defeitos injetáveis por versão), o executor (traduz a
 // ação escolhida em operação) e o verificador (confere contratos no estado; não sabe onde está o defeito).
 // Funciona no navegador (globalThis.QAPedidos) e no Node (import).
 (function () {

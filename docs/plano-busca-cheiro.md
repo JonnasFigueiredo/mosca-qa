@@ -1,6 +1,6 @@
 # Plano: buscar comida pelo cheiro ao longo do tempo (passo 1 do que falhou no modo só sentidos)
 
-Pedido do usuário (27/09/2026). Leia antes o `AGENTS.md` e o resultado negativo em `docs/plano-sentidos-e-medicao.md`
+Pedido do usuário (27/09/2026). Leia antes o `docs/detalhes-tecnicos.md` e o resultado negativo em `docs/plano-sentidos-e-medicao.md`
 (seção "P1.5 concluído, resultado negativo"): sem a lista de objetos (`?sentidos=1`), em 5 rodadas de 300 s ela não
 achou nenhuma fruta. Um dos motivos: andando, o cheiro não a leva à fruta. Com as antenas na distância real
 (0,28 mm), a comparação entre elas é fraca, e ela não compara o cheiro ao longo do tempo, que é o que as moscas reais
@@ -17,7 +17,7 @@ fazem.
 - [x] B3 Ligar a regra em `stepBody` (corpo simples da Cozinha 3D, só com `?sentidos=1` no começo)
 - [x] B4 Medir: sonda antes/depois, andar livre, e as 5 rodadas de 300 s do modo só sentidos com o mesmo critério (melhorou, não passou)
 - [x] B5 Pouso pelos sentidos (a decolagem não precisou mudar): passou o critério; "só sentidos" vira o padrão
-- [x] B6 README, texto da página, `AGENTS.md`, commit (só sentidos virou o padrão)
+- [x] B6 README, texto da página, `docs/detalhes-tecnicos.md`, commit (só sentidos virou o padrão)
 
 Notas de cada passo, em ordem (a mais recente é a última):
 

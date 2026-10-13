@@ -1,10 +1,10 @@
 # Plano: esquema de treino robusto, com memória
 
 Pedido do usuário (29/09/2026): um esquema robusto para rodar as simulações e treinar a mosca, com memória. Leia
-antes o `AGENTS.md`, a seção "Treinamento da memória em 3D" do README e `docs/plano-treinamento-bugs-3d.md` (etapas
-A a E do Codex). **Atualize "Onde parei" a cada passo.**
+antes o `docs/detalhes-tecnicos.md`, a seção "Treinamento da memória em 3D" do README e `docs/plano-treinamento-bugs-3d.md` (etapas
+A a E do plano inicial). **Atualize "Onde parei" a cada passo.**
 
-## O que já existe (Codex, 28–29/09)
+## O que já existe (28–29/09)
 
 - Aba **Treinamento** (`web/treino-protocolo.js`, `web/treino-memoria.js`): pistas A (VA2+DM4) e B (DP1l+DM2),
   teste antes, pareamento com PAM, teste depois, lados trocados, reversão, teste final (96 s cerebrais). Controle
@@ -41,7 +41,7 @@ Lote: sementes 101, 202, 303, 404, 505; variante `padrao` (3 repetições, teste
 **Critério escrito antes de medir:** a diferença pareada média do ganho (ativa − congelada) é positiva e o
 intervalo de 95% não inclui 0; e menos de 30% dos testes "depois do treino" ficam sem escolha. Se passar: ampliar
 para 20 sementes (T4). Se não passar: registrar como negativo e investigar a ponte memória → movimento antes de
-seguir (o plano do Codex, etapa A).
+seguir (o plano inicial, etapa A).
 
 ### T2 Memória que dura: retenção e consolidação
 
@@ -66,7 +66,7 @@ Com efeito em T1: 20 sementes na variante que funcionou; relatar diferença pare
 
 ### B-abstrata: achar bugs só com o cérebro (sem corpo), antes da arena 3D
 
-Objetivo final do usuário: a mosca achar bugs. Primeiro no nível abstrato (sem custo de andar; o plano do Codex
+Objetivo final do usuário: a mosca achar bugs. Primeiro no nível abstrato (sem custo de andar; o plano inicial
 prevê os dois níveis), no Node, com o worker real e sem Chrome (rápido):
 - `web/qa/pedidos.js`: sistema de Pedidos em memória (estoque, carrinho, finalizar, pagar, cancelar, cupom), versões
   com defeitos injetados e contratos verificáveis (estoque ≥ 0 e ≤ inicial, uma cobrança por pedido, total finito e
@@ -86,7 +86,7 @@ prevê os dois níveis), no Node, com o worker real e sem Chrome (rápido):
 
 ### Depois
 
-Etapa B do plano do Codex (descobrir defeitos por uma ação, na bancada de Pedidos), com o mesmo gerenciador.
+Etapa B do plano inicial (descobrir defeitos por uma ação, na bancada de Pedidos), com o mesmo gerenciador.
 
 ## Como rodar
 
@@ -408,7 +408,7 @@ superioridade não. Descritivo: na transferência a curiosa ganha da novidade (�
 da memória (5,8 contra 9,7 na transferência); a causa provável é o esquecimento ao longo de um teste com 9 episódios (a
 treinada sem curiosidade também caiu para 10,6 e 9,1 na transferência), limitação declarada antes. Holm com 16 séries:
 as 6 positivas replicadas passam (0,008–0,011); a decepção principal deixou de passar com a família maior (0,06).
-Versão final do artigo (`docs/publicacao/artigo.md`, seções 6.11 e 7.5), README e AGENTS.md atualizados. Dois defeitos
+Versão final do artigo (`docs/publicacao/artigo.md`, seções 6.11 e 7.5), README e guia do projeto atualizados. Dois defeitos
 da rotina corrigidos nesta etapa: a vaga de uma parte concluída não era liberada (com `--paralelos 2`, ficou 1 por vez
 por umas horas; corrigido e reiniciado, só a semente 308 recomeçou) e o rótulo da nota para critérios próprios.
 

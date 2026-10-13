@@ -429,6 +429,31 @@ Condições: treinada, congelada, com ou sem curiosidade; bug premiado de repeti
 
 Pontos de partida diferentes mudam muito o resultado (de 1 a 5 bugs), então cada comparação usa rodadas pareadas. Mesmo assim, 5 rodadas por condição só separam efeitos grandes.
 
+## Armadilhas conhecidas
+
+Problemas que já custaram horas neste projeto. Leia antes de mexer nas partes citadas.
+
+- Python com texto vindo de heredoc no Windows: rode `python -X utf8`. Um `\b` escrito numa string Python comum
+  virou um caractere de controle na página e quebrou os filtros `?olhos=0` e `?headless=1` por semanas. Depois de
+  editar com script, procure caracteres de controle.
+- `index.html` usa CRLF: grave com `newline='\r\n'`.
+- Caminhos longos (>260) no Windows quebram o Python: copie scripts para uma pasta curta.
+- O navegador guardava `.js` antigos: por isso existe `scripts/servir.py`. Se algo "não aparece", Ctrl+Shift+R.
+- Ao medir comparando versões do código, congele uma cópia da pasta `web/` e sirva em outra porta.
+- `setTimeout(0)` encadeado espera ≥4 ms: o worker usa `MessageChannel`.
+- Na física, o flygym usa pares de contato explícitos: margem de contato se muda em `pair_margin`, não em `geom_margin`.
+- O servidor da página precisa ser o `scripts/servir.py` (HTTP/1.1) e **um só**: no HTTP/1.0 o Windows cortava o fim
+  de downloads grandes ("network error" ao carregar o cérebro, "Failed to fetch" na malha), e dois servidores na mesma
+  porta dividem os pedidos. O mesmo vale para o do corpo (8766): com dois, a página alternava entre duas físicas.
+  Os dois servidores agora recusam porta ocupada; confira com `netstat -ano | grep -E ":876[56]"` antes de subir outro.
+- A física do corpo é mais lenta que o cérebro (~0,66× no chão). O cérebro anda no ritmo dela (mensagem `ritmo` ao
+  worker, pela `capacidade` que o servidor devolve em `/passo`). Objetos com menos de 1 mm ficam fora da física.
+- Na Cozinha, a forma de cada coisa sai de `sbFormas` (sandbox.js) para o desenho, a física (`/mundo` com `formas`) e a
+  altura (`sbSurface`, `sbAlturaObjeto`). Mudou uma, muda as três. Nada com "barriga" embaixo: a mosca física não anda
+  de cabeça para baixo. Nas formas, quem a segura é a `_pegada` do servidor (regra declarada), não o agarrão.
+- `fetch` que dá certo pode falhar depois, ao ler o conteúdo (`r.arrayBuffer()`): tente de novo as duas coisas
+  (`buscar` em `web/sandbox.js`).
+
 ## Créditos
 
 - **Dados:** [FlyEM Male CNS v1.0](https://male-cns.janelia.org/), HHMI Janelia, licença CC-BY 4.0.

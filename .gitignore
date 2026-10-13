@@ -9,6 +9,7 @@ __pycache__/
 
 # arquivos de trabalho temporários (logs de testes, capturas de conferência, resultados parciais)
 /_*
+/scripts/_*
 /docs/medicoes/_*
 
 # ambiente Python do corpo físico (flygym)
@@ -22,3 +23,8 @@ MUJOCO_LOG.TXT
 
 # temporários e trava do gerenciador de campanhas
 /docs/medicoes/lotes/**/_*
+
+# instruções internas de trabalho e scripts pessoais (ficam no disco, fora do repositório)
+/AGENTS.md
+/scripts/mover_claude_para_d.ps1
+/scripts/monitor_claude.py
