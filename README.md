@@ -1,5 +1,7 @@
 # Mosca QA
 
+*[English version](README.en.md)*
+
 **O conectoma completo de uma mosca-da-fruta, simulado no navegador, aprendendo a procurar defeitos de software.**
 
 O sistema nervoso central inteiro de um macho de *Drosophila melanogaster* (Male CNS v1.0, HHMI Janelia, 2026: 166.700
@@ -48,7 +50,8 @@ memória são aproximados. Não afirmamos que o modelo é uma mosca.
 
 ## Como rodar
 
-Precisa de Python 3.12 e Node.js 22 ou mais.
+O passo a passo completo (requisitos, testes de validação, reprodução das medidas e problemas comuns) está no
+**[manual](docs/MANUAL.md)**. O essencial: Python 3.12 e Node.js 22 ou mais.
 
 ```bash
 python scripts/servir.py
@@ -60,11 +63,8 @@ servidor só por porta.
 
 Arena com os parâmetros das medidas: `http://localhost:8765/caca.html?arena=1&esquecimento=3600`.
 
-**Corpo físico (opcional):** o `.venv` do projeto tem o flygym 2.1 (NeuroMechFly/MuJoCo).
-
-```bash
-.venv/Scripts/python.exe -X utf8 corpo/servidor.py 8766
-```
+**Corpo físico (opcional):** NeuroMechFly no MuJoCo, num ambiente Python separado (`corpo/requirements.txt`; ver o
+manual, seção 7).
 
 ---
 
@@ -97,12 +97,28 @@ e `python 02_build_web.py` dentro de `scripts/` (pandas, pyarrow, numpy, scipy).
 | `web/sandbox.js` | O mundo 3D: cozinha, voo, olhos reais, corpo físico |
 | `web/caca-mundo.js`, `web/caca.html` | A caça a bugs no mundo 3D e a tela ao vivo |
 | `web/qa/pedidos.js` | O sistema de Pedidos, os defeitos e os contratos |
-| `web/data/` | O conectoma empacotado para o navegador (~26 MB) |
+| `web/data/` | O conectoma empacotado para o navegador (~32 MB) |
 | `scripts/` | Geração dos dados, séries, resumos, oráculos e rotinas automáticas |
 | `corpo/` | Corpo físico opcional (NeuroMechFly no MuJoCo) |
+| `docs/MANUAL.md` | Manual: instalar, rodar, testar e reproduzir |
 | `docs/publicacao/artigo.md` | O artigo |
 | `docs/detalhes-tecnicos.md` | O registro técnico completo de cada parte |
 | `docs/medicoes/` | Todas as medidas |
+
+---
+
+## Contribuir
+
+O projeto é aberto a contribuições: experimentos, sentidos, comportamentos, desempenho, traduções, revisão do
+artigo. Leia o **[guia de contribuição](CONTRIBUTING.md)**: a regra central é separar sempre o que vem do cérebro do
+que é regra nossa, e escrever o critério antes de medir.
+
+---
+
+## Licença
+
+Código sob a **[Apache License 2.0](LICENSE)**. Os dados do cérebro em `web/data/` são derivados do FlyEM Male CNS v1.0
+(HHMI Janelia) e seguem a **CC-BY 4.0**; o código de `corpo/terceiros/` é do flygym (Apache 2.0). Ver [NOTICE](NOTICE).
 
 ---
 

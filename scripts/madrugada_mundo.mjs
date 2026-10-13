@@ -25,7 +25,7 @@ if (!existsSync(COPIA)) { cpSync('web', COPIA, { recursive: true }); }
 let servidor = null;
 async function garanteServidor() {
   try { if ((await fetch(`http://localhost:${PORTA}/index.html`)).ok) return; } catch { /* sobe abaixo */ }
-  servidor = spawn('python', ['scripts/servir.py', PORTA, COPIA], { stdio: 'ignore' });
+  servidor = spawn(process.env.PYTHON || 'python', ['scripts/servir.py', PORTA, COPIA], { stdio: 'ignore' });
   for (let i = 0; i < 30; i++) { await new Promise(r => setTimeout(r, 1000)); try { if ((await fetch(`http://localhost:${PORTA}/index.html`)).ok) return; } catch { /* esperando */ } }
   throw new Error('o servidor da cópia congelada não subiu');
 }

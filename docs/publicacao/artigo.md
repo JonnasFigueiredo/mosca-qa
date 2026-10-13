@@ -3,7 +3,7 @@
 **Condicionamento dopaminérgico no corpo cogumelar de um modelo integra-e-dispara do Male CNS v1.0, do cérebro isolado a
 um corpo em um mundo 3D**
 
-Jonnas Figueiredo · versão de 12/10/2026
+Jonnas Figueiredo · versão de 12/10/2026 · *[English version](artigo.en.md)*
 
 > **[Figura 1: visão geral.]** Sugestão: à esquerda, o cérebro 3D com as células de Kenyon e os neurônios de saída
 > acesos; à direita, a mosca na arena 3D cheirando as três plaquinhas. Legenda: "O mesmo cérebro, sem corpo (bancada) e
@@ -388,6 +388,8 @@ não.
 | Condicionamento com corpo | `node scripts/qa_condicionamento.mjs --cond ativa --esquecimento 3600 --semente 11` (página servida por `python scripts/servir.py`) |
 | Série com corpo (arena) | `node scripts/madrugada_mundo.mjs --arena --n 20 --paralelos 2` |
 | Registro cronológico | `docs/plano-treino-robusto.md`; cada medida em `docs/medicoes/`, com o método dentro |
+
+Passo a passo: [docs/MANUAL.md](../MANUAL.md).
 
 ---
 

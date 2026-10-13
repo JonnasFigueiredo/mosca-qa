@@ -20,7 +20,7 @@ const extra = arg('url', '');
 const app = arg('app', '');     // bloqueio: sistema do teste (padrão: financeiro)   // parâmetros a mais na URL da página, ex.: cheiro=60
 const reps = +arg('reps', 3), secs = +arg('secs', 90), inicio = +arg('inicio', 0), porta = +arg('porta', 8765);
 const out = arg('out', `lab-${Date.now()}.json`);
-const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
+const chrome = arg('chrome', (process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'));
 const cdp = 9300 + Math.floor(Math.random() * 600);
 const TMP = process.env.MOSCA_TMP || new URL('../_tmp', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 mkdirSync(TMP, { recursive: true });

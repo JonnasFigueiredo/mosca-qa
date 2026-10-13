@@ -12,7 +12,7 @@ const alvo = arg('alvo', vista === 'sandbox' ? '#worldBox' : '.brain-box'), app 
 const out = '_realismo_boca.png';
 const tema = arg('tema', '');
 const js = arg('js', '');       // código a rodar na página antes da espera (ex.: sbTakeoff(fly, 'beira'))   // claro ou escuro; vazio = o do sistema
-const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
+const chrome = arg('chrome', (process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'));
 const cdp = 9300 + Math.floor(Math.random() * 600);
 const TMP = process.env.MOSCA_TMP || new URL('../_tmp', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 mkdirSync(TMP, { recursive: true });

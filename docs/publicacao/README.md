@@ -1,6 +1,6 @@
 # Publicação
 
-- [`artigo.md`](artigo.md): o artigo (versão de 12/10/2026). Resumo, modelo, método, resultados sem corpo e com corpo
+- [`artigo.md`](artigo.md) (português) e [`artigo.en.md`](artigo.en.md) (inglês): o artigo (versão de 12/10/2026). Resumo, modelo, método, resultados sem corpo e com corpo
   (inclusive os negativos e as causas), discussão, ameaças à validade, reprodutibilidade e referências. Os blocos
   "**[Figura N]**" e "**[Vídeo N]**" marcam onde entram as imagens e os vídeos.
 

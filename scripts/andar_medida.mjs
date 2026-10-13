@@ -21,7 +21,7 @@ if (fisico && tem('sonda-mofo')) throw new Error('a sonda do mofo reinicia apena
 if (fisico && tem('sonda-cheiro')) throw new Error('a sonda do cheiro reinicia apenas o corpo simples; não usar com --fisico');
 if (!fisico && tem('sonda-subida')) throw new Error('a sonda de subida exige --fisico');
 const rotulo = arg('rotulo', `${fisico ? 'fisico' : 'simples'}${sentidos ? '-sentidos' : ''}${semOlhos ? '-sem-olhos' : ''}`);
-const chrome = arg('chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
+const chrome = arg('chrome', (process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'));
 const RAIZ = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1');
 const TMP = join(RAIZ, '_tmp'); mkdirSync(TMP, { recursive: true });
 const versao = Object.fromEntries(await Promise.all(['index.html', 'sandbox.js', 'corpo-natural.js', 'sim-worker.js'].map(async f => {

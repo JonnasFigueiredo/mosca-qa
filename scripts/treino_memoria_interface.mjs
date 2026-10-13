@@ -7,7 +7,7 @@ const completo=process.argv.includes('--completo');
 const tmp=resolve('_tmp');mkdirSync(tmp,{recursive:true});
 const perfil=mkdtempSync(join(tmp,'_treino-')),cdp=9559;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const proc=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',[
+const proc=spawn((process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe'),[
   '--headless=new',`--remote-debugging-port=${cdp}`,`--user-data-dir=${perfil}`,
   '--disable-background-timer-throttling','--disable-renderer-backgrounding','--enable-unsafe-swiftshader',
   '--no-first-run','--no-default-browser-check','--window-size=1400,1000',
