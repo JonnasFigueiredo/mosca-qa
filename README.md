@@ -13,7 +13,7 @@ procurá-lo em partes do sistema que nunca viu?
 > **[Vídeo de abertura]** *Espaço reservado: a mosca na arena 3D cheirando as plaquinhas e achando um bug, com o
 > cérebro acendendo ao lado (30–60 s).*
 
-> **[Foto 1]** *Espaço reservado: o cérebro 3D com os 166.700 neurônios.*
+![Cérebro 3D em rotação, com disparos reais dos neurônios simulados. Reprodução acelerada em aproximadamente 1,5× em relação ao tempo cerebral; as cores identificam grupos funcionais.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
 ---
 
@@ -27,7 +27,7 @@ procurá-lo em partes do sistema que nunca viu?
 Todos os critérios foram escritos e versionados **antes** de cada medida, e os resultados negativos estão relatados
 com as suas causas. Os detalhes estão no [artigo](docs/publicacao/artigo.md).
 
-> **[Foto 2]** *Espaço reservado: gráfico do resultado principal (ações até o primeiro defeito, treinada × congelada).*
+![Ações até o primeiro defeito do tipo aprendido em famílias novas: médias e IC95, série principal e replicação.](docs/publicacao/figuras/resultado-principal.png)
 
 ---
 
@@ -44,7 +44,9 @@ com as suas causas. Os detalhes estão no [artigo](docs/publicacao/artigo.md).
 O circuito e a regra de aprendizado são os da mosca; o neurônio é simplificado (um compartimento) e os tempos da
 memória são aproximados. Não afirmamos que o modelo é uma mosca.
 
-> **[Foto 3]** *Espaço reservado: a mosca na cozinha 3D (vista "Olhos dela" ou "Lado a lado").*
+![Cozinha 3D: andando, voando, comendo e limpando as patas. Cenas preparadas com corpo físico no chão; voo cinemático e limpeza animada.](docs/publicacao/videos/cozinha-mini-video.gif)
+
+[Mini vídeo em MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Posições iniciais escolhidas; decolagem iniciada e pausa de limpeza antecipada para a gravação. O apoio e a caminhada usam o corpo físico MuJoCo. O voo permanece cinemático; a limpeza é uma animação sobreposta ao corpo físico. Duas mordidas ocorreram durante o trecho de alimentação. Trechos editados com velocidades de reprodução diferentes.
 
 ---
 

@@ -13,7 +13,7 @@ for it in parts of the system it has never seen?
 > **[Opening video]** *Placeholder: the fly in the 3D arena smelling the plaques and finding a bug, with the brain
 > lighting up beside it (30–60 s).*
 
-> **[Photo 1]** *Placeholder: the 3D brain with its 166,700 neurons.*
+![Rotating 3D brain showing actual spikes from simulated neurons. Playback at approximately 1.5× simulated brain time; colors identify functional groups.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
 ---
 
@@ -27,7 +27,7 @@ for it in parts of the system it has never seen?
 Every criterion was written and committed **before** each measurement, and negative results are reported with their
 causes. Details in the [paper](docs/publicacao/artigo.en.md).
 
-> **[Photo 2]** *Placeholder: chart of the main result (actions until the first bug, trained × frozen).*
+![Actions until the first bug of the learned type in new families: means and 95% CI, main series and replication.](docs/publicacao/figuras/resultado-principal.en.png)
 
 ---
 
@@ -44,7 +44,9 @@ causes. Details in the [paper](docs/publicacao/artigo.en.md).
 The circuit and the learning rule are the fly's; the neuron is simplified (one compartment) and memory time courses are
 approximate. We do not claim the model is a fly.
 
-> **[Photo 3]** *Placeholder: the fly in the 3D kitchen ("Olhos dela" or side-by-side view).*
+![3D kitchen: walking, flying, eating and grooming. Prepared scenes with a physical body on the ground; kinematic flight and animated grooming.](docs/publicacao/videos/cozinha-mini-video.gif)
+
+[Mini video in MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Initial positions were selected; takeoff was triggered and the grooming pause brought forward for recording. Support and walking use the MuJoCo physical body. Flight remains kinematic; grooming is an animation overlaid on the physical body. Two bites occurred during the feeding clip. Edited clips use different playback speeds.
 
 ---
 

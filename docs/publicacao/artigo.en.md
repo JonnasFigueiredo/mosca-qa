@@ -205,8 +205,7 @@ Actions until the first bug (lower is better), 16 seeds per series:
 - **Dissociation:** in the control (a bug of another kind) the trained fly did not improve; it got worse (+3.7 and
   +8.3). It learned "repetition means bugs", not "find anything faster".
 
-> **[Figure 3: main result.]** Suggestion: bars of actions until the first bug per condition, main and replication,
-> with 95% CI.
+![Figure 3. Actions until the first bug of the learned type in new families, by condition, in the main series and replication. Bars: means; whiskers: bootstrap 95% CI across seeds.](figuras/resultado-principal.en.png)
 
 ### 6.3 Robustness
 

@@ -208,8 +208,7 @@ Ações até o primeiro bug (menor é melhor), 16 sementes por série:
 - **Dissociação:** no controle (defeito de outro tipo) a treinada não melhorou; piorou (+3,7 e +8,3). Ela aprendeu
   "repetição dá defeito", não "achar qualquer coisa mais rápido".
 
-> **[Figura 3: resultado principal.]** Sugestão: barras de ações até o primeiro bug por condição, principal e
-> replicação, com IC95.
+![Figura 3. Ações até o primeiro defeito do tipo aprendido em famílias novas, por condição, nas séries principal e replicação. Barras: médias; hastes: IC95 bootstrap por semente.](figuras/resultado-principal.png)
 
 ### 6.3 Robustez
 
