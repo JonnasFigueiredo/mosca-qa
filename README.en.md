@@ -12,9 +12,9 @@ for it in parts of the system it has never seen?
 
 ![The fly moving in the arena, with the active 3D brain and memory and neural activity panels.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
 
-[Watch the video: features in action](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, 720p, dark theme; playback at approximately 1.5× recorded wall time.
+[Watch the video](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, sped up.
 
-![Rotating 3D brain showing actual spikes from simulated neurons. Playback at approximately 1.5× simulated brain time; colors identify functional groups.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
+![Rotating 3D brain with real spikes from the simulated neurons. Colors are functional groups.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
 ---
 
@@ -45,9 +45,9 @@ causes. Details in the [paper](docs/publicacao/artigo.en.md).
 The circuit and the learning rule are the fly's; the neuron is simplified (one compartment) and memory time courses are
 approximate. We do not claim the model is a fly.
 
-![3D kitchen: walking, flying, eating and grooming. Prepared scenes with a physical body on the ground; kinematic flight and animated grooming.](docs/publicacao/videos/cozinha-mini-video.gif)
+![3D kitchen: walking, flying, eating and grooming.](docs/publicacao/videos/cozinha-mini-video.gif)
 
-[Mini video in MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Initial positions were selected; takeoff was triggered and the grooming pause brought forward for recording. Support and walking use the MuJoCo physical body. Flight remains kinematic; grooming is an animation overlaid on the physical body. Two bites occurred during the feeding clip. Edited clips use different playback speeds.
+[Video in MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Walking and support use the physical body in MuJoCo; flight is kinematic. Scenes chosen and sped up for the recording.
 
 ---
 

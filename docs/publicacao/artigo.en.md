@@ -5,9 +5,7 @@ brain to a body in a 3D world**
 
 Jonnas Figueiredo · version of 2026-10-12 · *[Versão em português](artigo.md)*
 
-> **[Figure 1: overview.]** Suggestion: on the left, the 3D brain with Kenyon cells and output neurons lit; on the
-> right, the fly in the 3D arena smelling the three plaques. Caption: "The same brain, without a body (bench) and with a
-> body (arena)."
+![Figure 1. The whole system in one frame: the fly on a plaque, the 3D brain with real spikes, and the panel with active Kenyon cells, mushroom body outputs and dopamine.](figuras/visao-geral.png)
 
 ---
 
@@ -161,8 +159,7 @@ new families (double coupon, double reservation) and a control (negative quantit
 
 **Primary metric:** actions until the first bug in the transfer versions (31 if not found in 30); trained − frozen < 0.
 
-> **[Figure 2: the protocol.]** Suggestion: training → test diagram, showing the families with bugs in training and the
-> new families in the test, linked only by the "repeated" feature.
+![Figure 2. The protocol: training uses bugs in payment and cancellation; the test uses families it has never seen. The only link is the rewarded feature.](figuras/protocolo.en.png)
 
 ---
 
@@ -240,8 +237,9 @@ the wing motor neurons command flight, the proboscis extends with sugar on the l
 LC10a receptive fields come from the synapses. The world is a kitchen counter in 3D; the 15 actions become plaques with
 the odor of their features.
 
-> **[Video 1: the fly in the 3D world.]** Suggestion: 30–60 s of the fly walking, climbing and flying between the
-> kitchen platforms, with the 3D brain lighting up beside it.
+![Video 1. The fly in the 3D world: walking, flying, eating and grooming.](videos/cozinha-mini-video.gif)
+
+[Video 1 in MP4](videos/cozinha-mini-video.mp4) — 24 s. Walking and support use the physical body in MuJoCo; flight is kinematic.
 
 ### 7.2 Platform worlds: negative results, with causes
 
@@ -274,8 +272,7 @@ ruled out. The swapped map also barely learns in the brain without a body (+0.03
 bench) and 1 h forgetting (a declared model parameter; real flies remember a sugar reward for hours). A 4-pair
 mini-arena showed higher choice in 3 of 4 seeds before the long series.
 
-> **[Figure 4: the arena.]** Suggestion: top view of the tray with the three plaques and the fly's path in one attempt
-> (smell, smell, smell, taste).
+![Figure 4. The arena from above: the three plaques of one attempt and the fly at the center, with each eye’s visual field. Plaques already smelled are dimmed.](figuras/arena.png)
 
 ### 7.4 Result with a body (arena 2, 20 pairs, criterion written beforehand)
 
@@ -297,12 +294,11 @@ Bench 2 protocol (training of 6 versions × 20 attempts; test on 3 new versions,
 - This second result was secondary in the registration; to count as a finding of its own it needs a confirmatory
   series in which it is the primary criterion, with replication.
 
-> **[Figure 5: choice with a body.]** Suggestion: paired points per seed (trained × frozen) of the rewarded-feature
-> choice fraction, with the y = x line.
->
-![The fly moving in the arena, with the active 3D brain and memory and neural activity panels.](videos/funcionalidades-arena-previa.gif)
+![Figure 5. Choice of the rewarded feature when visible, per seed: trained (y) against frozen (x). Above the line, the trained fly chose it more often (16 of 20).](figuras/escolha-com-corpo.en.png)
 
-[Watch the video: features in action](videos/funcionalidades-arena.mp4) — 24 s, 720p, dark theme; playback at approximately 1.5× recorded wall time.
+![Video 2. The trained fly in the arena: it smells the three plaques, the 3D brain lights up and the panel shows the memory of each action.](videos/funcionalidades-arena-previa.gif)
+
+[Video 2 in MP4](videos/funcionalidades-arena.mp4) — 24 s, sped up.
 
 ### 7.5 Why the effect is smaller with a body
 

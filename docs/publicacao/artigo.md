@@ -5,9 +5,7 @@ um corpo em um mundo 3D**
 
 Jonnas Figueiredo · versão de 12/10/2026 · *[English version](artigo.en.md)*
 
-> **[Figura 1: visão geral.]** Sugestão: à esquerda, o cérebro 3D com as células de Kenyon e os neurônios de saída
-> acesos; à direita, a mosca na arena 3D cheirando as três plaquinhas. Legenda: "O mesmo cérebro, sem corpo (bancada) e
-> com corpo (arena)."
+![Figura 1. O sistema inteiro num quadro: a mosca em cima de uma plaquinha, o cérebro 3D com os disparos reais e o painel com as células de Kenyon ativas, as saídas do corpo cogumelar e a dopamina.](figuras/visao-geral.png)
 
 ---
 
@@ -164,8 +162,7 @@ em famílias novas (cupom duplo, reserva dupla) e num controle (quantidade negat
 **Métrica principal:** ações até o primeiro bug nas versões de transferência (31 se não achou em 30); treinada −
 congelada < 0.
 
-> **[Figura 2: o protocolo.]** Sugestão: diagrama treino → teste, mostrando as famílias com defeito no treino e as
-> famílias novas no teste, ligadas só pela característica "repetida".
+![Figura 2. O protocolo: o treino usa defeitos em pagamento e cancelamento; o teste, famílias que ela nunca viu. O único elo é a característica premiada.](figuras/protocolo.png)
 
 ---
 
@@ -243,8 +240,9 @@ os motores das asas comandam o voo, a probóscide estende com açúcar nas patas
 receptivos do LC10a vêm das sinapses. O mundo é uma bancada de cozinha em 3D; as 15 ações viram plaquinhas com o
 cheiro das suas características.
 
-> **[Vídeo 1: a mosca no mundo 3D.]** Sugestão: 30–60 s da mosca andando, subindo e voando entre as plataformas da
-> cozinha, com o cérebro 3D acendendo ao lado.
+![Vídeo 1. A mosca no mundo 3D: andando, voando, comendo e limpando as patas.](videos/cozinha-mini-video.gif)
+
+[Vídeo 1 em MP4](videos/cozinha-mini-video.mp4) — 24 s. Caminhada e apoio com o corpo físico no MuJoCo; voo cinemático.
 
 ### 7.2 Mundos de plataformas: negativos, com as causas
 
@@ -277,8 +275,7 @@ descartados como causa. O mapa trocado também quase não aprende no cérebro se
 fortes (como na bancada) e esquecimento de 1 h (parâmetro do modelo, declarado; moscas reais lembram de uma recompensa
 de açúcar por horas). Uma mini-arena de 4 pares mostrou escolha maior em 3 de 4 sementes antes da série longa.
 
-> **[Figura 4: a arena.]** Sugestão: vista de cima da bandeja com as três plaquinhas e o caminho da mosca numa
-> tentativa (cheirar, cheirar, cheirar, provar).
+![Figura 4. A arena vista de cima: as três plaquinhas da tentativa e a mosca no centro, com o campo de visão de cada olho. As já cheiradas ficam foscas.](figuras/arena.png)
 
 ### 7.4 Resultado com corpo (arena 2, 20 pares, critério escrito antes)
 
@@ -300,12 +297,11 @@ bug ou 30 tentativas), cheiros fortes, esquecimento de 1 h, sementes 1601–1620
 - Este segundo resultado era secundário no registro; para contar como achado próprio precisa de uma série
   confirmatória em que seja o principal, com replicação.
 
-> **[Figura 5: escolha com corpo.]** Sugestão: pontos pareados por semente (treinada × congelada) da fração de escolha
-> da característica premiada, com a linha y = x.
->
-![A mosca se movimentando na arena, com o cérebro 3D ativo e os painéis de memória e atividade neural.](videos/funcionalidades-arena-previa.gif)
+![Figura 5. Escolha da característica premiada quando visível, por semente: treinada (y) contra congelada (x). Acima da linha, a treinada escolheu mais (16 de 20).](figuras/escolha-com-corpo.png)
 
-[Assista ao vídeo: funcionalidades em ação](videos/funcionalidades-arena.mp4) — 24 s, 720p, modo escuro; reprodução em aproximadamente 1,5× o tempo da gravação.
+![Vídeo 2. A mosca treinada na arena: ela cheira as três plaquinhas, o cérebro 3D acende e o painel mostra a memória de cada ação.](videos/funcionalidades-arena-previa.gif)
+
+[Vídeo 2 em MP4](videos/funcionalidades-arena.mp4) — 24 s, acelerado.
 
 ### 7.5 Por que o efeito é menor com corpo
 

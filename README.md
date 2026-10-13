@@ -12,9 +12,9 @@ procurá-lo em partes do sistema que nunca viu?
 
 ![A mosca se movimentando na arena, com o cérebro 3D ativo e os painéis de memória e atividade neural.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
 
-[Assista ao vídeo: funcionalidades em ação](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, 720p, modo escuro; reprodução em aproximadamente 1,5× o tempo da gravação.
+[Assista ao vídeo](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, acelerado.
 
-![Cérebro 3D em rotação, com disparos reais dos neurônios simulados. Reprodução acelerada em aproximadamente 1,5× em relação ao tempo cerebral; as cores identificam grupos funcionais.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
+![Cérebro 3D em rotação, com os disparos reais dos neurônios simulados. As cores são grupos funcionais.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
 ---
 
@@ -45,9 +45,9 @@ com as suas causas. Os detalhes estão no [artigo](docs/publicacao/artigo.md).
 O circuito e a regra de aprendizado são os da mosca; o neurônio é simplificado (um compartimento) e os tempos da
 memória são aproximados. Não afirmamos que o modelo é uma mosca.
 
-![Cozinha 3D: andando, voando, comendo e limpando as patas. Cenas preparadas com corpo físico no chão; voo cinemático e limpeza animada.](docs/publicacao/videos/cozinha-mini-video.gif)
+![Cozinha 3D: andando, voando, comendo e limpando as patas.](docs/publicacao/videos/cozinha-mini-video.gif)
 
-[Mini vídeo em MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Posições iniciais escolhidas; decolagem iniciada e pausa de limpeza antecipada para a gravação. O apoio e a caminhada usam o corpo físico MuJoCo. O voo permanece cinemático; a limpeza é uma animação sobreposta ao corpo físico. Duas mordidas ocorreram durante o trecho de alimentação. Trechos editados com velocidades de reprodução diferentes.
+[Vídeo em MP4](docs/publicacao/videos/cozinha-mini-video.mp4). Caminhada e apoio com o corpo físico no MuJoCo; voo cinemático. Cenas escolhidas e aceleradas para a gravação.
 
 ---
 
