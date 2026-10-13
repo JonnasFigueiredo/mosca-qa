@@ -12,7 +12,7 @@ for it in parts of the system it has never seen?
 
 ![The fly moving in the arena, with the active 3D brain and memory and neural activity panels.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
 
-[Watch the video](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, sped up.
+[Watch the video](docs/publicacao/videos/funcionalidades-demonstracao.mp4) — 1 min, Full HD.
 
 ![Rotating 3D brain with real spikes from the simulated neurons. Colors are functional groups.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
