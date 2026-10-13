@@ -373,7 +373,9 @@
       cv.addEventListener('pointermove', e => { if (!arrastando) return; cerebro.rotY += (e.clientX - px) * 0.008; cerebro.rotX = Math.max(-1.2, Math.min(1.2, cerebro.rotX + (e.clientY - py) * 0.006)); px = e.clientX; py = e.clientY; });
       cv.addEventListener('pointerup', () => { arrastando = false; });
       cv.addEventListener('wheel', e => { e.preventDefault(); cerebro.auto = false; cerebro.distQuer = Math.max(350, Math.min(4000, (cerebro.distQuer ?? cerebro.dist) * Math.exp(e.deltaY * 0.001))); }, { passive: false });
-      hud.textContent = 'Cada ponto é um neurônio e acende quando dispara. Arraste para girar; a roda aproxima.';
+      // sem texto por cima do cérebro depois de carregar: a legenda abaixo já diz o que é cada cor, e o canvas tem
+      // o mesmo texto no aria-label. O hud fica só para carregamento e erro
+      hud.textContent = '';
       centroKC();
       carregaFormas();
     } catch (e) { hud.textContent = 'Sem o cérebro 3D: ' + e.message; console.warn(e); }
