@@ -12,7 +12,7 @@ procurá-lo em partes do sistema que nunca viu?
 
 ![A mosca se movimentando na arena, com o cérebro 3D ativo e os painéis de memória e atividade neural.](docs/publicacao/videos/funcionalidades-arena-previa.gif)
 
-[Assista ao vídeo](docs/publicacao/videos/funcionalidades-arena.mp4) — 24 s, acelerado.
+[Assista ao vídeo](docs/publicacao/videos/funcionalidades-demonstracao.mp4) — 1 min, Full HD.
 
 ![Cérebro 3D em rotação, com os disparos reais dos neurônios simulados. As cores são grupos funcionais.](docs/publicacao/figuras/cerebro-3d-atividade.gif)
 
