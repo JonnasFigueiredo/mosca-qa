@@ -109,12 +109,12 @@ window.CacaMundo3D = (() => {
     return { sp, cv, txt: '' };
   }
   function escreve(r, txt, fundo, cor = '#fff') {
-    if (r.txt === txt + fundo) return; r.txt = txt + fundo;
+    if (r.txt === txt + fundo + MoscaIdioma.atual) return; r.txt = txt + fundo + MoscaIdioma.atual;
     const g = r.cv.getContext('2d'); g.clearRect(0, 0, 512, 72);
     g.font = '600 34px "IBM Plex Mono", ui-monospace, Consolas, monospace'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    const w = Math.min(500, g.measureText(txt).width + 36);
+    const w = Math.min(500, MoscaIdioma.medir(g, txt).width + 36);
     g.fillStyle = fundo; g.beginPath(); g.roundRect ? g.roundRect(256 - w / 2, 8, w, 56, 12) : g.rect(256 - w / 2, 8, w, 56); g.fill();
-    g.fillStyle = cor; g.fillText(txt, 256, 37, 480);
+    g.fillStyle = cor; MoscaIdioma.desenhar(g, txt, 256, 37, 480);
     r.sp.material.map.needsUpdate = true;
   }
 
@@ -276,7 +276,7 @@ window.CacaMundo3D = (() => {
   /* ───────────── as plaquinhas (o desenho da carta de cada ação) ───────────── */
   function desenhaPlaca(p, c, car) {
     const a = c.acao, prem = a.entrada === car;
-    const chave = [a.id, c.estado, c.escolhida, c.bug ? 1 : 0, c.nada ? 1 : 0, c.v == null ? '' : c.v.toFixed(2), c.prob == null ? '' : Math.round(c.prob * 100), c.visivel ? 1 : 0].join('|');
+    const chave = [MoscaIdioma.atual, a.id, c.estado, c.escolhida, c.bug ? 1 : 0, c.nada ? 1 : 0, c.v == null ? '' : c.v.toFixed(2), c.prob == null ? '' : Math.round(c.prob * 100), c.visivel ? 1 : 0].join('|');
     if (p.chave === chave) return; p.chave = chave;
     const g = p.cv.getContext('2d'), w = 512, h = 318;
     g.fillStyle = c.bug ? '#fff4e2' : '#fbf8f2'; g.fillRect(0, 0, w, h);
@@ -284,19 +284,19 @@ window.CacaMundo3D = (() => {
     g.font = '500 28px "IBM Plex Mono", Consolas, monospace'; g.textBaseline = 'top';
     let x = 26;
     for (const [t, pr] of [[a.familia, false], [a.entrada, prem]]) {
-      const tw = g.measureText(t).width + 20; g.fillStyle = pr ? '#d0245e' : '#dce0de'; g.fillRect(x, 24, tw, 40);
-      g.fillStyle = pr ? '#fff' : '#3c4650'; g.fillText(t, x + 10, 30); x += tw + 12;
+      const tw = MoscaIdioma.medir(g, t).width + 20; g.fillStyle = pr ? '#d0245e' : '#dce0de'; g.fillRect(x, 24, tw, 40);
+      g.fillStyle = pr ? '#fff' : '#3c4650'; MoscaIdioma.desenhar(g, t, x + 10, 30); x += tw + 12;
     }
     g.font = '600 40px "IBM Plex Sans", "Segoe UI", sans-serif'; g.fillStyle = '#1c2127';
-    const ps = (ACAO_TXT[a.id] || a.id).split(' '); let l = '', y = 88;
-    for (const pal of ps) { const t = l ? l + ' ' + pal : pal; if (g.measureText(t).width > w - 52 && l) { g.fillText(l, 26, y); y += 46; l = pal; } else l = t; }
-    if (l) g.fillText(l, 26, y);
+    const ps = MoscaIdioma.texto(ACAO_TXT[a.id] || a.id).split(' '); let l = '', y = 88;
+    for (const pal of ps) { const t = l ? l + ' ' + pal : pal; if (MoscaIdioma.medir(g, t).width > w - 52 && l) { MoscaIdioma.desenhar(g, l, 26, y); y += 46; l = pal; } else l = t; }
+    if (l) MoscaIdioma.desenhar(g, l, 26, y);
     // a barra de valência (zero a 40%)
     const by = h - 70, bw = w - 52; g.fillStyle = '#dce0de'; g.fillRect(26, by, bw, 18);
     if (c.v != null) { const pos = v => (v >= 0 ? 0.4 + 0.6 * Math.min(v, 1.5) / 1.5 : 0.4 - 0.4 * Math.min(-v, 1)), p1 = pos(c.v); g.fillStyle = prem ? '#d0245e' : '#3c4650'; g.fillRect(26 + bw * Math.min(0.4, p1), by, bw * Math.abs(p1 - 0.4), 18); }
     g.fillStyle = '#5f6a74'; g.fillRect(26 + bw * 0.4, by - 4, 2, 26);
     g.font = '26px "IBM Plex Mono", Consolas, monospace';
-    g.fillText((c.v == null ? 'valência —' : 'valência ' + c.v.toFixed(2).replace('.', ',')) + (c.prob != null ? ' · chance ' + Math.round(c.prob * 100) + '%' : ''), 26, by + 26);
+    MoscaIdioma.desenhar(g, (c.v == null ? 'valência —' : 'valência ' + c.v.toFixed(2).replace('.', ',')) + (c.prob != null ? ' · chance ' + Math.round(c.prob * 100) + '%' : ''), 26, by + 26);
     if (c.bug) { g.strokeStyle = '#9a6200'; g.lineWidth = 6; g.beginPath(); g.moveTo(70, 10); for (let i = 1; i <= 7; i++) g.lineTo(70 + i * 55, i % 2 ? h * 0.6 : h * 0.2); g.stroke(); }
     if (c.nada || (c.parada && !c.visivel)) { g.fillStyle = 'rgba(233,236,234,.45)'; g.fillRect(0, 0, w, h); }
     p.t.needsUpdate = true;

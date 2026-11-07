@@ -1370,8 +1370,8 @@ function sbRain() {
     g.font = `${fs}px monospace`;
     for (let i = 0; i < cols; i++) {
       const y = drops[i] * fs;
-      g.fillStyle = '#c8ffdd'; g.fillText(chars[(Math.random() * chars.length) | 0], i * fs, y);
-      g.fillStyle = '#1fbf5f'; g.fillText(chars[(Math.random() * chars.length) | 0], i * fs, y - fs);
+      g.fillStyle = '#c8ffdd'; MoscaIdioma.desenhar(g, chars[(Math.random() * chars.length) | 0], i * fs, y);
+      g.fillStyle = '#1fbf5f'; MoscaIdioma.desenhar(g, chars[(Math.random() * chars.length) | 0], i * fs, y - fs);
       if (y > cv.height && Math.random() > 0.96) drops[i] = 0;
       drops[i] += 0.6 + (i % 5) * 0.12;
     }
@@ -1384,15 +1384,18 @@ function sbLabelTex(text, w, h) {
   const k = 4, cv = document.createElement('canvas');
   cv.width = Math.round(w * k); cv.height = Math.round(h * k);
   const g = cv.getContext('2d');
+  function pintar() {
   g.fillStyle = '#03140a'; g.fillRect(0, 0, cv.width, cv.height);
   g.strokeStyle = '#2bff86'; g.lineWidth = 6; g.strokeRect(3, 3, cv.width - 6, cv.height - 6);
   let fs = cv.height * 0.42;
   g.font = `600 ${fs}px ui-monospace, Consolas, monospace`;
-  while (g.measureText(text).width > cv.width * 0.88 && fs > 8) { fs -= 2; g.font = `600 ${fs}px ui-monospace, Consolas, monospace`; }
+  while (MoscaIdioma.medir(g, text).width > cv.width * 0.88 && fs > 8) { fs -= 2; g.font = `600 ${fs}px ui-monospace, Consolas, monospace`; }
   g.fillStyle = '#b8ffd6'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillText(text, cv.width / 2, cv.height / 2);
+  MoscaIdioma.desenhar(g, text, cv.width / 2, cv.height / 2);
+  }
+  pintar();
   const t = new THREE.CanvasTexture(cv);
-  t.anisotropy = 4;
+  t.anisotropy = 4; MoscaIdioma.textura(t, pintar);
   return t;
 }
 function sbGridTex() {
@@ -1516,16 +1519,20 @@ function sbObjeto(o) {
     else if (fam === 'estoque') { c2.strokeRect(-44, -30, 88, 70); c2.beginPath(); c2.moveTo(-44, -30); c2.lineTo(-30, -50); c2.lineTo(30, -50); c2.lineTo(44, -30); c2.moveTo(-14, -30); c2.lineTo(-14, 0); c2.lineTo(14, 0); c2.lineTo(14, -30); c2.stroke(); }
     else if (fam === 'pagamento') { c2.strokeRect(-50, -34, 100, 68); c2.fillRect(-50, -18, 100, 14); c2.fillRect(-36, 14, 34, 8); }
     else if (fam === 'cancelamento') { c2.beginPath(); c2.arc(0, 0, 44, 0, 7); c2.stroke(); c2.beginPath(); c2.moveTo(-22, -22); c2.lineTo(22, 22); c2.moveTo(22, -22); c2.lineTo(-22, 22); c2.stroke(); }
-    else if (fam === 'cupom') { c2.beginPath(); c2.moveTo(-50, -30); c2.lineTo(50, -30); c2.lineTo(50, -8); c2.arc(50, 0, 8, -Math.PI / 2, Math.PI / 2, true); c2.lineTo(50, 30); c2.lineTo(-50, 30); c2.lineTo(-50, 8); c2.arc(-50, 0, 8, Math.PI / 2, -Math.PI / 2, true); c2.closePath(); c2.stroke(); c2.font = '700 40px system-ui, sans-serif'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; c2.fillText('%', 0, 2); }
+    else if (fam === 'cupom') { c2.beginPath(); c2.moveTo(-50, -30); c2.lineTo(50, -30); c2.lineTo(50, -8); c2.arc(50, 0, 8, -Math.PI / 2, Math.PI / 2, true); c2.lineTo(50, 30); c2.lineTo(-50, 30); c2.lineTo(-50, 8); c2.arc(-50, 0, 8, Math.PI / 2, -Math.PI / 2, true); c2.closePath(); c2.stroke(); c2.font = '700 40px system-ui, sans-serif'; c2.textAlign = 'center'; c2.textBaseline = 'middle'; MoscaIdioma.desenhar(c2, '%', 0, 2); }
     c2.restore();
     // a entrada (normal, zero, limite, negativa, repetida) numa etiqueta, e o nome da ação
+    function pintarTexto() {
+    c2.fillStyle='#fbf8f2';c2.fillRect(160,30,342,290);
     c2.font = '600 30px ui-monospace, Consolas, monospace'; c2.textBaseline = 'top';
-    const tw = c2.measureText(ent || '').width + 24; c2.fillStyle = '#e6e2da'; c2.fillRect(166, 48, tw, 44); c2.fillStyle = '#3c4650'; c2.fillText(ent || '', 178, 55);
+    const tw = MoscaIdioma.medir(c2, ent || '').width + 24; c2.fillStyle = '#e6e2da'; c2.fillRect(166, 48, tw, 44); c2.fillStyle = '#3c4650'; MoscaIdioma.desenhar(c2, ent || '', 178, 55);
     c2.font = '600 40px system-ui, "Segoe UI", sans-serif'; c2.fillStyle = '#1c2127';
     let linha = '', ly = 110;
-    for (const pal of o.r.split(' ')) { const t = linha ? linha + ' ' + pal : pal; if (c2.measureText(t).width > 320 && linha) { c2.fillText(linha, 166, ly); ly += 48; linha = pal; } else linha = t; }
-    if (linha) c2.fillText(linha, 166, ly);
-    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8;
+    for (const pal of MoscaIdioma.texto(o.r).split(' ')) { const t = linha ? linha + ' ' + pal : pal; if (MoscaIdioma.medir(c2, t).width > 320 && linha) { MoscaIdioma.desenhar(c2, linha, 166, ly); ly += 48; linha = pal; } else linha = t; }
+    if (linha) MoscaIdioma.desenhar(c2, linha, 166, ly);
+    }
+    pintarTexto();
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; MoscaIdioma.textura(tex,pintarTexto);
     const lado = sbMat('#efe9df');
     const m = new THREE.Mesh(new THREE.BoxGeometry(W, Hh, D), [lado, lado, new THREE.MeshStandardMaterial({ map: tex, roughness: 0.55 }), lado, lado, lado]);
     m.position.y = Hh / 2; g.add(m);
@@ -1570,11 +1577,16 @@ function sbObjeto(o) {
 function sbRotulo(texto) {
   const cv = document.createElement('canvas'); cv.width = 512; cv.height = 96;
   const g = cv.getContext('2d');
+  function pintar() {
+  g.clearRect(0,0,cv.width,cv.height);
   g.font = '600 44px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  const w = g.measureText(texto).width + 40;
+  const w = MoscaIdioma.medir(g, texto).width + 40;
   g.fillStyle = 'rgba(255, 252, 245, 0.85)'; g.beginPath(); if (g.roundRect) g.roundRect(256 - w / 2, 12, w, 72, 30); else g.rect(256 - w / 2, 12, w, 72); g.fill();
-  g.fillStyle = '#4a3a28'; g.fillText(texto, 256, 50);
+  g.fillStyle = '#4a3a28'; MoscaIdioma.desenhar(g, texto, 256, 50);
+  }
+  pintar();
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), transparent: true, depthWrite: false }));
+  MoscaIdioma.textura(sp.material.map, pintar);
   sp.scale.set(96, 18, 1);
   return sp;
 }

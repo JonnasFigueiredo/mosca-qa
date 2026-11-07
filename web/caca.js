@@ -47,8 +47,8 @@
   const CARAC_TXT = { carrinho: 'carrinho', estoque: 'estoque', pagamento: 'pagamento', cancelamento: 'cancelamento', cupom: 'cupom', normal: 'normal', zero: 'zero', limite: 'limite', negativa: 'negativa', repetida: 'repetida' };
   const nomeVersao = d => d.map(x => DEFEITO_TXT[x] || x).join(' + ');
   const COND_TXT = { ativa: 'Treinada', congelada: 'Congelada', ativa_curiosa: 'Treinada + curiosidade', congelada_curiosa: 'Congelada + curiosidade' };
-  const fmt = (v, d = 2) => (v == null || Number.isNaN(v) ? '—' : v.toFixed(d).replace('.', ','));
-  const fmtT = s => { const m = Math.floor(s / 60), r = s - m * 60; return m ? `${m} min ${r.toFixed(0).padStart(2, '0')} s` : `${r.toFixed(1).replace('.', ',')} s`; };
+  const fmt = (v, d = 2) => (v == null || Number.isNaN(v) ? '—' : v.toFixed(d).replace('.', MoscaIdioma.atual==='en'?'.':','));
+  const fmtT = s => { const m = Math.floor(s / 60), r = s - m * 60; return m ? `${m} min ${r.toFixed(0).padStart(2, '0')} s` : `${r.toFixed(1).replace('.', MoscaIdioma.atual==='en'?'.':',')} s`; };
 
   // ── referências medidas: ações até o primeiro bug, média de 32 sementes por condição ──
   // repetição: qa-b2 + qa-b2-replica; curiosidade: qa-b2-curiosidade + réplica; normal: qa-b2-normal + réplica
@@ -74,6 +74,7 @@
   };
   let sujo = true;
   const marca = () => { sujo = true; };
+  window.addEventListener('mosca:idioma', marca);
   function log(txt, tipo = '') { S.log.unshift({ t: S.tempo, txt, tipo }); if (S.log.length > 200) S.log.pop(); marca(); }
 
   // ── o worker local (só no protocolo medido; no "Mundo real", o cérebro é o do mundo embutido) ──
@@ -457,11 +458,11 @@
     const tMax = Math.max(60, S.tempo), vMin = -0.6, vMax = 1.6;
     const X = t => x0 + (x1 - x0) * t / tMax, Y = v => y1 - (y1 - y0) * (v - vMin) / (vMax - vMin);
     ctx.font = '11px ' + cor('--mono'); ctx.fillStyle = cor('--muted'); ctx.strokeStyle = cor('--line'); ctx.lineWidth = 1;
-    for (const v of [-0.5, 0, 0.5, 1, 1.5]) { ctx.beginPath(); ctx.moveTo(x0, Y(v)); ctx.lineTo(x1, Y(v)); ctx.stroke(); ctx.fillText(String(v).replace('.', ','), 2, Y(v) + 4); }
+    for (const v of [-0.5, 0, 0.5, 1, 1.5]) { ctx.beginPath(); ctx.moveTo(x0, Y(v)); ctx.lineTo(x1, Y(v)); ctx.stroke(); MoscaIdioma.desenhar(ctx, String(v).replace('.', ','), 2, Y(v) + 4); }
     ctx.setLineDash([3, 3]);
-    for (const m of S.marcas) if (/^Treino 1$|Medir depois|^Teste/.test(m.nome)) { ctx.beginPath(); ctx.moveTo(X(m.t), y0); ctx.lineTo(X(m.t), y1); ctx.stroke(); ctx.fillText(m.nome.startsWith('Teste') ? 'teste' : m.nome === 'Treino 1' ? 'treino' : 'medir', X(m.t) + 3, y0 - 4); }
+    for (const m of S.marcas) if (/^Treino 1$|Medir depois|^Teste/.test(m.nome)) { ctx.beginPath(); ctx.moveTo(X(m.t), y0); ctx.lineTo(X(m.t), y1); ctx.stroke(); MoscaIdioma.desenhar(ctx, m.nome.startsWith('Teste') ? 'teste' : m.nome === 'Treino 1' ? 'treino' : 'medir', X(m.t) + 3, y0 - 4); }
     ctx.setLineDash([]);
-    ctx.fillText(fmtT(tMax) + ' de cérebro', x1 - 120, y1 + 14);
+    MoscaIdioma.desenhar(ctx, fmtT(tMax) + ' de cérebro', x1 - 120, y1 + 14);
     for (const [k, c, lw] of [['o', cor('--em'), 1.5], ['p', cor('--spike'), 2.2]]) {
       ctx.strokeStyle = c; ctx.lineWidth = lw; ctx.beginPath(); let ini = false;
       for (const h of S.hist) { if (h[k] == null) continue; const x = X(h.t), y = Y(Math.max(vMin, Math.min(vMax, h[k]))); if (!ini) { ctx.moveTo(x, y); ini = true; } else ctx.lineTo(x, y); }

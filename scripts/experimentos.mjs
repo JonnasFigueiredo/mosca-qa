@@ -163,6 +163,7 @@ const server=http.createServer(async(req,res)=>{
     const url=new URL(req.url,`http://127.0.0.1:${porta}`),p=url.pathname;
     if(req.method==='GET'){
       if(p==='/')return servir(res,join(projeto,'web/experimentos.html'));
+      if(p==='/idioma.js'||p==='/idioma-en.js')return servir(res,join(projeto,'web',p.slice(1)));
       if(p==='/api/estado')return json(res,200,{token,porta,raiz,memoriaLivreGB:gb(),espacoLivreGB:espaco(),ativos:ativos.size,aviso,
         lotes:[...lotes.values()].map(l=>({id:l.id,nome:l.nome,status:l.status,criado:l.criado,total:l.jobs.length,
           hash:l.hash,comparacoes:resumir(l.jobs).pares,
